@@ -1,0 +1,125 @@
+---
+title: Resource Monitor (resmon)
+description: Comprehensive guide to using the Resource Monitor tool for tracking resource performance and identifying issues.
+icon: "Monitor"
+---
+
+# Resource Monitor (resmon)
+
+The Resource Monitor (resmon) is a built-in tool in FiveM that provides real-time monitoring of resource performance. It's essential for identifying performance bottlenecks, memory leaks, and other resource-related issues.
+
+## Enabling Resource Monitor
+
+To enable the Resource Monitor, add the following configuration to your `server.cfg`:
+
+```yaml
+# Enable resource monitoring
+setr resmon_enabled 1
+setr resmon_interval 1000  # Update interval in milliseconds
+setr resmon_history 60     # Number of samples to keep
+```
+
+## Accessing the Monitor
+
+Once enabled, you can access the Resource Monitor in-game using the command:
+
+```
+/resmon
+```
+
+## Monitor Features
+
+The Resource Monitor provides several key metrics for each resource:
+
+### CPU Usage
+- Shows the percentage of CPU time used by each resource
+- Helps identify resource-intensive scripts
+- Displays both current and average CPU usage
+
+### Memory Consumption
+- Tracks memory usage per resource
+- Helps identify potential memory leaks
+- Shows both current and peak memory usage
+
+### Script Execution Time
+- Measures the time taken by scripts to execute
+- Helps identify slow-performing scripts
+- Displays both current and average execution times
+
+### Network Usage
+- Monitors network traffic per resource
+- Tracks incoming and outgoing data
+- Helps identify network-intensive resources
+
+### Thread Performance
+- Shows the number of active threads per resource
+- Tracks thread execution times
+- Helps identify thread-related issues
+
+## Interpreting the Data
+
+### Normal Operation
+- CPU usage should be relatively stable
+- Memory usage should not continuously increase
+- Script execution times should be consistent
+- Network usage should match expected patterns
+
+### Warning Signs
+- Continuously increasing memory usage
+- Spikes in CPU usage
+- Unusually long script execution times
+- Unexpected network traffic patterns
+
+## Best Practices
+
+### Monitoring
+- Enable monitoring during development and testing
+- Use appropriate intervals based on your needs
+- Document baseline performance metrics
+- Regularly review monitoring data
+
+### Optimization
+- Address high CPU usage resources first
+- Investigate memory leaks immediately
+- Optimize slow-performing scripts
+- Monitor network usage for potential issues
+
+### Configuration
+- Adjust monitoring intervals based on server load
+- Set appropriate history length for your needs
+- Enable monitoring only when necessary
+- Consider running on a separate monitoring instance
+
+## Common Issues
+
+### High CPU Usage
+- Check for infinite loops
+- Review resource-intensive operations
+- Optimize database queries
+- Consider implementing caching
+
+### Memory Leaks
+- Review resource cleanup procedures
+- Check for unclosed connections
+- Monitor object creation and destruction
+- Implement proper garbage collection
+
+### Slow Script Execution
+- Optimize database operations
+- Review event handling
+- Check for blocking operations
+- Consider implementing async operations
+
+## Additional Resources
+
+- [FiveM Resource Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+- [FiveM Performance Guide](https://docs.fivem.net/docs/scripting-manual/performance-guide/)
+- [FiveM Forums](https://forum.cfx.re/)
+
+<Callout type="info">
+  Regular monitoring helps identify issues before they become critical problems.
+</Callout>
+
+<Callout type="warning">
+  High monitoring intervals can impact server performance. Adjust based on your needs.
+</Callout> 

@@ -1,0 +1,42 @@
+.drag-handle {
+    position: relative;
+    overflow: hidden;
+}
+
+.drag-handle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(88, 101, 242, 0.5), transparent);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+.drag-handle:hover::before {
+    opacity: 1;
+    background: linear-gradient(to right, transparent, rgba(88, 101, 242, 0.8), transparent);
+}
+
+.drag-handle:active::before {
+    opacity: 1;
+    background: linear-gradient(to right, transparent, rgba(88, 101, 242, 1), transparent);
+}
+
+.drag-handle:active .handle-indicator {
+    transform: scale(1.1);
+    background-color: rgba(88, 101, 242, 0.7);
+}

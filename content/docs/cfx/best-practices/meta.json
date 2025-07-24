@@ -1,0 +1,9 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "security",
+    "performance-optimization",
+    "resource-development",
+    "server-management"
+  ]
+} 

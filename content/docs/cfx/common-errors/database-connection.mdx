@@ -1,0 +1,315 @@
+---
+title: Database Connection Issues
+description: Comprehensive guide to understanding and resolving database connection problems in CitizenFX.
+icon: "Database"
+---
+
+# Database Connection Issues
+
+Database connection problems can cause various issues in your CitizenFX server, from player data loss to server instability. This guide will help you diagnose and resolve these issues for both server owners and developers.
+
+## Common Causes
+
+1. **Configuration Issues**
+   - Incorrect database credentials
+   - Wrong database host or port
+   - Invalid database name
+   - Missing required permissions
+   - Outdated configuration
+   - Invalid connection string
+
+2. **Network Problems**
+   - Firewall blocking connections
+   - Network latency
+   - Connection timeouts
+   - DNS resolution issues
+   - VPN interference
+   - ISP routing problems
+
+3. **Resource Limitations**
+   - Too many concurrent connections
+   - Insufficient memory
+   - Database server overload
+   - Connection pool exhaustion
+   - Query timeout
+   - Transaction deadlock
+
+## Server Owner Solutions
+
+### 1. Server Configuration
+
+```yaml
+# Add to your server.cfg
+set mysql_connection_string "mysql://user:password@localhost:3306/fivem?charset=utf8mb4"
+set mysql_debug 1  # Enable debug logging
+set mysql_slow_query_warning 1000  # Warning threshold in milliseconds
+set mysql_connection_timeout 10000  # Connection timeout in milliseconds
+set mysql_pool_size 10  # Connection pool size
+set mysql_idle_timeout 60000  # Idle timeout in milliseconds
+```
+
+### 2. Database Server Configuration
+
+```yaml
+# MySQL configuration (my.cnf)
+[mysqld]
+max_connections = 151
+max_user_connections = 50
+wait_timeout = 28800
+interactive_timeout = 28800
+max_allowed_packet = 16M
+innodb_buffer_pool_size = 1G
+innodb_log_file_size = 256M
+innodb_flush_log_at_trx_commit = 2
+```
+
+### 3. Monitoring and Diagnostics
+
+```bash
+# Database monitoring commands
+mysqladmin status  # Check database status
+mysqladmin processlist  # Check active connections
+mysqladmin variables  # Check configuration
+mysqlcheck -u root -p --all-databases  # Check database integrity
+mysqldump -u root -p --all-databases > backup.sql  # Create backup
+```
+
+### 4. Error Logging
+
+```yaml
+# Add to your server.cfg
+set mysql_log_file "mysql.log"  # MySQL log file
+set mysql_log_level 2  # Log level (0-3)
+set mysql_log_filter "error,warning"  # Log filter
+set mysql_log_rotate 7  # Number of log files to keep
+set mysql_log_size 10485760  # Maximum log size (10MB)
+```
+
+### 5. Security Configuration
+
+```yaml
+# Add to your server.cfg
+set mysql_ssl_mode "PREFERRED"  # SSL mode
+set mysql_ssl_ca "/path/to/ca.pem"  # SSL CA certificate
+set mysql_ssl_cert "/path/to/client-cert.pem"  # SSL client certificate
+set mysql_ssl_key "/path/to/client-key.pem"  # SSL client key
+set mysql_ssl_verify_server_cert 1  # Verify server certificate
+```
+
+## Developer Solutions
+
+### 1. Connection Management
+
+```lua
+-- Example database configuration
+Config = {
+    Database = {
+        host = 'localhost',
+        port = 3306,
+        database = 'fivem',
+        username = 'user',
+        password = 'password',
+        connectionTimeout = 10000,
+        poolSize = 10,
+        idleTimeout = 60000
+    }
+}
+
+-- Example connection pool management
+local maxConnections = 10
+local activeConnections = 0
+
+local function getConnection()
+    if activeConnections >= maxConnections then
+        print('Connection pool exhausted')
+        return nil
+    end
+    
+    activeConnections = activeConnections + 1
+    return MySQL.rawExecute.await
+end
+
+local function releaseConnection()
+    activeConnections = math.max(0, activeConnections - 1)
+end
+
+-- Example of connection monitoring
+local function monitorConnections()
+    local status = MySQL.query.await('SHOW STATUS LIKE "Threads_connected"')
+    if status[1].Value > maxConnections * 0.8 then
+        print('Warning: High connection count:', status[1].Value)
+    end
+end
+```
+
+### 2. Query Optimization
+
+```lua
+-- Example of optimized queries
+local function optimizedQuery(query, params)
+    -- Use prepared statements
+    local stmt = MySQL.prepare.await(query)
+    local result = stmt:execute(params)
+    return result
+end
+
+-- Example of batch processing
+local function batchProcess(data)
+    local batchSize = 100
+    local batches = {}
+    
+    for i = 1, #data, batchSize do
+        local batch = {}
+        for j = i, math.min(i + batchSize - 1, #data) do
+            table.insert(batch, data[j])
+        end
+        table.insert(batches, batch)
+    end
+    
+    for _, batch in ipairs(batches) do
+        MySQL.transaction.await(function()
+            for _, item in ipairs(batch) do
+                MySQL.query.await('INSERT INTO table VALUES (?)', {item})
+            end
+        end)
+    end
+end
+```
+
+### 3. Error Handling and Recovery
+
+```lua
+-- Example of robust error handling
+local function safeQuery(query, params)
+    local success, result = pcall(function()
+        return MySQL.query.await(query, params)
+    end)
+    
+    if not success then
+        print('Query failed:', result)
+        -- Implement retry logic
+        local retries = 3
+        while retries > 0 do
+            Wait(1000)  -- Wait before retry
+            success, result = pcall(function()
+                return MySQL.query.await(query, params)
+            end)
+            if success then break end
+            retries = retries - 1
+        end
+        if not success then
+            -- Log error and implement fallback
+            print('Query failed after retries:', result)
+            return nil
+        end
+    end
+    return result
+end
+
+-- Example of transaction management
+local function safeTransaction(queries)
+    local success, error = pcall(function()
+        MySQL.transaction.await(function()
+            for _, query in ipairs(queries) do
+                MySQL.query.await(query.statement, query.params)
+            end
+        end)
+    end)
+    
+    if not success then
+        print('Transaction failed:', error)
+        return false
+    end
+    return true
+end
+```
+
+### 4. Performance Monitoring
+
+```lua
+-- Add performance monitoring to queries
+local function monitoredQuery(query, params)
+    local startTime = GetGameTimer()
+    
+    local result = MySQL.query.await(query, params)
+    
+    local endTime = GetGameTimer()
+    local duration = endTime - startTime
+    
+    if duration > 100 then  -- 100ms threshold
+        print('Warning: Query took', duration, 'ms')
+    end
+    
+    return result
+end
+
+-- Example of query analysis
+local function analyzeQuery(query)
+    local explain = MySQL.query.await('EXPLAIN ' .. query)
+    if explain[1].type == 'ALL' then
+        print('Warning: Full table scan detected')
+    end
+end
+```
+
+## Best Practices
+
+### For Server Owners
+1. **Regular Monitoring**
+   - Monitor database performance
+   - Check connection counts
+   - Review error logs
+   - Monitor query performance
+   - Check server resources
+
+2. **Configuration Management**
+   - Keep connection limits appropriate
+   - Enable security features
+   - Configure proper timeouts
+   - Maintain server settings
+   - Update configurations regularly
+
+3. **Resource Management**
+   - Monitor database usage
+   - Check for bottlenecks
+   - Review connection pool
+   - Maintain backups
+   - Test recovery procedures
+
+### For Developers
+1. **Code Optimization**
+   - Use connection pooling
+   - Implement proper error handling
+   - Optimize query structure
+   - Use appropriate data types
+   - Monitor performance
+
+2. **Error Prevention**
+   - Validate input data
+   - Handle edge cases
+   - Implement timeouts
+   - Use proper cleanup
+   - Monitor query execution
+
+3. **Security Implementation**
+   - Use prepared statements
+   - Validate user input
+   - Implement proper access control
+   - Monitor for abuse
+   - Handle sensitive data properly
+
+## Additional Resources
+
+- [CitizenFX Database Documentation](https://docs.fivem.net/docs/scripting-manual/database/)
+- [FiveM Forums - Database Discussion](https://forum.cfx.re/t/database-development/4771972)
+- [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+- [FiveM Server Commands](https://docs.fivem.net/docs/server-manual/server-commands/)
+- [MySQL Documentation](https://dev.mysql.com/doc/)
+
+<Callout type="warning">
+  Always backup your database before making any configuration changes or running maintenance operations. Regular monitoring and maintenance are essential for optimal database performance.
+</Callout>
+
+<Callout type="info">
+  For more information about database management, refer to the relevant sections in the documentation and server commands reference.
+</Callout> 

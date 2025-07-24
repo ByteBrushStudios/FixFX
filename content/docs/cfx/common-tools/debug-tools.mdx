@@ -1,0 +1,207 @@
+---
+title: Debug Tools
+description: Comprehensive guide to using debug tools for troubleshooting and system inspection in FiveM.
+icon: "Bug"
+---
+
+# Debug Tools
+
+FiveM provides a suite of debug tools that help with troubleshooting, system inspection, and real-time monitoring. These tools are essential for identifying and resolving issues in your server environment.
+
+## Available Debug Tools
+
+### Debug Console
+The Debug Console provides real-time access to server information and debugging capabilities.
+
+#### Enabling Debug Console
+Add to your `server.cfg`:
+```yaml
+# Enable debug console
+setr debug_console_enabled 1
+setr debug_console_level 2  # 0: None, 1: Errors, 2: Warnings, 3: Info, 4: Debug
+```
+
+#### Accessing Debug Console
+In-game command:
+```
+/debug
+```
+
+#### Features
+- Real-time log viewing
+- Resource state inspection
+- Command execution
+- Variable inspection
+- System information
+
+### Resource Debugger
+Helps track resource execution and identify issues.
+
+#### Enabling Resource Debugger
+Add to your `server.cfg`:
+```yaml
+# Enable resource debugging
+setr resource_debug_enabled 1
+setr resource_debug_level 2
+```
+
+#### Accessing Resource Debugger
+In-game command:
+```
+/resdebug
+```
+
+#### Features
+- Resource execution tracing
+- Error tracking
+- Performance metrics
+- State inspection
+- Dependency tracking
+
+## Debug Features
+
+### Log Management
+- View real-time logs
+- Filter log levels
+- Search log content
+- Export log data
+- Configure log retention
+
+### System Inspection
+- View server status
+- Check resource states
+- Monitor system resources
+- Track performance metrics
+- Inspect network status
+
+### Command Execution
+- Execute server commands
+- Run resource commands
+- Test configurations
+- Trigger events
+- Manage resources
+
+### Variable Inspection
+- View global variables
+- Check local variables
+- Monitor state changes
+- Track value updates
+- Debug data flow
+
+## Debugging Process
+
+### Initial Setup
+1. Enable appropriate debug tools
+2. Configure debug levels
+3. Set up logging
+4. Prepare monitoring
+
+### Issue Identification
+1. Monitor system behavior
+2. Check error logs
+3. Review performance metrics
+4. Track resource states
+
+### Problem Analysis
+1. Identify error patterns
+2. Review system logs
+3. Check resource dependencies
+4. Analyze performance data
+
+### Solution Implementation
+1. Apply fixes
+2. Test changes
+3. Monitor results
+4. Document solutions
+
+## Best Practices
+
+### Debug Configuration
+- Use appropriate debug levels
+- Configure log retention
+- Set up monitoring
+- Enable necessary tools
+
+### Error Handling
+- Implement proper logging
+- Use error tracking
+- Monitor system state
+- Document issues
+
+### Performance Monitoring
+- Track system metrics
+- Monitor resource usage
+- Check network status
+- Review performance data
+
+### Documentation
+- Record debug sessions
+- Document solutions
+- Update procedures
+- Share knowledge
+
+## Common Debug Scenarios
+
+### Resource Issues
+- Check resource states
+- Review dependencies
+- Monitor performance
+- Track errors
+
+### System Problems
+- Monitor system metrics
+- Check resource usage
+- Review error logs
+- Track performance
+
+### Network Issues
+- Check network status
+- Monitor connections
+- Review traffic
+- Track latency
+
+### Performance Problems
+- Monitor system load
+- Check resource usage
+- Review performance
+- Track metrics
+
+## Troubleshooting Guide
+
+### Basic Troubleshooting
+1. Enable debug tools
+2. Check system logs
+3. Review error messages
+4. Monitor system state
+
+### Advanced Troubleshooting
+1. Use debug console
+2. Enable resource debugger
+3. Monitor system metrics
+4. Track performance
+
+### Performance Issues
+1. Check system load
+2. Monitor resource usage
+3. Review performance
+4. Track metrics
+
+### Network Problems
+1. Check network status
+2. Monitor connections
+3. Review traffic
+4. Track latency
+
+## Additional Resources
+
+- [FiveM Debugging Guide](https://docs.fivem.net/docs/scripting-manual/debugging/)
+- [FiveM Server Manual](https://docs.fivem.net/docs/server-manual/introduction/)
+- [FiveM Forums](https://forum.cfx.re/)
+
+<Callout type="info">
+  Regular debugging helps identify and resolve issues before they become critical problems.
+</Callout>
+
+<Callout type="warning">
+  Debug tools can impact server performance. Use appropriate levels and enable only when needed.
+</Callout> 

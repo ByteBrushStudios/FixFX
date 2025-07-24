@@ -1,0 +1,126 @@
+---
+title: Common Errors
+description: Introduction to common issues and their solutions in CitizenFX.
+icon: "AlertCircle"
+---
+
+import React from 'react';
+import { Accordions, Accordion } from 'fumadocs-ui/components/accordion';
+import { Tabs } from 'fumadocs-ui/components/tabs';
+
+# Common Errors
+
+Welcome to the Common Errors documentation. This section provides comprehensive guides for understanding and resolving various types of errors that may occur in your FiveM server. Whether you're a server owner or a developer, these guides will help you maintain a stable and performant server environment.
+
+<Callout type="info">
+ For specific error types and detailed solutions, refer to the individual guides in this section. Each guide provides comprehensive information for both server owners and developers.
+</Callout> 
+
+
+## Understanding Error Types
+
+FiveM errors can be broadly categorized into several types:
+
+1. **Server Thread Issues**
+   - Thread hitches and performance warnings
+   - Resource loading problems
+   - Memory management issues
+   - CPU overload warnings
+
+2. **Network and Connection Problems**
+   - Connection timeouts
+   - State bag synchronization issues
+   - Network rate limiting
+   - Client-server communication errors
+
+3. **Resource and Script Errors**
+   - Resource loading failures
+   - Script execution errors
+   - Dependency conflicts
+   - Manifest configuration issues
+
+4. **Database and Storage Issues**
+   - Connection problems
+   - Query timeouts
+   - Transaction failures
+   - Data synchronization errors
+
+## Available Guides
+
+<Tabs>
+  <div title="Server Issues">
+    <ul>
+      <li><a href="./server-thread-hitch-warning">Server Thread Hitch Warning</a> - Understanding and resolving thread performance issues</li>
+      <li><a href="./network-issues">Network Issues</a> - Troubleshooting network-related problems</li>
+      <li><a href="./state-bag-issues">State Bag Issues</a> - Resolving state synchronization problems</li>
+    </ul>
+  </div>
+
+  <div title="Resource Issues">
+    <ul>
+      <li><a href="./resource-loading">Resource Loading</a> - Fixing resource loading and dependency problems</li>
+      <li><a href="./database-connection">Database Connection</a> - Troubleshooting database connectivity issues</li>
+    </ul>
+  </div>
+</Tabs>
+
+## Best Practices
+
+<Callout type="warn">
+  Always test changes in a development environment before deploying to production. Regular monitoring and maintenance are essential for optimal server performance.
+</Callout> 
+
+<Accordions type="single">
+  <Accordion title="Regular Monitoring">
+    <p>Effective server monitoring involves multiple layers of observation and analysis. Start by implementing a daily log review system that checks for error patterns and performance metrics. Set up automated alerts for critical errors and performance thresholds. Monitor resource usage patterns during peak hours and track player-reported issues. Regular monitoring helps identify potential problems before they escalate into major issues.</p>
+    
+    <p>Consider implementing a monitoring dashboard that displays real-time metrics such as CPU usage, memory consumption, and network latency. This provides immediate visibility into server health and helps with quick decision-making when issues arise.</p>
+  </Accordion>
+
+  <Accordion title="Proper Configuration">
+    <p>Server configuration plays a crucial role in preventing errors and maintaining optimal performance. Ensure your server settings are properly tuned for your specific use case. This includes setting appropriate resource limits, configuring proper timeouts for various operations, and implementing comprehensive error logging systems.</p>
+    
+    <p>Security features should be enabled and properly configured to prevent unauthorized access and potential exploits. Regularly review and update your configuration based on server performance metrics and error patterns. Document all configuration changes and maintain a version history for easy rollback if needed.</p>
+  </Accordion>
+
+  <Accordion title="Resource Management">
+    <p>Effective resource management is essential for maintaining server stability. Keep all resources updated to their latest stable versions, and thoroughly test any updates in a development environment before deployment. Implement a systematic approach to resource loading order to prevent dependency conflicts.</p>
+    
+    <p>Regularly audit your resource usage and remove any unused or redundant resources. Monitor resource conflicts and performance impacts, especially during peak usage times. Maintain a clear documentation of resource dependencies and requirements to ensure smooth operation.</p>
+  </Accordion>
+</Accordions>
+
+## Troubleshooting Guide
+
+<Accordions type="single">
+  <Accordion title="Identify the Error">
+    <p>The first step in troubleshooting is accurately identifying the error. Start by checking server logs for error messages and warnings. Look for patterns in error occurrences and their timing. Monitor resource states to identify any unusual behavior or performance degradation.</p>
+    
+    <p>Gather information from player reports and feedback, as they often provide valuable context about when and how errors occur. Document all error details, including timestamps, affected resources, and any relevant server conditions at the time of the error.</p>
+  </Accordion>
+
+  <Accordion title="Diagnose the Cause">
+    <p>Once an error is identified, analyze the patterns and context to determine the root cause. Check server configurations and recent changes that might have triggered the issue. Review resource dependencies and loading order to identify potential conflicts.</p>
+    
+    <p>Test potential fixes in a controlled environment to verify their effectiveness. Consider using diagnostic tools and monitoring systems to gather additional information about the error's impact on server performance and resource usage.</p>
+  </Accordion>
+
+  <Accordion title="Implement Solution">
+    <p>After identifying the cause, implement the appropriate fix following a systematic approach. Apply changes in a controlled manner, testing each modification thoroughly before proceeding. Monitor the results closely to ensure the fix resolves the issue without introducing new problems.</p>
+    
+    <p>Document all changes made during the fix implementation process. This documentation should include the original error, the implemented solution, and any observations during the testing phase. This information is valuable for future reference and similar issues.</p>
+  </Accordion>
+
+  <Accordion title="Prevent Recurrence">
+    <p>To prevent similar errors from recurring, update your procedures and monitoring systems based on the lessons learned. Improve error detection and alerting mechanisms to catch issues earlier. Enhance error handling in your resources to better manage and recover from similar situations.</p>
+    
+    <p>Maintain comprehensive documentation of all errors and their solutions. This documentation should be easily accessible to all team members and regularly updated with new information. Consider implementing automated testing and monitoring systems to catch potential issues before they affect the production environment.</p>
+  </Accordion>
+</Accordions>
+
+## Additional Resources
+
+- [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+- [FiveM Server Commands](https://docs.fivem.net/docs/server-manual/server-commands/)
+- [FiveM Forums](https://forum.cfx.re/)
+- [FiveM Discord](https://discord.gg/fivem)

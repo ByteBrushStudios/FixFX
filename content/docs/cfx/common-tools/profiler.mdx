@@ -1,0 +1,238 @@
+---
+title: Profiler
+description: Comprehensive guide to using the profiler for identifying and resolving server performance issues.
+icon: "Activity"
+---
+
+# Profiler
+
+The Server profiler is an essential tool for identifying performance bottlenecks in your server. It provides detailed insights into script execution times, resource usage, and thread performance, helping you optimize your server's performance.
+
+<Callout type="info">
+  Regular profiling helps identify performance issues before they affect your players. Make it part of your development workflow.
+</Callout>
+
+## Prerequisites
+
+Before using the profiler:
+- Ensure your client is up to date
+- Use the latest server artifacts
+- Have Google Chrome installed (required for viewing profiles)
+- Keep your game/server running while viewing profiles
+- Have sufficient permissions to access the console
+
+## Using the Profiler
+
+<Callout type="warn">
+  Profiling can impact server performance. Use appropriate frame counts and enable only when needed.
+</Callout>
+
+### Basic Commands
+
+| Command | Description |
+|---------|-------------|
+| `profiler record <frames>` | Start recording a profile for specified number of frames |
+| `profiler status` | Check current recording status |
+| `profiler view` | View the current profile in Chrome (client-side only) |
+| `profiler saveJSON <filename>` | Save the profile to a JSON file |
+
+### Recording a Profile
+
+1. **Start Recording**
+   ```bash
+   # Record 500 frames (recommended starting point)
+   profiler record 500
+   
+   # For longer analysis
+   profiler record 1000
+   
+   # For specific resource
+   profiler record resource_name 500
+   ```
+
+2. **Monitor Progress**
+   ```bash
+   profiler status
+   ```
+   Output example:
+   ```
+   Recording: true
+   Frames captured: 250/500
+   Current resource: es_extended
+   ```
+
+3. **Save the Profile**
+
+<Callout type="info">
+  Save profiles before and after optimizations to measure improvement and track changes over time.
+</Callout> 
+
+   ```bash
+   profiler saveJSON server_profile.json
+   ```
+
+### Viewing Profiles
+
+#### Client-Side Viewing
+1. Open the console (F8)
+2. Run `profiler view`
+3. Chrome will automatically open with the profile
+
+#### Server-Side Viewing
+1. Save the profile:
+   ```bash
+   profiler saveJSON server_profile.json
+   ```
+2. Transfer the file to your local machine
+3. Open Chrome DevTools (Ctrl+Shift+I)
+4. Go to the Performance tab
+5. Right-click → Load profile
+6. Select your saved JSON file
+
+## Analyzing Profiles
+
+### Understanding the Interface
+
+The profile view consists of several key components:
+
+1. **Timeline Overview**
+   - Top: Recording timestamp
+   - Green line: FPS graph
+   - Yellow line: CPU time graph
+   - Red markers: Frame drops
+
+2. **Resource Breakdown**
+   - Resource name
+   - Execution time (ms)
+   - File and line numbers
+   - Thread information
+
+### Identifying Issues
+
+#### Server Hitches
+- Look for sudden spikes in the CPU time graph
+- Example: A spike from 5ms to 50ms indicates a potential hitch
+- Common causes:
+  - Heavy database operations
+  - Unoptimized loops
+  - Resource conflicts
+
+#### Frame Drops
+- Check the FPS graph for significant dips
+- Normal FPS should be stable (60 FPS)
+- Dips below 30 FPS indicate performance issues
+
+#### Resource Bottlenecks
+- Hover over resource tick events to see:
+  ```
+  Resource: es_extended
+  File: client/main.lua
+  Lines: 150-155
+  Time: 45ms
+  Thread: main
+  ```
+
+### Practical Examples
+
+#### Example 1: Database Query Optimization
+```lua
+-- Before optimization
+profiler record 500
+-- Profile shows 100ms execution time for database query
+
+-- After optimization with caching
+local userCache = {}
+local function getUsers()
+    if not userCache.lastUpdate or (GetGameTimer() - userCache.lastUpdate) > 60000 then
+        MySQL.Async.fetchAll('SELECT * FROM users', {}, function(result)
+            userCache.data = result
+            userCache.lastUpdate = GetGameTimer()
+        end)
+    end
+    return userCache.data
+end
+
+-- Profile shows 5ms execution time after optimization
+```
+
+#### Example 2: Event Handler with Rate Limiting
+```lua
+-- Before optimization
+profiler record 500
+-- Profile shows frequent spikes in CPU time
+
+-- After optimization with rate limiting
+local lastCall = 0
+RegisterNetEvent('event:name')
+AddEventHandler('event:name', function()
+    local currentTime = GetGameTimer()
+    if currentTime - lastCall > 1000 then
+        lastCall = currentTime
+        -- Process event
+    end
+end)
+
+-- Profile shows more stable CPU usage
+```
+
+## Best Practices
+
+### Recording Strategy
+- Start with 500 frames for initial analysis
+- Increase to 1000+ frames for detailed profiling
+- Record during peak server load
+- Save multiple profiles for comparison
+
+### Analysis Tips
+1. **Focus Areas**
+   - Sudden CPU time spikes
+   - Consistent frame drops
+   - Resource-intensive operations
+   - Thread conflicts
+
+2. **Common Patterns**
+   - Regular spikes might indicate scheduled tasks
+   - Random spikes often point to event handling
+   - Consistent high CPU time suggests optimization needed
+
+3. **Optimization Priorities**
+   - Address the highest CPU time operations first
+   - Focus on frequently called functions
+   - Check for resource conflicts
+   - Review event handling efficiency
+
+### Troubleshooting
+
+1. **Incomplete Profiles**
+   - Increase frame count
+   - Check server stability
+   - Verify recording duration
+
+2. **Performance Impact**
+   - Reduce frame count
+   - Profile during off-peak hours
+   - Use separate test server
+
+### Advanced Usage
+
+#### Resource-Specific Profiling
+```bash
+# Profile specific resource
+profiler record es_extended 500
+
+# Profile multiple resources
+profiler record es_extended,ox_inventory 500
+```
+
+#### Custom Time Windows
+```bash
+# Profile for specific duration (in seconds)
+profiler record time 30
+```
+
+## Additional Resources
+
+- [FiveM Profiler Documentation](https://docs.fivem.net/docs/scripting-manual/debugging/using-profiler/)
+- [FiveM Performance Guide](https://docs.fivem.net/docs/scripting-manual/performance-guide/)
+- [FiveM Forums](https://forum.cfx.re/)
+- [FiveM Discord](https://discord.gg/fivem)

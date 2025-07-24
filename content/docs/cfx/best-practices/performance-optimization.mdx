@@ -1,0 +1,257 @@
+---
+title: Performance Optimization
+description: Comprehensive guide to optimizing performance in CitizenFX servers and resources.
+icon: "Zap"
+---
+
+# Performance Optimization Best Practices
+
+Optimizing performance is crucial for maintaining a smooth and enjoyable experience for your players. This guide covers essential practices for optimizing your CitizenFX server and resources.
+
+## Server Configuration
+
+### 1. Network Optimization
+
+```yaml
+# Add to your server.cfg
+setr sv_netRateLimit 1000000  # Network rate limit in bytes
+setr sv_netRateLimitPerClient 100000  # Per-client rate limit
+setr sv_maxStateBagRate 1000  # Maximum state bag updates per second
+setr sv_maxStateBagSize 1024  # Maximum state bag size in bytes
+```
+
+### 2. Resource Management
+
+```yaml
+# Add to your server.cfg
+setr sv_maxResources 100  # Maximum number of resources
+setr sv_maxClients 32  # Maximum number of clients
+setr sv_maxPlayers 32  # Maximum number of players
+```
+
+## Resource Optimization
+
+### 1. Thread Management
+
+```lua
+-- Example of optimized thread management
+local activeThreads = {}
+local THREAD_INTERVAL = 1000  -- 1 second
+
+local function startOptimizedThread(name, callback)
+    if activeThreads[name] then return end
+    
+    activeThreads[name] = CreateThread(function()
+        while true do
+            local startTime = GetGameTimer()
+            callback()
+            local endTime = GetGameTimer()
+            
+            -- Dynamic sleep based on execution time
+            local sleepTime = math.max(0, THREAD_INTERVAL - (endTime - startTime))
+            Wait(sleepTime)
+        end
+    end)
+end
+```
+
+### 2. Memory Management
+
+```lua
+-- Example of optimized memory management
+local cache = {}
+local CACHE_TTL = 300000  -- 5 minutes
+
+local function getCachedData(key)
+    local now = GetGameTimer()
+    local cached = cache[key]
+    
+    if cached and now - cached.timestamp < CACHE_TTL then
+        return cached.data
+    end
+    
+    local data = fetchData(key)
+    cache[key] = {
+        data = data,
+        timestamp = now
+    }
+    return data
+end
+
+-- Cleanup old cache entries
+CreateThread(function()
+    while true do
+        Wait(60000)  -- 1 minute
+        local now = GetGameTimer()
+        for key, cached in pairs(cache) do
+            if now - cached.timestamp >= CACHE_TTL then
+                cache[key] = nil
+            end
+        end
+    end
+end)
+```
+
+## Database Optimization
+
+### 1. Query Optimization
+
+```lua
+-- Example of optimized database queries
+local function getPlayerData(playerId)
+    -- Use prepared statements
+    local query = 'SELECT * FROM players WHERE identifier = ?'
+    local params = {playerId}
+    
+    -- Use appropriate indexing
+    local result = MySQL.query.await(query, params)
+    return result[1]
+end
+
+-- Batch updates
+local function updateMultiplePlayers(updates)
+    local query = 'UPDATE players SET money = ? WHERE identifier = ?'
+    local params = {}
+    
+    for _, update in ipairs(updates) do
+        table.insert(params, {update.money, update.identifier})
+    end
+    
+    MySQL.transaction.await(query, params)
+end
+```
+
+### 2. Connection Pooling
+
+```lua
+-- Example of connection pooling
+local connectionPool = {}
+local MAX_CONNECTIONS = 10
+
+local function getConnection()
+    for i, conn in ipairs(connectionPool) do
+        if not conn.inUse then
+            conn.inUse = true
+            return conn
+        end
+    end
+    
+    if #connectionPool < MAX_CONNECTIONS then
+        local conn = MySQL.createConnection()
+        conn.inUse = true
+        table.insert(connectionPool, conn)
+        return conn
+    end
+    
+    return nil
+end
+```
+
+## Client-Side Optimization
+
+### 1. Render Distance Management
+
+```lua
+-- Example of render distance optimization
+local RENDER_DISTANCE = 100.0
+local entities = {}
+
+local function updateEntityRender(entity)
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    local entityCoords = GetEntityCoords(entity)
+    local distance = #(playerCoords - entityCoords)
+    
+    if distance <= RENDER_DISTANCE then
+        if not entities[entity] then
+            -- Enable rendering
+            SetEntityRender(entity, true)
+            entities[entity] = true
+        end
+    else
+        if entities[entity] then
+            -- Disable rendering
+            SetEntityRender(entity, false)
+            entities[entity] = nil
+        end
+    end
+end
+```
+
+### 2. Event Optimization
+
+```lua
+-- Example of event optimization
+local eventQueue = {}
+local PROCESSING_INTERVAL = 100  -- 100ms
+
+local function processEventQueue()
+    while #eventQueue > 0 do
+        local event = table.remove(eventQueue, 1)
+        TriggerEvent(event.name, table.unpack(event.args))
+        Wait(0)  -- Yield to prevent freezing
+    end
+end
+
+-- Queue events instead of triggering immediately
+local function queueEvent(name, ...)
+    table.insert(eventQueue, {
+        name = name,
+        args = {...}
+    })
+end
+
+-- Process queue periodically
+CreateThread(function()
+    while true do
+        processEventQueue()
+        Wait(PROCESSING_INTERVAL)
+    end
+end)
+```
+
+## Monitoring and Profiling
+
+### 1. Performance Metrics
+
+```lua
+-- Example performance monitoring
+local metrics = {
+    frameTime = 0,
+    memoryUsage = 0,
+    eventCount = 0
+}
+
+local function updateMetrics()
+    metrics.frameTime = GetFrameTime()
+    metrics.memoryUsage = collectgarbage('count')
+    metrics.eventCount = #eventQueue
+end
+
+-- Log metrics periodically
+CreateThread(function()
+    while true do
+        updateMetrics()
+        print(string.format(
+            'Frame Time: %.2fms, Memory: %.2fMB, Events: %d',
+            metrics.frameTime * 1000,
+            metrics.memoryUsage / 1024,
+            metrics.eventCount
+        ))
+        Wait(5000)
+    end
+end)
+```
+
+## Additional Resources
+
+- [CitizenFX Performance Guidelines](https://docs.fivem.net/docs/scripting-manual/optimization/)
+- [FiveM Forums - Performance Discussion](https://forum.cfx.re/t/performance-optimization/4771968)
+- [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+
+<Callout type="warning">
+  Always test performance optimizations in a development environment before deploying to production.
+</Callout>
+
+<Callout type="info">
+  For more information about specific aspects of performance optimization, refer to the relevant sections in the documentation.
+</Callout> 

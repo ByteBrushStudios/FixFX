@@ -1,0 +1,26 @@
+name: Build Website
+on:
+  push:
+    branches: [master, development]
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      
+      - name: Install dependencies
+        run: bun install
+      
+      - name: Build application
+        run: bun run build
+      
+      - name: Notify success
+        run: echo "Build completed successfully!"

@@ -1,0 +1,233 @@
+---
+title: State Bag Issues
+description: Common issues and solutions related to state bags in CitizenFX.
+icon: "AlertTriangle"
+---
+
+# State Bag Issues
+
+State bags are a powerful feature in CitizenFX for sharing data between resources, but they can sometimes cause performance issues or errors. This guide covers common state bag issues and their solutions for both server owners and developers.
+
+## Common Causes
+
+1. **Rate Limiting**
+   - State bags have built-in rate limiting to prevent abuse
+   - Rate limits are controlled by server configuration
+   - Default rate is 75 packets per second
+   - Default burst limit is 125 packets
+   - Exceeding limits can cause state bag changes to be dropped
+   - Use `resmon` to monitor state bag usage and identify rate limit issues
+
+2. **Size Limitations**
+   - State bags have a size limit of 16KB per entity
+   - Large state bags can cause performance issues
+   - Complex nested tables can exceed size limits
+
+3. **Network Issues**
+   - State bag changes are network-synchronized
+   - High latency can cause delayed updates
+   - Packet loss can cause missed updates
+
+## Server Owner Solutions
+
+### 1. Rate Limit Configuration
+
+```yaml
+# Add to your server.cfg
+set rateLimiter_stateBag_rate 75  # Default rate limit for state bag changes per second
+set rateLimiter_stateBag_burst 125  # Default burst limit for state bag changes
+set rateLimiter_stateBagFlood_rate 150  # Flood detection rate
+set rateLimiter_stateBagFlood_burst 175  # Flood burst limit
+```
+
+<Callout type="info">
+  The default values are usually sufficient for most use cases. Only adjust these if you have specific needs and monitor with `resmon` to ensure stability. If you are getting spammed with state bags errors but all your resources are fine and you don't see any signs of misbehavior or abuse or the spam happens for random events like player joins, player deaths etc then you likely need to update these values.
+</Callout>
+
+### 2. Monitoring and Diagnostics
+
+```bash
+# Use these commands in txAdmin console or server console
+resmon  # Monitor resource performance including state bag usage
+netgraph  # Monitor network performance
+net_statsFile "statebag_metrics.csv"  # Log network metrics to file
+```
+
+### 3. Network Optimization
+
+```yaml
+# Add to your server.cfg
+setr sv_netRateLimit 1048576  # 1MB/s per client
+setr sv_netRateLimitBurst 2097152  # 2MB/s burst
+setr sv_netRateLimitPerClient 100000  # Per-client rate limit
+```
+
+### 4. Security Configuration
+
+```yaml
+# Add to your server.cfg
+setr sv_filterRequestControl 1  # Enable request filtering
+setr sv_requestParanoia 1  # Enable stricter request validation
+setr sv_authMaxVariance 2  # Maximum authentication variance
+setr sv_authMinTrust 0.5  # Minimum authentication trust level
+setr sv_experimentalStateBagsHandler 1  # Enable experimental state bag handler
+setr sv_pureLevel 2  # Enable strict file integrity checks
+```
+
+### 5. Access Control
+
+```yaml
+# Add to your server.cfg
+add_ace group.admin state_bag.write allow  # Allow admins to write state bags
+add_ace group.user state_bag.read allow    # Allow users to read state bags
+```
+
+## Developer Solutions
+
+### 1. Optimized State Bag Usage
+
+```lua
+-- Example of optimized state bag usage
+local function updatePlayerState(playerId, data)
+    -- Batch multiple changes
+    local stateBag = Entity(playerId).state
+    stateBag:set('data', data, true)  -- true for replicated
+    
+    -- Use appropriate replication flags
+    stateBag:set('position', GetEntityCoords(GetPlayerPed(playerId)), true)
+end
+
+-- Example of rate-limited updates
+local lastUpdate = 0
+local function rateLimitedUpdate(playerId, data)
+    local currentTime = GetGameTimer()
+    if currentTime - lastUpdate < 100 then  -- 100ms between updates
+        return
+    end
+    lastUpdate = currentTime
+    Entity(playerId).state:set('data', data, true)
+end
+```
+
+### 2. Size Optimization
+
+```lua
+-- Example of size-optimized state bag
+local function optimizeStateBag(data)
+    -- Remove unnecessary data
+    local optimized = {
+        position = data.position,
+        health = data.health,
+        armor = data.armor
+    }
+    
+    -- Use appropriate data types
+    optimized.position = vector3(
+        math.floor(data.position.x * 100) / 100,
+        math.floor(data.position.y * 100) / 100,
+        math.floor(data.position.z * 100) / 100
+    )
+    
+    return optimized
+end
+```
+
+### 3. Error Handling and Validation
+
+```lua
+-- Example of robust state bag handling
+local function safeStateBagUpdate(playerId, data)
+    local success, error = pcall(function()
+        local stateBag = Entity(playerId).state
+        if not stateBag then
+            error('Invalid entity')
+        end
+        
+        -- Validate data size
+        local json = json.encode(data)
+        if #json > 16000 then
+            error('State bag too large')
+        end
+        
+        stateBag:set('data', data, true)
+    end)
+    
+    if not success then
+        print('State bag update failed:', error)
+        -- Implement fallback or retry logic
+    end
+end
+```
+
+### 4. Performance Monitoring
+
+```lua
+-- Add performance monitoring to your state bag updates
+local function monitoredStateBagUpdate(playerId, data)
+    local startTime = GetGameTimer()
+    
+    -- Your state bag update code here
+    
+    local endTime = GetGameTimer()
+    local duration = endTime - startTime
+    
+    if duration > 10 then  -- 10ms threshold
+        print('Warning: State bag update took', duration, 'ms')
+    end
+end
+```
+
+## Best Practices
+
+### For Server Owners
+1. **Regular Monitoring**
+   - Use `resmon` to track state bag usage
+   - Monitor network performance
+   - Check for rate limit violations
+   - Review error logs
+
+2. **Configuration Management**
+   - Keep rate limits appropriate for your server size
+   - Enable security features
+   - Configure proper access controls
+   - Maintain network settings
+
+3. **Resource Management**
+   - Monitor resource performance
+   - Check for resource conflicts
+   - Review resource loading order
+   - Maintain resource updates
+
+### For Developers
+1. **Code Optimization**
+   - Batch state bag updates
+   - Implement rate limiting
+   - Optimize data size
+   - Use appropriate data types
+
+2. **Error Prevention**
+   - Validate data before setting
+   - Handle network issues
+   - Implement fallback mechanisms
+   - Monitor for errors
+
+3. **Security Implementation**
+   - Validate input data
+   - Implement proper access control
+   - Use secure data structures
+   - Handle edge cases
+
+## Additional Resources
+
+- [CitizenFX State Bag Documentation](https://docs.fivem.net/docs/scripting-manual/networking/state-bags/)
+- [FiveM Server Commands Documentation](https://docs.fivem.net/docs/server-manual/server-commands/)
+- [FiveM Forums - State Bag Discussion](https://forum.cfx.re/t/state-bags-best-practices/4771970)
+- [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+
+<Callout type="warning">
+  Always implement proper error handling, rate limiting, and security measures when using state bags to prevent performance issues and abuse.
+</Callout>
+
+<Callout type="info">
+  For more information about state bags and server security, refer to the CitizenFX documentation and server commands reference.
+</Callout>

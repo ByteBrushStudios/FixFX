@@ -1,0 +1,255 @@
+---
+title: Resource Development
+description: Comprehensive guide to developing high-quality CitizenFX resources.
+icon: "Code"
+---
+
+# Resource Development Best Practices
+
+Developing resources for CitizenFX requires careful consideration of performance, security, and maintainability. This guide covers essential practices for creating robust and efficient resources.
+
+## Project Structure
+
+### 1. Directory Organization
+
+```
+resource/
+├── client/
+│   ├── main.lua
+│   ├── events.lua
+│   └── utils.lua
+├── server/
+│   ├── main.lua
+│   ├── events.lua
+│   └── database.lua
+├── shared/
+│   ├── config.lua
+│   ├── enums.lua
+│   └── utils.lua
+└── fxmanifest.lua
+```
+
+### 2. Manifest Configuration
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Resource Description'
+version '1.0.0'
+
+shared_scripts {
+    '@ox_lib/init.lua', -- Framework dependencies
+    'shared/config.lua',
+    'shared/*.lua'
+}
+
+client_scripts {
+    'client/*.lua'
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua', -- Database dependencies
+    'server/*.lua'
+}
+
+dependencies {
+    'ox_lib',
+    'oxmysql'
+}
+```
+
+## Code Organization
+
+### 1. Module Structure
+
+```lua
+-- Example module structure
+local Resource = {}
+
+-- Private variables
+local config = {}
+local state = {}
+
+-- Private functions
+local function initialize()
+    -- Initialization code
+end
+
+-- Public functions
+function Resource.Start()
+    initialize()
+    -- Start resource
+end
+
+function Resource.Stop()
+    -- Cleanup code
+end
+
+return Resource
+```
+
+### 2. Event Handling
+
+```lua
+-- Example event handling
+local function handlePlayerJoin(source)
+    -- Validate source
+    if not source then return end
+    
+    -- Initialize player data
+    local success = InitializePlayerData(source)
+    if not success then
+        print('Failed to initialize player data')
+        return
+    end
+end
+
+-- Register events
+AddEventHandler('playerConnecting', handlePlayerJoin)
+```
+
+## Performance Optimization
+
+### 1. Memory Management
+
+```lua
+-- Example of proper memory management
+local cache = {}
+
+local function getCachedData(key)
+    if cache[key] then
+        return cache[key]
+    end
+    
+    local data = fetchData(key)
+    cache[key] = data
+    return data
+end
+
+-- Cleanup cache periodically
+CreateThread(function()
+    while true do
+        Wait(300000) -- 5 minutes
+        cache = {}
+    end
+end)
+```
+
+### 2. Thread Management
+
+```lua
+-- Example of proper thread management
+local activeThreads = {}
+
+local function startThread(name, callback, interval)
+    if activeThreads[name] then return end
+    
+    activeThreads[name] = CreateThread(function()
+        while true do
+            callback()
+            Wait(interval)
+        end
+    end)
+end
+
+local function stopThread(name)
+    if activeThreads[name] then
+        TerminateThread(activeThreads[name])
+        activeThreads[name] = nil
+    end
+end
+```
+
+## Error Handling
+
+### 1. Try-Catch Implementation
+
+```lua
+-- Example error handling
+local function safeCall(func, ...)
+    local success, result = pcall(func, ...)
+    if not success then
+        print('Error:', result)
+        return nil
+    end
+    return result
+end
+
+-- Usage
+local data = safeCall(fetchPlayerData, playerId)
+if not data then
+    -- Handle error
+end
+```
+
+### 2. Logging System
+
+```lua
+-- Example logging system
+local LogLevel = {
+    DEBUG = 1,
+    INFO = 2,
+    WARNING = 3,
+    ERROR = 4
+}
+
+local function log(level, message, ...)
+    local timestamp = os.date('%Y-%m-%d %H:%M:%S')
+    local formatted = string.format(message, ...)
+    print(string.format('[%s] %s: %s', timestamp, level, formatted))
+end
+
+-- Usage
+log('ERROR', 'Failed to load player data for %s', playerId)
+```
+
+## Testing and Debugging
+
+### 1. Development Environment
+
+```lua
+-- Example development setup
+local isDevelopment = GetConvar('sv_environment', 'prod') == 'dev'
+
+local function debugLog(message, ...)
+    if not isDevelopment then return end
+    print(string.format('[DEBUG] %s', string.format(message, ...)))
+end
+```
+
+### 2. Testing Framework
+
+```lua
+-- Example test setup
+local tests = {}
+
+function tests.ValidatePlayerData()
+    local testData = {
+        identifier = 'test123',
+        name = 'Test Player'
+    }
+    
+    local isValid = ValidateData(testData)
+    assert(isValid, 'Player data validation failed')
+end
+
+-- Run tests in development
+if isDevelopment then
+    for name, test in pairs(tests) do
+        local success, error = pcall(test)
+        if not success then
+            print('Test failed:', name, error)
+        end
+    end
+end
+```
+
+<Callout type="warning">
+  Always test your resources thoroughly in a development environment before deploying to production.
+</Callout>
+
+<Callout type="info">
+  For more information about specific aspects of resource development, refer to the relevant sections in the documentation.
+</Callout> 

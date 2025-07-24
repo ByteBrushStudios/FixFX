@@ -1,0 +1,184 @@
+---
+title: Framework Errors
+description: Common errors related to FiveM frameworks like ESX and QBCore.
+icon: "Package"
+---
+
+# Framework Errors
+
+This guide covers common errors related to FiveM frameworks like ESX and QBCore, and how to resolve them.
+
+## ESX Framework Errors
+
+### 1. ESX Not Found
+```lua
+-- Error: ESX object not found
+```
+
+**Solutions:**
+1. Ensure ESX is properly installed
+2. Check resource loading order
+3. Verify ESX initialization:
+```lua
+ESX = exports['es_extended']:getSharedObject()
+```
+
+### 2. Player Data Issues
+```lua
+-- Error: Player data not loaded
+```
+
+**Solutions:**
+1. Wait for player data to load:
+```lua
+ESX.RegisterServerCallback('resource:callback', function(source, cb)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if not xPlayer then
+        cb(false)
+        return
+    end
+    -- Your code here
+end)
+```
+
+2. Check player job and inventory:
+```lua
+local xPlayer = ESX.GetPlayerFromId(source)
+if xPlayer.job.name ~= 'police' then
+    return
+end
+```
+
+## QBCore Framework Errors
+
+### 1. QBCore Not Found
+```lua
+-- Error: QBCore object not found
+```
+
+**Solutions:**
+1. Ensure QBCore is properly installed
+2. Check resource loading order
+3. Verify QBCore initialization:
+```lua
+QBCore = exports['qb-core']:GetCoreObject()
+```
+
+### 2. Player Data Issues
+```lua
+-- Error: Player data not loaded
+```
+
+**Solutions:**
+1. Wait for player data to load:
+```lua
+QBCore.Functions.CreateCallback('resource:callback', function(source, cb)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then
+        cb(false)
+        return
+    end
+    -- Your code here
+end)
+```
+
+2. Check player job and inventory:
+```lua
+local Player = QBCore.Functions.GetPlayer(source)
+if Player.PlayerData.job.name ~= 'police' then
+    return
+end
+```
+
+## Common Framework Issues
+
+### 1. Resource Dependencies
+```lua
+-- Error: Framework resource not found
+```
+
+**Solutions:**
+1. Add proper dependencies:
+```lua
+dependencies {
+    'es_extended', -- For ESX
+    'qb-core'      -- For QBCore
+}
+```
+
+2. Check resource loading order in `server.cfg`
+
+### 2. Database Integration
+```lua
+-- Error: Failed to save player data
+```
+
+**Solutions:**
+1. Use framework-specific functions:
+```lua
+-- ESX
+xPlayer.setMoney(amount)
+
+-- QBCore
+Player.Functions.SetMoney('cash', amount)
+```
+
+2. Implement proper error handling:
+```lua
+local success, error = pcall(function()
+    -- Database operation
+end)
+```
+
+## Best Practices
+
+### 1. Framework Detection
+```lua
+local framework = 'none'
+if GetResourceState('es_extended') == 'started' then
+    framework = 'esx'
+elseif GetResourceState('qb-core') == 'started' then
+    framework = 'qb'
+end
+```
+
+### 2. Error Handling
+```lua
+local function GetPlayer(source)
+    if framework == 'esx' then
+        return ESX.GetPlayerFromId(source)
+    elseif framework == 'qb' then
+        return QBCore.Functions.GetPlayer(source)
+    end
+    return nil
+end
+```
+
+### 3. Resource Structure
+```
+resource_name/
+├── fxmanifest.lua
+├── config.lua
+├── client/
+│   ├── esx.lua
+│   ├── qb.lua
+│   └── main.lua
+└── server/
+    ├── esx.lua
+    ├── qb.lua
+    └── main.lua
+```
+
+## Additional Resources
+
+- [ESX Documentation](https://documentation.esx-framework.org/)
+- [QBCore Documentation](https://docs.qbcore.org/)
+- [Framework Migration Guide](https://docs.fivem.net/docs/scripting-manual/migrating-from-deprecated-methods/)
+
+<Callout type="warning">
+  Always test your resource with the specific framework version you're targeting.
+</Callout>
+
+<Callout type="info">
+  For more information about resource loading, check out our [Resource Loading Guide](/docs/cfx/common-errors/resource-loading).
+</Callout> 

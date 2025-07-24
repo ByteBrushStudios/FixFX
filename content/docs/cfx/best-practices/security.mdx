@@ -1,0 +1,294 @@
+---
+title: Security Best Practices
+description: Comprehensive guide to securing your FiveM server and resources.
+icon: "Shield"
+---
+
+# Security Best Practices
+
+This guide covers essential security measures for FiveM servers and resources to prevent abuse, exploits, and unauthorized access.
+
+## Server Configuration
+
+### 1. Authentication and Trust Settings
+
+```yaml
+# Add to your server.cfg
+setr sv_authMaxVariance 2  # Maximum authentication variance
+setr sv_authMinTrust 0.5  # Minimum authentication trust level
+setr sv_requestParanoia 1  # Enable stricter request validation
+setr sv_filterRequestControl 1  # Enable request filtering
+setr sv_filterRequestControlSettleTimer 1000  # Request control settle time in ms
+```
+
+### 2. Network Security
+
+```yaml
+# Add to your server.cfg
+setr sv_netRateLimit 1048576  # 1MB/s per client
+setr sv_netRateLimitBurst 2097152  # 2MB/s burst
+setr sv_netRateLimitPerClient 100000  # Per-client rate limit
+setr sv_tcpConnectionTimeoutSeconds 30  # TCP connection timeout
+setr sv_httpHandlerConnectionTimeoutSeconds 30  # HTTP handler timeout
+```
+
+### 3. File Integrity and Anti-Cheat
+
+```yaml
+# Add to your server.cfg
+setr sv_pureLevel 2  # Enable strict file integrity checks
+setr sv_enforceGameBuild 2699  # Enforce specific game build
+setr sv_enableNetworkedScriptEntityStates 1  # Enable networked entity states
+setr sv_experimentalStateBagsHandler 1  # Enable experimental state bag handler
+```
+
+## Access Control
+
+### 1. Basic ACE Configuration
+
+```yaml
+# Add to your server.cfg
+# Admin permissions
+add_ace group.admin command allow
+add_ace group.admin state_bag.write allow
+add_ace group.admin entity.control allow
+
+# User permissions
+add_ace group.user state_bag.read allow
+add_ace group.user entity.control.vehicle allow
+add_ace group.user entity.control.ped allow
+
+# Resource permissions
+add_ace resource.myresource command.mycommand allow
+add_ace resource.myresource state_bag.write allow
+```
+
+### 2. Resource-Specific Permissions
+
+```yaml
+# Add to your server.cfg
+# Example for a vehicle system
+add_ace resource.vehiclesystem entity.control.vehicle allow
+add_ace resource.vehiclesystem state_bag.write allow
+
+# Example for a chat system
+add_ace resource.chat command.say allow
+add_ace resource.chat command.me allow
+```
+
+## Resource Security
+
+### 1. Event Security
+
+<Callout type="warning">
+  Cheats can allow clients to trigger events in any context, either client->server (via TriggerServerEvent) or client resource->client resource (via TriggerEvent). Always implement proper security measures.
+</Callout>
+
+#### Proper Event Registration
+
+```lua
+-- Use AddEventHandler for same-context events (client-client or server-server)
+AddEventHandler("localEvent", function(param1, param2)
+    -- This event can only be triggered within the same context
+end)
+
+-- Use RegisterNetEvent for cross-context events (client->server or server->client)
+RegisterNetEvent("networkedEvent", function(param1, param2)
+    -- This event can be triggered across different contexts
+end)
+
+-- To block execution from the same context, check the source
+RegisterNetEvent("secureEvent", function(param1, param2)
+    -- Server sends net id 65535 for events from the server
+    if source ~= 65535 then return end
+    -- Process event
+end)
+```
+
+#### Event Security Checks
+
+Always implement server-side checks for networked events:
+
+```lua
+RegisterNetEvent("secureEvent", function(data)
+    local source = source
+    if not source then return end
+    
+    -- Check event permissions using ACE
+    if not IsPlayerAceAllowed(source, 'resource.myresource.event.secureEvent') then
+        return
+    end
+    
+    -- Validate player state
+    local player = FX.GetPlayerFromSource(source)
+    if not player then return end
+    
+    -- Check player money
+    if player.getMoney() < data.cost then return end
+    
+    -- Check player position
+    local ped = GetPlayerPed(source)
+    local pos = GetEntityCoords(ped)
+    if #(pos - data.targetPos) > 10.0 then return end
+    
+    -- Process event
+end)
+```
+
+#### Event ACE Permissions
+
+```yaml
+# Add to your server.cfg
+# Event permissions
+add_ace group.admin resource.myresource.event.* allow  # Allow all events
+add_ace group.user resource.myresource.event.read allow  # Allow read-only events
+add_ace group.user resource.myresource.event.job allow  # Allow job-related events
+
+# Resource-specific event permissions
+add_ace resource.vehiclesystem event.vehicle.* allow  # Allow all vehicle events
+add_ace resource.chat event.chat.* allow  # Allow all chat events
+```
+
+#### Example: Secure Event with ACE Permissions
+
+```lua
+-- Example of secure event handling with ACE permissions
+RegisterNetEvent("myresource:secureEvent", function(data)
+    local source = source
+    if not source then return end
+    
+    -- Check event-specific ACE permission
+    if not IsPlayerAceAllowed(source, 'resource.myresource.event.secureEvent') then
+        print('Unauthorized event access:', GetPlayerName(source))
+        return
+    end
+    
+    -- Check resource-specific ACE permission
+    if not IsPlayerAceAllowed(source, 'resource.myresource.event.*') then
+        print('Unauthorized resource access:', GetPlayerName(source))
+        return
+    end
+    
+    -- Process event
+end)
+
+-- Example of group-based event permissions
+RegisterNetEvent("myresource:adminEvent", function(data)
+    local source = source
+    if not source then return end
+    
+    -- Check admin group permission
+    if not IsPlayerAceAllowed(source, 'group.admin') then
+        print('Unauthorized admin access:', GetPlayerName(source))
+        return
+    end
+    
+    -- Process admin event
+end)
+```
+
+<Callout type="info">
+  You can use ACE permissions to control access to specific events, groups of events, or all events within a resource. This provides fine-grained control over who can trigger which events.
+</Callout>
+
+### 2. State Bag Security
+
+<Callout type="warning">
+  State bags are a powerful feature for sharing data between resources, but they can be vulnerable to abuse if not properly secured. Always implement proper validation and access control.
+</Callout>
+
+#### Basic State Bag Security
+
+```lua
+-- Example of secure state bag usage
+local function secureStateBagUpdate(entity, key, value)
+    -- Validate entity exists
+    if not DoesEntityExist(entity) then return end
+    
+    -- Check permissions
+    if not IsPlayerAceAllowed(source, 'resource.myresource.state_bag.write') then
+        return
+    end
+    
+    -- Validate data size (16KB limit)
+    local json = json.encode(value)
+    if #json > 16000 then return end
+    
+    -- Update state bag with replication
+    Entity(entity).state:set(key, value, true)
+end
+```
+
+#### Rate Limiting
+
+```yaml
+# Add to your server.cfg
+set rateLimiter_stateBag_rate 75  # Default rate limit for state bag changes per second
+set rateLimiter_stateBag_burst 125  # Default burst limit for state bag changes
+set rateLimiter_stateBagFlood_rate 150  # Flood detection rate
+set rateLimiter_stateBagFlood_burst 175  # Flood burst limit
+```
+
+#### Networked Entity States
+
+```yaml
+# Add to your server.cfg
+setr sv_enableNetworkedScriptEntityStates 1  # Enable networked entity states
+setr sv_experimentalStateBagsHandler 1  # Enable experimental state bag handler
+```
+
+#### Access Control
+
+```yaml
+# Add to your server.cfg
+# State bag permissions
+add_ace group.admin state_bag.write allow
+add_ace group.user state_bag.read allow
+add_ace resource.myresource state_bag.write allow
+```
+
+#### Monitoring
+
+```lua
+-- Monitor state bag usage
+AddEventHandler('onStateBagChange', function(bagName, key, value, _unused, replicated)
+    -- Log state bag changes
+    print(string.format('State bag change: %s.%s = %s (replicated: %s)', 
+        bagName, key, json.encode(value), replicated))
+    
+    -- Check for suspicious activity
+    if replicated and type(value) == 'table' and #json.encode(value) > 16000 then
+        print('Warning: Large state bag update detected')
+    end
+end)
+```
+
+#### Best Practices
+
+1. **Validation**
+   - Always validate entity existence
+   - Check data size limits (16KB)
+   - Validate data types and structure
+   - Implement proper error handling
+
+2. **Access Control**
+   - Use ACEs for permission management
+   - Implement least privilege principle
+   - Separate read and write permissions
+   - Use resource-specific permissions
+
+3. **Rate Limiting**
+   - Monitor state bag usage
+   - Implement proper rate limits
+   - Handle rate limit errors gracefully
+   - Use appropriate burst limits
+
+4. **Monitoring**
+   - Log state bag changes
+   - Monitor for suspicious activity
+   - Track rate limit violations
+   - Implement alert systems
+
+<Callout type="info">
+  For more information about state bag security, refer to the [CitizenFX State Bag Documentation](https://docs.fivem.net/docs/scripting-manual/networking/state-bags/).
+</Callout>

@@ -1,0 +1,9 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "resource-monitor",
+    "profiler",
+    "network-tools",
+    "debug-tools"
+  ]
+} 

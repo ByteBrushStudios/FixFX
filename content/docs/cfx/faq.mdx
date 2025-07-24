@@ -1,0 +1,110 @@
+---
+title: Frequently Asked Questions
+description: Common questions and answers about FiveM, server management, and resource development.
+icon: "Info"
+---
+
+# Frequently Asked Questions
+
+This guide covers common questions about FiveM, server management, and resource development. For more detailed information, refer to the official FiveM documentation.
+
+## Client Questions
+
+### General
+
+<Callout type="info">
+  For more information about client-related questions, refer to the [Client FAQ](https://docs.fivem.net/docs/support/client-faq/).
+</Callout>
+
+#### Will FiveM run on Xbox or PlayStation?
+No. FiveM is developed exclusively for the PC version of GTA V. There are no plans to support consoles.
+
+#### Will FiveM run on Linux?
+There are no plans to support the FiveM client on Linux. While some components may work, full functionality is not guaranteed. The FiveM server (FXServer) is available on Linux.
+
+#### Where is FiveM installed?
+FiveM installs in `%localappdata%`:
+1. Press `WinKey+R` on your keyboard
+2. Type `%localappdata%/FiveM` in the dialog that opens
+3. Hit Enter
+
+#### Will I get banned from GTA:Online for playing FiveM?
+No. FiveM does not interact with Rockstar Online Services other than to validate your game copy the first time you launch it. This validation emulates the game's interaction and cannot be detected by Rockstar.
+
+### Client Issues
+
+<Callout type="info">
+  For more information about client issues, refer to the [Client Issues](https://docs.fivem.net/docs/support/client-issues/) documentation.
+</Callout>
+
+#### Common Issues
+- **Crashes**: If you crash on a specific server, try joining the FiveM.net testing server to verify if it's a server-specific issue.
+- **Game Storage Outdated**: Delete `%localappdata%/FiveM/FiveM.app/cache` and restart FiveM.
+- **Error Loading Components**: Delete `caches.xml` from your FiveM application data folder.
+- **Stuck on Loading**: Delete `%appdata%\citizenfx\ros_id.dat` and `%localappdata%\digitalentitlements`.
+- **Performance Issues**: If you're experiencing frame drops, you can create a trace to help diagnose the issue.
+
+## Server Questions
+
+### Server Management
+
+<Callout type="info">
+  For more information about server management, refer to the [Server Issues](https://docs.fivem.net/docs/support/server-issues/) documentation.
+</Callout>
+
+#### Common Server Issues
+- **Resource Loading**: Ensure all resources are properly configured in your `server.cfg`.
+- **Database Connection**: Check your database credentials and connection settings.
+- **Performance Issues**: Monitor resource usage and implement proper rate limiting.
+- **Network Issues**: Configure proper network settings and rate limits.
+
+### Server Debugging
+
+<Callout type="info">
+  For more information about server debugging, refer to the [Server Debugging](https://docs.fivem.net/docs/support/server-debug/) documentation.
+</Callout>
+
+#### Debugging Tools
+- **Server Console**: Use the server console to monitor resource loading and errors.
+- **Resource Monitor**: Use `resmon` to monitor resource performance.
+- **Network Monitor**: Use `netgraph` to monitor network performance.
+- **Log Files**: Check server logs for detailed error information.
+
+## Ban Questions
+
+<Callout type="info">
+  For more information about bans, refer to the [Ban FAQ](https://docs.fivem.net/docs/support/ban-faq/).
+</Callout>
+
+#### Server Bans
+- **Appeal Process**: Contact the server administrators directly.
+- **Global Bans**: Refer to the official ban appeal process.
+- **False Bans**: Provide evidence to server administrators.
+
+## Resource Questions
+
+<Callout type="info">
+  For more information about resources, refer to the [Resource FAQ](https://docs.fivem.net/docs/support/resource-faq/).
+</Callout>
+
+#### Resource Development
+- **Resource Structure**: Follow the standard resource structure.
+- **Dependencies**: List all dependencies in your `fxmanifest.lua`.
+- **Permissions**: Implement proper ACE permissions.
+- **Security**: Follow security best practices for events and state bags.
+
+#### Resource Management
+- **Loading Order**: Configure proper resource loading order.
+- **Dependencies**: Ensure all dependencies are available.
+- **Updates**: Keep resources updated to the latest version.
+- **Backups**: Maintain regular backups of resource data.
+
+## Additional Resources
+
+- [FiveM Documentation](https://docs.fivem.net/docs/)
+- [FiveM Forums](https://forum.cfx.re/)
+- [FiveM Discord](https://discord.gg/fivem)
+
+<Callout type="warning">
+  Always refer to the official FiveM documentation for the most up-to-date information. This guide is meant to provide a quick reference for common questions.
+</Callout>

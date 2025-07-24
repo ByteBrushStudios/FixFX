@@ -1,0 +1,318 @@
+---
+title: Resource Loading Issues
+description: Comprehensive guide to understanding and resolving resource loading problems in CitizenFX.
+icon: "Package"
+---
+
+# Resource Loading Issues
+
+Resource loading problems can prevent your server from starting properly or cause resources to fail during runtime. This guide will help you diagnose and resolve these issues for both server owners and developers.
+
+## Common Causes
+
+1. **Manifest Issues**
+   - Missing or incorrect fxmanifest.lua
+   - Invalid script paths
+   - Missing dependencies
+   - Incorrect version specifications
+   - Outdated manifest format
+   - Invalid metadata
+
+2. **Script Errors**
+   - Syntax errors in scripts
+   - Missing function definitions
+   - Invalid variable references
+   - Runtime errors
+   - Memory leaks
+   - Thread blocking
+
+3. **Dependency Problems**
+   - Missing framework dependencies
+   - Version conflicts
+   - Circular dependencies
+   - Incompatible resource versions
+   - Resource conflicts
+   - Load order issues
+
+## Server Owner Solutions
+
+### 1. Server Configuration
+
+```yaml
+# Add to your server.cfg
+setr sv_maxResourceMemory 512  # MB of memory per resource
+setr sv_maxResourceThreads 8  # Maximum concurrent resource threads
+setr sv_threadPoolSize 4  # Number of worker threads
+setr sv_resourcePriority "high"  # Set resource priority
+setr sv_resourceStartupTimeout 30000  # 30 second timeout
+setr sv_enforceGameBuild 2699  # Enforce specific game build
+setr sv_minClientVersion 1.0.0  # Minimum client version
+```
+
+### 2. Resource Management
+
+```yaml
+# Add to your server.cfg
+# Load critical resources first
+ensure mysql-async  # Database
+ensure oxmysql  # Alternative database
+ensure es_extended  # Framework
+ensure esx_menu_default  # UI components
+ensure esx_menu_dialog  # Dialog system
+ensure esx_menu_list  # List menus
+
+# Set resource priorities
+setr sv_resourcePriority "high"  # High priority resources
+setr sv_resourcePriority "normal"  # Normal priority resources
+setr sv_resourcePriority "low"  # Low priority resources
+```
+
+### 3. Monitoring and Diagnostics
+
+```bash
+# Use these commands in txAdmin console or server console
+resmon  # Monitor resource performance
+status  # Check server status
+resources  # List loaded resources
+start resource_name  # Start a resource
+stop resource_name  # Stop a resource
+restart resource_name  # Restart a resource
+```
+
+### 4. Error Logging
+
+```yaml
+# Add to your server.cfg
+setr sv_logFile "server.log"  # Server log file
+setr sv_logLevel 2  # Log level (0-3)
+setr sv_logFilter "error,warning"  # Log filter
+setr sv_logRotate 7  # Number of log files to keep
+setr sv_logSize 10485760  # Maximum log size (10MB)
+```
+
+### 5. Resource Validation
+
+```yaml
+# Add to your server.cfg
+setr sv_pureLevel 2  # Enable strict file integrity checks
+setr sv_filterRequestControl 1  # Enable request filtering
+setr sv_requestParanoia 1  # Enable stricter request validation
+setr sv_scriptHookAllowed 0  # Disable script hook access
+setr sv_authMaxVariance 2  # Maximum authentication variance
+setr sv_authMinTrust 0.5  # Minimum authentication trust level
+```
+
+## Developer Solutions
+
+### 1. Manifest Structure
+
+```lua
+-- Example correct manifest
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Resource Description'
+version '1.0.0'
+
+shared_scripts {
+    '@ox_lib/init.lua',
+    'shared/config.lua',
+    'shared/*.lua'
+}
+
+client_scripts {
+    'client/*.lua'
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server/*.lua'
+}
+
+dependencies {
+    'ox_lib',
+    'oxmysql'
+}
+
+-- Optional configurations
+lua54 'yes'  -- Enable Lua 5.4
+ui_page 'html/index.html'  -- Web interface
+files {  -- Static files
+    'html/index.html',
+    'html/style.css',
+    'html/script.js'
+}
+```
+
+### 2. Error Handling and Validation
+
+```lua
+-- Example error handling in resource
+local function safeLoad()
+    local success, error = pcall(function()
+        -- Resource initialization code
+        InitializeResource()
+    end)
+    
+    if not success then
+        print('Resource initialization failed:', error)
+        return false
+    end
+    return true
+end
+
+-- Example of resource state monitoring
+local function monitorResourceState()
+    local resourceName = GetCurrentResourceName()
+    local state = GetResourceState(resourceName)
+    
+    if state ~= 'started' then
+        print('Resource state:', state)
+        return false
+    end
+    return true
+end
+
+-- Example of dependency validation
+local function validateDependencies()
+    local dependencies = {
+        'ox_lib',
+        'oxmysql'
+    }
+    
+    for _, dep in ipairs(dependencies) do
+        local state = GetResourceState(dep)
+        if state ~= 'started' then
+            print('Dependency', dep, 'is not started. Current state:', state)
+            return false
+        end
+    end
+    return true
+end
+```
+
+### 3. Resource Optimization
+
+```lua
+-- Example of optimized resource loading
+local function optimizedLoad()
+    -- Load critical components first
+    if not LoadCriticalComponents() then
+        return false
+    end
+    
+    -- Load secondary components
+    if not LoadSecondaryComponents() then
+        return false
+    end
+    
+    -- Initialize features
+    if not InitializeFeatures() then
+        return false
+    end
+    
+    return true
+end
+
+-- Example of lazy loading
+local loadedComponents = {}
+local function lazyLoadComponent(name)
+    if not loadedComponents[name] then
+        local success = LoadComponent(name)
+        if success then
+            loadedComponents[name] = true
+        end
+        return success
+    end
+    return true
+end
+```
+
+### 4. Performance Monitoring
+
+```lua
+-- Add performance monitoring to resource loading
+local function monitoredLoad()
+    local startTime = GetGameTimer()
+    
+    -- Your resource loading code here
+    
+    local endTime = GetGameTimer()
+    local duration = endTime - startTime
+    
+    if duration > 1000 then  -- 1 second threshold
+        print('Warning: Resource loading took', duration, 'ms')
+    end
+end
+
+-- Example of memory monitoring
+local function monitorMemoryUsage()
+    local memory = collectgarbage('count')
+    if memory > 1000000 then  -- 1MB threshold
+        print('Warning: High memory usage:', memory, 'bytes')
+    end
+end
+```
+
+## Best Practices
+
+### For Server Owners
+1. **Regular Monitoring**
+   - Monitor resource performance
+   - Check for loading issues
+   - Review error logs
+   - Monitor memory usage
+   - Check resource states
+
+2. **Configuration Management**
+   - Keep resource limits appropriate
+   - Enable security features
+   - Configure proper priorities
+   - Maintain server settings
+   - Update configurations regularly
+
+3. **Resource Management**
+   - Monitor resource performance
+   - Check for conflicts
+   - Review loading order
+   - Maintain resource updates
+   - Test resource compatibility
+
+### For Developers
+1. **Code Optimization**
+   - Use efficient loading
+   - Implement proper error handling
+   - Optimize resource structure
+   - Use appropriate caching
+   - Monitor performance
+
+2. **Error Prevention**
+   - Validate dependencies
+   - Handle edge cases
+   - Implement timeouts
+   - Use proper cleanup
+   - Monitor resource state
+
+3. **Resource Structure**
+   - Organize code efficiently
+   - Use proper dependencies
+   - Implement error handling
+   - Monitor resource usage
+   - Test thoroughly
+
+## Additional Resources
+
+- [CitizenFX Resource Documentation](https://docs.fivem.net/docs/scripting-manual/resource-manifest/)
+- [FiveM Forums - Resource Discussion](https://forum.cfx.re/t/resource-development/4771971)
+- [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+- [FiveM Server Commands](https://docs.fivem.net/docs/server-manual/server-commands/)
+- [FiveM Resource Guidelines](https://docs.fivem.net/docs/scripting-manual/resource-manifest/)
+
+<Callout type="warning">
+  Always test resource changes in a development environment before deploying to production. Regular monitoring and maintenance are essential for optimal server performance.
+</Callout>
+
+<Callout type="info">
+  For more information about resource development, refer to the relevant sections in the documentation and server commands reference.
+</Callout> 

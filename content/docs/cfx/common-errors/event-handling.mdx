@@ -1,0 +1,144 @@
+---
+title: Event Handling Errors
+description: Common errors related to event handling in FiveM resources.
+icon: "Radio"
+---
+
+# Event Handling Errors
+
+This guide covers common errors related to event handling in FiveM resources and how to resolve them.
+
+## Common Event Errors
+
+### 1. Event Registration Errors
+```lua
+-- Error: Failed to register event 'event:name'
+```
+
+**Causes:**
+- Event name conflicts
+- Invalid event names
+- Missing event handlers
+- Resource loading order issues
+
+**Solutions:**
+```lua
+-- Proper event registration
+RegisterNetEvent('event:name')
+AddEventHandler('event:name', function()
+    -- Event handler code
+end)
+```
+
+### 2. Event Trigger Errors
+```lua
+-- Error: Failed to trigger event 'event:name'
+```
+
+**Solutions:**
+1. Server-side triggering:
+```lua
+TriggerClientEvent('event:name', source, data)
+```
+
+2. Client-side triggering:
+```lua
+TriggerServerEvent('event:name', data)
+```
+
+### 3. Event Security Issues
+```lua
+-- Warning: Unsecured event 'event:name'
+```
+
+**Solutions:**
+1. Implement proper security checks:
+```lua
+RegisterNetEvent('event:name')
+AddEventHandler('event:name', function()
+    local source = source
+    if not IsPlayerAceAllowed(source, 'resource.event') then
+        return
+    end
+    -- Event handler code
+end)
+```
+
+2. Use proper event naming:
+```lua
+-- Good: Resource-specific prefix
+RegisterNetEvent('resource:event')
+
+-- Bad: Generic names
+RegisterNetEvent('giveMoney')
+```
+
+## Event Best Practices
+
+### 1. Proper Event Structure
+```lua
+-- Server-side event handling
+RegisterNetEvent('resource:event')
+AddEventHandler('resource:event', function(data)
+    local source = source
+    
+    -- Security checks
+    if not IsPlayerAceAllowed(source, 'resource.event') then
+        return
+    end
+    
+    -- Input validation
+    if not data or type(data) ~= 'table' then
+        return
+    end
+    
+    -- Event handling
+    -- Your code here
+end)
+```
+
+### 2. Error Handling
+```lua
+RegisterNetEvent('resource:event')
+AddEventHandler('resource:event', function(data)
+    local success, error = pcall(function()
+        -- Event handler code
+    end)
+    
+    if not success then
+        print('Event error:', error)
+    end
+end)
+```
+
+### 3. Rate Limiting
+```lua
+local lastTrigger = {}
+local cooldown = 1000 -- 1 second
+
+RegisterNetEvent('resource:event')
+AddEventHandler('resource:event', function()
+    local source = source
+    local currentTime = GetGameTimer()
+    
+    if lastTrigger[source] and currentTime - lastTrigger[source] < cooldown then
+        return
+    end
+    
+    lastTrigger[source] = currentTime
+    -- Event handler code
+end)
+```
+
+## Additional Resources
+
+- [Event Handling Guide](https://docs.fivem.net/docs/scripting-manual/working-with-events/event-handling/)
+- [Security Best Practices](https://docs.fivem.net/docs/scripting-manual/working-with-events/security/)
+
+<Callout type="warning">
+  Always implement proper security checks and rate limiting for your events to prevent abuse.
+</Callout>
+
+<Callout type="info">
+  For more information about network security, check out our [Network Issues Guide](/docs/cfx/common-errors/network-issues).
+</Callout> 

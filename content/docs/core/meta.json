@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "pages": [
+    "index",
+    "faq",
+    "disclaimer",
+    "glossary",
+    "api"
+  ]
+}

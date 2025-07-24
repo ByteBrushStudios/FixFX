@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --fd-nav-height: 2px !important;
+    --fd-background: 0 0% 100%;
+    --fd-foreground: 10 10% 5%;
+    --fd-card: 0 0% 100%;
+    --fd-card-foreground: 10 10% 5%;
+    --fd-popover: 0 0% 100%;
+    --fd-popover-foreground: 10 10% 5%;
+    --fd-primary: 221 83% 53%;
+    --fd-primary-foreground: 0 0% 100%;
+    --fd-secondary: 240 4.8% 95.9%;
+    --fd-secondary-foreground: 240 5.9% 10%;
+    --fd-muted: 240 4.8% 95.9%;
+    --fd-muted-foreground: 240 3.8% 46.1%;
+    --fd-accent: 240 4.8% 95.9%;
+    --fd-accent-foreground: 240 5.9% 10%;
+    --fd-destructive: 0 84.2% 60.2%;
+    --fd-destructive-foreground: 0 0% 98%;
+    --fd-border: 240 5.9% 90%;
+    --fd-input: 240 5.9% 90%;
+    --fd-ring: 240 5.9% 10%;
+    --fd-radius: 0.75rem;
+    --fd-chart-1: 12 76% 61%;
+    --fd-chart-2: 173 58% 39%;
+    --fd-chart-3: 197 37% 24%;
+    --fd-chart-4: 43 74% 66%;
+    --fd-chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --fd-background: 10 10% 5%;
+    --fd-foreground: 0 0% 98%;
+    --fd-card: 10 10% 5%;
+    --fd-card-foreground: 0 0% 98%;
+    --fd-popover: 10 10% 5%;
+    --fd-popover-foreground: 0 0% 98%;
+    --fd-primary: 221 83% 53%;
+    --fd-primary-foreground: 0 0% 100%;
+    --fd-secondary: 240 3.7% 15.9%;
+    --fd-secondary-foreground: 0 0% 98%;
+    --fd-muted: 240 3.7% 15.9%;
+    --fd-muted-foreground: 240 5% 64.9%;
+    --fd-accent: 240 3.7% 15.9%;
+    --fd-accent-foreground: 0 0% 100%;
+    --fd-destructive: 0 62.8% 30.6%;
+    --fd-destructive-foreground: 0 0% 98%;
+    --fd-border: 240 3.7% 15.9%;
+    --fd-input: 240 3.7% 15.9%;
+    --fd-ring: 240 4.9% 83.9%;
+    --fd-chart-1: 220 70% 50%;
+    --fd-chart-2: 160 60% 45%;
+    --fd-chart-3: 30 80% 55%;
+    --fd-chart-4: 280 65% 60%;
+    --fd-chart-5: 340 75% 55%;
+  }
+}

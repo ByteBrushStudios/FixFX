@@ -1,0 +1,145 @@
+---
+title: Manifest Errors
+description: Common manifest errors and their solutions in FiveM resources.
+icon: "FileWarning"
+---
+
+# Manifest Errors
+
+This guide covers common errors related to resource manifests (`fxmanifest.lua`) and how to resolve them.
+
+## Common Manifest Errors
+
+### 1. Outdated Manifest Format
+```lua
+-- Warning: Using legacy manifest format
+```
+
+**Solution:**
+Update to the new manifest format:
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Your Resource Description'
+version '1.0.0'
+
+shared_scripts {
+    'config.lua'
+}
+
+client_scripts {
+    'client/*.lua'
+}
+
+server_scripts {
+    'server/*.lua'
+}
+
+dependencies {
+    'other_resource'
+}
+```
+
+### 2. Missing Required Fields
+```lua
+-- Error: Missing required field 'fx_version'
+```
+
+**Required Fields:**
+- `fx_version`: Specifies the FiveM version compatibility
+- `game`: Specifies the game (e.g., 'gta5')
+- `author`: Resource author
+- `description`: Resource description
+- `version`: Resource version
+
+### 3. Invalid Script Paths
+```lua
+-- Error: Failed to load script 'client/main.lua'
+```
+
+**Solutions:**
+1. Verify file paths exist
+2. Check file permissions
+3. Ensure correct directory structure
+4. Use proper path separators
+
+### 4. Dependency Issues
+```lua
+-- Error: Missing dependency 'required_resource'
+```
+
+**Solutions:**
+1. Add missing dependencies:
+```lua
+dependencies {
+    'required_resource',
+    'other_dependency'
+}
+```
+
+2. Ensure dependencies are:
+- Properly installed
+- Loaded before your resource
+- Available in server configuration
+
+## Manifest Best Practices
+
+### 1. Proper Structure
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Your Resource Description'
+version '1.0.0'
+
+shared_scripts {
+    'config.lua',
+    'shared/*.lua'
+}
+
+client_scripts {
+    'client/*.lua'
+}
+
+server_scripts {
+    'server/*.lua'
+}
+
+dependencies {
+    'other_resource'
+}
+
+ui_page 'html/index.html'
+
+files {
+    'html/index.html',
+    'html/style.css',
+    'html/script.js'
+}
+```
+
+### 2. Version Management
+- Use semantic versioning
+- Update version numbers with changes
+- Document version compatibility
+
+### 3. Script Loading Order
+- Load shared scripts first
+- Load dependencies before main scripts
+- Use proper file organization
+
+## Additional Resources
+
+- [Resource Manifest Guide](https://docs.fivem.net/docs/scripting-reference/resource-manifest/resource-manifest/)
+- [FiveM Documentation](https://docs.fivem.net/docs/)
+
+<Callout type="warning">
+  Always validate your manifest file before deploying resources to production.
+</Callout>
+
+<Callout type="info">
+  For more information about resource loading, check out our [Resource Loading Guide](/docs/cfx/common-errors/resource-loading).
+</Callout> 

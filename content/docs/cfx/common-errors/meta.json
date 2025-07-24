@@ -1,0 +1,14 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "common-tools",
+    "state-bag-issues",
+    "server-thread-hitch-warning",
+    "network-issues",
+    "resource-loading",
+    "database-connection",
+    "manifest-errors",
+    "event-handling",
+    "framework-errors"
+  ]
+}

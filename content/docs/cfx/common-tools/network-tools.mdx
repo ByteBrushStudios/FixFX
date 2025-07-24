@@ -1,0 +1,170 @@
+---
+title: Network Tools
+description: Comprehensive guide to using network monitoring and diagnostic tools in FiveM.
+icon: "Network"
+---
+
+# Network Tools
+
+FiveM provides several tools for monitoring and diagnosing network-related issues. These tools help identify network latency, packet loss, and connection quality problems that can affect server performance and player experience.
+
+## Available Network Tools
+
+### Network Graph (netgraph)
+The Network Graph provides real-time visualization of network performance metrics.
+
+#### Enabling Network Graph
+Add to your `server.cfg`:
+```yaml
+# Enable network graph
+setr netgraph_enabled 1
+setr netgraph_interval 1000  # Update interval in milliseconds
+```
+
+#### Accessing Network Graph
+In-game command:
+```
+/netgraph
+```
+
+#### Features
+- Real-time network latency display
+- Packet loss monitoring
+- Bandwidth usage tracking
+- Connection quality indicators
+
+### Network Statistics
+Provides detailed network performance statistics.
+
+#### Accessing Network Stats
+In-game command:
+```
+/netstats
+```
+
+#### Metrics Displayed
+- Current latency
+- Average latency
+- Packet loss percentage
+- Bandwidth usage
+- Connection quality score
+
+## Network Monitoring
+
+### Latency Monitoring
+- Tracks round-trip time (RTT)
+- Identifies latency spikes
+- Shows average and peak latency
+- Helps diagnose connection issues
+
+### Packet Loss Tracking
+- Monitors dropped packets
+- Shows loss percentage
+- Identifies patterns of loss
+- Helps diagnose network issues
+
+### Bandwidth Usage
+- Tracks data transfer rates
+- Shows upload and download speeds
+- Identifies bandwidth-intensive operations
+- Helps optimize network usage
+
+### Connection Quality
+- Measures overall connection health
+- Identifies potential issues
+- Shows stability metrics
+- Helps diagnose connection problems
+
+## Interpreting Network Data
+
+### Normal Operation
+- Latency should be stable and low
+- Packet loss should be minimal
+- Bandwidth usage should be consistent
+- Connection quality should be high
+
+### Warning Signs
+- High or fluctuating latency
+- Significant packet loss
+- Unusual bandwidth patterns
+- Poor connection quality
+
+## Best Practices
+
+### Monitoring
+- Enable monitoring during peak hours
+- Track baseline performance
+- Document network patterns
+- Set up alerts for issues
+
+### Optimization
+- Optimize network-intensive operations
+- Implement proper error handling
+- Use appropriate compression
+- Consider bandwidth limits
+
+### Configuration
+- Adjust monitoring intervals
+- Set appropriate thresholds
+- Enable only necessary features
+- Consider performance impact
+
+## Common Issues
+
+### High Latency
+- Check network infrastructure
+- Review server location
+- Optimize network code
+- Consider connection quality
+
+### Packet Loss
+- Check network stability
+- Review firewall settings
+- Optimize packet handling
+- Consider network congestion
+
+### Bandwidth Issues
+- Review data transfer patterns
+- Optimize resource usage
+- Implement proper caching
+- Consider bandwidth limits
+
+### Connection Problems
+- Check network configuration
+- Review firewall rules
+- Optimize connection handling
+- Consider network stability
+
+## Troubleshooting
+
+### Network Diagnostics
+1. Check server network configuration
+2. Verify firewall settings
+3. Test network connectivity
+4. Monitor network performance
+
+### Performance Optimization
+1. Review network-intensive code
+2. Optimize data transfer
+3. Implement proper error handling
+4. Monitor network usage
+
+### Configuration Review
+1. Verify network settings
+2. Check monitoring configuration
+3. Review alert thresholds
+4. Test network tools
+
+## Additional Resources
+
+- [FiveM Network Guide](https://docs.fivem.net/docs/server-manual/networking/)
+- [FiveM Server Configuration](https://docs.fivem.net/docs/server-manual/server-configuration/)
+- [FiveM Forums](https://forum.cfx.re/)
+
+<Callout type="info">
+  Regular network monitoring helps identify issues before they affect player experience.
+</Callout>
+
+<Callout type="warning">
+  Network monitoring can impact server performance. Use appropriate intervals and enable only when needed.
+</Callout> 

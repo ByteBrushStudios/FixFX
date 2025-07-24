@@ -1,0 +1,288 @@
+---
+title: Server Thread Hitch Warning
+description: Understanding and resolving server thread hitch warnings in CitizenFX.
+icon: "AlertTriangle"
+---
+
+# Server Thread Hitch Warning
+
+Server thread hitch warnings indicate that your server's main thread is being blocked for too long, which can cause lag and performance issues. This guide covers common causes and solutions for both server owners and developers.
+
+## Common Causes
+
+1. **Resource Issues**
+   - Heavy synchronous operations in resources
+   - Long-running loops without proper yielding
+   - Excessive database queries
+   - Complex calculations on the main thread
+   - Unoptimized event handlers
+   - Resource conflicts and dependencies
+
+2. **Configuration Problems**
+   - Insufficient server resources
+   - Incorrect thread pool settings
+   - Too many concurrent operations
+   - Resource priority misconfiguration
+   - Network buffer settings
+   - Memory allocation issues
+
+3. **System Limitations**
+   - CPU overload
+   - Memory constraints
+   - Disk I/O bottlenecks
+   - Network congestion
+   - Hardware limitations
+   - Operating system constraints
+
+## Server Owner Solutions
+
+### 1. Server Configuration
+
+```yaml
+# Add to your server.cfg
+setr sv_maxClients 32  # Adjust based on your server capacity
+setr sv_threadPoolSize 4  # Number of worker threads
+setr sv_maxResourceThreads 8  # Maximum concurrent resource threads
+setr sv_maxResourceMemory 512  # MB of memory per resource
+setr sv_scriptHookAllowed 0  # Disable script hook access
+setr sv_enforceGameBuild 2699  # Enforce specific game build
+setr sv_minClientVersion 1.0.0  # Minimum client version
+setr sv_scriptHookAllowed 0  # Disable script hook access
+setr sv_scriptHookAllowed 0  # Disable script hook access
+```
+
+### 2. Resource Management
+
+```yaml
+# Add to your server.cfg
+ensure resource_name  # Load critical resources first
+setr sv_resourcePriority "high"  # Set resource priority
+setr sv_resourceStartupTimeout 30000  # 30 second timeout
+setr sv_enforceGameBuild 2699  # Enforce specific game build
+setr sv_maxClients 32  # Maximum number of clients
+setr sv_maxPlayers 32  # Maximum number of players
+setr sv_maxConcurrentConnections 64  # Maximum concurrent connections
+setr sv_maxConcurrentConnectionsPerIP 2  # Maximum connections per IP
+```
+
+### 3. Performance Monitoring
+
+```bash
+# Use these commands in txAdmin console or server console
+resmon  # Monitor resource performance
+netgraph  # Monitor network performance
+net_statsFile "performance_metrics.csv"  # Log performance metrics to file
+status  # Check server status
+players  # List connected players
+resources  # List loaded resources
+```
+
+### 4. Resource Loading Order
+
+```yaml
+# Add to your server.cfg
+ensure mysql-async  # Database first
+ensure oxmysql  # Alternative database
+ensure es_extended  # Framework
+ensure esx_menu_default  # UI components
+ensure esx_menu_dialog  # Dialog system
+ensure esx_menu_list  # List menus
+ensure esx_menu_default  # Default menus
+```
+
+### 5. Network Optimization
+
+```yaml
+# Add to your server.cfg
+setr sv_netRateLimit 1048576  # 1MB/s per client
+setr sv_netRateLimitBurst 2097152  # 2MB/s burst
+setr sv_netRateLimitPerClient 100000  # Per-client rate limit
+setr sv_netRateLimitPerClientBurst 200000  # Per-client burst limit
+setr sv_netRateLimitPerClientInterval 1000  # Per-client interval
+```
+
+## Developer Solutions
+
+### 1. Thread Management
+
+```lua
+-- Example of proper thread management
+local function heavyOperation()
+    CreateThread(function()
+        -- Long-running operation
+        for i = 1, 1000 do
+            -- Do work
+            Wait(0)  -- Yield to prevent hitches
+        end
+    end)
+end
+
+-- Example of async database operations
+local function asyncDatabaseQuery(query, params)
+    return MySQL.query.await(query, params)
+end
+
+-- Example of proper event handling
+AddEventHandler('event:name', function(data)
+    CreateThread(function()
+        -- Handle event asynchronously
+        processEventData(data)
+    end)
+end)
+```
+
+### 2. Resource Optimization
+
+```lua
+-- Example of optimized resource code
+local function processData(data)
+    -- Split work into chunks
+    local chunkSize = 100
+    local chunks = {}
+    
+    for i = 1, #data, chunkSize do
+        local chunk = {}
+        for j = i, math.min(i + chunkSize - 1, #data) do
+            table.insert(chunk, data[j])
+        end
+        table.insert(chunks, chunk)
+    end
+    
+    -- Process chunks asynchronously
+    for _, chunk in ipairs(chunks) do
+        CreateThread(function()
+            processChunk(chunk)
+        end)
+    end
+end
+
+-- Example of caching
+local cache = {}
+local function getCachedData(key)
+    if cache[key] then
+        return cache[key]
+    end
+    
+    local data = fetchData(key)
+    cache[key] = data
+    return data
+end
+```
+
+### 3. Error Handling and Validation
+
+```lua
+-- Example of robust error handling
+local function safeOperation()
+    local success, error = pcall(function()
+        -- Potentially dangerous operation
+        heavyOperation()
+    end)
+    
+    if not success then
+        print('Operation failed:', error)
+        -- Implement fallback or cleanup
+    end
+end
+
+-- Example of input validation
+local function validateInput(data)
+    if type(data) ~= 'table' then
+        return false, 'Invalid input type'
+    end
+    
+    if not data.requiredField then
+        return false, 'Missing required field'
+    end
+    
+    return true
+end
+```
+
+### 4. Performance Monitoring
+
+```lua
+-- Add performance monitoring to your operations
+local function monitoredOperation()
+    local startTime = GetGameTimer()
+    
+    -- Your operation code here
+    
+    local endTime = GetGameTimer()
+    local duration = endTime - startTime
+    
+    if duration > 10 then  -- 10ms threshold
+        print('Warning: Operation took', duration, 'ms')
+    end
+end
+
+-- Example of resource usage monitoring
+local function monitorResourceUsage()
+    local memory = collectgarbage('count')
+    if memory > 1000000 then  -- 1MB threshold
+        print('Warning: High memory usage:', memory, 'bytes')
+    end
+end
+```
+
+## Best Practices
+
+### For Server Owners
+1. **Regular Monitoring**
+   - Use `resmon` to track resource performance
+   - Monitor network performance
+   - Check for thread hitches
+   - Review error logs
+   - Monitor player count and server load
+
+2. **Configuration Management**
+   - Keep thread pool size appropriate
+   - Enable security features
+   - Configure proper resource limits
+   - Maintain network settings
+   - Update server configuration regularly
+
+3. **Resource Management**
+   - Monitor resource performance
+   - Check for resource conflicts
+   - Review resource loading order
+   - Maintain resource updates
+   - Test resource compatibility
+
+### For Developers
+1. **Code Optimization**
+   - Use asynchronous operations
+   - Implement proper thread management
+   - Optimize data structures
+   - Use appropriate caching
+   - Minimize main thread usage
+
+2. **Error Prevention**
+   - Validate input data
+   - Handle edge cases
+   - Implement timeouts
+   - Use proper cleanup
+   - Monitor performance
+
+3. **Resource Structure**
+   - Organize code efficiently
+   - Use proper dependencies
+   - Implement error handling
+   - Monitor resource usage
+   - Test thoroughly
+
+## Additional Resources
+
+- [CitizenFX Thread Management](https://docs.fivem.net/docs/scripting-manual/runtimes/lua/threading/)
+- [FiveM Forums - Performance Discussion](https://forum.cfx.re/t/performance-optimization/4771970)
+- [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
+- [FiveM Server Commands](https://docs.fivem.net/docs/server-manual/server-commands/)
+- [FiveM Resource Guidelines](https://docs.fivem.net/docs/scripting-manual/resource-manifest/)
+
+<Callout type="warning">
+  Always monitor your server's performance and address thread hitches promptly to prevent server instability. Regular monitoring and maintenance are essential for optimal server performance.
+</Callout>
+
+<Callout type="info">
+  For more information about thread management and performance optimization, refer to the CitizenFX documentation and server commands reference.
+</Callout>
