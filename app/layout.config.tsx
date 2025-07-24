@@ -68,7 +68,7 @@ export const baseOptions: HomeLayoutProps = {
             ),
           },
           icon: <FixFXIcon className="size-6" />,
-          text: "FixFX Core",
+          text: "Core Documentation",
           description:
             "Some information about FixFX.",
           url: "/docs/core",
@@ -113,13 +113,13 @@ export const baseOptions: HomeLayoutProps = {
               <div className="flex h-20 w-full items-center justify-center gap-x-1">
                 <FixFXIcon className="size-8" stroke="#79143b" />
                 <h1 className="text-fd-foreground text-2xl font-bold">
-                  Guides
+                  Common Guides
                 </h1>
               </div>
             ),
           },
           icon: <FixFXIcon className="size-6" stroke="#79143b" />,
-          text: "Guides",
+          text: "Common Guides",
           description:
             "Step-by-step guides for CitizenFX.",
           url: "/docs/guides",

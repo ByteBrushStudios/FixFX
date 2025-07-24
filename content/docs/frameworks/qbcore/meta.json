@@ -1,5 +1,6 @@
 {
     "title": "QBCore",
+    "defaultOpen": true,
     "pages": [
         "index",
         "setup",

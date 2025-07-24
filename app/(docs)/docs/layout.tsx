@@ -23,13 +23,13 @@ const docsOptions: DocsLayoutProps = {
         url: "/docs/cfx",
       },
       {
-        title: "Frameworks",
+        title: "Framework Documentation",
         icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#f97891" />,
         description: "Explore various frameworks built on top of CitizenFX.",
         url: "/docs/frameworks",
       },
       {
-        title: "Guides",
+        title: "Common Guides",
         icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#79143b" />,
         description: "Step-by-step guides for CitizenFX.",
         url: "/docs/guides",

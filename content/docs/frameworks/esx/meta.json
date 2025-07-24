@@ -1,5 +1,6 @@
 {
     "title": "ESX",
+    "defaultOpen": true,
     "pages": [
         "setup",
         "development",
