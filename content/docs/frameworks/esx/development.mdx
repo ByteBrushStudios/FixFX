@@ -1,0 +1,919 @@
+---
+title: ESX Development
+description: Complete guide to developing resources for ESX framework.
+icon: "Code"
+---
+
+# ESX Development
+
+This guide covers everything you need to know about developing custom resources for ESX framework.
+
+## Development Environment Setup
+
+### Prerequisites
+
+- **Code Editor**: VS Code with Lua extensions recommended
+- **Git**: For version control
+- **Database Tool**: HeidiSQL, phpMyAdmin, or similar
+- **ESX Server**: Running development server
+
+### Recommended VS Code Extensions
+
+```json
+{
+  "recommendations": [
+    "sumneko.lua",
+    "actboy168.lua-debug",
+    "keyring.lua",
+    "koihik.vscode-lua-format",
+    "trixnz.vscode-lua"
+  ]
+}
+```
+
+### Development Server Setup
+
+Create a separate development server configuration:
+
+```cfg
+# server-dev.cfg
+set sv_hostname "ESX Development Server"
+set sv_maxclients 4
+sv_licenseKey "your_license_key"
+
+# Developer permissions
+add_ace group.admin command allow
+add_ace group.admin resource allow
+add_principal identifier.steam:your_steam_id group.admin
+
+# Fast restart for development
+sv_scriptHookAllowed 1
+set es_enableCustomData 1
+set esx_multicharacter_enabled true
+```
+
+## Resource Structure
+
+### Standard ESX Resource Structure
+
+```
+esx_resourcename/
+├── client/
+│   ├── main.lua
+│   ├── events.lua
+│   └── utils.lua
+├── server/
+│   ├── main.lua
+│   ├── events.lua
+│   └── callbacks.lua
+├── shared/
+│   ├── config.lua
+│   └── locale.lua
+├── html/                   # For NUI resources
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── installation/           # Database files
+│   └── esx_resourcename.sql
+├── locales/               # Translation files
+│   ├── en.lua
+│   ├── es.lua
+│   └── fr.lua
+├── fxmanifest.lua
+└── README.md
+```
+
+### fxmanifest.lua Template
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name <your.email@domain.com>'
+description 'ESX Resource Description'
+version '1.0.0'
+repository 'https://github.com/yourusername/esx_resourcename'
+
+shared_scripts {
+    '@es_extended/imports.lua',
+    '@es_extended/locale.lua',
+    'locales/en.lua',
+    'shared/*.lua'
+}
+
+client_scripts {
+    'client/*.lua'
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server/*.lua'
+}
+
+ui_page 'html/index.html'  -- For NUI resources
+
+files {
+    'html/index.html',
+    'html/style.css',
+    'html/script.js'
+}
+
+dependencies {
+    'es_extended',
+    'oxmysql'
+}
+```
+
+## Core Integration
+
+### Getting ESX Object
+
+```lua
+-- Modern method (ESX Legacy)
+ESX = exports['es_extended']:getSharedObject()
+
+-- Legacy method (still supported)
+ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+-- Alternative using imports
+-- @es_extended/imports.lua provides global ESX object
+```
+
+### Player Data Management
+
+#### Getting Player Data
+
+```lua
+-- Server-side
+local xPlayer = ESX.GetPlayerFromId(source)
+if xPlayer then
+    local playerData = xPlayer
+    local identifier = xPlayer.identifier
+    local job = xPlayer.job
+    local money = xPlayer.getMoney()
+end
+
+-- Client-side
+local playerData = ESX.GetPlayerData()
+if playerData then
+    local job = playerData.job
+    local accounts = playerData.accounts
+end
+```
+
+#### Player Events
+
+```lua
+-- Client-side: Listen for player data updates
+RegisterNetEvent('esx:playerLoaded', function(xPlayer)
+    ESX.PlayerData = xPlayer
+    -- Initialize your resource after player loads
+end)
+
+RegisterNetEvent('esx:setJob', function(job)
+    ESX.PlayerData.job = job
+    -- Handle job updates
+end)
+
+RegisterNetEvent('esx:setAccountMoney', function(account)
+    -- Handle money updates
+    for i=1, #ESX.PlayerData.accounts do
+        if ESX.PlayerData.accounts[i].name == account.name then
+            ESX.PlayerData.accounts[i] = account
+            break
+        end
+    end
+end)
+
+-- Server-side: Player management
+AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
+    -- Handle player loading
+end)
+
+AddEventHandler('esx:playerDropped', function(playerId, reason)
+    -- Handle player disconnect
+end)
+```
+
+## Database Integration
+
+### Using oxmysql/mysql-async
+
+```lua
+-- SELECT query
+MySQL.Async.fetchAll('SELECT * FROM users WHERE job = @job', {
+    ['@job'] = jobName
+}, function(result)
+    if result[1] then
+        -- Handle results
+    end
+end)
+
+-- SELECT single row
+MySQL.Async.fetchSingle('SELECT * FROM users WHERE identifier = @identifier', {
+    ['@identifier'] = xPlayer.identifier
+}, function(result)
+    if result then
+        -- Handle single result
+    end
+end)
+
+-- INSERT query
+MySQL.Async.execute('INSERT INTO my_table (identifier, data) VALUES (@identifier, @data)', {
+    ['@identifier'] = xPlayer.identifier,
+    ['@data'] = json.encode(data)
+}, function(affectedRows)
+    if affectedRows > 0 then
+        -- Success
+    end
+end)
+
+-- UPDATE query
+MySQL.Async.execute('UPDATE users SET accounts = @accounts WHERE identifier = @identifier', {
+    ['@accounts'] = json.encode(accounts),
+    ['@identifier'] = xPlayer.identifier
+}, function(affectedRows)
+    -- Handle update
+end)
+```
+
+### Modern oxmysql (Promise-based)
+
+```lua
+-- Using promises (recommended)
+local result = MySQL.query.await('SELECT * FROM users WHERE job = ?', {jobName})
+if result[1] then
+    -- Handle results
+end
+
+-- With error handling
+local success, result = pcall(MySQL.query.await, 'SELECT * FROM users WHERE identifier = ?', {xPlayer.identifier})
+if success and result[1] then
+    -- Handle success
+else
+    print('Database query failed')
+end
+```
+
+## Job System
+
+### Creating Custom Jobs
+
+Add jobs to the database:
+
+```sql
+-- Insert job
+INSERT INTO jobs (name, label) VALUES ('mechanic', 'Mechanic');
+
+-- Insert job grades
+INSERT INTO job_grades (job_name, grade, name, label, salary, skin_male, skin_female) VALUES
+('mechanic', 0, 'trainee', 'Trainee', 200, '{}', '{}'),
+('mechanic', 1, 'mechanic', 'Mechanic', 400, '{}', '{}'),
+('mechanic', 2, 'experienced', 'Experienced Mechanic', 600, '{}', '{}'),
+('mechanic', 3, 'chief', 'Chief Mechanic', 800, '{}', '{}');
+```
+
+### Job Management Functions
+
+```lua
+-- Server-side: Job management
+local xPlayer = ESX.GetPlayerFromId(source)
+
+-- Set player job
+xPlayer.setJob('mechanic', 2)
+
+-- Check job permissions
+if xPlayer.job.name == 'police' and xPlayer.job.grade >= 3 then
+    -- Allow police captain+ actions
+end
+
+-- Get all players with specific job
+local mechanics = ESX.GetExtendedPlayers('job', 'mechanic')
+
+-- Client-side: Job checking
+local playerData = ESX.GetPlayerData()
+if playerData.job.name == 'mechanic' then
+    -- Mechanic-specific functionality
+end
+```
+
+### Society System Integration
+
+```lua
+-- Server-side: Society functions
+TriggerEvent('esx_society:getOnlinePlayers', function(players)
+    -- Get online players
+end)
+
+-- Get society account
+TriggerEvent('esx_addonaccount:getSharedAccount', 'society_mechanic', function(account)
+    if account then
+        local balance = account.money
+        -- Use society money
+    end
+end)
+
+-- Add money to society
+TriggerEvent('esx_addonaccount:getSharedAccount', 'society_mechanic', function(account)
+    if account then
+        account.addMoney(amount)
+    end
+end)
+```
+
+## Money & Account System
+
+### Account Management
+
+```lua
+-- Server-side: Money functions
+local xPlayer = ESX.GetPlayerFromId(source)
+
+-- Get money
+local cash = xPlayer.getMoney()
+local bankMoney = xPlayer.getAccount('bank').money
+local blackMoney = xPlayer.getAccount('black_money').money
+
+-- Add money
+xPlayer.addMoney(amount)
+xPlayer.addAccountMoney('bank', amount)
+
+-- Remove money
+if xPlayer.getMoney() >= amount then
+    xPlayer.removeMoney(amount)
+end
+
+-- Set money
+xPlayer.setMoney(amount)
+xPlayer.setAccountMoney('bank', amount)
+
+-- Client-side: Account checking
+local playerData = ESX.GetPlayerData()
+for i=1, #playerData.accounts do
+    if playerData.accounts[i].name == 'bank' then
+        local bankMoney = playerData.accounts[i].money
+        break
+    end
+end
+```
+
+## Inventory System
+
+### Item Management
+
+```lua
+-- Server-side inventory functions
+local xPlayer = ESX.GetPlayerFromId(source)
+
+-- Add item
+xPlayer.addInventoryItem('bread', 1)
+
+-- Remove item
+xPlayer.removeInventoryItem('water', 1)
+
+-- Get item count
+local itemCount = xPlayer.getInventoryItem('phone').count
+
+-- Check if player has item
+if xPlayer.getInventoryItem('lockpick').count > 0 then
+    -- Player has lockpick
+end
+
+-- Get weight
+local currentWeight = xPlayer.getWeight()
+local maxWeight = xPlayer.maxWeight
+
+-- Check if can carry item
+if xPlayer.canCarryItem('bread', 5) then
+    xPlayer.addInventoryItem('bread', 5)
+end
+```
+
+### Useable Items
+
+```lua
+-- Server-side: Register useable item
+ESX.RegisterUsableItem('bread', function(source)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    
+    if xPlayer.getInventoryItem('bread').count > 0 then
+        xPlayer.removeInventoryItem('bread', 1)
+        TriggerClientEvent('esx_basicneeds:onEat', source, 'bread')
+        xPlayer.showNotification('You ate bread')
+    end
+end)
+
+-- Client-side: Handle item usage
+RegisterNetEvent('esx_basicneeds:onEat', function(item)
+    -- Client-side effects for eating
+    local ped = PlayerPedId()
+    -- Play eating animation, etc.
+end)
+```
+
+## Vehicle System
+
+### Vehicle Management
+
+```lua
+-- Server-side: Vehicle functions
+local xPlayer = ESX.GetPlayerFromId(source)
+
+-- Get player vehicles
+MySQL.Async.fetchAll('SELECT * FROM owned_vehicles WHERE owner = @owner', {
+    ['@owner'] = xPlayer.identifier
+}, function(vehicles)
+    -- Handle vehicles
+end)
+
+-- Add vehicle to player
+local vehicleData = {
+    owner = xPlayer.identifier,
+    plate = 'ABC123',
+    vehicle = json.encode({model = GetHashKey('adder'), plate = 'ABC123'}),
+    type = 'car',
+    job = nil,
+    stored = 1
+}
+
+MySQL.Async.execute('INSERT INTO owned_vehicles (owner, plate, vehicle, type, job, stored) VALUES (@owner, @plate, @vehicle, @type, @job, @stored)', vehicleData)
+```
+
+### Vehicle Keys Integration
+
+```lua
+-- Give keys to player (if using esx_vehiclelock or similar)
+TriggerEvent('esx_vehiclelock:giveKeys', source, plate)
+
+-- Remove keys from player
+TriggerEvent('esx_vehiclelock:removeKeys', source, plate)
+```
+
+## UI Development (NUI)
+
+### Basic NUI Setup
+
+```html
+<!-- html/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESX Resource UI</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="container" style="display: none;">
+        <div id="header">
+            <h1>My ESX Resource</h1>
+            <button id="close-btn">×</button>
+        </div>
+        <div id="content">
+            <!-- Your UI content here -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+```css
+/* html/style.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: transparent;
+    color: white;
+}
+
+#container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 400px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+}
+
+#close-btn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#content {
+    padding: 20px;
+}
+```
+
+```javascript
+// html/script.js
+$(document).ready(function() {
+    // Hide UI on ESC key
+    document.onkeyup = function(data) {
+        if (data.which == 27) {
+            closeUI();
+        }
+    }
+    
+    // Close button click
+    $('#close-btn').click(function() {
+        closeUI();
+    });
+    
+    // Listen for messages from Lua
+    window.addEventListener('message', function(event) {
+        const data = event.data;
+        
+        switch(data.action) {
+            case 'open':
+                openUI(data.data);
+                break;
+            case 'close':
+                closeUI();
+                break;
+            case 'updateData':
+                updateUI(data.data);
+                break;
+        }
+    });
+});
+
+function openUI(data) {
+    $('#container').fadeIn(300);
+    $.post('https://esx_myresource/uiLoaded', JSON.stringify({}));
+}
+
+function closeUI() {
+    $('#container').fadeOut(300);
+    $.post('https://esx_myresource/closeUI', JSON.stringify({}));
+}
+
+function updateUI(data) {
+    // Update UI with new data
+}
+```
+
+### Lua NUI Integration
+
+```lua
+-- Client-side NUI management
+local isUIOpen = false
+
+-- Open UI
+function OpenUI(data)
+    if isUIOpen then return end
+    
+    isUIOpen = true
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = 'open',
+        data = data
+    })
+end
+
+-- Close UI
+function CloseUI()
+    if not isUIOpen then return end
+    
+    isUIOpen = false
+    SetNuiFocus(false, false)
+    SendNUIMessage({
+        action = 'close'
+    })
+end
+
+-- NUI Callbacks
+RegisterNUICallback('uiLoaded', function(data, cb)
+    -- UI has loaded
+    cb('ok')
+end)
+
+RegisterNUICallback('closeUI', function(data, cb)
+    CloseUI()
+    cb('ok')
+end)
+
+-- Export functions for other resources
+exports('OpenUI', OpenUI)
+exports('CloseUI', CloseUI)
+```
+
+## Event System
+
+### Custom Events
+
+```lua
+-- Server-side events
+RegisterNetEvent('esx_myresource:doSomething', function(data)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    
+    if not xPlayer then return end
+    
+    -- Validate data
+    if not data or not data.value then
+        return
+    end
+    
+    -- Process request
+    local success = processRequest(xPlayer, data)
+    
+    -- Send response
+    TriggerClientEvent('esx_myresource:requestResult', source, success)
+end)
+
+-- Client-side events
+RegisterNetEvent('esx_myresource:requestResult', function(success)
+    if success then
+        ESX.ShowNotification('Request successful!')
+    else
+        ESX.ShowNotification('Request failed!', 'error')
+    end
+end)
+```
+
+### Callbacks
+
+```lua
+-- Server-side callback
+ESX.RegisterServerCallback('esx_myresource:getData', function(source, cb, playerId)
+    local xPlayer = ESX.GetPlayerFromId(playerId)
+    if xPlayer then
+        cb(xPlayer)
+    else
+        cb(false)
+    end
+end)
+
+-- Client-side callback usage
+ESX.TriggerServerCallback('esx_myresource:getData', function(playerData)
+    if playerData then
+        -- Use player data
+    end
+end, GetPlayerServerId(PlayerId()))
+```
+
+## Commands
+
+### Creating Commands
+
+```lua
+-- Server-side command with ESX integration
+RegisterCommand('givemoney', function(source, args, rawCommand)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if not xPlayer then return end
+    
+    -- Check permissions
+    if xPlayer.getGroup() ~= 'admin' then
+        xPlayer.showNotification('You need admin permissions', 'error')
+        return
+    end
+    
+    local targetId = tonumber(args[1])
+    local amount = tonumber(args[2])
+    
+    if not targetId or not amount then
+        xPlayer.showNotification('Usage: /givemoney [id] [amount]', 'error')
+        return
+    end
+    
+    local xTarget = ESX.GetPlayerFromId(targetId)
+    if not xTarget then
+        xPlayer.showNotification('Player not found', 'error')
+        return
+    end
+    
+    xTarget.addMoney(amount)
+    xPlayer.showNotification('Money given successfully')
+    xTarget.showNotification('You received $' .. amount)
+end, false)
+
+-- Client-side command
+RegisterCommand('showjob', function(source, args, rawCommand)
+    local playerData = ESX.GetPlayerData()
+    ESX.ShowNotification('Your job: ' .. playerData.job.label .. ' - Grade: ' .. playerData.job.grade_label)
+end, false)
+```
+
+## Configuration Management
+
+### config.lua Template
+
+```lua
+Config = {}
+Config.Locale = 'en'
+
+-- General settings
+Config.Debug = false
+
+-- Feature toggles
+Config.EnableFeatureA = true
+Config.EnableFeatureB = false
+
+-- Timing settings
+Config.Cooldowns = {
+    action1 = 5000,  -- 5 seconds
+    action2 = 30000, -- 30 seconds
+}
+
+-- Job permissions
+Config.AuthorizedJobs = {
+    'police',
+    'ambulance',
+    'mechanic'
+}
+
+Config.JobPermissions = {
+    mechanic = {
+        repair = 0,      -- Grade 0+
+        advanced = 2,    -- Grade 2+
+        boss = 3         -- Grade 3+
+    },
+    police = {
+        arrest = 0,
+        impound = 1,
+        commander = 3
+    }
+}
+
+-- Locations
+Config.Locations = {
+    mechanic_shop = {
+        coords = vector3(123.45, 678.90, 12.34),
+        heading = 90.0,
+        radius = 2.0,
+        blip = {
+            sprite = 446,
+            color = 2,
+            scale = 0.8,
+            name = "Mechanic Shop"
+        }
+    }
+}
+
+-- Items and pricing
+Config.Items = {
+    repair_kit = {
+        item = 'repair_kit',
+        price = 500,
+        label = 'Repair Kit'
+    }
+}
+
+-- Money settings
+Config.Prices = {
+    repair = 1000,
+    paint = 500
+}
+```
+
+## Localization
+
+### Locale Files
+
+```lua
+-- locales/en.lua
+Locales['en'] = {
+    -- Notifications
+    ['not_enough_money'] = 'You don\'t have enough money',
+    ['action_completed'] = 'Action completed successfully',
+    ['invalid_amount'] = 'Invalid amount',
+    
+    -- Jobs
+    ['job_mechanic'] = 'Mechanic',
+    ['job_police'] = 'Police Officer',
+    
+    -- Items
+    ['item_repair_kit'] = 'Repair Kit',
+    ['item_used'] = 'You used %s',
+    
+    -- Commands
+    ['command_usage'] = 'Usage: %s',
+    ['player_not_found'] = 'Player not found',
+    ['no_permission'] = 'You don\'t have permission',
+}
+```
+
+```lua
+-- locales/es.lua
+Locales['es'] = {
+    -- Notifications
+    ['not_enough_money'] = 'No tienes suficiente dinero',
+    ['action_completed'] = 'Acción completada exitosamente',
+    ['invalid_amount'] = 'Cantidad inválida',
+    
+    -- Jobs
+    ['job_mechanic'] = 'Mecánico',
+    ['job_police'] = 'Oficial de Policía',
+    
+    -- Items
+    ['item_repair_kit'] = 'Kit de Reparación',
+    ['item_used'] = 'Usaste %s',
+    
+    -- Commands
+    ['command_usage'] = 'Uso: %s',
+    ['player_not_found'] = 'Jugador no encontrado',
+    ['no_permission'] = 'No tienes permisos',
+}
+```
+
+### Using Translations
+
+```lua
+-- In your scripts
+local message = _U('not_enough_money')
+xPlayer.showNotification(message, 'error')
+
+-- With parameters
+local message = _U('item_used', 'Repair Kit')
+ESX.ShowNotification(message)
+```
+
+## Testing & Debugging
+
+### Debug Functions
+
+```lua
+-- Debug utility
+local function DebugPrint(...)
+    if Config.Debug then
+        print('^3[ESX-MYRESOURCE]^7', ...)
+    end
+end
+
+-- Server-side debugging
+local function LogAction(xPlayer, action, data)
+    if Config.Debug then
+        print(string.format('^3[ESX-MYRESOURCE]^7 Player: %s (%s) | Action: %s | Data: %s', 
+            xPlayer.getName(), 
+            xPlayer.identifier, 
+            action, 
+            json.encode(data)
+        ))
+    end
+end
+```
+
+### Testing Checklist
+
+- [ ] Resource starts without errors
+- [ ] ESX object initializes properly
+- [ ] Database connections work
+- [ ] Player events trigger correctly
+- [ ] Jobs and permissions work
+- [ ] Money transactions function
+- [ ] Items can be used/given/removed
+- [ ] UI opens/closes properly
+- [ ] Commands execute with proper permissions
+- [ ] Localization works
+- [ ] No console errors or warnings
+
+## Best Practices
+
+### Code Organization
+
+1. **Follow ESX Conventions**: Use ESX naming conventions and patterns
+2. **Use Callbacks**: For data requests between client and server
+3. **Validate Everything**: Never trust client input
+4. **Handle Errors**: Use pcall for database operations
+5. **Performance**: Avoid unnecessary loops and timers
+
+### Security
+
+1. **Server Validation**: Always validate on the server
+2. **Permission Checks**: Verify job/permissions before actions
+3. **Rate Limiting**: Prevent spam/abuse
+4. **Secure Events**: Use source validation
+
+### Performance
+
+1. **Efficient Queries**: Use proper database indexes
+2. **Caching**: Cache frequently accessed data
+3. **Resource Cleanup**: Clean up on resource stop
+4. **Minimal UI**: Keep NUI lightweight
+
+This comprehensive development guide provides everything needed to create professional ESX resources following best practices and framework conventions.

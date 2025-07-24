@@ -1,7 +1,6 @@
 {
     "root": true,
     "pages": [
-        "index",
         "database-setup",
         "server-artifacts",
         "server-configuration",

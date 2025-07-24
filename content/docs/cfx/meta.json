@@ -1,13 +1,12 @@
 {
   "root": true,
   "pages": [
-    "index",
-    "faq",
-    "support",
     "common-tools",
     "common-errors",
     "best-practices",
-    "resource-dev",
-    "performance"
+    "resource-development",
+    "performance",
+    "faq",
+    "support"
   ]
 }

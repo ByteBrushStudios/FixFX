@@ -1,123 +1,136 @@
 ---
-title: ESX Framework
-description: A comprehensive guide to the ESX framework for FiveM.
-icon: "CircleUserRound"
+title: ESX
+description: The ESX framework for FiveM servers.
+icon: "Package"
 ---
 
-# ESX Framework
-
-ESX (EssentialMode Extended) is one of the most popular frameworks for FiveM, providing a complete foundation for roleplay servers. It offers an extensive suite of features and a large community of developers.
+ESX (ExtendedScript) is one of the most popular frameworks for FiveM servers, providing a comprehensive system for roleplay servers with a player-centric architecture.
 
 ## Overview
 
-ESX provides a structured approach to building FiveM servers with:
+ESX is a lightweight, extensible framework that provides essential systems for FiveM roleplay servers:
 
-- Player management and persistence
-- Inventory and item systems
-- Job and organization management
-- Money and banking systems
-- Character customization
-- Vehicle ownership
-- Housing systems
-- Consistent UI elements
+- **Player Management** - Character data persistence and multi-character support
+- **Economy System** - Multi-currency support with banking and transactions
+- **Job Framework** - Dynamic jobs with grade-based hierarchy and society systems
+- **Inventory Management** - Weight-based inventory with item categorization
+- **Vehicle System** - Ownership, garages, and modification persistence
+- **Property Systems** - Real estate and storage management
+
+## Key Features
+
+<Cards>
+  <Card icon="Users" title="Player Management">
+    Comprehensive character system with persistent data, multi-character support, and identity management.
+  </Card>
+  
+  <Card icon="Briefcase" title="Job System">
+    Dynamic job assignment with grades, salaries, and society banking for organizations.
+  </Card>
+  
+  <Card icon="DollarSign" title="Economy">
+    Multi-currency economy with cash, bank, and black money systems plus transaction logging.
+  </Card>
+  
+  <Card icon="Package" title="Inventory">
+    Weight-based inventory system with item categories and vehicle/property storage.
+  </Card>
+  
+  <Card icon="Car" title="Vehicles">
+    Complete vehicle ownership system with garages, modifications, and impound functionality.
+  </Card>
+  
+  <Card icon="Building" title="Properties">
+    Property ownership with customizable interiors and storage systems.
+  </Card>
+</Cards>
 
 ## Getting Started
 
-### Installation
+<Cards>
+  <Card icon="Download" title="Installation" href="/docs/frameworks/esx/setup">
+    Complete setup guide including database configuration, resource installation, and server setup.
+  </Card>
+  
+  <Card icon="Code" title="Development" href="/docs/frameworks/esx/development">
+    Learn how to create resources, use ESX APIs, and implement custom features with best practices.
+  </Card>
+  
+  <Card icon="Bug" title="Troubleshooting" href="/docs/frameworks/esx/troubleshooting">
+    Common issues and solutions for ESX installation, configuration, and runtime problems.
+  </Card>
+</Cards>
 
-1. **Set up a FiveM server**: Follow the [official FiveM server setup guide](https://docs.fivem.net/docs/server-manual/setting-up-a-server/)
+## Quick Start
 
-2. **Clone the ESX repository**:
-   ```bash
-   git clone https://github.com/esx-framework/esx-legacy /path/to/server/resources/[esx]
-   ```
-
-3. **Import the database**:
-   ```bash
-   mysql -u username -p database_name < /path/to/server/resources/[esx]/import.sql
-   ```
-
-4. **Configure your server.cfg**:
-   ```cfg
-   # Database connection
-   set mysql_connection_string "mysql://username:password@localhost/database_name?charset=utf8mb4"
-
-   # ESX resources (order matters)
-   ensure oxmysql
-   ensure es_extended
-   ensure esx_menu_default
-   ensure esx_menu_dialog
-   ensure esx_menu_list
-   ensure esx_identity
-   ensure esx_skin
-   ensure esx_datastore
-   ensure esx_addonaccount
-   ensure esx_addoninventory
-   ensure esx_society
-   ensure esx_billing
-   
-   # Additional ESX resources
-   ensure esx_jobs
-   ensure esx_shops
-   ensure esx_vehicleshop
-   # ... other ESX resources
-   ```
-
-5. **Start your server**:
-   ```bash
-   ./run.sh # Linux
-   FXServer.exe # Windows
-   ```
-
-### Core Concepts
-
-#### Player Management
-
-ESX handles player persistence, permissions, and basic functionality through the `xPlayer` object:
+### Basic ESX Integration
 
 ```lua
--- Server-side example
-RegisterCommand('givemoney', function(source, args)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    if xPlayer.getGroup() == 'admin' then
-        local amount = tonumber(args[1])
-        xPlayer.addMoney(amount)
-        xPlayer.showNotification('You received $' .. amount)
-    end
+-- Get ESX object (modern method)
+ESX = exports['es_extended']:getSharedObject()
+
+-- Player management
+local xPlayer = ESX.GetPlayerFromId(source)
+local playerData = ESX.GetPlayerData() -- Client-side
+
+-- Economy operations
+xPlayer.addMoney(1000)
+xPlayer.removeAccountMoney('bank', 500)
+
+-- Inventory management
+xPlayer.addInventoryItem('bread', 5)
+local itemCount = xPlayer.getInventoryItem('water').count
+
+-- Job system
+xPlayer.setJob('police', 2)
+if xPlayer.job.name == 'police' then
+    -- Police-specific code
+end
+```
+
+### Essential Events
+
+```lua
+-- Player loaded (client)
+RegisterNetEvent('esx:playerLoaded', function(xPlayer)
+    ESX.PlayerData = xPlayer
+    -- Initialize client-side systems
+end)
+
+-- Job changed (client)
+RegisterNetEvent('esx:setJob', function(job)
+    ESX.PlayerData.job = job
+    -- Update UI/permissions
+end)
+
+-- Player loaded (server)
+AddEventHandler('esx:playerLoaded', function(playerId, xPlayer)
+    -- Server-side player initialization
 end)
 ```
 
-#### Inventory System
+## Architecture
 
-ESX provides a complete inventory system for managing items:
+ESX follows a modular architecture where each system is handled by separate resources:
 
-```lua
--- Give an item to a player
-xPlayer.addInventoryItem('bread', 1)
+- **es_extended** - Core framework
+- **esx_society** - Organization management
+- **esx_datastore** - Data persistence
+- **esx_menu_*** - UI menu systems
+- **Job Resources** - Police, ambulance, mechanic jobs
+- **Economy Resources** - Shops, banks, real estate
 
--- Remove an item from a player
-xPlayer.removeInventoryItem('water', 1)
+## Community
 
--- Check if player has an item
-local hasItem = xPlayer.getInventoryItem('lockpick').count > 0
-```
+- [ESX Legacy GitHub](https://github.com/esx-framework/esx-legacy)
+- [Official Documentation](https://documentation.esx-framework.org/)
+- [Community Discord](https://discord.gg/esx)
+- [FiveM Forums](https://forum.cfx.re/c/development/esx/22)
 
-#### Job System
+<Callout type="info">
+  ESX Legacy is the official successor to the original ESX framework, featuring improved performance, better security, and active maintenance.
+</Callout>
 
-Jobs in ESX define roles, permissions, and functionality:
-
-```lua
--- Check player's job
-if xPlayer.job.name == 'police' and xPlayer.job.grade >= 3 then
-    -- Allow specific police captain actions
-end
-
--- Set player's job
-xPlayer.setJob('mechanic', 1) -- Job name and grade
-```
-
-## Development
-
-### Creating ESX Resources
-
-ESX resources follow a standard structure:
+<Callout type="warning">
+  Always test ESX resources and modifications on a development server before deploying to production.
+</Callout>
