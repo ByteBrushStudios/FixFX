@@ -1,0 +1,270 @@
+---
+title: Best Practices
+description: Essential best practices for developing, securing, and managing FiveM servers and resources.
+icon: "CheckCircle"
+---
+
+# Best Practices
+
+Following best practices is crucial for creating secure, performant, and maintainable FiveM servers and resources. This comprehensive guide covers everything from development standards to server management and security protocols.
+
+## Overview
+
+These best practices have been compiled from years of community experience, security research, and performance optimization. Whether you're a new developer or an experienced server owner, following these guidelines will help you:
+
+- **Build secure resources** that protect against exploits and abuse
+- **Optimize performance** for smooth gameplay with many players
+- **Maintain clean code** that's easy to debug and extend
+- **Manage servers effectively** with proper monitoring and maintenance
+- **Follow industry standards** for professional development
+
+## Core Principles
+
+### Security First
+Always assume that client-side code can be manipulated. Validate everything on the server, implement proper permissions, and follow the principle of least privilege.
+
+### Performance Matters
+Every millisecond counts in a multiplayer environment. Optimize loops, minimize network traffic, and monitor resource usage regularly.
+
+### Code Quality
+Write maintainable, documented code that follows consistent patterns. Your future self (and your team) will thank you.
+
+### User Experience
+Design systems that are intuitive and responsive. Poor UX leads to frustrated players and empty servers.
+
+## Essential Best Practices
+
+### [Security Best Practices](/docs/cfx/best-practices/security)
+
+Protect your server and players from exploits, abuse, and unauthorized access:
+
+- **Server Hardening**: Authentication settings, request filtering, and network security
+- **Input Validation**: Server-side validation, SQL injection prevention, and data sanitization
+- **Access Control**: Permission systems, role-based access, and command security
+- **Anti-Cheat**: Detection systems, monitoring tools, and prevention strategies
+- **Data Protection**: Secure storage, encryption, and privacy considerations
+
+**Key Topics:**
+- Authentication and trust settings
+- Resource security patterns
+- Database security
+- Network protection
+- Monitoring and logging
+
+### [Performance Optimization](/docs/cfx/best-practices/performance-optimization)
+
+Maximize server performance and provide smooth gameplay:
+
+- **Server Configuration**: Network optimization, resource limits, and hardware tuning
+- **Resource Optimization**: Efficient scripting, memory management, and threading
+- **Database Optimization**: Query optimization, connection pooling, and caching
+- **Network Optimization**: Reducing bandwidth usage and improving responsiveness
+- **Monitoring Tools**: Performance tracking and bottleneck identification
+
+**Key Topics:**
+- Network rate limits and optimization
+- Script performance patterns
+- Database query optimization
+- Memory management techniques
+- Profiling and monitoring tools
+
+### [Resource Development](/docs/cfx/best-practices/resource-development)
+
+Create high-quality, maintainable resources:
+
+- **Project Structure**: Organized file layouts and naming conventions
+- **Code Standards**: Consistent formatting, commenting, and patterns
+- **Error Handling**: Robust error management and recovery
+- **Testing**: Unit testing, integration testing, and debugging
+- **Documentation**: Clear documentation and API references
+
+**Key Topics:**
+- Directory organization and file structure
+- Coding standards and conventions
+- Event handling best practices
+- Database integration patterns
+- Version control and collaboration
+
+### [Server Management](/docs/cfx/best-practices/server-management)
+
+Effectively manage and maintain your server:
+
+- **Server Setup**: Initial configuration and optimization
+- **Monitoring**: Performance tracking, error logging, and health checks
+- **Maintenance**: Regular updates, backups, and cleanup procedures
+- **Scaling**: Handling growth and load distribution
+- **Community Management**: Player administration and support
+
+**Key Topics:**
+- Server configuration and setup
+- Monitoring and alerting systems
+- Backup and recovery procedures
+- Update management processes
+- Player management tools
+
+## Quick Reference
+
+### Daily Tasks
+- ✅ Monitor server performance and player count
+- ✅ Check error logs for issues
+- ✅ Review player reports and take action
+- ✅ Backup critical data
+
+### Weekly Tasks
+- ✅ Update resources and dependencies
+- ✅ Review security logs
+- ✅ Performance analysis and optimization
+- ✅ Community feedback review
+
+### Monthly Tasks
+- ✅ Full security audit
+- ✅ Performance benchmarking
+- ✅ Resource code review
+- ✅ Disaster recovery testing
+
+## Development Checklist
+
+### Before Writing Code
+- [ ] Plan the feature requirements and scope
+- [ ] Design the database schema (if needed)
+- [ ] Consider security implications
+- [ ] Identify performance requirements
+
+### During Development
+- [ ] Follow consistent coding standards
+- [ ] Implement proper error handling
+- [ ] Add comprehensive logging
+- [ ] Write unit tests for critical functions
+- [ ] Document public APIs and functions
+
+### Before Deployment
+- [ ] Code review by another developer
+- [ ] Security testing and validation
+- [ ] Performance testing under load
+- [ ] Backup existing systems
+- [ ] Test rollback procedures
+
+### After Deployment
+- [ ] Monitor for errors and performance issues
+- [ ] Gather user feedback
+- [ ] Document any issues and resolutions
+- [ ] Plan future improvements
+
+## Security Checklist
+
+### Server Security
+- [ ] Enable request filtering and paranoia mode
+- [ ] Set appropriate authentication trust levels
+- [ ] Configure network security settings
+- [ ] Implement rate limiting
+- [ ] Regular security audits
+
+### Resource Security
+- [ ] Validate all client inputs on server
+- [ ] Use parameterized database queries
+- [ ] Implement proper permission checks
+- [ ] Sanitize user-generated content
+- [ ] Log security-relevant events
+
+### Data Security
+- [ ] Encrypt sensitive data at rest
+- [ ] Use secure communication channels
+- [ ] Implement proper backup encryption
+- [ ] Regular backup testing
+- [ ] Access control for administrative functions
+
+## Performance Checklist
+
+### Server Performance
+- [ ] Optimize network settings
+- [ ] Monitor resource usage
+- [ ] Configure appropriate limits
+- [ ] Regular performance profiling
+- [ ] Database query optimization
+
+### Resource Performance
+- [ ] Use appropriate wait times in loops
+- [ ] Implement efficient event handling
+- [ ] Minimize network traffic
+- [ ] Cache frequently accessed data
+- [ ] Clean up unused resources
+
+## Common Pitfalls to Avoid
+
+### Security Pitfalls
+- ❌ Trusting client-side data without validation
+- ❌ Using string concatenation for SQL queries
+- ❌ Storing sensitive data in client-accessible locations
+- ❌ Implementing security through obscurity
+- ❌ Ignoring input validation for "trusted" sources
+
+### Performance Pitfalls
+- ❌ Using `Citizen.Wait(0)` unnecessarily
+- ❌ Processing all players every frame
+- ❌ Not implementing proper database connection pooling
+- ❌ Storing large amounts of data in memory unnecessarily
+- ❌ Not monitoring resource usage regularly
+
+### Development Pitfalls
+- ❌ Not following consistent naming conventions
+- ❌ Writing functions that do too many things
+- ❌ Not implementing proper error handling
+- ❌ Skipping code documentation
+- ❌ Not using version control effectively
+
+## Tools and Resources
+
+### Development Tools
+- **VS Code** with Lua extensions for development
+- **Git** for version control and collaboration
+- **MySQL Workbench** for database management
+- **Postman** for API testing
+- **Wireshark** for network analysis
+
+### Monitoring Tools
+- **FiveM built-in profiler** for performance analysis
+- **Resource monitor (resmon)** for real-time metrics
+- **Custom logging systems** for error tracking
+- **Database monitoring tools** for query analysis
+
+### Testing Tools
+- **Unit testing frameworks** for automated testing
+- **Load testing tools** for performance validation
+- **Security scanners** for vulnerability assessment
+- **Code analysis tools** for quality assurance
+
+## Community Standards
+
+### Code Style
+- Use consistent indentation (4 spaces recommended)
+- Follow descriptive naming conventions
+- Write clear, concise comments
+- Organize code into logical sections
+- Use meaningful variable and function names
+
+### Documentation
+- Document all public functions and APIs
+- Include usage examples
+- Maintain changelogs for updates
+- Provide clear installation instructions
+- Document configuration options
+
+### Collaboration
+- Use descriptive commit messages
+- Create pull requests for code review
+- Follow semantic versioning for releases
+- Respond to issues and feedback promptly
+- Contribute back to the community
+
+---
+
+## Getting Started
+
+New to FiveM development? Start with:
+
+1. **[Security Best Practices](/docs/cfx/best-practices/security)** - Essential for any server
+2. **[Resource Development](/docs/cfx/best-practices/resource-development)** - Learn proper development patterns
+3. **[Performance Optimization](/docs/cfx/best-practices/performance-optimization)** - Keep your server running smoothly
+4. **[Server Management](/docs/cfx/best-practices/server-management)** - Maintain your server effectively
+
+Remember: Good practices save time, prevent issues, and create better experiences for your players.

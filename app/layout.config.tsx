@@ -90,6 +90,40 @@ export const baseOptions: HomeLayoutProps = {
             "Explore some guides and information about the CitizenFX ecosystem.",
           url: "/docs/cfx",
         },
+        {
+          menu: {
+            banner: (
+              <div className="flex h-20 w-full items-center justify-center gap-x-1">
+                <FixFXIcon className="size-8" stroke="#6989de" />
+                <h1 className="text-fd-foreground text-2xl font-bold">
+                  Framework Documentation
+                </h1>
+              </div>
+            ),
+          },
+          icon: <FixFXIcon className="size-6" stroke="#6989de" />,
+          text: "Framework Documentation",
+          description:
+            "Explore some guides and information about the CFX Frameworks.",
+          url: "/docs/frameworks",
+        },
+        {
+          menu: {
+            banner: (
+              <div className="flex h-20 w-full items-center justify-center gap-x-1">
+                <FixFXIcon className="size-8" stroke="#79143b" />
+                <h1 className="text-fd-foreground text-2xl font-bold">
+                  Guides
+                </h1>
+              </div>
+            ),
+          },
+          icon: <FixFXIcon className="size-6" stroke="#79143b" />,
+          text: "Guides",
+          description:
+            "Step-by-step guides for CitizenFX.",
+          url: "/docs/guides",
+        },
       ],
     },
     {

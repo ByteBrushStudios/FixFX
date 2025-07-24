@@ -1,0 +1,371 @@
+---
+title: Thread Stalling
+description: Understand and resolve thread stalling issues in your FiveM server
+icon: "Clock"
+---
+
+# Thread Stalling
+
+Thread stalling is one of the most common performance issues in FiveM servers. It occurs when a script operation takes too long to complete, causing the game to freeze momentarily for players. This guide explains the causes and solutions.
+
+## Understanding Thread Stalling
+
+When you see messages like these in your server console:
+
+```
+[WARNING] Infinite loop detected in resource [resource_name]
+[WARNING] Script execution took too long
+[WARNING] Server thread stalled for X milliseconds
+```
+
+These indicate that a resource is taking too long to complete its operations, blocking the main thread.
+
+## Common Causes
+
+### 1. Infinite Loops
+The most frequent cause of thread stalling is code that runs in an infinite loop without proper `Wait()` calls:
+
+```lua
+-- Problematic code (will cause stalling)
+Citizen.CreateThread(function()
+    while true do
+        for i = 1, 1000 do
+            -- Doing something intensive
+            CheckPlayerInventories()
+        end
+        -- Missing Wait() call!
+    end
+end)
+
+-- Corrected code
+Citizen.CreateThread(function()
+    while true do
+        for i = 1, 1000 do
+            CheckPlayerInventories()
+        end
+        Citizen.Wait(100) -- Add appropriate wait time
+    end
+end)
+```
+
+### 2. Synchronous Database Operations
+Heavy database operations that block the main thread:
+
+```lua
+-- Problematic code
+Citizen.CreateThread(function()
+    while true do
+        -- This blocks the thread while waiting for database
+        local result = MySQL.Sync.fetchAll("SELECT * FROM players")
+        ProcessPlayerData(result)
+        Citizen.Wait(1000)
+    end
+end)
+
+-- Corrected code
+Citizen.CreateThread(function()
+    while true do
+        -- Use async operations instead
+        MySQL.Async.fetchAll("SELECT * FROM players", {}, function(result)
+            ProcessPlayerData(result)
+        end)
+        Citizen.Wait(1000)
+    end
+end)
+```
+
+### 3. Heavy Computations
+Complex calculations that take too long to complete:
+
+```lua
+-- Problematic code
+function CalculateComplexData()
+    local result = 0
+    for i = 1, 1000000 do
+        result = result + math.sqrt(i)
+    end
+    return result
+end
+
+-- Corrected approach - chunk the work
+function CalculateComplexData(callback)
+    Citizen.CreateThread(function()
+        local result = 0
+        local chunks = 100
+        local chunkSize = 1000000 / chunks
+        
+        for c = 1, chunks do
+            local start = ((c-1) * chunkSize) + 1
+            local endNum = c * chunkSize
+            
+            for i = start, endNum do
+                result = result + math.sqrt(i)
+            end
+            
+            Citizen.Wait(0) -- Allow other operations between chunks
+        end
+        
+        callback(result)
+    end)
+end
+```
+
+## Identifying Stalling Resources
+
+### Using the Profiler
+
+The FiveM server profiler is your best tool for identifying thread stalls:
+
+```
+profiler record 60
+profiler saveReport
+```
+
+Review the generated report to identify which resources and functions are taking too long.
+
+### Using Resource Monitor
+
+Enable the resource monitor to track resource performance:
+
+```
+resmon
+```
+
+Look for resources with consistently high CPU usage or memory consumption.
+
+## Best Practices to Avoid Thread Stalling
+
+1. **Always use appropriate `Wait()` calls in loops**
+   - Never create infinite loops without waiting
+   - Use longer waits for non-critical operations
+
+2. **Use asynchronous operations for I/O**
+   - Database queries should be async
+   - File operations should be chunked
+   - Network requests should be async
+
+3. **Throttle intensive operations**
+   - Break large tasks into smaller chunks
+   - Distribute processing across multiple ticks
+   - Implement rate limiting for frequent operations
+
+4. **Optimize database queries**
+   - Use proper indexes
+   - Limit result sets
+   - Cache frequently used data
+
+5. **Monitor resource performance**
+   - Regularly check for stalls during development
+   - Test under load before deployment
+   - Use profiling tools to identify bottlenecks
+
+## Fixing Existing Stalls
+
+If you're experiencing thread stalls with a resource you can't modify (third-party):
+
+1. **Increase thread allocation**
+   ```
+   setr sv_threadPoolSize 8
+   ```
+
+2. **Restart problematic resources periodically**
+   ```lua
+   -- Add to a resource that manages your server
+   Citizen.CreateThread(function()
+       while true do
+           Citizen.Wait(3600000) -- Every hour
+           ExecuteCommand('restart problematic_resource')
+       end
+   end)
+   ```
+
+3. **Monitor and automatically restart stalled resources**
+   ```lua
+   -- Example resource monitor
+   local resourceStates = {}
+   local stallThreshold = 5000 -- 5 seconds
+   
+   -- Track resource performance
+   Citizen.CreateThread(function()
+       while true do
+           Citizen.Wait(10000) -- Check every 10 seconds
+           
+           local resources = GetNumResources()
+           for i = 0, resources - 1 do
+               local resourceName = GetResourceByFindIndex(i)
+               
+               if GetResourceState(resourceName) == "started" then
+                   -- Track execution time of a simple function
+                   local startTime = GetGameTimer()
+                   
+                   -- Try to execute a simple event in the resource
+                   TriggerEvent(resourceName .. ':checkAlive')
+                   
+                   -- Check response time after a short delay
+                   Citizen.SetTimeout(100, function()
+                       local responseTime = GetGameTimer() - startTime
+                       
+                       -- Track history
+                       resourceStates[resourceName] = resourceStates[resourceName] or {
+                           avgResponseTime = 0,
+                           samples = 0,
+                           restartCount = 0
+                       }
+                       
+                       local state = resourceStates[resourceName]
+                       state.avgResponseTime = (state.avgResponseTime * state.samples + responseTime) / (state.samples + 1)
+                       state.samples = state.samples + 1
+                       
+                       -- Check for stalls
+                       if responseTime > stallThreshold then
+                           print(('Resource %s appears to be stalling (response: %dms, avg: %dms)'):format(
+                               resourceName, responseTime, state.avgResponseTime
+                           ))
+                           
+                           -- Auto-restart after multiple detected stalls
+                           if state.avgResponseTime > stallThreshold * 0.5 and state.samples > 5 then
+                               print(('Auto-restarting stalled resource: %s'):format(resourceName))
+                               ExecuteCommand('restart ' .. resourceName)
+                               state.restartCount = state.restartCount + 1
+                               state.samples = 0
+                               state.avgResponseTime = 0
+                           end
+                       end
+                   end)
+               end
+           end
+       end
+   end)
+   ```
+
+## Advanced Debugging
+
+For persistent thread stalling issues, you may need to dive deeper into the code:
+
+1. **Debug Output**: Add debug print statements before and after suspect operations
+   ```lua
+   print("Starting expensive operation")
+   local startTime = GetGameTimer()
+   -- Expensive operation here
+   print("Operation completed in " .. (GetGameTimer() - startTime) .. "ms")
+   ```
+
+2. **Resource Chunking**: Break large resources into smaller, more manageable ones
+
+3. **Event Tracing**: Track event propagation to find bottlenecks
+   ```lua
+   -- Before sending events
+   print("Sending event: " .. eventName)
+   TriggerEvent(eventName, ...)
+   
+   -- In event handlers
+   AddEventHandler('someEvent', function(...)
+       print("Handling someEvent")
+       local startTime = GetGameTimer()
+       -- Event handler logic
+       print("Event handled in " .. (GetGameTimer() - startTime) .. "ms")
+   end)
+   ```
+
+## Common Thread Stalling Scenarios
+
+### Player Connection Stalls
+
+New player connections can cause stalls if your connection handling code is inefficient:
+
+```lua
+-- Problematic
+AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+    deferrals.defer()
+    
+    -- Blocking database call
+    local identifiers = GetPlayerIdentifiers(source)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM bans WHERE identifier = @identifier", {
+        ['@identifier'] = identifiers[1]
+    })
+    
+    -- Process ban check
+    if #result > 0 then
+        deferrals.done("You are banned!")
+    else
+        deferrals.done()
+    end
+end)
+
+-- Improved
+AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+    deferrals.defer()
+    
+    local identifiers = GetPlayerIdentifiers(source)
+    
+    -- Async database call
+    MySQL.Async.fetchAll("SELECT * FROM bans WHERE identifier = @identifier", {
+        ['@identifier'] = identifiers[1]
+    }, function(result)
+        -- Process ban check
+        if #result > 0 then
+            deferrals.done("You are banned!")
+        else
+            deferrals.done()
+        end
+    end)
+    
+    -- Update connection message while waiting
+    for i = 0, 10 do
+        deferrals.update("Checking your information... (" .. i * 10 .. "%)")
+        Citizen.Wait(100)
+    end
+end)
+```
+
+### World Event Processing
+
+Handling world events can cause stalls if not managed properly:
+
+```lua
+-- Problematic
+AddEventHandler('entityCreated', function(entity)
+    -- Heavy processing for every entity
+    ProcessNewEntity(entity)
+end)
+
+-- Improved - use a queue system
+local entityQueue = {}
+local processingEntities = false
+
+AddEventHandler('entityCreated', function(entity)
+    -- Just add to queue - fast operation
+    table.insert(entityQueue, entity)
+end)
+
+-- Process queue in chunks
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(100) -- Only process every 100ms
+        
+        processingEntities = true
+        local startTime = GetGameTimer()
+        local processed = 0
+        
+        -- Process a limited number per tick
+        while #entityQueue > 0 and processed < 10 and (GetGameTimer() - startTime) < 8 do
+            local entity = table.remove(entityQueue, 1)
+            if DoesEntityExist(entity) then
+                ProcessNewEntity(entity)
+                processed = processed + 1
+            end
+        end
+        
+        processingEntities = false
+    end
+end)
+```
+
+## Conclusion
+
+Thread stalling is a serious performance issue that can ruin player experience, but with proper coding practices and monitoring, it can be prevented and mitigated. Always design your scripts with performance in mind, use asynchronous operations where possible, and implement proper wait times in your loops.
+
+<Callout type="warning">
+  Never release resources with known thread stalling issues. Test thoroughly under load before deploying to a production server.
+</Callout>
+

@@ -1,0 +1,418 @@
+---
+title: Manifest Files (fxmanifest.lua)
+description: Complete guide to creating and configuring FiveM resource manifest files.
+---
+
+# Manifest Files (fxmanifest.lua)
+
+The `fxmanifest.lua` file is the heart of every FiveM resource. It defines metadata, dependencies, scripts, and assets that your resource uses.
+
+## Basic Structure
+
+Every manifest file must include these essential fields:
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Resource description'
+version '1.0.0'
+```
+
+### Required Fields
+
+- **fx_version**: Specifies the FiveM runtime version. Use `'cerulean'` for modern features.
+- **game**: Target game platform (`'gta5'` for FiveM, `'rdr3'` for RedM, `'common'` for both).
+
+### Metadata Fields
+
+```lua
+author 'Developer Name <email@example.com>'
+description 'A detailed description of what this resource does'
+version '1.0.0'
+url 'https://github.com/username/resource'
+repository 'https://github.com/username/resource.git'
+```
+
+## Script Declaration
+
+### Client Scripts
+
+```lua
+-- Single file
+client_script 'client.lua'
+
+-- Multiple files
+client_scripts {
+    'client/main.lua',
+    'client/utils.lua',
+    'client/events.lua'
+}
+
+-- With patterns
+client_scripts {
+    'client/*.lua',
+    'shared/*.lua'
+}
+```
+
+### Server Scripts
+
+```lua
+-- Single file
+server_script 'server.lua'
+
+-- Multiple files
+server_scripts {
+    'server/main.lua',
+    'server/database.lua',
+    'server/commands.lua'
+}
+```
+
+### Shared Scripts
+
+Scripts that run on both client and server:
+
+```lua
+shared_script 'config.lua'
+
+shared_scripts {
+    'shared/config.lua',
+    'shared/utils.lua'
+}
+```
+
+## Dependencies
+
+### Hard Dependencies
+
+Resource won't start without these:
+
+```lua
+dependencies {
+    'es_extended',
+    'mysql-async'
+}
+
+-- Alternative syntax
+dependency 'es_extended'
+```
+
+### Optional Dependencies
+
+Resource can function without these but will use them if available:
+
+```lua
+optional_dependencies {
+    'voice-chat',
+    'custom-hud'
+}
+```
+
+## File Management
+
+### Static Files
+
+Files that should be downloaded to clients:
+
+```lua
+files {
+    'html/index.html',
+    'html/style.css',
+    'html/script.js',
+    'config.json'
+}
+```
+
+### UI Pages
+
+For NUI resources:
+
+```lua
+ui_page 'html/index.html'
+
+-- Alternative for multiple pages
+ui_pages {
+    'html/main.html',
+    'html/settings.html'
+}
+```
+
+### Data Files
+
+Special file types for game data:
+
+```lua
+data_file 'HANDLING_FILE' 'data/handling.meta'
+data_file 'VEHICLE_METADATA_FILE' 'data/vehicles.meta'
+data_file 'CARCOLS_FILE' 'data/carcols.meta'
+data_file 'VEHICLE_VARIATION_FILE' 'data/carvariations.meta'
+```
+
+## Advanced Configuration
+
+### Exports
+
+Functions your resource makes available to others:
+
+```lua
+exports {
+    'GetPlayerData',
+    'SetPlayerJob',
+    'SendNotification'
+}
+
+-- Server-only exports
+server_exports {
+    'GetDatabaseConnection',
+    'LogActivity'
+}
+
+-- Client-only exports
+client_exports {
+    'OpenUI',
+    'CloseUI'
+}
+```
+
+### Replace Files
+
+Override game files (use cautiously):
+
+```lua
+replace_level_meta 'gta5'
+
+files {
+    'stream/ymap/my_custom.ymap'
+}
+```
+
+### Lua 5.4 Support
+
+Enable Lua 5.4 features:
+
+```lua
+lua54 'yes'
+```
+
+### Escrow Protection
+
+For protected resources:
+
+```lua
+escrow_ignore {
+    'config.lua',
+    'locales/*.lua'
+}
+```
+
+## Resource Types
+
+### Basic Script Resource
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Developer'
+description 'Basic script resource'
+version '1.0.0'
+
+client_script 'client.lua'
+server_script 'server.lua'
+shared_script 'config.lua'
+```
+
+### NUI Resource
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Developer'
+description 'NUI interface resource'
+version '1.0.0'
+
+ui_page 'html/index.html'
+
+files {
+    'html/index.html',
+    'html/style.css',
+    'html/script.js'
+}
+
+client_script 'client.lua'
+server_script 'server.lua'
+```
+
+### Map Resource
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Mapper'
+description 'Custom map modifications'
+version '1.0.0'
+
+this_is_a_map 'yes'
+
+files {
+    'stream/**/*.ymap',
+    'stream/**/*.ytyp'
+}
+```
+
+### Vehicle Pack
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Vehicle Modder'
+description 'Custom vehicle pack'
+version '1.0.0'
+
+files {
+    'data/**/*.meta'
+}
+
+data_file 'HANDLING_FILE' 'data/handling.meta'
+data_file 'VEHICLE_METADATA_FILE' 'data/vehicles.meta'
+data_file 'CARCOLS_FILE' 'data/carcols.meta'
+data_file 'VEHICLE_VARIATION_FILE' 'data/carvariations.meta'
+```
+
+## Best Practices
+
+### File Organization
+
+```lua
+-- Good: Organized by functionality
+client_scripts {
+    'client/main.lua',
+    'client/ui.lua',
+    'client/events.lua'
+}
+
+server_scripts {
+    'server/main.lua',
+    'server/database.lua',
+    'server/commands.lua'
+}
+
+shared_scripts {
+    'shared/config.lua',
+    'shared/utils.lua'
+}
+```
+
+### Version Management
+
+```lua
+-- Use semantic versioning
+version '1.2.3'  -- Major.Minor.Patch
+
+-- Update version when:
+-- Major: Breaking changes
+-- Minor: New features
+-- Patch: Bug fixes
+```
+
+### Performance Optimization
+
+```lua
+-- Load scripts in order of importance
+client_scripts {
+    'client/config.lua',    -- Configuration first
+    'client/utils.lua',     -- Utilities second
+    'client/main.lua'       -- Main logic last
+}
+
+-- Group related files
+files {
+    'html/*.html',
+    'html/*.css',
+    'html/*.js'
+}
+```
+
+### Documentation
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+-- Resource Information
+author 'Developer Name <contact@email.com>'
+description [[
+    A comprehensive banking system for FiveM servers.
+    Features include: accounts, transactions, loans, and ATMs.
+]]
+version '2.1.0'
+url 'https://github.com/dev/banking-system'
+
+-- Dependencies
+dependencies {
+    'es_extended',      -- Required for player management
+    'mysql-async'       -- Required for database operations
+}
+
+optional_dependencies {
+    'esx_addonaccount'  -- For business accounts
+}
+```
+
+## Common Issues
+
+### Script Load Order
+
+```lua
+-- Wrong: Utils loaded after main
+client_scripts {
+    'client/main.lua',
+    'client/utils.lua'  -- main.lua can't use utils functions
+}
+
+-- Correct: Utils loaded first
+client_scripts {
+    'client/utils.lua',
+    'client/main.lua'
+}
+```
+
+### Missing Files
+
+```lua
+-- Wrong: File doesn't exist
+client_script 'client/nonexistent.lua'
+
+-- Correct: Verify all files exist
+client_scripts {
+    'client/main.lua',      -- ✓ exists
+    'client/events.lua'     -- ✓ exists
+}
+```
+
+### Incorrect Dependencies
+
+```lua
+-- Wrong: Typo in dependency name
+dependency 'es_extend'  -- Missing 'ed'
+
+-- Correct: Exact resource name
+dependency 'es_extended'
+```
+
+## Validation
+
+Always test your manifest:
+
+1. **Check syntax**: Ensure valid Lua syntax
+2. **Verify files**: All referenced files exist
+3. **Test dependencies**: Required resources are available
+4. **Load order**: Scripts load in correct sequence
+
+Use `restart resourcename` in server console to reload after changes.

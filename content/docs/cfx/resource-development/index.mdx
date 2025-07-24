@@ -1,0 +1,212 @@
+---
+title: Resource Development
+description: A comprehensive guide to developing resources for the CitizenFX platform.
+icon: "Code"
+---
+
+# Resource Development
+
+Resource development for CitizenFX (FiveM/RedM) requires understanding the platform's architecture, APIs, and best practices. This comprehensive guide covers everything from basic setup to advanced optimization techniques.
+
+## Overview
+
+FiveM resources are modular components that add functionality to your server. They can range from simple scripts that add chat commands to complex systems like banking, housing, or job frameworks. Each resource consists of client-side scripts, server-side scripts, manifest files, and optional assets like HTML interfaces.
+
+## Core Components
+
+### Resource Structure
+
+Every FiveM resource follows a standard structure:
+
+```
+my_resource/
+├── fxmanifest.lua          # Manifest file (required)
+├── client.lua              # Client-side script
+├── server.lua              # Server-side script
+├── shared/                 # Shared code
+│   └── config.lua
+├── html/                   # NUI files (optional)
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── README.md              # Documentation
+```
+
+## Getting Started
+
+### Quick Start Guide
+
+1. **Create Resource Directory**: Make a new folder in your server's `resources` directory
+2. **Create Manifest**: Add `fxmanifest.lua` with basic configuration
+3. **Write Scripts**: Implement your functionality in client and server scripts
+4. **Test & Debug**: Use built-in tools to test and optimize your resource
+5. **Deploy**: Add your resource to the server configuration
+
+### Basic Example
+
+Here's a minimal resource that adds a simple command:
+
+**fxmanifest.lua**
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Simple hello world resource'
+version '1.0.0'
+
+client_script 'client.lua'
+server_script 'server.lua'
+```
+
+**client.lua**
+```lua
+RegisterCommand('hello', function()
+    TriggerEvent('chat:addMessage', {
+        color = {255, 255, 0},
+        args = {"System", "Hello from client!"}
+    })
+end)
+```
+
+**server.lua**
+```lua
+RegisterCommand('broadcast', function(source, args)
+    local message = table.concat(args, " ")
+    TriggerClientEvent('chat:addMessage', -1, {
+        color = {0, 255, 0},
+        args = {"Broadcast", message}
+    })
+end, false)
+```
+
+## Detailed Guides
+
+### [Manifest Files](/docs/cfx/resource-development/manifest-files)
+
+Learn everything about `fxmanifest.lua` - the heart of every FiveM resource:
+
+- **Basic Configuration**: Required fields and metadata
+- **Script Declaration**: Client, server, and shared scripts
+- **Dependencies**: Managing resource dependencies
+- **File Management**: Assets, UI pages, and data files
+- **Advanced Features**: Exports, escrow protection, and optimization
+- **Best Practices**: Organization, versioning, and documentation
+
+### [Client-Side Development](/docs/cfx/resource-development/client-side)
+
+Master client-side scripting for player interaction and UI:
+
+- **Player Management**: Handling player state and information
+- **Event System**: Client events and communication
+- **User Interface**: Key input, text drawing, and notifications
+- **NUI Integration**: HTML interface communication
+- **Performance**: Optimization techniques and best practices
+- **Common Patterns**: Distance interactions, state management, animations
+
+### [Server-Side Development](/docs/cfx/resource-development/server-side)
+
+Build robust server-side logic and systems:
+
+- **Player Management**: Connection handling and data persistence
+- **Event Handling**: Server events and broadcasting
+- **Database Integration**: MySQL operations and data management
+- **Security**: Input validation and anti-cheat measures
+- **Performance**: Optimization and monitoring
+- **Common Patterns**: Job systems, economy, and resource communication
+
+### [NUI Development](/docs/cfx/resource-development/nui-development)
+
+Create modern web-based interfaces:
+
+- **Setup & Integration**: HTML, CSS, and JavaScript integration
+- **Communication**: Client-NUI message passing
+- **Modern Frameworks**: Vue.js and React integration
+- **Advanced Features**: Real-time updates and form handling
+- **Styling**: CSS animations and responsive design
+- **Best Practices**: Performance, security, and user experience
+
+### [Debugging & Testing](/docs/cfx/resource-development/debugging)
+
+Ensure reliability through proper testing and debugging:
+
+- **Debugging Tools**: Console logging, resmon, and profiler
+- **Testing Strategies**: Unit testing, integration testing, and load testing
+- **Performance Monitoring**: Resource tracking and memory management
+- **Common Issues**: Event handling, threading, and memory leaks
+- **Error Handling**: Safe execution and retry mechanisms
+
+## Development Workflow
+
+### 1. Planning Phase
+- Define resource requirements and scope
+- Plan database schema (if needed)
+- Design user interface mockups
+- Choose appropriate frameworks and dependencies
+
+### 2. Development Phase
+- Set up resource structure and manifest
+- Implement core functionality
+- Create user interfaces (if needed)
+- Add proper error handling and validation
+
+### 3. Testing Phase
+- Test all functionality thoroughly
+- Performance testing with multiple players
+- Security testing for exploits
+- Cross-resource compatibility testing
+
+### 4. Deployment Phase
+- Optimize for production environment
+- Create comprehensive documentation
+- Set up monitoring and logging
+- Deploy to live server
+
+## Best Practices Summary
+
+### Code Organization
+- Use clear, descriptive file and function names
+- Separate concerns between client and server
+- Implement proper error handling
+- Add comprehensive comments and documentation
+
+### Performance
+- Use appropriate wait times in loops
+- Implement caching where beneficial
+- Monitor resource usage regularly
+- Clean up resources properly
+
+### Security
+- Always validate input on the server
+- Implement proper permission systems
+- Use secure communication patterns
+- Regular security audits
+
+### Collaboration
+- Use version control (Git)
+- Follow consistent coding standards
+- Write clear documentation
+- Implement proper testing procedures
+
+## Community Resources
+
+### Official Documentation
+- [FiveM Docs](https://docs.fivem.net/) - Official documentation
+- [Native Reference](https://docs.fivem.net/natives/) - Game function reference
+- [Community Forums](https://forum.cfx.re/) - Community support
+
+### Development Tools
+- **Editors**: Visual Studio Code with Lua extensions
+- **Version Control**: Git with GitHub/GitLab
+- **Testing**: Built-in resmon and profiler tools
+- **Debugging**: F8 console and logging systems
+
+### Learning Resources
+- Study open-source resources for examples
+- Join development communities and Discord servers
+- Participate in forums and knowledge sharing
+- Practice with small projects before tackling complex systems
+
+---
+
+Ready to start developing? Begin with the [Manifest Files](/docs/cfx/resource-development/manifest-files) guide to understand the foundation of every FiveM resource.

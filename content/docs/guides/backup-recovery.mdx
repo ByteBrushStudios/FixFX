@@ -1,0 +1,932 @@
+---
+title: Backup & Recovery
+description: Complete guide to backing up and recovering FiveM server data and configurations.
+icon: "HardDrive"
+---
+
+# Backup & Recovery
+
+A comprehensive backup and recovery strategy is essential for any FiveM server. This guide covers everything from basic backup procedures to advanced disaster recovery planning.
+
+## Understanding What to Backup
+
+### Critical Data Categories
+
+**Server Files**
+- Server executable and artifacts
+- Configuration files (server.cfg)
+- Resource files and configurations
+- Custom scripts and modifications
+
+**Database**
+- Player data and statistics
+- Vehicle ownership records
+- Property and housing data
+- Economy and banking information
+- Logs and transaction history
+
+**Runtime Data**
+- Current server state
+- Player sessions
+- Dynamic configurations
+- Cache files
+
+### Backup Priority Levels
+
+**Priority 1 - Critical (Daily)**
+- Database (complete)
+- server.cfg
+- Custom resource configurations
+- Player data
+
+**Priority 2 - Important (Weekly)**
+- All resources
+- Server artifacts
+- Log files
+- Map files and assets
+
+**Priority 3 - Nice to Have (Monthly)**
+- Cache directories
+- Temporary files
+- Old log archives
+
+## Database Backup Strategies
+
+### Automated MySQL/MariaDB Backups
+
+#### Linux Backup Script
+
+```bash
+#!/bin/bash
+# backup_database.sh
+
+# Configuration
+DB_HOST="localhost"
+DB_NAME="fivem"
+DB_USER="fivem_user"
+DB_PASS="password"
+BACKUP_DIR="/backups/database"
+RETENTION_DAYS=30
+COMPRESS=true
+
+# Discord notification (optional)
+DISCORD_WEBHOOK=""
+
+# Create backup directory
+mkdir -p "$BACKUP_DIR"
+
+# Generate backup filename
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="$BACKUP_DIR/fivem_db_$DATE.sql"
+
+# Log function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$BACKUP_DIR/backup.log"
+}
+
+log "Starting database backup..."
+
+# Create backup
+if mysqldump -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" \
+   --single-transaction \
+   --routines \
+   --triggers \
+   --hex-blob \
+   --default-character-set=utf8mb4 \
+   "$DB_NAME" > "$BACKUP_FILE"; then
+    
+    log "Database backup created: $BACKUP_FILE"
+    
+    # Compress backup
+    if [ "$COMPRESS" = true ]; then
+        gzip "$BACKUP_FILE"
+        BACKUP_FILE="$BACKUP_FILE.gz"
+        log "Backup compressed: $BACKUP_FILE"
+    fi
+    
+    # Verify backup
+    if [ -f "$BACKUP_FILE" ] && [ -s "$BACKUP_FILE" ]; then
+        BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
+        log "Backup completed successfully. Size: $BACKUP_SIZE"
+        
+        # Send Discord notification
+        if [ -n "$DISCORD_WEBHOOK" ]; then
+            curl -H "Content-Type: application/json" \
+                 -X POST \
+                 -d "{\"content\": \"✅ Database backup completed: $BACKUP_SIZE\"}" \
+                 "$DISCORD_WEBHOOK"
+        fi
+    else
+        log "ERROR: Backup verification failed"
+        exit 1
+    fi
+else
+    log "ERROR: Database backup failed"
+    exit 1
+fi
+
+# Cleanup old backups
+find "$BACKUP_DIR" -name "fivem_db_*.sql*" -mtime +$RETENTION_DAYS -delete
+DELETED_COUNT=$(find "$BACKUP_DIR" -name "fivem_db_*.sql*" -mtime +$RETENTION_DAYS | wc -l)
+if [ $DELETED_COUNT -gt 0 ]; then
+    log "Deleted $DELETED_COUNT old backup files"
+fi
+
+log "Backup process completed"
+```
+
+#### Windows PowerShell Script
+
+```powershell
+# backup_database.ps1
+param(
+    [string]$DBHost = "localhost",
+    [string]$DBName = "fivem",
+    [string]$DBUser = "fivem_user",
+    [string]$DBPassword = "password",
+    [string]$BackupDir = "C:\FiveM\backups\database",
+    [int]$RetentionDays = 30,
+    [switch]$Compress = $true
+)
+
+# Create backup directory
+if (!(Test-Path $BackupDir)) {
+    New-Item -ItemType Directory -Path $BackupDir -Force
+}
+
+# Generate backup filename
+$Date = Get-Date -Format "yyyyMMdd_HHmmss"
+$BackupFile = Join-Path $BackupDir "fivem_db_$Date.sql"
+
+# Log function
+function Write-Log {
+    param([string]$Message)
+    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $LogMessage = "[$Timestamp] $Message"
+    Write-Host $LogMessage
+    $LogMessage | Out-File -FilePath (Join-Path $BackupDir "backup.log") -Append
+}
+
+Write-Log "Starting database backup..."
+
+try {
+    # Create backup using mysqldump
+    $Arguments = @(
+        "-h$DBHost",
+        "-u$DBUser",
+        "-p$DBPassword",
+        "--single-transaction",
+        "--routines",
+        "--triggers",
+        "--hex-blob",
+        "--default-character-set=utf8mb4",
+        $DBName
+    )
+    
+    $Process = Start-Process -FilePath "mysqldump" -ArgumentList $Arguments -RedirectStandardOutput $BackupFile -Wait -PassThru -NoNewWindow
+    
+    if ($Process.ExitCode -eq 0) {
+        Write-Log "Database backup created: $BackupFile"
+        
+        # Compress backup
+        if ($Compress) {
+            Compress-Archive -Path $BackupFile -DestinationPath "$BackupFile.zip"
+            Remove-Item $BackupFile
+            $BackupFile = "$BackupFile.zip"
+            Write-Log "Backup compressed: $BackupFile"
+        }
+        
+        # Verify backup
+        if (Test-Path $BackupFile) {
+            $BackupSize = (Get-Item $BackupFile).Length / 1MB
+            Write-Log "Backup completed successfully. Size: $([math]::Round($BackupSize, 2)) MB"
+        } else {
+            throw "Backup file not found after creation"
+        }
+    } else {
+        throw "mysqldump failed with exit code: $($Process.ExitCode)"
+    }
+    
+    # Cleanup old backups
+    $OldBackups = Get-ChildItem -Path $BackupDir -Name "fivem_db_*" | Where-Object { $_.CreationTime -lt (Get-Date).AddDays(-$RetentionDays) }
+    foreach ($OldBackup in $OldBackups) {
+        Remove-Item (Join-Path $BackupDir $OldBackup)
+    }
+    
+    if ($OldBackups.Count -gt 0) {
+        Write-Log "Deleted $($OldBackups.Count) old backup files"
+    }
+    
+    Write-Log "Backup process completed successfully"
+
+} catch {
+    Write-Log "ERROR: $($_.Exception.Message)"
+    exit 1
+}
+```
+
+### Advanced Database Backup Features
+
+#### Point-in-Time Recovery Setup
+
+```bash
+# Enable binary logging for point-in-time recovery
+# Add to my.cnf/my.ini
+[mysqld]
+log-bin=mysql-bin
+binlog_format=ROW
+binlog_row_image=FULL
+expire_logs_days=7
+max_binlog_size=500M
+
+# Backup script with binary log management
+#!/bin/bash
+# backup_with_binlog.sh
+
+DB_NAME="fivem"
+BACKUP_DIR="/backups/database"
+BINLOG_DIR="/backups/binlogs"
+
+# Full backup
+mysqldump --single-transaction --flush-logs --master-data=2 \
+          --routines --triggers fivem > "$BACKUP_DIR/full_backup_$(date +%Y%m%d_%H%M%S).sql"
+
+# Archive binary logs
+mkdir -p "$BINLOG_DIR"
+mysql -e "FLUSH LOGS;"
+cp /var/lib/mysql/mysql-bin.* "$BINLOG_DIR/"
+
+echo "Full backup and binary log archive completed"
+```
+
+#### Incremental Backup Strategy
+
+```bash
+#!/bin/bash
+# incremental_backup.sh
+
+FULL_BACKUP_DAY="Sunday"
+CURRENT_DAY=$(date +%A)
+BACKUP_DIR="/backups/database"
+
+if [ "$CURRENT_DAY" = "$FULL_BACKUP_DAY" ]; then
+    # Full backup
+    echo "Performing full backup..."
+    mysqldump --single-transaction --flush-logs --master-data=2 \
+              --routines --triggers fivem > "$BACKUP_DIR/full_$(date +%Y%m%d).sql"
+else
+    # Incremental backup (binary logs)
+    echo "Performing incremental backup..."
+    mkdir -p "$BACKUP_DIR/incremental/$(date +%Y%m%d)"
+    mysqlbinlog --start-datetime="$(date -d '1 day ago' '+%Y-%m-%d 00:00:00')" \
+                /var/lib/mysql/mysql-bin.* > "$BACKUP_DIR/incremental/$(date +%Y%m%d)/binlog_$(date +%H%M%S).sql"
+fi
+```
+
+## File System Backups
+
+### Complete Server Backup
+
+```bash
+#!/bin/bash
+# backup_server.sh
+
+SERVER_DIR="/opt/fivem"
+BACKUP_ROOT="/backups/server"
+EXCLUDE_FILE="/tmp/backup_exclude.txt"
+
+# Create exclude list
+cat > "$EXCLUDE_FILE" << EOF
+*.log
+*.tmp
+cache/
+temp/
+node_modules/
+.git/
+*.pid
+EOF
+
+# Create timestamped backup directory
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="$BACKUP_ROOT/$DATE"
+mkdir -p "$BACKUP_DIR"
+
+echo "Starting full server backup..."
+
+# Backup server files
+tar -czf "$BACKUP_DIR/server_files.tar.gz" \
+    --exclude-from="$EXCLUDE_FILE" \
+    -C "$(dirname $SERVER_DIR)" \
+    "$(basename $SERVER_DIR)"
+
+# Backup configuration separately
+cp "$SERVER_DIR/server.cfg" "$BACKUP_DIR/"
+cp -r "$SERVER_DIR/resources" "$BACKUP_DIR/resources_config"
+
+# Create backup manifest
+cat > "$BACKUP_DIR/backup_manifest.txt" << EOF
+Backup Created: $(date)
+Server Directory: $SERVER_DIR
+Backup Type: Full Server Backup
+Files Included:
+- Server executables and artifacts
+- Configuration files
+- Resources and scripts
+- Custom modifications
+
+Files Excluded:
+$(cat $EXCLUDE_FILE)
+EOF
+
+# Calculate backup size
+BACKUP_SIZE=$(du -sh "$BACKUP_DIR" | cut -f1)
+echo "Backup completed. Size: $BACKUP_SIZE"
+
+# Cleanup
+rm "$EXCLUDE_FILE"
+
+# Retention cleanup (keep last 10 backups)
+ls -t "$BACKUP_ROOT" | tail -n +11 | xargs -I {} rm -rf "$BACKUP_ROOT/{}"
+```
+
+### Resource-Specific Backup
+
+```bash
+#!/bin/bash
+# backup_resources.sh
+
+RESOURCES_DIR="/opt/fivem/resources"
+BACKUP_DIR="/backups/resources"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+
+# Custom resources only (exclude default FiveM resources)
+CUSTOM_RESOURCES=(
+    "esx_*"
+    "qb-*"
+    "custom_*"
+    "my_*"
+)
+
+mkdir -p "$BACKUP_DIR/$TIMESTAMP"
+
+for pattern in "${CUSTOM_RESOURCES[@]}"; do
+    for resource in $RESOURCES_DIR/$pattern; do
+        if [ -d "$resource" ]; then
+            RESOURCE_NAME=$(basename "$resource")
+            echo "Backing up resource: $RESOURCE_NAME"
+            
+            # Create resource backup
+            tar -czf "$BACKUP_DIR/$TIMESTAMP/${RESOURCE_NAME}.tar.gz" -C "$RESOURCES_DIR" "$RESOURCE_NAME"
+            
+            # Extract configuration for quick reference
+            if [ -f "$resource/config.lua" ]; then
+                cp "$resource/config.lua" "$BACKUP_DIR/$TIMESTAMP/${RESOURCE_NAME}_config.lua"
+            fi
+        fi
+    done
+done
+
+echo "Resource backup completed: $BACKUP_DIR/$TIMESTAMP"
+```
+
+## Automated Backup Solutions
+
+### Systemd Timer (Linux)
+
+```ini
+# /etc/systemd/system/fivem-backup.service
+[Unit]
+Description=FiveM Server Backup
+After=mysql.service
+
+[Service]
+Type=oneshot
+User=fivem
+ExecStart=/opt/fivem/scripts/backup_database.sh
+ExecStartPost=/opt/fivem/scripts/backup_server.sh
+StandardOutput=journal
+StandardError=journal
+```
+
+```ini
+# /etc/systemd/system/fivem-backup.timer
+[Unit]
+Description=Run FiveM backup daily at 3 AM
+Requires=fivem-backup.service
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target
+```
+
+```bash
+# Enable and start the timer
+sudo systemctl enable fivem-backup.timer
+sudo systemctl start fivem-backup.timer
+
+# Check timer status
+sudo systemctl list-timers | grep fivem
+```
+
+### Windows Task Scheduler
+
+```xml
+<!-- FiveM_Backup_Task.xml -->
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2">
+  <RegistrationInfo>
+    <Description>Daily FiveM server backup</Description>
+  </RegistrationInfo>
+  <Triggers>
+    <CalendarTrigger>
+      <StartBoundary>2024-01-01T03:00:00</StartBoundary>
+      <ExecutionTimeLimit>PT2H</ExecutionTimeLimit>
+      <Enabled>true</Enabled>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+  </Triggers>
+  <Principals>
+    <Principal>
+      <UserId>FiveM_Service</UserId>
+      <LogonType>ServiceAccount</LogonType>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>false</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <DisallowStartOnRemoteAppSession>false</DisallowStartOnRemoteAppSession>
+    <UseUnifiedSchedulingEngine>true</UseUnifiedSchedulingEngine>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT2H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions>
+    <Exec>
+      <Command>PowerShell.exe</Command>
+      <Arguments>-ExecutionPolicy Bypass -File "C:\FiveM\scripts\backup_database.ps1"</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+```
+
+### Docker Backup Solution
+
+```yaml
+# docker-compose.backup.yml
+version: '3.8'
+
+services:
+  fivem-backup:
+    image: alpine:latest
+    container_name: fivem-backup
+    volumes:
+      - fivem_data:/fivem_data:ro
+      - ./backups:/backups
+      - ./scripts:/scripts
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=fivem
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=fivem
+    command: |
+      sh -c "
+        apk add --no-cache mysql-client curl tar gzip &&
+        /scripts/docker_backup.sh
+      "
+    depends_on:
+      - mysql
+    profiles:
+      - backup
+
+  mysql:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: fivem
+      MYSQL_USER: fivem
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  fivem_data:
+  mysql_data:
+```
+
+```bash
+#!/bin/sh
+# docker_backup.sh
+
+BACKUP_DIR="/backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_PATH="$BACKUP_DIR/$TIMESTAMP"
+
+mkdir -p "$BACKUP_PATH"
+
+echo "Starting Docker-based backup..."
+
+# Database backup
+mysqldump -h"$MYSQL_HOST" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" \
+          --single-transaction --routines --triggers \
+          "$MYSQL_DATABASE" > "$BACKUP_PATH/database.sql"
+
+# Compress database backup
+gzip "$BACKUP_PATH/database.sql"
+
+# FiveM data backup
+tar -czf "$BACKUP_PATH/fivem_data.tar.gz" -C /fivem_data .
+
+# Create backup summary
+cat > "$BACKUP_PATH/backup_info.txt" << EOF
+Backup Date: $(date)
+Backup Type: Docker Container Backup
+Database: $MYSQL_DATABASE
+Host: $MYSQL_HOST
+
+Files:
+- database.sql.gz (MySQL dump)
+- fivem_data.tar.gz (FiveM server data)
+EOF
+
+echo "Backup completed: $BACKUP_PATH"
+
+# Cleanup old backups (keep last 7 days)
+find "$BACKUP_DIR" -maxdepth 1 -type d -name "20*" -mtime +7 -exec rm -rf {} \;
+```
+
+## Recovery Procedures
+
+### Database Recovery
+
+#### Complete Database Restore
+
+```bash
+#!/bin/bash
+# restore_database.sh
+
+BACKUP_FILE="$1"
+DB_NAME="fivem"
+DB_USER="fivem_user"
+DB_PASS="password"
+
+if [ -z "$BACKUP_FILE" ]; then
+    echo "Usage: $0 <backup_file>"
+    echo "Available backups:"
+    ls -la /backups/database/
+    exit 1
+fi
+
+if [ ! -f "$BACKUP_FILE" ]; then
+    echo "Backup file not found: $BACKUP_FILE"
+    exit 1
+fi
+
+echo "WARNING: This will completely replace the current database!"
+read -p "Are you sure you want to continue? (yes/no): " CONFIRM
+
+if [ "$CONFIRM" != "yes" ]; then
+    echo "Recovery cancelled"
+    exit 0
+fi
+
+echo "Starting database recovery..."
+
+# Create safety backup of current database
+SAFETY_BACKUP="/tmp/safety_backup_$(date +%Y%m%d_%H%M%S).sql"
+mysqldump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$SAFETY_BACKUP"
+echo "Safety backup created: $SAFETY_BACKUP"
+
+# Drop existing database
+mysql -u"$DB_USER" -p"$DB_PASS" -e "DROP DATABASE IF EXISTS $DB_NAME;"
+mysql -u"$DB_USER" -p"$DB_PASS" -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Restore from backup
+if [[ "$BACKUP_FILE" == *.gz ]]; then
+    gunzip -c "$BACKUP_FILE" | mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME"
+else
+    mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$BACKUP_FILE"
+fi
+
+if [ $? -eq 0 ]; then
+    echo "Database recovery completed successfully"
+    echo "Safety backup available at: $SAFETY_BACKUP"
+else
+    echo "Database recovery failed!"
+    echo "Restoring from safety backup..."
+    mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$SAFETY_BACKUP"
+    exit 1
+fi
+```
+
+#### Point-in-Time Recovery
+
+```bash
+#!/bin/bash
+# point_in_time_recovery.sh
+
+FULL_BACKUP="$1"
+RECOVERY_TIME="$2"  # Format: YYYY-MM-DD HH:MM:SS
+BINLOG_DIR="/backups/binlogs"
+
+if [ -z "$FULL_BACKUP" ] || [ -z "$RECOVERY_TIME" ]; then
+    echo "Usage: $0 <full_backup_file> <recovery_time>"
+    echo "Example: $0 /backups/full_20240724.sql '2024-07-24 14:30:00'"
+    exit 1
+fi
+
+echo "Starting point-in-time recovery to: $RECOVERY_TIME"
+
+# Restore full backup
+echo "Restoring full backup..."
+mysql -u fivem_user -p fivem < "$FULL_BACKUP"
+
+# Apply binary logs up to recovery time
+echo "Applying binary logs..."
+for binlog in "$BINLOG_DIR"/mysql-bin.*; do
+    if [ -f "$binlog" ]; then
+        echo "Processing: $binlog"
+        mysqlbinlog --stop-datetime="$RECOVERY_TIME" "$binlog" | mysql -u fivem_user -p fivem
+    fi
+done
+
+echo "Point-in-time recovery completed"
+```
+
+### Server File Recovery
+
+```bash
+#!/bin/bash
+# restore_server.sh
+
+BACKUP_PATH="$1"
+SERVER_DIR="/opt/fivem"
+RESTORE_TYPE="$2"  # full, config, resources
+
+if [ -z "$BACKUP_PATH" ]; then
+    echo "Usage: $0 <backup_path> [restore_type]"
+    echo "Restore types: full, config, resources"
+    echo "Available backups:"
+    ls -la /backups/server/
+    exit 1
+fi
+
+if [ ! -d "$BACKUP_PATH" ]; then
+    echo "Backup path not found: $BACKUP_PATH"
+    exit 1
+fi
+
+echo "Starting server file recovery..."
+echo "Backup: $BACKUP_PATH"
+echo "Restore type: ${RESTORE_TYPE:-full}"
+
+# Stop server
+echo "Stopping FiveM server..."
+systemctl stop fivem
+
+case "${RESTORE_TYPE:-full}" in
+    "full")
+        echo "Performing full server restore..."
+        
+        # Create safety backup
+        SAFETY_DIR="/tmp/server_safety_$(date +%Y%m%d_%H%M%S)"
+        mv "$SERVER_DIR" "$SAFETY_DIR"
+        echo "Current server backed up to: $SAFETY_DIR"
+        
+        # Extract full backup
+        mkdir -p "$SERVER_DIR"
+        tar -xzf "$BACKUP_PATH/server_files.tar.gz" -C "$(dirname $SERVER_DIR)"
+        
+        ;;
+        
+    "config")
+        echo "Restoring configuration files..."
+        cp "$BACKUP_PATH/server.cfg" "$SERVER_DIR/"
+        
+        if [ -d "$BACKUP_PATH/resources_config" ]; then
+            cp -r "$BACKUP_PATH/resources_config"/* "$SERVER_DIR/resources/"
+        fi
+        ;;
+        
+    "resources")
+        echo "Restoring resources..."
+        if [ -d "$BACKUP_PATH/resources_config" ]; then
+            rm -rf "$SERVER_DIR/resources"
+            cp -r "$BACKUP_PATH/resources_config" "$SERVER_DIR/resources"
+        fi
+        ;;
+        
+    *)
+        echo "Invalid restore type: $RESTORE_TYPE"
+        exit 1
+        ;;
+esac
+
+# Set permissions
+chown -R fivem:fivem "$SERVER_DIR"
+chmod +x "$SERVER_DIR/FXServer"
+
+# Start server
+echo "Starting FiveM server..."
+systemctl start fivem
+
+echo "Server recovery completed"
+```
+
+## Disaster Recovery Planning
+
+### Recovery Time Objectives (RTO) Planning
+
+```bash
+# disaster_recovery_plan.sh
+
+# Define recovery objectives
+RTO_CRITICAL=15    # minutes - Critical systems must be back online
+RTO_IMPORTANT=60   # minutes - Important systems
+RTO_NORMAL=240     # minutes - Normal operations
+
+# Recovery procedures by priority
+critical_recovery() {
+    echo "CRITICAL RECOVERY - RTO: $RTO_CRITICAL minutes"
+    
+    # 1. Restore database from latest backup (5 min)
+    restore_database.sh /backups/database/latest.sql.gz
+    
+    # 2. Start server with minimal configuration (2 min)
+    start_minimal_server.sh
+    
+    # 3. Verify basic functionality (5 min)
+    verify_server_health.sh
+    
+    # 4. Enable essential resources only (3 min)
+    enable_essential_resources.sh
+}
+
+important_recovery() {
+    echo "IMPORTANT RECOVERY - RTO: $RTO_IMPORTANT minutes"
+    
+    # 1. Restore full server configuration (20 min)
+    restore_server.sh /backups/server/latest full
+    
+    # 2. Restore all resources (20 min)
+    restore_resources.sh
+    
+    # 3. Full system verification (20 min)
+    full_system_test.sh
+}
+
+normal_recovery() {
+    echo "NORMAL RECOVERY - RTO: $RTO_NORMAL minutes"
+    
+    # 1. Restore from backup with full verification
+    # 2. Apply any missing updates
+    # 3. Restore custom configurations
+    # 4. Full testing and optimization
+}
+```
+
+### Monitoring and Alerting
+
+```bash
+#!/bin/bash
+# backup_monitor.sh
+
+BACKUP_DIR="/backups"
+ALERT_EMAIL="admin@myserver.com"
+DISCORD_WEBHOOK="https://discord.com/api/webhooks/..."
+
+check_backup_health() {
+    local status="OK"
+    local issues=()
+    
+    # Check if backups are current (within 25 hours)
+    LATEST_DB_BACKUP=$(find "$BACKUP_DIR/database" -name "*.sql*" -mtime -1 | head -1)
+    if [ -z "$LATEST_DB_BACKUP" ]; then
+        issues+=("Database backup is outdated (>24h)")
+        status="WARNING"
+    fi
+    
+    # Check backup sizes (detect corruption)
+    if [ -n "$LATEST_DB_BACKUP" ]; then
+        BACKUP_SIZE=$(stat -c%s "$LATEST_DB_BACKUP")
+        if [ "$BACKUP_SIZE" -lt 1048576 ]; then  # Less than 1MB
+            issues+=("Database backup seems too small: $BACKUP_SIZE bytes")
+            status="ERROR"
+        fi
+    fi
+    
+    # Check disk space
+    BACKUP_DISK_USAGE=$(df "$BACKUP_DIR" | awk 'NR==2 {print $5}' | sed 's/%//')
+    if [ "$BACKUP_DISK_USAGE" -gt 90 ]; then
+        issues+=("Backup disk usage critical: ${BACKUP_DISK_USAGE}%")
+        status="ERROR"
+    fi
+    
+    # Send alerts if issues found
+    if [ ${#issues[@]} -gt 0 ]; then
+        send_alert "$status" "${issues[@]}"
+    fi
+    
+    echo "Backup health check: $status"
+    for issue in "${issues[@]}"; do
+        echo "  - $issue"
+    done
+}
+
+send_alert() {
+    local status="$1"
+    shift
+    local issues=("$@")
+    
+    local message="🚨 Backup Alert - $status\n\n"
+    for issue in "${issues[@]}"; do
+        message+="• $issue\n"
+    done
+    
+    # Discord notification
+    if [ -n "$DISCORD_WEBHOOK" ]; then
+        curl -H "Content-Type: application/json" \
+             -X POST \
+             -d "{\"content\": \"$message\"}" \
+             "$DISCORD_WEBHOOK"
+    fi
+    
+    # Email notification
+    if [ -n "$ALERT_EMAIL" ]; then
+        echo -e "$message" | mail -s "FiveM Backup Alert - $status" "$ALERT_EMAIL"
+    fi
+}
+
+# Run health check
+check_backup_health
+```
+
+### Testing Recovery Procedures
+
+```bash
+#!/bin/bash
+# test_recovery.sh
+
+TEST_ENV="/opt/fivem/test"
+BACKUP_TO_TEST="$1"
+
+if [ -z "$BACKUP_TO_TEST" ]; then
+    echo "Usage: $0 <backup_path>"
+    exit 1
+fi
+
+echo "Testing recovery procedures with backup: $BACKUP_TO_TEST"
+
+# Create test environment
+mkdir -p "$TEST_ENV"
+cd "$TEST_ENV"
+
+# Test database restore
+echo "Testing database restore..."
+TEST_DB="fivem_test"
+mysql -e "CREATE DATABASE $TEST_DB;"
+
+if [[ "$BACKUP_TO_TEST" == *.gz ]]; then
+    gunzip -c "$BACKUP_TO_TEST" | mysql "$TEST_DB"
+else
+    mysql "$TEST_DB" < "$BACKUP_TO_TEST"
+fi
+
+# Verify database integrity
+TABLES_COUNT=$(mysql -sN -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$TEST_DB'")
+echo "Restored tables: $TABLES_COUNT"
+
+if [ "$TABLES_COUNT" -eq 0 ]; then
+    echo "❌ Database restore test failed"
+    exit 1
+else
+    echo "✅ Database restore test passed"
+fi
+
+# Cleanup test database
+mysql -e "DROP DATABASE $TEST_DB;"
+
+# Test server file restore (if applicable)
+# ... additional tests ...
+
+echo "Recovery test completed successfully"
+```
+
+This comprehensive backup and recovery guide provides everything needed to protect your FiveM server data and ensure quick recovery in case of disasters.

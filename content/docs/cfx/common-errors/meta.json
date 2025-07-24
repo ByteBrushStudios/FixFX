@@ -1,9 +1,9 @@
 {
-  "defaultOpen": true,
   "pages": [
     "common-tools",
     "state-bag-issues",
     "server-thread-hitch-warning",
+    "thread-stalling",
     "network-issues",
     "resource-loading",
     "database-connection",

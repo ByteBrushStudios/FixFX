@@ -1,0 +1,696 @@
+---
+title: Server-Side Development
+description: Complete guide to developing server-side scripts for FiveM resources.
+---
+
+# Server-Side Development
+
+Server-side scripts handle game logic, player management, database operations, and security validation. They run on the server and communicate with clients through events.
+
+## Server Script Basics
+
+### Script Structure
+
+```lua
+-- server.lua
+local playerData = {}
+local resourceConfig = {}
+
+-- Resource initialization
+AddEventHandler('onResourceStart', function(resourceName)
+    if resourceName == GetCurrentResourceName() then
+        print('[' .. resourceName .. '] Resource started successfully')
+        InitializeResource()
+    end
+end)
+
+-- Resource cleanup
+AddEventHandler('onResourceStop', function(resourceName)
+    if resourceName == GetCurrentResourceName() then
+        print('[' .. resourceName .. '] Resource stopped')
+        CleanupResource()
+    end
+end)
+
+function InitializeResource()
+    -- Load configuration
+    -- Initialize database
+    -- Setup recurring tasks
+end
+```
+
+### Player Management
+
+```lua
+-- Player connection events
+AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
+    local src = source
+    local identifiers = GetPlayerIdentifiers(src)
+    
+    deferrals.defer()
+    deferrals.update('Checking player data...')
+    
+    -- Validate player
+    if IsPlayerBanned(identifiers) then
+        deferrals.done('You are banned from this server.')
+        return
+    end
+    
+    deferrals.done()
+end)
+
+AddEventHandler('playerJoining', function(name)
+    local src = source
+    print(('[%s] %s is joining the server'):format(src, name))
+end)
+
+AddEventHandler('playerDropped', function(reason)
+    local src = source
+    print(('[%s] %s left the server: %s'):format(src, GetPlayerName(src), reason))
+    
+    -- Save player data before disconnect
+    SavePlayerData(src)
+    playerData[src] = nil
+end)
+```
+
+### Player Data Functions
+
+```lua
+function GetPlayerIdentifiers(src)
+    local identifiers = {}
+    for i = 0, GetNumPlayerIdentifiers(src) - 1 do
+        local id = GetPlayerIdentifier(src, i)
+        local prefix = string.match(id, '([^:]+):')
+        identifiers[prefix] = id
+    end
+    return identifiers
+end
+
+function GetPlayerByIdentifier(identifier)
+    for _, playerId in ipairs(GetPlayers()) do
+        local playerIds = GetPlayerIdentifiers(playerId)
+        for _, id in pairs(playerIds) do
+            if id == identifier then
+                return tonumber(playerId)
+            end
+        end
+    end
+    return nil
+end
+
+function GetPlayerData(src)
+    return playerData[src] or {}
+end
+
+function SetPlayerData(src, key, value)
+    if not playerData[src] then
+        playerData[src] = {}
+    end
+    playerData[src][key] = value
+    TriggerClientEvent('playerData:updated', src, key, value)
+end
+```
+
+## Event Handling
+
+### Server Events
+
+```lua
+-- Register server events
+RegisterServerEvent('myresource:saveData')
+AddEventHandler('myresource:saveData', function(data)
+    local src = source
+    
+    -- Validate source
+    if not src or src == 0 then return end
+    
+    -- Validate data
+    if not data or type(data) ~= 'table' then
+        print('Invalid data received from player ' .. src)
+        return
+    end
+    
+    -- Process data
+    SavePlayerData(src, data)
+end)
+
+-- Command events
+RegisterCommand('heal', function(source, args, rawCommand)
+    if source == 0 then
+        print('This command can only be used in-game')
+        return
+    end
+    
+    -- Check permissions
+    if not IsPlayerAdmin(source) then
+        TriggerClientEvent('chat:addMessage', source, {
+            color = {255, 0, 0},
+            args = {'System', 'You do not have permission to use this command'}
+        })
+        return
+    end
+    
+    -- Execute command
+    TriggerClientEvent('myresource:heal', source)
+end, false)
+```
+
+### Event Broadcasting
+
+```lua
+-- Send to specific player
+function NotifyPlayer(src, message, type)
+    TriggerClientEvent('myresource:notify', src, message, type)
+end
+
+-- Send to all players
+function NotifyAll(message, type)
+    TriggerClientEvent('myresource:notify', -1, message, type)
+end
+
+-- Send to players with permission
+function NotifyAdmins(message)
+    for _, playerId in ipairs(GetPlayers()) do
+        if IsPlayerAdmin(playerId) then
+            NotifyPlayer(playerId, message, 'admin')
+        end
+    end
+end
+
+-- Send to players in area
+function NotifyPlayersInArea(coords, radius, message)
+    for _, playerId in ipairs(GetPlayers()) do
+        local playerCoords = GetEntityCoords(GetPlayerPed(playerId))
+        local distance = #(coords - playerCoords)
+        if distance <= radius then
+            NotifyPlayer(playerId, message, 'area')
+        end
+    end
+end
+```
+
+## Database Integration
+
+### MySQL Example
+
+```lua
+-- Using mysql-async
+MySQL = exports['mysql-async']
+
+function LoadPlayerData(src, identifier)
+    MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {
+        ['@identifier'] = identifier
+    }, function(result)
+        if result[1] then
+            playerData[src] = result[1]
+            TriggerClientEvent('playerData:loaded', src, playerData[src])
+        else
+            CreateNewPlayer(src, identifier)
+        end
+    end)
+end
+
+function SavePlayerData(src, data)
+    local identifier = GetPlayerIdentifier(src, 0)
+    
+    MySQL.Async.execute('UPDATE users SET money = @money, job = @job WHERE identifier = @identifier', {
+        ['@money'] = data.money,
+        ['@job'] = data.job,
+        ['@identifier'] = identifier
+    }, function(affectedRows)
+        if affectedRows > 0 then
+            print('Player data saved for ' .. GetPlayerName(src))
+        end
+    end)
+end
+
+function CreateNewPlayer(src, identifier)
+    MySQL.Async.execute('INSERT INTO users (identifier, name, money, job) VALUES (@identifier, @name, @money, @job)', {
+        ['@identifier'] = identifier,
+        ['@name'] = GetPlayerName(src),
+        ['@money'] = 5000,
+        ['@job'] = 'unemployed'
+    }, function(insertId)
+        if insertId then
+            playerData[src] = {
+                id = insertId,
+                identifier = identifier,
+                name = GetPlayerName(src),
+                money = 5000,
+                job = 'unemployed'
+            }
+            TriggerClientEvent('playerData:loaded', src, playerData[src])
+        end
+    end)
+end
+```
+
+### OxMySQL Example
+
+```lua
+-- Using oxmysql
+local MySQL = exports.oxmysql
+
+function LoadPlayerDataOx(src, identifier)
+    MySQL:single('SELECT * FROM users WHERE identifier = ?', {identifier}, function(result)
+        if result then
+            playerData[src] = result
+            TriggerClientEvent('playerData:loaded', src, playerData[src])
+        else
+            CreateNewPlayerOx(src, identifier)
+        end
+    end)
+end
+
+function SavePlayerDataOx(src, data)
+    local identifier = GetPlayerIdentifier(src, 0)
+    
+    MySQL:update('UPDATE users SET money = ?, job = ? WHERE identifier = ?', 
+    {data.money, data.job, identifier}, function(affectedRows)
+        if affectedRows > 0 then
+            print('Player data saved for ' .. GetPlayerName(src))
+        end
+    end)
+end
+```
+
+## Security and Validation
+
+### Input Validation
+
+```lua
+function ValidateInput(data, schema)
+    for key, rules in pairs(schema) do
+        local value = data[key]
+        
+        -- Check required fields
+        if rules.required and (value == nil or value == '') then
+            return false, 'Missing required field: ' .. key
+        end
+        
+        -- Check data types
+        if value ~= nil and rules.type and type(value) ~= rules.type then
+            return false, 'Invalid type for field: ' .. key
+        end
+        
+        -- Check string length
+        if rules.maxLength and type(value) == 'string' and #value > rules.maxLength then
+            return false, 'Field too long: ' .. key
+        end
+        
+        -- Check numeric ranges
+        if rules.min and type(value) == 'number' and value < rules.min then
+            return false, 'Value too small for field: ' .. key
+        end
+        
+        if rules.max and type(value) == 'number' and value > rules.max then
+            return false, 'Value too large for field: ' .. key
+        end
+    end
+    
+    return true, nil
+end
+
+-- Usage
+local transferSchema = {
+    amount = {required = true, type = 'number', min = 1, max = 1000000},
+    targetId = {required = true, type = 'number'},
+    reason = {type = 'string', maxLength = 100}
+}
+
+RegisterServerEvent('banking:transfer')
+AddEventHandler('banking:transfer', function(data)
+    local src = source
+    
+    local valid, error = ValidateInput(data, transferSchema)
+    if not valid then
+        TriggerClientEvent('banking:error', src, 'Invalid input: ' .. error)
+        return
+    end
+    
+    -- Process transfer
+    ProcessTransfer(src, data.targetId, data.amount, data.reason)
+end)
+```
+
+### Permission System
+
+```lua
+local permissions = {}
+
+function LoadPermissions()
+    -- Load from database or config file
+    permissions = {
+        admin = {'kick', 'ban', 'noclip', 'heal', 'money'},
+        moderator = {'kick', 'heal'},
+        vip = {'heal'},
+        player = {}
+    }
+end
+
+function GetPlayerRole(src)
+    -- Get from database or identifiers
+    local identifier = GetPlayerIdentifier(src, 0)
+    -- Return role based on database lookup
+    return 'player' -- Default role
+end
+
+function HasPermission(src, permission)
+    local role = GetPlayerRole(src)
+    local rolePerms = permissions[role] or {}
+    
+    for _, perm in ipairs(rolePerms) do
+        if perm == permission then
+            return true
+        end
+    end
+    
+    return false
+end
+
+-- Usage in commands
+RegisterCommand('money', function(source, args, rawCommand)
+    if not HasPermission(source, 'money') then
+        TriggerClientEvent('chat:addMessage', source, {
+            color = {255, 0, 0},
+            args = {'System', 'No permission'}
+        })
+        return
+    end
+    
+    local amount = tonumber(args[1])
+    if amount then
+        GivePlayerMoney(source, amount)
+    end
+end, false)
+```
+
+### Anti-Cheat Measures
+
+```lua
+local playerActions = {}
+
+function LogPlayerAction(src, action, data)
+    local timestamp = os.time()
+    
+    if not playerActions[src] then
+        playerActions[src] = {}
+    end
+    
+    table.insert(playerActions[src], {
+        action = action,
+        data = data,
+        timestamp = timestamp
+    })
+    
+    -- Keep only last 100 actions
+    if #playerActions[src] > 100 then
+        table.remove(playerActions[src], 1)
+    end
+end
+
+function CheckSpamming(src, action, timeLimit, maxActions)
+    if not playerActions[src] then return false end
+    
+    local currentTime = os.time()
+    local actionCount = 0
+    
+    for i = #playerActions[src], 1, -1 do
+        local log = playerActions[src][i]
+        if currentTime - log.timestamp > timeLimit then
+            break
+        end
+        if log.action == action then
+            actionCount = actionCount + 1
+        end
+    end
+    
+    return actionCount >= maxActions
+end
+
+-- Usage
+RegisterServerEvent('myresource:buyItem')
+AddEventHandler('myresource:buyItem', function(itemId, quantity)
+    local src = source
+    
+    -- Check for spamming
+    if CheckSpamming(src, 'buyItem', 60, 10) then -- 10 purchases per minute max
+        TriggerClientEvent('myresource:error', src, 'Too many purchase attempts')
+        return
+    end
+    
+    LogPlayerAction(src, 'buyItem', {item = itemId, qty = quantity})
+    
+    -- Process purchase
+    ProcessPurchase(src, itemId, quantity)
+end)
+```
+
+## Performance Optimization
+
+### Efficient Player Loops
+
+```lua
+-- Bad: Process all players every frame
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        for _, playerId in ipairs(GetPlayers()) do
+            ProcessPlayer(playerId)
+        end
+    end
+end)
+
+-- Good: Process players with intervals
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(5000) -- Every 5 seconds
+        for _, playerId in ipairs(GetPlayers()) do
+            ProcessPlayerPeriodic(playerId)
+        end
+    end
+end)
+
+-- Better: Staggered processing
+Citizen.CreateThread(function()
+    while true do
+        local players = GetPlayers()
+        for i, playerId in ipairs(players) do
+            Citizen.Wait(100) -- 100ms delay between players
+            ProcessPlayer(playerId)
+        end
+        Citizen.Wait(1000) -- 1 second before next cycle
+    end
+end)
+```
+
+### Caching and Memoization
+
+```lua
+local cache = {}
+local cacheTimeout = 60000 -- 1 minute
+
+function GetCachedData(key, fetchFunction)
+    local now = GetGameTimer()
+    
+    if cache[key] and (now - cache[key].timestamp) < cacheTimeout then
+        return cache[key].data
+    end
+    
+    local data = fetchFunction()
+    cache[key] = {
+        data = data,
+        timestamp = now
+    }
+    
+    return data
+end
+
+-- Usage
+function GetPlayerBankBalance(src)
+    return GetCachedData('bank_' .. src, function()
+        -- This expensive database call only happens once per minute
+        return MySQL.Sync.fetchScalar('SELECT money FROM users WHERE id = @id', {
+            ['@id'] = GetPlayerData(src).id
+        })
+    end)
+end
+```
+
+## Common Patterns
+
+### Resource Communication
+
+```lua
+-- Export functions for other resources
+function GetPlayerMoney(src)
+    return GetPlayerData(src).money or 0
+end
+
+function SetPlayerMoney(src, amount)
+    SetPlayerData(src, 'money', amount)
+    SavePlayerData(src)
+end
+
+-- Register exports
+exports('GetPlayerMoney', GetPlayerMoney)
+exports('SetPlayerMoney', SetPlayerMoney)
+
+-- Use other resource exports
+function TransferToBank(src, amount)
+    local success = exports.banking:DepositMoney(src, amount)
+    if success then
+        SetPlayerMoney(src, GetPlayerMoney(src) - amount)
+    end
+    return success
+end
+```
+
+### Job System
+
+```lua
+local jobs = {
+    police = {
+        name = 'Police Officer',
+        salary = 2500,
+        grades = {
+            [0] = {name = 'Cadet', salary = 2000},
+            [1] = {name = 'Officer', salary = 2500},
+            [2] = {name = 'Sergeant', salary = 3000},
+            [3] = {name = 'Lieutenant', salary = 3500},
+            [4] = {name = 'Chief', salary = 4000}
+        }
+    },
+    mechanic = {
+        name = 'Mechanic',
+        salary = 2000,
+        grades = {
+            [0] = {name = 'Apprentice', salary = 1800},
+            [1] = {name = 'Mechanic', salary = 2000},
+            [2] = {name = 'Supervisor', salary = 2500}
+        }
+    }
+}
+
+function SetPlayerJob(src, jobName, grade)
+    grade = grade or 0
+    
+    if not jobs[jobName] then
+        print('Invalid job: ' .. tostring(jobName))
+        return false
+    end
+    
+    if not jobs[jobName].grades[grade] then
+        print('Invalid grade for job ' .. jobName .. ': ' .. tostring(grade))
+        return false
+    end
+    
+    SetPlayerData(src, 'job', jobName)
+    SetPlayerData(src, 'job_grade', grade)
+    
+    TriggerClientEvent('job:updated', src, jobName, grade)
+    
+    return true
+end
+
+function GetPlayerJob(src)
+    local jobName = GetPlayerData(src).job or 'unemployed'
+    local grade = GetPlayerData(src).job_grade or 0
+    
+    return jobName, grade, jobs[jobName]
+end
+```
+
+### Economy System
+
+```lua
+local economy = {
+    items = {},
+    shops = {},
+    transactions = {}
+}
+
+function AddMoney(src, amount, reason)
+    if amount <= 0 then return false end
+    
+    local currentMoney = GetPlayerMoney(src)
+    SetPlayerMoney(src, currentMoney + amount)
+    
+    LogTransaction(src, 'add', amount, reason)
+    TriggerClientEvent('money:updated', src, currentMoney + amount)
+    
+    return true
+end
+
+function RemoveMoney(src, amount, reason)
+    if amount <= 0 then return false end
+    
+    local currentMoney = GetPlayerMoney(src)
+    if currentMoney < amount then
+        return false, 'Insufficient funds'
+    end
+    
+    SetPlayerMoney(src, currentMoney - amount)
+    
+    LogTransaction(src, 'remove', amount, reason)
+    TriggerClientEvent('money:updated', src, currentMoney - amount)
+    
+    return true
+end
+
+function LogTransaction(src, type, amount, reason)
+    table.insert(economy.transactions, {
+        playerId = src,
+        type = type,
+        amount = amount,
+        reason = reason,
+        timestamp = os.time()
+    })
+    
+    -- Save to database
+    MySQL.Async.execute('INSERT INTO transactions (player_id, type, amount, reason, timestamp) VALUES (@player_id, @type, @amount, @reason, @timestamp)', {
+        ['@player_id'] = src,
+        ['@type'] = type,
+        ['@amount'] = amount,
+        ['@reason'] = reason,
+        ['@timestamp'] = os.time()
+    })
+end
+```
+
+## Debugging
+
+### Logging System
+
+```lua
+local LogLevel = {
+    DEBUG = 1,
+    INFO = 2,
+    WARN = 3,
+    ERROR = 4
+}
+
+local currentLogLevel = LogLevel.INFO
+
+function Log(level, message, ...)
+    if level < currentLogLevel then return end
+    
+    local levelNames = {'DEBUG', 'INFO', 'WARN', 'ERROR'}
+    local levelName = levelNames[level] or 'UNKNOWN'
+    
+    local timestamp = os.date('%Y-%m-%d %H:%M:%S')
+    local formattedMessage = string.format(message, ...)
+    
+    print(string.format('[%s][%s] %s', timestamp, levelName, formattedMessage))
+    
+    -- Also save to file if needed
+    if level >= LogLevel.ERROR then
+        SaveToLogFile(timestamp, levelName, formattedMessage)
+    end
+end
+
+-- Usage
+Log(LogLevel.DEBUG, 'Player %s connected with identifier %s', GetPlayerName(src), identifier)
+Log(LogLevel.ERROR, 'Database connection failed: %s', error)
+```

@@ -1,0 +1,123 @@
+---
+title: ESX Framework
+description: A comprehensive guide to the ESX framework for FiveM.
+icon: "CircleUserRound"
+---
+
+# ESX Framework
+
+ESX (EssentialMode Extended) is one of the most popular frameworks for FiveM, providing a complete foundation for roleplay servers. It offers an extensive suite of features and a large community of developers.
+
+## Overview
+
+ESX provides a structured approach to building FiveM servers with:
+
+- Player management and persistence
+- Inventory and item systems
+- Job and organization management
+- Money and banking systems
+- Character customization
+- Vehicle ownership
+- Housing systems
+- Consistent UI elements
+
+## Getting Started
+
+### Installation
+
+1. **Set up a FiveM server**: Follow the [official FiveM server setup guide](https://docs.fivem.net/docs/server-manual/setting-up-a-server/)
+
+2. **Clone the ESX repository**:
+   ```bash
+   git clone https://github.com/esx-framework/esx-legacy /path/to/server/resources/[esx]
+   ```
+
+3. **Import the database**:
+   ```bash
+   mysql -u username -p database_name < /path/to/server/resources/[esx]/import.sql
+   ```
+
+4. **Configure your server.cfg**:
+   ```cfg
+   # Database connection
+   set mysql_connection_string "mysql://username:password@localhost/database_name?charset=utf8mb4"
+
+   # ESX resources (order matters)
+   ensure oxmysql
+   ensure es_extended
+   ensure esx_menu_default
+   ensure esx_menu_dialog
+   ensure esx_menu_list
+   ensure esx_identity
+   ensure esx_skin
+   ensure esx_datastore
+   ensure esx_addonaccount
+   ensure esx_addoninventory
+   ensure esx_society
+   ensure esx_billing
+   
+   # Additional ESX resources
+   ensure esx_jobs
+   ensure esx_shops
+   ensure esx_vehicleshop
+   # ... other ESX resources
+   ```
+
+5. **Start your server**:
+   ```bash
+   ./run.sh # Linux
+   FXServer.exe # Windows
+   ```
+
+### Core Concepts
+
+#### Player Management
+
+ESX handles player persistence, permissions, and basic functionality through the `xPlayer` object:
+
+```lua
+-- Server-side example
+RegisterCommand('givemoney', function(source, args)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if xPlayer.getGroup() == 'admin' then
+        local amount = tonumber(args[1])
+        xPlayer.addMoney(amount)
+        xPlayer.showNotification('You received $' .. amount)
+    end
+end)
+```
+
+#### Inventory System
+
+ESX provides a complete inventory system for managing items:
+
+```lua
+-- Give an item to a player
+xPlayer.addInventoryItem('bread', 1)
+
+-- Remove an item from a player
+xPlayer.removeInventoryItem('water', 1)
+
+-- Check if player has an item
+local hasItem = xPlayer.getInventoryItem('lockpick').count > 0
+```
+
+#### Job System
+
+Jobs in ESX define roles, permissions, and functionality:
+
+```lua
+-- Check player's job
+if xPlayer.job.name == 'police' and xPlayer.job.grade >= 3 then
+    -- Allow specific police captain actions
+end
+
+-- Set player's job
+xPlayer.setJob('mechanic', 1) -- Job name and grade
+```
+
+## Development
+
+### Creating ESX Resources
+
+ESX resources follow a standard structure:

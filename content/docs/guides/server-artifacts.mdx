@@ -1,0 +1,774 @@
+---
+title: Server Artifacts & Updates
+description: Complete guide to managing FiveM server artifacts, updates, and deployment.
+icon: "Download"
+---
+
+# Server Artifacts & Updates
+
+Keeping your FiveM server artifacts up-to-date is crucial for security, performance, and compatibility. This guide covers everything about managing server artifacts, performing updates, and handling deployments.
+
+## Understanding FiveM Artifacts
+
+### What are Artifacts?
+
+FiveM artifacts are the compiled server binaries that power your FiveM server. They include:
+
+- **FXServer** - The main server executable
+- **CitizenFX libraries** - Core functionality libraries
+- **Native implementations** - Game-specific functions
+- **Scripting runtime** - Lua/JavaScript execution environment
+- **Networking stack** - Player communication systems
+
+### Artifact Channels
+
+**Recommended (Stable)**
+- Thoroughly tested builds
+- Recommended for production servers
+- Updated less frequently
+- Maximum stability and compatibility
+
+**Optional (Beta)**
+- Latest features and improvements
+- More frequent updates
+- May contain bugs or breaking changes
+- Good for testing and development
+
+**Latest (Experimental)**
+- Bleeding-edge development builds
+- Daily updates
+- Not recommended for production
+- For developers and testers only
+
+## Checking Current Version
+
+### In-Game Commands
+
+```bash
+# Check server version
+version
+
+# Check detailed build information
+version full
+
+# Check artifact information
+artifact
+```
+
+### Server Console Commands
+
+```bash
+# Display version information
+version
+
+# Show detailed build and commit information
+version full
+
+# Display loaded components
+components
+```
+
+### Programmatic Version Check
+
+```lua
+-- Get version information in resource
+local version = GetConvar('version', 'unknown')
+local buildNumber = GetConvar('sv_buildNumber', 'unknown')
+
+print('Server version:', version)
+print('Build number:', buildNumber)
+```
+
+## Manual Update Process
+
+### Windows Update Procedure
+
+1. **Download Latest Artifacts**
+   ```
+   Visit: https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/
+   Select: Latest recommended build
+   Download: server.zip
+   ```
+
+2. **Prepare for Update**
+   ```batch
+   # Stop the server
+   # Backup current artifacts (optional)
+   mkdir backup\%date%
+   copy server-files\*.* backup\%date%\
+   ```
+
+3. **Extract New Artifacts**
+   ```batch
+   # Extract to temporary folder first
+   # Compare with existing files
+   # Copy new files to server directory
+   ```
+
+4. **Update Configuration**
+   ```batch
+   # Check for new convars or changes
+   # Update server.cfg if needed
+   # Verify resource compatibility
+   ```
+
+5. **Start and Test**
+   ```batch
+   # Start server
+   # Check console for errors
+   # Test basic functionality
+   ```
+
+### Linux Update Procedure
+
+```bash
+#!/bin/bash
+# update_artifacts.sh
+
+SERVER_DIR="/home/fiveM/server"
+BACKUP_DIR="/home/fiveM/backups"
+ARTIFACT_URL="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
+
+# Create backup
+DATE=$(date +%Y%m%d_%H%M%S)
+mkdir -p "$BACKUP_DIR/$DATE"
+cp -r "$SERVER_DIR"/* "$BACKUP_DIR/$DATE/"
+
+# Download latest artifacts
+cd /tmp
+wget "$ARTIFACT_URL$(curl -s $ARTIFACT_URL | grep -oP 'href="\K[0-9]+-[a-f0-9]+(?=/")' | tail -1)/fx.tar.xz"
+
+# Extract and install
+tar -xf fx.tar.xz
+cp -r * "$SERVER_DIR/"
+
+# Set permissions
+chmod +x "$SERVER_DIR/FXServer"
+
+echo "Update completed. Backup saved to $BACKUP_DIR/$DATE"
+```
+
+## Automated Update Solutions
+
+### Windows PowerShell Script
+
+```powershell
+# UpdateServer.ps1
+param(
+    [string]$ServerPath = "C:\FiveM\server",
+    [string]$BackupPath = "C:\FiveM\backups",
+    [switch]$AutoRestart = $false
+)
+
+# Configuration
+$ArtifactURL = "https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/"
+$ProcessName = "FXServer"
+
+try {
+    # Get latest build number
+    $WebResponse = Invoke-WebRequest -Uri $ArtifactURL
+    $LatestBuild = $WebResponse.Content | Select-String -Pattern 'href="(\d+-[a-f0-9]+)/"' | 
+                   ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | 
+                   Sort-Object | Select-Object -Last 1
+
+    if (-not $LatestBuild) {
+        throw "Could not determine latest build number"
+    }
+
+    Write-Host "Latest build: $LatestBuild"
+
+    # Check if update is needed
+    $CurrentBuildFile = Join-Path $ServerPath "build_number.txt"
+    $CurrentBuild = if (Test-Path $CurrentBuildFile) { Get-Content $CurrentBuildFile } else { "unknown" }
+
+    if ($CurrentBuild -eq $LatestBuild) {
+        Write-Host "Server is already up to date."
+        return
+    }
+
+    # Stop server if running
+    $ServerProcess = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue
+    if ($ServerProcess) {
+        Write-Host "Stopping server..."
+        Stop-Process -Name $ProcessName -Force
+        Start-Sleep -Seconds 10
+    }
+
+    # Create backup
+    $BackupDate = Get-Date -Format "yyyyMMdd_HHmmss"
+    $BackupFolder = Join-Path $BackupPath $BackupDate
+    New-Item -ItemType Directory -Path $BackupFolder -Force
+    Copy-Item -Path "$ServerPath\*" -Destination $BackupFolder -Recurse -Force
+    Write-Host "Backup created: $BackupFolder"
+
+    # Download and extract new artifacts
+    $TempPath = [System.IO.Path]::GetTempPath()
+    $ZipPath = Join-Path $TempPath "server.zip"
+    $ExtractPath = Join-Path $TempPath "server_extract"
+
+    $DownloadURL = "$ArtifactURL$LatestBuild/server.zip"
+    Write-Host "Downloading: $DownloadURL"
+    Invoke-WebRequest -Uri $DownloadURL -OutFile $ZipPath
+
+    # Extract
+    if (Test-Path $ExtractPath) { Remove-Item $ExtractPath -Recurse -Force }
+    Expand-Archive -Path $ZipPath -DestinationPath $ExtractPath
+
+    # Copy new files
+    Copy-Item -Path "$ExtractPath\*" -Destination $ServerPath -Recurse -Force
+
+    # Save build number
+    Set-Content -Path $CurrentBuildFile -Value $LatestBuild
+
+    # Cleanup
+    Remove-Item $ZipPath -Force
+    Remove-Item $ExtractPath -Recurse -Force
+
+    Write-Host "Update completed successfully!"
+    Write-Host "Updated from $CurrentBuild to $LatestBuild"
+
+    # Restart server if requested
+    if ($AutoRestart) {
+        Write-Host "Restarting server..."
+        Start-Process -FilePath (Join-Path $ServerPath "FXServer.exe") -WorkingDirectory $ServerPath
+    }
+
+} catch {
+    Write-Error "Update failed: $($_.Exception.Message)"
+    exit 1
+}
+```
+
+### Linux Update Script with Service Management
+
+```bash
+#!/bin/bash
+# fivem-updater.sh
+
+# Configuration
+SERVER_DIR="/opt/fivem/server"
+BACKUP_DIR="/opt/fivem/backups"
+SERVICE_NAME="fivem"
+ARTIFACT_URL="https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/"
+LOG_FILE="/var/log/fivem-updater.log"
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
+}
+
+# Error handling
+set -e
+trap 'log "ERROR: Update failed on line $LINENO"' ERR
+
+log "Starting FiveM server update process"
+
+# Get latest build number
+LATEST_BUILD=$(curl -s "$ARTIFACT_URL" | grep -oP 'href="\K[0-9]+-[a-f0-9]+(?=/")' | tail -1)
+
+if [ -z "$LATEST_BUILD" ]; then
+    log "ERROR: Could not determine latest build number"
+    exit 1
+fi
+
+log "Latest build: $LATEST_BUILD"
+
+# Check current build
+CURRENT_BUILD_FILE="$SERVER_DIR/build_number.txt"
+CURRENT_BUILD="unknown"
+
+if [ -f "$CURRENT_BUILD_FILE" ]; then
+    CURRENT_BUILD=$(cat "$CURRENT_BUILD_FILE")
+fi
+
+if [ "$CURRENT_BUILD" = "$LATEST_BUILD" ]; then
+    log "Server is already up to date ($CURRENT_BUILD)"
+    exit 0
+fi
+
+log "Updating from $CURRENT_BUILD to $LATEST_BUILD"
+
+# Stop server service
+if systemctl is-active --quiet "$SERVICE_NAME"; then
+    log "Stopping $SERVICE_NAME service"
+    sudo systemctl stop "$SERVICE_NAME"
+    sleep 5
+fi
+
+# Create backup
+BACKUP_DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_PATH="$BACKUP_DIR/$BACKUP_DATE"
+mkdir -p "$BACKUP_PATH"
+cp -r "$SERVER_DIR"/* "$BACKUP_PATH/"
+log "Backup created: $BACKUP_PATH"
+
+# Download new artifacts
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
+
+log "Downloading artifacts for build $LATEST_BUILD"
+wget -q "$ARTIFACT_URL$LATEST_BUILD/fx.tar.xz"
+
+# Extract and install
+log "Extracting and installing new artifacts"
+tar -xf fx.tar.xz
+sudo cp -r * "$SERVER_DIR/"
+sudo chown -R fivem:fivem "$SERVER_DIR"
+sudo chmod +x "$SERVER_DIR/FXServer"
+
+# Save build number
+echo "$LATEST_BUILD" | sudo tee "$CURRENT_BUILD_FILE" > /dev/null
+
+# Cleanup
+rm -rf "$TEMP_DIR"
+
+log "Update completed successfully"
+
+# Start server service
+log "Starting $SERVICE_NAME service"
+sudo systemctl start "$SERVICE_NAME"
+
+# Wait and check status
+sleep 10
+if systemctl is-active --quiet "$SERVICE_NAME"; then
+    log "Server started successfully"
+else
+    log "ERROR: Server failed to start after update"
+    exit 1
+fi
+
+# Cleanup old backups (keep last 10)
+find "$BACKUP_DIR" -maxdepth 1 -type d -name "20*" | sort | head -n -10 | xargs rm -rf
+
+log "Update process completed successfully"
+```
+
+### Automated Update with Docker
+
+```dockerfile
+# Dockerfile for FiveM server with auto-update
+FROM ubuntu:20.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    xz-utils \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create fivem user
+RUN useradd -m -s /bin/bash fivem
+
+# Set working directory
+WORKDIR /opt/fivem
+
+# Copy update script
+COPY update-server.sh /opt/fivem/
+RUN chmod +x /opt/fivem/update-server.sh
+
+# Switch to fivem user
+USER fivem
+
+# Download initial server files
+RUN /opt/fivem/update-server.sh
+
+# Expose port
+EXPOSE 30120
+
+# Start command
+CMD ["./FXServer", "+exec", "server.cfg"]
+```
+
+```yaml
+# docker-compose.yml with auto-update
+version: '3.8'
+
+services:
+  fivem-server:
+    build: .
+    container_name: fivem-server
+    restart: unless-stopped
+    ports:
+      - "30120:30120/udp"
+      - "30120:30120/tcp"
+    volumes:
+      - ./server-data:/opt/fivem/server-data
+      - ./resources:/opt/fivem/resources
+    environment:
+      - FIVEM_LICENSE_KEY=your_license_key
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:30120/info.json"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  updater:
+    image: alpine:latest
+    container_name: fivem-updater
+    restart: "no"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts:/scripts
+    command: |
+      sh -c "
+        apk add --no-cache docker-cli curl &&
+        /scripts/check-updates.sh
+      "
+    profiles:
+      - updater
+```
+
+## Scheduled Updates
+
+### Windows Task Scheduler
+
+```xml
+<!-- FiveM_Update_Task.xml -->
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2">
+  <Triggers>
+    <CalendarTrigger>
+      <StartBoundary>2024-01-01T03:00:00</StartBoundary>
+      <ExecutionTimeLimit>PT1H</ExecutionTimeLimit>
+      <Enabled>true</Enabled>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+  </Triggers>
+  <Actions>
+    <Exec>
+      <Command>PowerShell.exe</Command>
+      <Arguments>-ExecutionPolicy Bypass -File "C:\FiveM\scripts\UpdateServer.ps1" -AutoRestart</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+```
+
+### Linux Cron Job
+
+```bash
+# Add to crontab (crontab -e)
+# Update daily at 3 AM
+0 3 * * * /opt/fivem/scripts/fivem-updater.sh >> /var/log/fivem-updater.log 2>&1
+
+# Update every 6 hours
+0 */6 * * * /opt/fivem/scripts/fivem-updater.sh >> /var/log/fivem-updater.log 2>&1
+
+# Check for updates every hour (only downloads if new version available)
+0 * * * * /opt/fivem/scripts/check-updates.sh
+```
+
+## Update Notifications
+
+### Discord Webhook Integration
+
+```bash
+#!/bin/bash
+# notify-update.sh
+
+DISCORD_WEBHOOK="YOUR_DISCORD_WEBHOOK_URL"
+SERVER_NAME="My FiveM Server"
+OLD_VERSION="$1"
+NEW_VERSION="$2"
+
+if [ -n "$DISCORD_WEBHOOK" ] && [ -n "$NEW_VERSION" ]; then
+    curl -H "Content-Type: application/json" \
+         -X POST \
+         -d "{
+           \"embeds\": [{
+             \"title\": \"🔄 Server Update Completed\",
+             \"description\": \"$SERVER_NAME has been updated\",
+             \"color\": 3066993,
+             \"fields\": [
+               {\"name\": \"Previous Version\", \"value\": \"$OLD_VERSION\", \"inline\": true},
+               {\"name\": \"New Version\", \"value\": \"$NEW_VERSION\", \"inline\": true},
+               {\"name\": \"Status\", \"value\": \"✅ Online\", \"inline\": true}
+             ],
+             \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+           }]
+         }" \
+         "$DISCORD_WEBHOOK"
+fi
+```
+
+### Email Notifications
+
+```python
+#!/usr/bin/env python3
+# email_notify.py
+
+import smtplib
+import sys
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+
+def send_update_notification(old_version, new_version):
+    # Email configuration
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    sender_email = "your-email@gmail.com"
+    sender_password = "your-app-password"
+    recipient_email = "admin@yourserver.com"
+    
+    # Create message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = f"FiveM Server Update - {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    
+    body = f"""
+    FiveM Server Update Completed
+    
+    Server: My FiveM Server
+    Previous Version: {old_version}
+    New Version: {new_version}
+    Update Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+    Status: Server is online and running
+    
+    This is an automated notification.
+    """
+    
+    msg.attach(MIMEText(body, 'plain'))
+    
+    # Send email
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        text = msg.as_string()
+        server.sendmail(sender_email, recipient_email, text)
+        server.quit()
+        print("Update notification sent successfully")
+    except Exception as e:
+        print(f"Failed to send notification: {e}")
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 3:
+        send_update_notification(sys.argv[1], sys.argv[2])
+```
+
+## Rollback Procedures
+
+### Quick Rollback Script
+
+```bash
+#!/bin/bash
+# rollback.sh
+
+BACKUP_DIR="/opt/fivem/backups"
+SERVER_DIR="/opt/fivem/server"
+SERVICE_NAME="fivem"
+
+# List available backups
+echo "Available backups:"
+ls -la "$BACKUP_DIR" | grep "^d" | tail -10
+
+read -p "Enter backup date (YYYYMMDD_HHMMSS) to restore: " BACKUP_DATE
+
+BACKUP_PATH="$BACKUP_DIR/$BACKUP_DATE"
+
+if [ ! -d "$BACKUP_PATH" ]; then
+    echo "Backup not found: $BACKUP_PATH"
+    exit 1
+fi
+
+# Stop server
+sudo systemctl stop "$SERVICE_NAME"
+
+# Create emergency backup of current state
+EMERGENCY_BACKUP="$BACKUP_DIR/emergency_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$EMERGENCY_BACKUP"
+cp -r "$SERVER_DIR"/* "$EMERGENCY_BACKUP/"
+
+# Restore from backup
+rm -rf "$SERVER_DIR"/*
+cp -r "$BACKUP_PATH"/* "$SERVER_DIR/"
+chown -R fivem:fivem "$SERVER_DIR"
+chmod +x "$SERVER_DIR/FXServer"
+
+# Start server
+sudo systemctl start "$SERVICE_NAME"
+
+echo "Rollback completed. Emergency backup saved to: $EMERGENCY_BACKUP"
+```
+
+## Testing and Validation
+
+### Post-Update Testing Script
+
+```bash
+#!/bin/bash
+# test-server.sh
+
+SERVER_IP="localhost"
+SERVER_PORT="30120"
+TIMEOUT=30
+
+echo "Testing server connectivity..."
+
+# Test basic connectivity
+if timeout "$TIMEOUT" bash -c "</dev/tcp/$SERVER_IP/$SERVER_PORT" 2>/dev/null; then
+    echo "✅ Server is accepting connections"
+else
+    echo "❌ Server is not responding"
+    exit 1
+fi
+
+# Test HTTP endpoint
+if curl -s --max-time "$TIMEOUT" "http://$SERVER_IP:$SERVER_PORT/info.json" >/dev/null; then
+    echo "✅ HTTP endpoint is responding"
+else
+    echo "❌ HTTP endpoint is not responding"
+fi
+
+# Test specific endpoints
+curl -s "http://$SERVER_IP:$SERVER_PORT/info.json" | jq '.server' || echo "⚠️  Could not parse server info"
+
+echo "Server testing completed"
+```
+
+### Resource Compatibility Check
+
+```lua
+-- compatibility_check.lua
+local function checkResourceCompatibility()
+    local issues = {}
+    local resources = {}
+    
+    -- Get all started resources
+    for i = 0, GetNumResources() - 1 do
+        local resourceName = GetResourceByFindIndex(i)
+        if GetResourceState(resourceName) == 'started' then
+            table.insert(resources, resourceName)
+        end
+    end
+    
+    print(string.format('Checking %d resources for compatibility...', #resources))
+    
+    for _, resource in ipairs(resources) do
+        local manifest = LoadResourceFile(resource, 'fxmanifest.lua')
+        if manifest then
+            -- Check for deprecated functions
+            if manifest:find('Citizen%.CreateThread') and not manifest:find('CreateThread') then
+                table.insert(issues, string.format('%s: Using deprecated Citizen.CreateThread', resource))
+            end
+            
+            -- Check fx_version
+            local fxVersion = manifest:match('fx_version%s+[\'"]([^\'"]+)[\'"]')
+            if fxVersion and fxVersion ~= 'cerulean' and fxVersion ~= 'bodacious' then
+                table.insert(issues, string.format('%s: Using old fx_version (%s)', resource, fxVersion))
+            end
+        end
+    end
+    
+    if #issues > 0 then
+        print('Compatibility issues found:')
+        for _, issue in ipairs(issues) do
+            print('  ⚠️  ' .. issue)
+        end
+    else
+        print('✅ No compatibility issues found')
+    end
+end
+
+-- Run check
+CreateThread(function()
+    Wait(5000) -- Wait for resources to load
+    checkResourceCompatibility()
+end)
+```
+
+## Troubleshooting Updates
+
+### Common Update Issues
+
+**Download Failures**
+```bash
+# Check connectivity
+curl -I https://runtime.fivem.net/
+
+# Check DNS resolution
+nslookup runtime.fivem.net
+
+# Test with different DNS
+dig @8.8.8.8 runtime.fivem.net
+```
+
+**Permission Issues**
+```bash
+# Fix file permissions
+sudo chown -R fivem:fivem /opt/fivem/server
+sudo chmod +x /opt/fivem/server/FXServer
+
+# Check SELinux (if applicable)
+sudo setsebool -P httpd_exec_mem 1
+sudo restorecon -Rv /opt/fivem/server
+```
+
+**Service Start Failures**
+```bash
+# Check service status
+sudo systemctl status fivem
+
+# View detailed logs
+sudo journalctl -u fivem -f
+
+# Check server console output
+tail -f /opt/fivem/server/console.log
+```
+
+### Update Recovery
+
+```bash
+#!/bin/bash
+# update_recovery.sh
+
+echo "FiveM Update Recovery Tool"
+echo "=========================="
+
+# Check server status
+if pgrep -f "FXServer" > /dev/null; then
+    echo "✅ Server is running"
+else
+    echo "❌ Server is not running"
+    
+    # Try to start server
+    echo "Attempting to start server..."
+    sudo systemctl start fivem
+    sleep 10
+    
+    if pgrep -f "FXServer" > /dev/null; then
+        echo "✅ Server started successfully"
+    else
+        echo "❌ Server failed to start"
+        echo "Check logs: sudo journalctl -u fivem -n 50"
+    fi
+fi
+
+# Check for common issues
+echo ""
+echo "Checking for common issues..."
+
+# Check file permissions
+if [ -x "/opt/fivem/server/FXServer" ]; then
+    echo "✅ FXServer is executable"
+else
+    echo "❌ FXServer is not executable"
+    echo "Fix: sudo chmod +x /opt/fivem/server/FXServer"
+fi
+
+# Check port binding
+if netstat -tlnp | grep -q ":30120"; then
+    echo "✅ Server is listening on port 30120"
+else
+    echo "❌ Server is not listening on port 30120"
+fi
+
+echo ""
+echo "Recovery check completed"
+```
+
+This comprehensive guide covers all aspects of managing FiveM server artifacts and updates, from manual procedures to fully automated solutions with monitoring and rollback capabilities.

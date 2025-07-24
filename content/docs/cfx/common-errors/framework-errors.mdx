@@ -169,16 +169,208 @@ resource_name/
     └── main.lua
 ```
 
+## Framework-Specific Issues
+
+### ESX Specific Issues
+
+#### 1. ESX Identity Issues
+```lua
+-- Error: Failed to load player identity
+```
+
+**Solutions:**
+1. Ensure esx_identity is properly configured
+2. Check database table structure
+3. Use the correct event handling:
+```lua
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+    local identifier = xPlayer.identifier
+    
+    MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {
+        ['@identifier'] = identifier
+    }, function(result)
+        if result[1] then
+            -- Identity data is available
+            local identity = result[1]
+            -- Process identity data
+        end
+    end)
+end)
+```
+
+#### 2. ESX Job Integration
+```lua
+-- Error: Invalid job grade
+```
+
+**Solutions:**
+1. Ensure job grades are properly defined in the database
+2. Check job assignment logic:
+```lua
+-- Check if job grade exists
+local function isValidJobGrade(job, grade)
+    local result = MySQL.Sync.fetchAll('SELECT * FROM job_grades WHERE job_name = @job AND grade = @grade', {
+        ['@job'] = job,
+        ['@grade'] = grade
+    })
+    return #result > 0
+end
+
+-- Use in job assignment
+if isValidJobGrade('police', 3) then
+    xPlayer.setJob('police', 3)
+else
+    print('Invalid job grade')
+end
+```
+
+### QBCore Specific Issues
+
+#### 1. QBCore Player Loading
+```lua
+-- Error: Player not loaded
+```
+
+**Solutions:**
+1. Wait for the correct event:
+```lua
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    -- Player is now loaded
+end)
+```
+
+2. Handle player unloading:
+```lua
+RegisterNetEvent('QBCore:Client:OnPlayerUnload')
+AddEventHandler('QBCore:Client:OnPlayerUnload', function()
+    -- Clean up resources when player unloads
+end)
+```
+
+#### 2. QBCore Item Issues
+```lua
+-- Error: Item not found
+```
+
+**Solutions:**
+1. Check item registration:
+```lua
+-- Server-side
+local function hasItem(source, item, amount)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return false end
+    
+    local playerItem = Player.Functions.GetItemByName(item)
+    if not playerItem then return false end
+    
+    return playerItem.amount >= amount
+end
+```
+
+2. Verify shared items configuration:
+```lua
+-- Check QBShared items
+if QBCore.Shared.Items[itemName] then
+    -- Item exists
+else
+    print('Item not registered:', itemName)
+end
+```
+
+## Cross-Framework Compatibility
+
+### 1. Framework Wrapper
+```lua
+-- Create a framework wrapper for compatibility
+local Framework = {}
+
+-- Initialize based on detected framework
+local function InitializeFramework()
+    if GetResourceState('es_extended') == 'started' then
+        ESX = exports['es_extended']:getSharedObject()
+        Framework.type = 'esx'
+        Framework.getPlayer = function(source)
+            return ESX.GetPlayerFromId(source)
+        end
+        Framework.getMoney = function(player)
+            return player.getMoney()
+        end
+        Framework.setMoney = function(player, amount)
+            player.setMoney(amount)
+        end
+        return true
+    elseif GetResourceState('qb-core') == 'started' then
+        QBCore = exports['qb-core']:GetCoreObject()
+        Framework.type = 'qb'
+        Framework.getPlayer = function(source)
+            return QBCore.Functions.GetPlayer(source)
+        end
+        Framework.getMoney = function(player)
+            return player.PlayerData.money.cash
+        end
+        Framework.setMoney = function(player, amount)
+            player.Functions.SetMoney('cash', amount)
+        end
+        return true
+    end
+    return false
+end
+
+-- Usage example
+if InitializeFramework() then
+    RegisterCommand('givemoney', function(source, args)
+        local player = Framework.getPlayer(source)
+        if player then
+            local amount = tonumber(args[1]) or 0
+            Framework.setMoney(player, Framework.getMoney(player) + amount)
+        end
+    end, false)
+else
+    print('No supported framework detected')
+end
+```
+
+### 2. Framework Detection in Resources
+```lua
+-- Auto-detect framework in fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'Cross-Framework Resource'
+version '1.0.0'
+
+shared_script 'config.lua'
+client_scripts {
+    'framework/client.lua', -- Framework detection script
+    'client/*.lua'
+}
+server_scripts {
+    'framework/server.lua', -- Framework detection script
+    'server/*.lua'
+}
+
+-- Include potential dependencies for auto-detection
+dependencies {
+    'es_extended',
+    'qb-core'
+}
+```
+
 ## Additional Resources
 
 - [ESX Documentation](https://documentation.esx-framework.org/)
 - [QBCore Documentation](https://docs.qbcore.org/)
 - [Framework Migration Guide](https://docs.fivem.net/docs/scripting-manual/migrating-from-deprecated-methods/)
+- [Multi-Framework Resource Development](/docs/frameworks/multi-framework-development)
 
 <Callout type="warning">
-  Always test your resource with the specific framework version you're targeting.
+  Always test your resource with the specific framework version you're targeting. Framework APIs can change between versions.
 </Callout>
 
 <Callout type="info">
   For more information about resource loading, check out our [Resource Loading Guide](/docs/cfx/common-errors/resource-loading).
-</Callout> 
+</Callout>

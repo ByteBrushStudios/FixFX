@@ -1,0 +1,455 @@
+---
+title: QBCore Framework
+description: A comprehensive guide to using and developing for the QBCore framework.
+icon: "Component"
+---
+
+# QBCore Framework
+
+QBCore is a modern, feature-rich framework for FiveM that provides a solid foundation for roleplay servers. It offers a comprehensive set of features, excellent documentation, and an active community.
+
+## Overview
+
+QBCore is designed as a successor to ESX, addressing many common pain points while providing enhanced functionality and performance. The framework is built around a modular design philosophy, making it highly extensible and customizable.
+
+### Key Features
+
+- **Player Management**: Multi-character support, data persistence, and permissions
+- **Inventory System**: Advanced inventory with item metadata and attachments
+- **Job System**: Comprehensive job framework with grades and permissions
+- **Vehicle System**: Vehicle ownership, keys, and management
+- **Property System**: Housing and property ownership
+- **Business System**: Fully-featured business management
+- **Phone System**: Integrated mobile phone with apps and messaging
+- **Crafting System**: Item crafting and processing
+- **Modern UI**: Clean and responsive user interfaces
+- **Active Development**: Frequent updates and improvements
+
+## Getting Started
+
+### Installation
+
+1. **Server Setup**: Begin with a fresh FiveM server installation following the [official FiveM guide](https://docs.fivem.net/docs/server-manual/setting-up-a-server/)
+
+2. **Database Setup**:
+   - Create a MySQL database for your server
+   - Import the QBCore SQL file (provided in the repository)
+
+3. **Core Installation**:
+   ```bash
+   # Clone the core repository
+   git clone https://github.com/qbcore-framework/qb-core /path/to/server/resources/[qb]/qb-core
+   
+   # Clone essential resources
+   git clone https://github.com/qbcore-framework/qb-multicharacter /path/to/server/resources/[qb]/qb-multicharacter
+   git clone https://github.com/qbcore-framework/qb-spawn /path/to/server/resources/[qb]/qb-spawn
+   git clone https://github.com/qbcore-framework/qb-inventory /path/to/server/resources/[qb]/qb-inventory
+   git clone https://github.com/qbcore-framework/qb-target /path/to/server/resources/[qb]/qb-target
+   # ... other essential resources
+   ```
+
+4. **Configuration**:
+   - Configure your `server.cfg` with the proper resource load order
+   - Set up your database connection
+   - Configure QBCore settings in `qb-core/shared/config.lua`
+
+5. **Server Configuration**:
+   ```cfg
+   # Add to your server.cfg
+   ensure oxmysql
+   ensure qb-core
+   
+   # Essential resources (order matters)
+   ensure qb-multicharacter
+   ensure qb-spawn
+   ensure qb-inventory
+   ensure qb-target
+   ensure qb-clothing
+   ensure qb-houses
+   ensure qb-phone
+   # ... other QBCore resources
+   ```
+
+## Core Concepts
+
+### Player Management
+
+QBCore's player management system is built around the `QBCore.Functions.GetPlayer` function, which returns a player object with various methods and properties.
+
+```lua
+-- Server-side example
+RegisterCommand('money', function(source)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if Player then
+        local cash = Player.PlayerData.money.cash
+        TriggerClientEvent('QBCore:Notify', source, 'You have $'..cash..' in cash', 'success')
+    end
+end)
+```
+
+### Player Data Structure
+
+The Player object contains structured data:
+
+```lua
+Player.PlayerData = {
+    citizenid = 'ABC123', -- Unique identifier
+    charinfo = {
+        firstname = 'John',
+        lastname = 'Doe',
+        -- Other character info
+    },
+    money = {
+        cash = 500,
+        bank = 5000,
+        crypto = 0
+    },
+    job = {
+        name = 'police',
+        label = 'Police',
+        grade = {
+            name = 'sergeant',
+            level = 3
+        },
+        onduty = true
+    },
+    gang = {
+        name = 'none',
+        label = 'No Gang',
+        grade = {
+            name = 'none',
+            level = 0
+        }
+    },
+    metadata = {
+        hunger = 100,
+        thirst = 100,
+        stress = 0,
+        -- Other metadata
+    },
+    inventory = [
+        -- Array of inventory items
+    ]
+}
+```
+
+### Inventory System
+
+QBCore's inventory system is powerful and flexible:
+
+```lua
+-- Give item to player
+Player.Functions.AddItem('water', 1)
+
+-- Remove item from player
+Player.Functions.RemoveItem('bread', 1)
+
+-- Check if player has item
+local hasItem = Player.Functions.GetItemByName('phone')
+if hasItem then
+    -- Player has the item
+end
+```
+
+### Job System
+
+Jobs are a central part of QBCore:
+
+```lua
+-- Set player job
+Player.Functions.SetJob('police', 3) -- Job name and grade
+
+-- Check player job
+if Player.PlayerData.job.name == 'police' and Player.PlayerData.job.grade.level >= 3 then
+    -- Player is police with grade 3 or higher
+end
+
+-- Toggle duty status
+Player.Functions.SetJobDuty(true) -- Set on duty
+```
+
+## QBCore Events
+
+QBCore uses events for various player actions:
+
+### Client-Side Events
+
+```lua
+-- Player loaded
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    -- Initialize after player loads
+end)
+
+-- Player job updated
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+    -- JobInfo contains the updated job data
+end)
+
+-- Player money updated
+RegisterNetEvent('QBCore:Client:OnMoneyChange', function(moneyType, amount, operation)
+    -- Handle money change
+end)
+```
+
+### Server-Side Events
+
+```lua
+-- Player loaded
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function(Player)
+    -- Player has loaded
+end)
+
+-- Player created (first time joining)
+RegisterNetEvent('QBCore:Server:OnPlayerFirstJoin', function(source)
+    -- First time setup
+end)
+
+-- Player disconnected
+AddEventHandler('playerDropped', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if Player then
+        -- Handle player disconnect
+    end
+end)
+```
+
+## Resource Development
+
+### Basic Resource Structure
+
+```
+my-resource/
+├── client/
+│   └── main.lua
+├── server/
+│   └── main.lua
+├── shared/
+│   └── config.lua
+└── fxmanifest.lua
+```
+
+### Example Resource Manifest
+
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'Your Name'
+description 'My QBCore Resource'
+version '1.0.0'
+
+shared_scripts {
+    '@qb-core/shared/locale.lua',
+    'locales/en.lua', -- Translations
+    'config.lua'
+}
+
+client_scripts {
+    'client/*.lua'
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server/*.lua'
+}
+
+lua54 'yes'
+
+dependencies {
+    'qb-core',
+    'oxmysql'
+}
+```
+
+### Core Integration
+
+```lua
+-- Client-side integration
+QBCore = exports['qb-core']:GetCoreObject()
+
+-- Server-side integration
+QBCore = exports['qb-core']:GetCoreObject()
+
+-- Register items
+-- In qb-core/shared/items.lua
+QBShared.Items = {
+    ['my_item'] = {
+        name = 'my_item',
+        label = 'My Custom Item',
+        weight = 500,
+        type = 'item',
+        image = 'my_item.png',
+        unique = false,
+        useable = true,
+        shouldClose = true,
+        combinable = nil,
+        description = 'This is my custom item'
+    }
+}
+```
+
+## Common QBCore Modules
+
+### qb-target
+
+Targeting system for interaction:
+
+```lua
+-- Add model targeting
+exports['qb-target']:AddTargetModel('prop_atm_01', {
+    options = {
+        {
+            type = "client",
+            event = "qb-banking:client:openATM",
+            icon = "fas fa-credit-card",
+            label = "Use ATM",
+        }
+    },
+    distance = 2.0
+})
+```
+
+### qb-menu
+
+Menu system for options:
+
+```lua
+exports['qb-menu']:openMenu({
+    {
+        header = "Main Title",
+        isMenuHeader = true
+    },
+    {
+        header = "Option 1",
+        txt = "This is option 1",
+        params = {
+            event = "qb-menu:client:testMenu",
+            args = {
+                number = 1,
+            }
+        }
+    }
+})
+```
+
+### qb-input
+
+Input dialogs:
+
+```lua
+local dialog = exports['qb-input']:ShowInput({
+    header = "Test",
+    submitText = "Submit",
+    inputs = {
+        {
+            text = "Name",
+            name = "name",
+            type = "text",
+            isRequired = true
+        },
+        {
+            text = "Amount",
+            name = "amount",
+            type = "number",
+            isRequired = true
+        }
+    }
+})
+```
+
+## Best Practices
+
+### Performance Optimization
+
+1. **Resource Management**:
+   - Use `QBCore.Functions.CreateUseableItem()` for items
+   - Implement proper cleanup in resource stops
+   - Use caching for frequently accessed data
+
+2. **Event Handling**:
+   - Use callbacks instead of event ping-pong
+   - Implement rate limiting on critical events
+   - Use proper error handling
+
+3. **Database Operations**:
+   - Use prepared statements
+   - Batch updates when possible
+   - Implement caching for repeated queries
+
+### Security Considerations
+
+1. **Server-Side Validation**:
+   - Always validate data on the server side
+   - Don't trust client inputs
+   - Implement proper permission checks
+
+2. **Event Protection**:
+   - Use source validation in server events
+   - Implement rate limiting
+   - Check permissions before processing
+
+3. **Resource Protection**:
+   - Secure sensitive configurations
+   - Use server-only variables for critical data
+   - Implement anti-cheat measures
+
+## Common Issues
+
+### Player Data Not Loading
+
+```lua
+-- Solution: Wait for player loaded event
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    PlayerData = QBCore.Functions.GetPlayerData()
+    -- Now PlayerData is available
+end)
+```
+
+### Job Permissions
+
+```lua
+-- Solution: Check job properly
+local function hasJobPermission(jobName, minGrade)
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    if PlayerData.job.name == jobName and PlayerData.job.grade.level >= minGrade then
+        return true
+    end
+    return false
+end
+```
+
+### Item Handling
+
+```lua
+-- Solution: Properly check and handle items
+local function hasRequiredItems(items)
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    for item, amount in pairs(items) do
+        local hasItem = false
+        for _, invItem in pairs(PlayerData.items) do
+            if invItem.name == item and invItem.amount >= amount then
+                hasItem = true
+                break
+            end
+        end
+        if not hasItem then return false end
+    end
+    return true
+end
+```
+
+## Additional Resources
+
+- [QBCore Documentation](https://docs.qbcore.org/)
+- [QBCore GitHub](https://github.com/qbcore-framework)
+- [QBCore Discord](https://discord.gg/qbcore)
+- [QBCore Forums](https://forum.cfx.re/t/qbcore-framework/4116649)
+
+<Callout type="info">
+  For common errors and troubleshooting, see our [Framework Errors](/docs/cfx/common-errors/framework-errors) guide.
+</Callout>
+
+<Callout type="warning">
+  Always test your resources thoroughly before deploying to a production server. Breaking changes in QBCore updates can affect resource compatibility.
+</Callout>

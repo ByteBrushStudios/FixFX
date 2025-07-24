@@ -1,0 +1,586 @@
+---
+title: Database Tools
+description: Guide to using and optimizing database operations in CitizenFX.
+icon: "Database"
+---
+
+# Database Tools in CitizenFX
+
+Proper database management is crucial for any FiveM server. This guide covers the most popular database libraries, optimization techniques, and best practices.
+
+## Overview of Database Libraries
+
+### OxMySQL (Recommended)
+
+[OxMySQL](https://github.com/overextended/oxmysql) is the recommended database library for CitizenFX projects. It provides async functionality, improved performance, and better error handling.
+
+```lua
+-- Installation
+ensure oxmysql
+
+-- Example usage
+exports.oxmysql:execute('INSERT INTO users (identifier, name) VALUES (?, ?)', {
+    identifier,
+    name
+}, function(affectedRows)
+    print(affectedRows)
+end)
+```
+
+### MySQL-Async (Legacy)
+
+[MySQL-Async](https://github.com/brouznouf/fivem-mysql-async) was the standard for many years. While still functional, it's recommended to migrate to OxMySQL.
+
+```lua
+-- Installation
+ensure mysql-async
+
+-- Example usage
+MySQL.Async.execute('INSERT INTO users (identifier, name) VALUES (@identifier, @name)', {
+    ['@identifier'] = identifier,
+    ['@name'] = name
+}, function(affectedRows)
+    print(affectedRows)
+end)
+```
+
+### Ghmattimysql (Deprecated)
+
+[Ghmattimysql](https://github.com/GHMatti/ghmattimysql) is deprecated and should not be used in new projects.
+
+## Setting Up Your Database
+
+### Connection Configuration
+
+For OxMySQL, add to your `server.cfg`:
+
+```cfg
+set mysql_connection_string "mysql://username:password@localhost/database?charset=utf8mb4"
+```
+
+For MySQL-Async, configure in `config.json`:
+
+```json
+{
+  "server": "localhost",
+  "database": "your_database_name",
+  "user": "username",
+  "password": "password"
+}
+```
+
+### Database Structure Best Practices
+
+1. **Use Proper Indexes**:
+   ```sql
+   CREATE TABLE players (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       identifier VARCHAR(50) NOT NULL,
+       name VARCHAR(255) NOT NULL,
+       money INT NOT NULL DEFAULT 0,
+       INDEX idx_identifier (identifier)
+   );
+   ```
+
+2. **Use Appropriate Data Types**:
+   ```sql
+   CREATE TABLE vehicles (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       owner VARCHAR(50) NOT NULL,
+       plate VARCHAR(8) NOT NULL UNIQUE,
+       model VARCHAR(50) NOT NULL,
+       stored BOOLEAN DEFAULT TRUE,
+       fuel TINYINT UNSIGNED DEFAULT 100,
+       engine_health FLOAT DEFAULT 1000.0,
+       last_position JSON,
+       INDEX idx_owner (owner),
+       INDEX idx_plate (plate)
+   );
+   ```
+
+3. **Foreign Keys for Relationships**:
+   ```sql
+   CREATE TABLE player_items (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       player_id INT NOT NULL,
+       item_name VARCHAR(50) NOT NULL,
+       quantity INT NOT NULL DEFAULT 1,
+       FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE,
+       INDEX idx_player_id (player_id),
+       INDEX idx_item_name (item_name)
+   );
+   ```
+
+## Database Operations
+
+### Reading Data
+
+#### OxMySQL
+
+```lua
+-- Async/Await (Recommended)
+local function getPlayerData(identifier)
+    local result = exports.oxmysql:executeSync('SELECT * FROM players WHERE identifier = ?', {identifier})
+    return result[1]
+end
+
+-- Callback style
+exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {identifier}, function(result)
+    local player = result[1]
+    if player then
+        -- Process player data
+    end
+end)
+
+-- Promise style
+exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {identifier})
+.then(function(result)
+    local player = result[1]
+    if player then
+        -- Process player data
+    end
+end)
+```
+
+#### MySQL-Async
+
+```lua
+-- Async style
+MySQL.Async.fetchAll('SELECT * FROM players WHERE identifier = @identifier', {
+    ['@identifier'] = identifier
+}, function(result)
+    local player = result[1]
+    if player then
+        -- Process player data
+    end
+end)
+
+-- Sync style (not recommended)
+local result = MySQL.Sync.fetchAll('SELECT * FROM players WHERE identifier = @identifier', {
+    ['@identifier'] = identifier
+})
+local player = result[1]
+```
+
+### Writing Data
+
+#### OxMySQL
+
+```lua
+-- Insert data
+exports.oxmysql:execute('INSERT INTO players (identifier, name, money) VALUES (?, ?, ?)', {
+    identifier,
+    name,
+    startingMoney
+}, function(result)
+    print('Player created with ID: ' .. result.insertId)
+end)
+
+-- Update data
+exports.oxmysql:execute('UPDATE players SET money = ? WHERE identifier = ?', {
+    money,
+    identifier
+}, function(affectedRows)
+    if affectedRows > 0 then
+        print('Player money updated')
+    end
+end)
+```
+
+#### MySQL-Async
+
+```lua
+-- Insert data
+MySQL.Async.execute('INSERT INTO players (identifier, name, money) VALUES (@identifier, @name, @money)', {
+    ['@identifier'] = identifier,
+    ['@name'] = name,
+    ['@money'] = startingMoney
+}, function(affectedRows)
+    print('Player created')
+end)
+
+-- Update data
+MySQL.Async.execute('UPDATE players SET money = @money WHERE identifier = @identifier', {
+    ['@money'] = money,
+    ['@identifier'] = identifier
+}, function(affectedRows)
+    if affectedRows > 0 then
+        print('Player money updated')
+    end
+end)
+```
+
+### Transactions
+
+#### OxMySQL
+
+```lua
+-- Transaction example
+exports.oxmysql:transaction([
+    {
+        query = 'UPDATE players SET money = money - ? WHERE identifier = ?',
+        values = { amount, buyerIdentifier }
+    },
+    {
+        query = 'UPDATE players SET money = money + ? WHERE identifier = ?',
+        values = { amount, sellerIdentifier }
+    },
+    {
+        query = 'INSERT INTO transactions (buyer, seller, amount, item) VALUES (?, ?, ?, ?)',
+        values = { buyerIdentifier, sellerIdentifier, amount, itemName }
+    }
+], function(success)
+    if success then
+        print('Transaction completed successfully')
+    else
+        print('Transaction failed')
+    end
+end)
+```
+
+#### MySQL-Async
+
+```lua
+-- Transaction example
+MySQL.Async.transaction({
+    {
+        query = 'UPDATE players SET money = money - @amount WHERE identifier = @buyer',
+        values = { ['@amount'] = amount, ['@buyer'] = buyerIdentifier }
+    },
+    {
+        query = 'UPDATE players SET money = money + @amount WHERE identifier = @seller',
+        values = { ['@amount'] = amount, ['@seller'] = sellerIdentifier }
+    },
+    {
+        query = 'INSERT INTO transactions (buyer, seller, amount, item) VALUES (@buyer, @seller, @amount, @item)',
+        values = { ['@buyer'] = buyerIdentifier, ['@seller'] = sellerIdentifier, ['@amount'] = amount, ['@item'] = itemName }
+    }
+}, function(success)
+    if success then
+        print('Transaction completed successfully')
+    else
+        print('Transaction failed')
+    end
+end)
+```
+
+## Performance Optimization
+
+### Query Optimization
+
+1. **Use Prepared Statements**:
+   ```lua
+   -- Bad (String concatenation)
+   local query = 'SELECT * FROM players WHERE identifier = "' .. identifier .. '"'
+   
+   -- Good (Prepared statement)
+   local query = 'SELECT * FROM players WHERE identifier = ?'
+   local params = {identifier}
+   ```
+
+2. **Select Only Needed Columns**:
+   ```lua
+   -- Bad (Selecting everything)
+   exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {identifier})
+   
+   -- Good (Selecting only needed columns)
+   exports.oxmysql:execute('SELECT id, name, money FROM players WHERE identifier = ?', {identifier})
+   ```
+
+3. **Use Proper WHERE Clauses**:
+   ```lua
+   -- Bad (Full table scan)
+   exports.oxmysql:execute('SELECT * FROM players WHERE LOWER(name) = LOWER(?)', {playerName})
+   
+   -- Good (Using indexed column)
+   exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {identifier})
+   ```
+
+### Connection Pooling
+
+OxMySQL handles connection pooling automatically. For MySQL-Async, configure the pool size in `config.json`:
+
+```json
+{
+  "server": "localhost",
+  "database": "your_database_name",
+  "user": "username",
+  "password": "password",
+  "connectTimeout": 60000,
+  "acquireTimeout": 60000,
+  "pool": {
+    "min": 5,
+    "max": 20
+  }
+}
+```
+
+### Batch Operations
+
+```lua
+-- Bad (Multiple single inserts)
+for _, item in ipairs(items) do
+    exports.oxmysql:execute('INSERT INTO player_items (player_id, item_name, quantity) VALUES (?, ?, ?)', {
+        playerId, item.name, item.quantity
+    })
+end
+
+-- Good (Batch insert)
+local params = {}
+local placeholders = {}
+for _, item in ipairs(items) do
+    table.insert(params, playerId, item.name, item.quantity)
+    table.insert(placeholders, '(?, ?, ?)')
+end
+exports.oxmysql:execute('INSERT INTO player_items (player_id, item_name, quantity) VALUES ' .. table.concat(placeholders, ','), params)
+```
+
+### Caching Strategies
+
+```lua
+-- Implement basic caching
+local playerCache = {}
+
+local function getPlayerData(identifier)
+    -- Check cache first
+    if playerCache[identifier] and playerCache[identifier].timestamp > os.time() - 60 then
+        return playerCache[identifier].data
+    end
+    
+    -- Fetch from database if not in cache
+    local result = exports.oxmysql:executeSync('SELECT * FROM players WHERE identifier = ?', {identifier})
+    local player = result[1]
+    
+    -- Update cache
+    playerCache[identifier] = {
+        data = player,
+        timestamp = os.time()
+    }
+    
+    return player
+end
+
+-- Purge cache periodically
+CreateThread(function()
+    while true do
+        Wait(300000) -- 5 minutes
+        local now = os.time()
+        for identifier, cached in pairs(playerCache) do
+            if now - cached.timestamp > 300 then -- 5 minutes
+                playerCache[identifier] = nil
+            end
+        end
+    end
+end)
+```
+
+## Common Database Patterns
+
+### Repository Pattern
+
+```lua
+-- players.lua
+local PlayersRepository = {}
+
+function PlayersRepository.FindByIdentifier(identifier)
+    local result = exports.oxmysql:executeSync('SELECT * FROM players WHERE identifier = ?', {identifier})
+    return result[1]
+end
+
+function PlayersRepository.Create(identifier, name, money)
+    return exports.oxmysql:executeSync('INSERT INTO players (identifier, name, money) VALUES (?, ?, ?)', {
+        identifier, name, money
+    })
+end
+
+function PlayersRepository.UpdateMoney(identifier, money)
+    return exports.oxmysql:executeSync('UPDATE players SET money = ? WHERE identifier = ?', {
+        money, identifier
+    })
+end
+
+function PlayersRepository.Delete(identifier)
+    return exports.oxmysql:executeSync('DELETE FROM players WHERE identifier = ?', {identifier})
+end
+
+return PlayersRepository
+
+-- Usage
+local Players = require 'players'
+local player = Players.FindByIdentifier('steam:123456789')
+```
+
+### Data Models
+
+```lua
+-- player_model.lua
+local PlayerModel = {}
+
+function PlayerModel.new(data)
+    local self = data or {}
+    self.id = self.id or nil
+    self.identifier = self.identifier or nil
+    self.name = self.name or ''
+    self.money = self.money or 0
+    
+    function self:save()
+        if self.id then
+            -- Update existing
+            exports.oxmysql:execute('UPDATE players SET name = ?, money = ? WHERE id = ?', {
+                self.name, self.money, self.id
+            })
+        else
+            -- Create new
+            exports.oxmysql:execute('INSERT INTO players (identifier, name, money) VALUES (?, ?, ?)', {
+                self.identifier, self.name, self.money
+            }, function(result)
+                self.id = result.insertId
+            end)
+        end
+        return self
+    end
+    
+    function self:addMoney(amount)
+        self.money = self.money + amount
+        return self:save()
+    end
+    
+    return self
+end
+
+function PlayerModel.find(id)
+    local result = exports.oxmysql:executeSync('SELECT * FROM players WHERE id = ?', {id})
+    if result and result[1] then
+        return PlayerModel.new(result[1])
+    end
+    return nil
+end
+
+function PlayerModel.findByIdentifier(identifier)
+    local result = exports.oxmysql:executeSync('SELECT * FROM players WHERE identifier = ?', {identifier})
+    if result and result[1] then
+        return PlayerModel.new(result[1])
+    end
+    return nil
+end
+
+return PlayerModel
+
+-- Usage
+local PlayerModel = require 'player_model'
+local player = PlayerModel.findByIdentifier('steam:123456789')
+if player then
+    player:addMoney(1000)
+end
+```
+
+## Troubleshooting
+
+### Common Database Errors
+
+1. **Connection Issues**:
+   ```
+   Error: Connection to database failed
+   ```
+   
+   **Solutions**:
+   - Check if MySQL server is running
+   - Verify connection credentials
+   - Check if database exists
+   - Check network connectivity
+   - Verify port configuration
+
+2. **Query Errors**:
+   ```
+   Error: ER_BAD_FIELD_ERROR: Unknown column 'nonexistent' in 'field list'
+   ```
+   
+   **Solutions**:
+   - Verify table schema
+   - Check query syntax
+   - Make sure tables are created
+   - Update queries after schema changes
+
+3. **Performance Issues**:
+   ```
+   Warning: Slow query detected (took 5000ms)
+   ```
+   
+   **Solutions**:
+   - Add proper indexes
+   - Optimize queries
+   - Use async operations
+   - Implement caching
+   - Check for database locks
+
+### Debug Logging
+
+```lua
+-- Add to your server.cfg
+set mysql_debug 1  -- Enable debug logging for database operations
+
+-- Manually log queries
+local function logQuery(query, params, startTime)
+    local duration = (GetGameTimer() - startTime)
+    if duration > 100 then
+        print(string.format('Slow query detected (took %dms): %s', duration, query))
+    end
+end
+
+local startTime = GetGameTimer()
+exports.oxmysql:execute('SELECT * FROM players', {}, function()
+    logQuery('SELECT * FROM players', {}, startTime)
+end)
+```
+
+## Migration Guide
+
+### From MySQL-Async to OxMySQL
+
+```lua
+-- MySQL-Async syntax
+MySQL.Async.fetchAll('SELECT * FROM players WHERE identifier = @identifier', {
+    ['@identifier'] = identifier
+}, function(result)
+    -- Handle result
+end)
+
+-- OxMySQL equivalent
+exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {
+    identifier
+}, function(result)
+    -- Handle result
+end)
+```
+
+Comprehensive migration table:
+
+| MySQL-Async | OxMySQL |
+|-------------|---------|
+| `MySQL.Async.fetchAll` | `exports.oxmysql:execute` |
+| `MySQL.Async.fetchScalar` | `exports.oxmysql:scalar` |
+| `MySQL.Async.execute` | `exports.oxmysql:execute` |
+| `MySQL.Async.insert` | `exports.oxmysql:insert` |
+| `MySQL.Sync.fetchAll` | `exports.oxmysql:executeSync` |
+| `MySQL.Sync.fetchScalar` | `exports.oxmysql:scalarSync` |
+| `MySQL.Sync.execute` | `exports.oxmysql:executeSync` |
+| `MySQL.Sync.insert` | `exports.oxmysql:insertSync` |
+
+For parameter styles:
+- MySQL-Async: `@identifier`
+- OxMySQL: `?` (positional parameters)
+
+## Additional Resources
+
+- [OxMySQL Documentation](https://overextended.github.io/oxmysql/)
+- [MySQL Documentation](https://dev.mysql.com/doc/)
+- [SQL Optimization Guide](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)
+- [CitizenFX Framework Discussion](https://forum.cfx.re/t/release-oxmysql-a-mysql-resource/4755550)
+
+<Callout type="warning">
+  Avoid using synchronous database operations in production environments, as they can block the main thread and cause performance issues.
+</Callout>
+
+<Callout type="info">
+  For more information about server performance, see our [Server Optimization](/docs/cfx/performance/server-optimization) guide.
+</Callout>

@@ -1,0 +1,515 @@
+---
+title: Client-Side Development
+description: Complete guide to developing client-side scripts for FiveM resources.
+---
+
+# Client-Side Development
+
+Client-side scripts run on each player's game client and handle user interface, player input, local game state, and communication with the server.
+
+## Client Script Basics
+
+### Script Structure
+
+```lua
+-- client.lua
+local isMenuOpen = false
+local playerData = {}
+
+-- Event handlers
+RegisterNetEvent('myresource:updateData')
+AddEventHandler('myresource:updateData', function(data)
+    playerData = data
+end)
+
+-- Main thread
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        -- Main loop logic
+    end
+end)
+```
+
+### Player Management
+
+```lua
+-- Get local player
+local playerId = PlayerId()
+local playerPed = PlayerPedId()
+
+-- Player state
+local isPlayerDead = IsEntityDead(playerPed)
+local playerCoords = GetEntityCoords(playerPed)
+local playerHeading = GetEntityHeading(playerPed)
+
+-- Player info
+local playerName = GetPlayerName(playerId)
+local playerServerId = GetPlayerServerId(playerId)
+```
+
+### Vehicle Handling
+
+```lua
+-- Current vehicle
+local vehicle = GetVehiclePedIsIn(playerPed, false)
+local lastVehicle = GetVehiclePedIsIn(playerPed, true)
+
+-- Vehicle state
+local isInVehicle = IsPedInAnyVehicle(playerPed, false)
+local isDriver = GetPedInVehicleSeat(vehicle, -1) == playerPed
+
+-- Vehicle info
+local vehicleModel = GetEntityModel(vehicle)
+local vehicleSpeed = GetEntitySpeed(vehicle)
+local vehicleHealth = GetEntityHealth(vehicle)
+```
+
+## Event System
+
+### Registering Events
+
+```lua
+-- Server to client events
+RegisterNetEvent('myresource:notify')
+AddEventHandler('myresource:notify', function(message, type)
+    ShowNotification(message, type)
+end)
+
+-- Client to client events (local)
+AddEventHandler('myresource:localEvent', function(data)
+    print('Local event triggered:', json.encode(data))
+end)
+```
+
+### Triggering Events
+
+```lua
+-- Trigger server event
+TriggerServerEvent('myresource:saveData', playerData)
+
+-- Trigger client event (local)
+TriggerEvent('myresource:localEvent', {key = 'value'})
+
+-- Trigger event for all clients (from client)
+TriggerServerEvent('myresource:broadcastToAll', message)
+```
+
+### Event Best Practices
+
+```lua
+-- Use meaningful event names
+RegisterNetEvent('banking:updateBalance')  -- Good
+RegisterNetEvent('event1')                 -- Bad
+
+-- Validate event data
+AddEventHandler('banking:updateBalance', function(newBalance)
+    if type(newBalance) == 'number' and newBalance >= 0 then
+        balance = newBalance
+        UpdateUI()
+    end
+end)
+
+-- Clean up event handlers
+AddEventHandler('onResourceStop', function(resourceName)
+    if resourceName == GetCurrentResourceName() then
+        -- Cleanup code here
+    end
+end)
+```
+
+## User Interface
+
+### Key Input Handling
+
+```lua
+local Keys = {
+    ['E'] = 38,
+    ['F'] = 23,
+    ['G'] = 47,
+    ['H'] = 74
+}
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        
+        if IsControlJustPressed(0, Keys['E']) then
+            -- E key pressed
+            HandleInteraction()
+        end
+        
+        if IsControlPressed(0, Keys['F']) then
+            -- F key held down
+            HandleContinuousAction()
+        end
+    end
+end)
+```
+
+### Drawing Text and UI
+
+```lua
+-- Draw text on screen
+function DrawText3D(x, y, z, text)
+    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+    local pX, pY, pZ = table.unpack(GetGameplayCamCoords())
+    
+    SetTextScale(0.35, 0.35)
+    SetTextFont(4)
+    SetTextProportional(1)
+    SetTextColour(255, 255, 255, 215)
+    SetTextEntry("STRING")
+    SetTextCentre(1)
+    AddTextComponentString(text)
+    DrawText(_x, _y)
+end
+
+-- Show notification
+function ShowNotification(message, type)
+    SetNotificationTextEntry("STRING")
+    AddTextComponentString(message)
+    DrawNotification(false, false)
+end
+
+-- Help text
+function ShowHelpText(text)
+    SetTextComponentFormat("STRING")
+    AddTextComponentString(text)
+    DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+end
+```
+
+### Markers and Blips
+
+```lua
+-- Create marker
+function CreateMarker(type, x, y, z, r, g, b, a)
+    DrawMarker(type, x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+               1.0, 1.0, 1.0, r, g, b, a, false, true, 2, false, false, false, false)
+end
+
+-- Create blip
+function CreateBlipForCoord(x, y, z, sprite, color, text)
+    local blip = AddBlipForCoord(x, y, z)
+    SetBlipSprite(blip, sprite)
+    SetBlipDisplay(blip, 4)
+    SetBlipScale(blip, 1.0)
+    SetBlipColour(blip, color)
+    SetBlipAsShortRange(blip, true)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(text)
+    EndTextCommandSetBlipName(blip)
+    return blip
+end
+```
+
+## NUI Integration
+
+### Basic NUI Setup
+
+```lua
+-- Open NUI
+function OpenUI()
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = "show",
+        data = playerData
+    })
+end
+
+-- Close NUI
+function CloseUI()
+    SetNuiFocus(false, false)
+    SendNUIMessage({
+        action = "hide"
+    })
+end
+
+-- NUI Callbacks
+RegisterNUICallback('close', function(data, cb)
+    CloseUI()
+    cb('ok')
+end)
+
+RegisterNUICallback('saveSettings', function(data, cb)
+    TriggerServerEvent('myresource:saveSettings', data)
+    cb('ok')
+end)
+```
+
+### Advanced NUI Communication
+
+```lua
+-- Send data to NUI
+function UpdateNUIData(dataType, data)
+    SendNUIMessage({
+        action = "update",
+        type = dataType,
+        data = data
+    })
+end
+
+-- Handle multiple NUI callbacks
+local nuiCallbacks = {
+    ['getUserData'] = function(data, cb)
+        cb({
+            name = playerData.name,
+            money = playerData.money,
+            job = playerData.job
+        })
+    end,
+    
+    ['performAction'] = function(data, cb)
+        if data.action == 'withdraw' then
+            TriggerServerEvent('banking:withdraw', data.amount)
+        elseif data.action == 'deposit' then
+            TriggerServerEvent('banking:deposit', data.amount)
+        end
+        cb('ok')
+    end
+}
+
+-- Register all callbacks
+for name, callback in pairs(nuiCallbacks) do
+    RegisterNUICallback(name, callback)
+end
+```
+
+## Performance Optimization
+
+### Efficient Loops
+
+```lua
+-- Bad: Runs every frame
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)  -- Every frame
+        DoExpensiveOperation()
+    end
+end)
+
+-- Good: Runs every 100ms
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(100)  -- Every 100ms
+        DoExpensiveOperation()
+    end
+end)
+
+-- Best: Only when needed
+local shouldUpdate = false
+
+RegisterNetEvent('myresource:triggerUpdate')
+AddEventHandler('myresource:triggerUpdate', function()
+    shouldUpdate = true
+end)
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(100)
+        if shouldUpdate then
+            DoExpensiveOperation()
+            shouldUpdate = false
+        end
+    end
+end)
+```
+
+### Conditional Processing
+
+```lua
+-- Check conditions before expensive operations
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(1000)
+        
+        local playerPed = PlayerPedId()
+        if DoesEntityExist(playerPed) and not IsEntityDead(playerPed) then
+            local coords = GetEntityCoords(playerPed)
+            
+            -- Only process if player is in specific area
+            if GetDistanceBetweenCoords(coords, bankCoords, true) < 50.0 then
+                ProcessBankingLogic()
+            end
+        end
+    end
+end)
+```
+
+### Resource Cleanup
+
+```lua
+local createdObjects = {}
+local activeBlips = {}
+local runningThreads = {}
+
+-- Clean up on resource stop
+AddEventHandler('onResourceStop', function(resourceName)
+    if resourceName == GetCurrentResourceName() then
+        -- Delete created objects
+        for _, obj in pairs(createdObjects) do
+            if DoesEntityExist(obj) then
+                DeleteEntity(obj)
+            end
+        end
+        
+        -- Remove blips
+        for _, blip in pairs(activeBlips) do
+            if DoesBlipExist(blip) then
+                RemoveBlip(blip)
+            end
+        end
+        
+        -- Stop threads
+        for _, thread in pairs(runningThreads) do
+            if thread then
+                -- Thread cleanup logic
+            end
+        end
+    end
+end)
+```
+
+## Common Patterns
+
+### Distance-Based Interactions
+
+```lua
+local interactionPoints = {
+    {coords = vector3(0, 0, 0), text = "Press E to interact", action = function() end},
+    {coords = vector3(10, 10, 10), text = "Press F to use", action = function() end}
+}
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        
+        local playerCoords = GetEntityCoords(PlayerPedId())
+        local nearbyPoint = nil
+        
+        for _, point in pairs(interactionPoints) do
+            local distance = GetDistanceBetweenCoords(playerCoords, point.coords, true)
+            if distance < 2.0 then
+                nearbyPoint = point
+                break
+            end
+        end
+        
+        if nearbyPoint then
+            ShowHelpText(nearbyPoint.text)
+            if IsControlJustPressed(0, 38) then -- E key
+                nearbyPoint.action()
+            end
+        end
+    end
+end)
+```
+
+### State Management
+
+```lua
+local PlayerState = {
+    isInMenu = false,
+    isDead = false,
+    currentJob = nil,
+    money = 0
+}
+
+function UpdatePlayerState(key, value)
+    PlayerState[key] = value
+    TriggerEvent('playerState:updated', key, value)
+end
+
+-- Listen for state changes
+AddEventHandler('playerState:updated', function(key, value)
+    if key == 'isInMenu' then
+        SetNuiFocus(value, value)
+    elseif key == 'isDead' then
+        if value then
+            -- Handle death
+        else
+            -- Handle respawn
+        end
+    end
+end)
+```
+
+### Animation Handling
+
+```lua
+function PlayAnimation(dict, anim, duration, flag)
+    duration = duration or -1
+    flag = flag or 49
+    
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Citizen.Wait(1)
+    end
+    
+    TaskPlayAnim(PlayerPedId(), dict, anim, 8.0, 8.0, duration, flag, 0, false, false, false)
+    RemoveAnimDict(dict)
+end
+
+-- Usage
+PlayAnimation('mp_common', 'givetake1_a', 3000, 0)
+```
+
+## Debugging
+
+### Debug Functions
+
+```lua
+local DEBUG_MODE = true
+
+function DebugPrint(...)
+    if DEBUG_MODE then
+        print('[DEBUG]', ...)
+    end
+end
+
+function DrawDebugText(text, x, y)
+    if DEBUG_MODE then
+        SetTextFont(0)
+        SetTextProportional(1)
+        SetTextScale(0.0, 0.55)
+        SetTextColour(255, 255, 255, 255)
+        SetTextDropshadow(0, 0, 0, 0, 255)
+        SetTextEdge(2, 0, 0, 0, 150)
+        SetTextDropShadow()
+        SetTextOutline()
+        SetTextEntry("STRING")
+        AddTextComponentString(text)
+        DrawText(x, y)
+    end
+end
+
+-- Show player coordinates
+Citizen.CreateThread(function()
+    while DEBUG_MODE do
+        Citizen.Wait(0)
+        local coords = GetEntityCoords(PlayerPedId())
+        DrawDebugText(string.format("X: %.2f Y: %.2f Z: %.2f", coords.x, coords.y, coords.z), 0.0, 0.0)
+    end
+end)
+```
+
+### Error Handling
+
+```lua
+function SafeExecute(func, ...)
+    local success, result = pcall(func, ...)
+    if not success then
+        print('[ERROR]', result)
+        return false
+    end
+    return result
+end
+
+-- Usage
+SafeExecute(function()
+    -- Code that might error
+    local data = json.decode(someJsonString)
+    ProcessData(data)
+end)
+```

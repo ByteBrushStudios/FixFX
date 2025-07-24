@@ -1,0 +1,57 @@
+---
+title: Resource Optimization
+description: Best practices for creating and optimizing FiveM resources.
+icon: "Zap"
+---
+
+# Resource Optimization
+
+## Code Efficiency
+
+- Avoid tight loops (`while true do ... Wait(0) end`).
+- Use `Wait(500)` or higher for non-critical loops.
+- Cache frequently used values.
+
+## Event Handling
+
+- Use local events for intra-resource communication.
+- Avoid global events unless necessary.
+- Remove unused event handlers on resource stop.
+
+## Memory Management
+
+```lua
+-- Clean up entities on resource stop
+local entities = {}
+AddEventHandler('onResourceStop', function(res)
+    if res == GetCurrentResourceName() then
+        for _, ent in ipairs(entities) do
+            if DoesEntityExist(ent) then DeleteEntity(ent) end
+        end
+    end
+end)
+```
+
+## File Structure
+
+- Organize code into `client/`, `server/`, `shared/`.
+- Use `fxmanifest.lua` to declare dependencies and files.
+
+## NUI
+
+- Only load NUI when needed.
+- Unload/close NUI when not in use.
+
+## Profiling
+
+- Use `resmon` to monitor resource usage.
+- Use `profiler` for advanced analysis.
+
+## Testing
+
+- Test resources on a clean server.
+- Check for memory leaks and CPU spikes.
+
+## Links
+
+- [Resource Optimization Docs](https://docs.fivem.net/docs/scripting-manual/resource-optimization/)

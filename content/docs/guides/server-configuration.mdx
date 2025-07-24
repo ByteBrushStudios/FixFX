@@ -1,0 +1,620 @@
+---
+title: Server Configuration
+description: Complete guide to configuring and optimizing your FiveM server.
+icon: "Settings"
+---
+
+# Server Configuration
+
+Proper server configuration is essential for optimal performance, security, and player experience. This comprehensive guide covers all aspects of FiveM server configuration.
+
+## Basic Server Configuration
+
+### server.cfg Overview
+
+The `server.cfg` file is the main configuration file for your FiveM server. It contains all essential settings and convars.
+
+```bash
+# server.cfg - Basic template
+
+# Server identity
+sv_hostname "My FiveM Server"
+sv_projectName "My Server Project"
+sv_projectDesc "A great FiveM server"
+
+# License key (required)
+sv_licenseKey "YOUR_LICENSE_KEY_HERE"
+
+# Server settings
+sv_maxclients 32
+sv_endpointprivacy true
+sv_enforceGameBuild 2944
+
+# Network settings
+endpoint_add_tcp "0.0.0.0:30120"
+endpoint_add_udp "0.0.0.0:30120"
+
+# Resource loading
+ensure mapmanager
+ensure chat
+ensure spawnmanager
+ensure sessionmanager
+ensure hardcap
+ensure rconlog
+
+# Custom resources
+ensure my_custom_resource
+
+# Admin settings
+add_ace group.admin command allow
+add_ace group.admin command.quit deny
+add_principal identifier.license:YOUR_LICENSE admin
+
+# Convars
+set sv_scriptHookAllowed 0
+set sv_debugqueue true
+```
+
+### Essential Configuration Sections
+
+#### Server Identity
+```bash
+# Server display information
+sv_hostname "^2My Server ^7| ^3Custom RP ^7| ^1discord.gg/myserver"
+sv_projectName "MyServerRP"
+sv_projectDesc "Custom roleplay server with unique features"
+
+# Server tags (for server browser)
+sets tags "roleplay,custom,economy,jobs"
+sets banner_detail "https://myserver.com/banner.png"
+sets banner_connecting "https://myserver.com/connecting.png"
+```
+
+#### Network Configuration
+```bash
+# Primary endpoints
+endpoint_add_tcp "0.0.0.0:30120"
+endpoint_add_udp "0.0.0.0:30120"
+
+# Additional endpoints (for multiple IPs)
+endpoint_add_tcp "192.168.1.100:30120"
+endpoint_add_udp "192.168.1.100:30120"
+
+# IPv6 support
+endpoint_add_tcp "[::]:30120"
+endpoint_add_udp "[::]:30120"
+```
+
+#### Player Limits
+```bash
+# Maximum players
+sv_maxclients 64
+
+# Reserved slots for staff
+sv_endpointprivacy true
+
+# Queue system
+sv_debugqueue true
+sv_queueWaitTime 5000
+```
+
+## Advanced Configuration
+
+### Performance Optimization
+
+```bash
+# Network optimization
+set sv_netRateLimit 1000000
+set sv_netRateLimitPerClient 50000
+set sv_maxStateBagRate 1000
+set sv_maxStateBagSize 1024
+
+# Scripting performance
+set sv_scriptRuntimeLimit 60000
+set sv_scriptTimeoutLimit 30000
+
+# OneSync configuration (if using)
+set onesync on
+set onesync_enableInfinity 1
+set onesync_enableBeyond 1
+set onesync_population 1
+
+# Entity limits
+set sv_entityLockdownMode relaxed
+```
+
+### Security Settings
+
+```bash
+# Anti-cheat and security
+set sv_authMaxVariance 1
+set sv_authMinTrust 5
+set sv_requestParanoia 1
+set sv_filterRequestControl 1
+set sv_scriptHookAllowed 0
+
+# Rate limiting
+set sv_requestRateLimit 10
+set sv_requestRateLimitBurst 50
+
+# File verification
+set sv_enforceGameBuild 2944
+set sv_rejectInvalidLicense 1
+```
+
+### Database Configuration
+
+```bash
+# MySQL/MariaDB connection
+set mysql_connection_string "mysql://username:password@localhost/database_name?charset=utf8mb4"
+
+# Alternative format
+set mysql_connection_string "server=localhost;database=fivem;userid=username;password=password;charset=utf8mb4"
+
+# Connection pooling
+set mysql_slow_query_warning 150
+set mysql_debug 0
+```
+
+## Resource Management
+
+### Loading Order
+
+```bash
+# Core resources (load first)
+ensure mapmanager
+ensure chat
+ensure spawnmanager
+ensure sessionmanager
+ensure hardcap
+ensure rconlog
+
+# Framework (load early)
+ensure es_extended
+# or
+ensure qb-core
+
+# Dependencies
+ensure oxmysql
+ensure ox_lib
+
+# Custom resources (load after dependencies)
+ensure my_banking_system
+ensure my_job_system
+ensure my_vehicle_shop
+
+# UI/Client resources (load last)
+ensure my_hud
+ensure my_menu_system
+```
+
+### Resource Configuration
+
+```bash
+# Resource-specific convars
+set inventory_slots 50
+set banking_start_money 5000
+set vehicle_shop_tax_rate 0.1
+
+# Feature flags
+set enable_voice_chat 1
+set enable_phone_system 1
+set enable_housing 1
+```
+
+## Permission System
+
+### ACE Permissions
+
+```bash
+# Admin group
+add_ace group.admin command allow
+add_ace group.admin command.stop deny
+add_ace group.admin command.restart deny
+
+# Moderator group
+add_ace group.mod command.kick allow
+add_ace group.mod command.ban allow
+add_ace group.mod command.unban allow
+
+# VIP group
+add_ace group.vip command.car allow
+add_ace group.vip command.tp allow
+
+# Assign players to groups
+add_principal identifier.license:LICENSE_HERE admin
+add_principal identifier.steam:STEAM_ID_HERE mod
+add_principal identifier.discord:DISCORD_ID_HERE vip
+```
+
+### Custom Permissions
+
+```bash
+# Banking permissions
+add_ace group.admin banking.withdraw allow
+add_ace group.admin banking.deposit allow
+add_ace group.admin banking.transfer allow
+
+# Vehicle permissions
+add_ace group.mod vehicle.spawn allow
+add_ace group.mod vehicle.delete allow
+
+# Property permissions
+add_ace group.admin property.manage allow
+```
+
+### Principal Types
+
+```bash
+# Steam ID
+add_principal identifier.steam:110000100000000 admin
+
+# License (Rockstar)
+add_principal identifier.license:0123456789abcdef admin
+
+# Discord ID
+add_principal identifier.discord:123456789012345678 admin
+
+# FiveM ID
+add_principal identifier.fivem:123456 admin
+
+# IP Address (not recommended for permanent perms)
+add_principal identifier.ip:192.168.1.100 admin
+```
+
+## Monitoring and Logging
+
+### Console Logging
+
+```bash
+# Enable detailed logging
+con_miniconChannels script:trace*
+con_addOutputDevice file:logs/server_%date%.log
+
+# Log filters
+con_miniconTagFilter script:*
+con_miniconLevelFilter trace
+
+# RCON logging
+ensure rconlog
+set rcon_password "your_secure_rcon_password"
+```
+
+### Performance Monitoring
+
+```bash
+# Enable performance metrics
+set sv_perfmon 1
+set sv_perfmon_interval 5000
+
+# Resource monitoring
+set sv_resourceMonitoring 1
+set sv_resourceUsageEnforcement 1
+```
+
+### Error Handling
+
+```bash
+# Error reporting
+set sv_errorReporting 1
+set sv_errorFormat detailed
+
+# Crash handling
+set sv_crashHandling 1
+set sv_crashDumpEnabled 1
+```
+
+## Advanced Features
+
+### OneSync Configuration
+
+```bash
+# Enable OneSync (required for 32+ players)
+set onesync on
+
+# OneSync Infinity (up to 255 players)
+set onesync_enableInfinity 1
+
+# OneSync Beyond (up to 1024 players, experimental)
+set onesync_enableBeyond 1
+
+# Population control
+set onesync_population 1
+set onesync_workaround763185 1
+
+# Distance culling
+set onesync_distanceCullVehicles 1000.0
+set onesync_distanceCullPeds 500.0
+set onesync_distanceCullObjects 1000.0
+```
+
+### Voice Chat Configuration
+
+```bash
+# Built-in voice chat
+ensure voice-chat
+
+# Voice settings
+setr voice_useSendingRangeOnly true
+setr voice_defaultCycle "GRAVE"
+setr voice_defaultVolume 0.3
+
+# 3D voice
+setr voice_use3dAudio true
+setr voice_useLegacyAudio false
+
+# External voice (TeamSpeak/Discord)
+set voice_external_server "ts3server://voice.myserver.com"
+```
+
+### Anti-Cheat Integration
+
+```bash
+# EasyAntiCheat (if available)
+set sv_eac 1
+set sv_eacCheckInterval 30
+
+# Custom anti-cheat
+ensure anticheat_system
+set anticheat_strict_mode 1
+set anticheat_ban_duration 0  # 0 = permanent
+
+# Detection settings
+set detect_speed_hacks 1
+set detect_teleport_hacks 1
+set detect_weapon_spawning 1
+```
+
+## Development Configuration
+
+### Development Server Setup
+
+```bash
+# Development-specific settings
+sv_hostname "^1[DEV] ^7My Server Development"
+sv_maxclients 8
+
+# Developer tools
+set sv_scriptHookAllowed 1  # Only for development!
+set sv_debugqueue true
+set developer 1
+
+# Faster resource loading
+set sv_resourceLoadTimeout 60000
+set sv_resourceStartTimeout 30000
+
+# Disable some security for development
+set sv_authMaxVariance 99999
+set sv_authMinTrust 0
+```
+
+### Hot Reloading
+
+```bash
+# Enable file watching (development only)
+set sv_watchdog 1
+set sv_watchdogTimeout 10000
+
+# Resource auto-restart on file changes
+set sv_hotReload 1
+```
+
+### Debug Configuration
+
+```bash
+# Detailed error reporting
+set sv_errorReporting 2
+set sv_errorFormat json
+
+# Script debugging
+set sv_scriptDebugLevel 3
+set sv_scriptErrorReporting 1
+
+# Network debugging
+set sv_netDebug 1
+set sv_netTrafficMetrics 1
+```
+
+## Production Hardening
+
+### Security Hardening
+
+```bash
+# Strict security settings
+set sv_authMaxVariance 1
+set sv_authMinTrust 5
+set sv_requestParanoia 2
+set sv_filterRequestControl 2
+
+# Disable risky features
+set sv_scriptHookAllowed 0
+set sv_debugqueue false
+set developer 0
+
+# Rate limiting (aggressive)
+set sv_requestRateLimit 5
+set sv_requestRateLimitBurst 20
+set sv_netRateLimit 500000
+set sv_netRateLimitPerClient 25000
+```
+
+### Performance Tuning
+
+```bash
+# Optimized network settings
+set sv_maxStateBagRate 500
+set sv_maxStateBagSize 512
+set sv_entityLockdownMode strict
+
+# Script limits
+set sv_scriptRuntimeLimit 30000
+set sv_scriptTimeoutLimit 15000
+
+# Memory management
+set sv_resourceUsageEnforcement strict
+set sv_resourceMemoryLimit 128
+```
+
+### Backup Integration
+
+```bash
+# Automated backups
+ensure backup_system
+set backup_interval 300000  # 5 minutes
+set backup_retain_count 144  # 12 hours worth
+set backup_compress 1
+
+# Database backups
+set db_backup_enabled 1
+set db_backup_interval 1800000  # 30 minutes
+```
+
+## Multi-Server Configuration
+
+### Load Balancer Setup
+
+```bash
+# Server 1 configuration
+sv_hostname "My Server #1"
+endpoint_add_tcp "192.168.1.10:30120"
+endpoint_add_udp "192.168.1.10:30120"
+
+# Shared database
+set mysql_connection_string "mysql://user:pass@192.168.1.100/shared_db"
+
+# Cross-server communication
+set server_id 1
+set cluster_name "main_cluster"
+```
+
+### Shared Resources
+
+```bash
+# Shared resource server
+set resource_server "https://resources.myserver.com/"
+set resource_cache_enabled 1
+set resource_cache_size 1024
+
+# CDN configuration
+set static_assets_url "https://cdn.myserver.com/"
+```
+
+## Configuration Validation
+
+### Validation Script
+
+```bash
+#!/bin/bash
+# validate_config.sh
+
+CONFIG_FILE="server.cfg"
+ERRORS=0
+
+echo "Validating FiveM server configuration..."
+
+# Check for required settings
+check_setting() {
+    local setting="$1"
+    local description="$2"
+    
+    if grep -q "^$setting" "$CONFIG_FILE"; then
+        echo "✅ $description"
+    else
+        echo "❌ $description - Missing: $setting"
+        ((ERRORS++))
+    fi
+}
+
+# Required settings
+check_setting "sv_licenseKey" "License Key"
+check_setting "sv_hostname" "Server Hostname"
+check_setting "sv_maxclients" "Max Clients"
+check_setting "endpoint_add_tcp" "TCP Endpoint"
+check_setting "endpoint_add_udp" "UDP Endpoint"
+
+# Check for common mistakes
+if grep -q "YOUR_LICENSE_KEY_HERE" "$CONFIG_FILE"; then
+    echo "❌ Default license key detected"
+    ((ERRORS++))
+fi
+
+if grep -q "sv_scriptHookAllowed 1" "$CONFIG_FILE"; then
+    echo "⚠️  Script hook is enabled (security risk)"
+fi
+
+echo ""
+if [ $ERRORS -eq 0 ]; then
+    echo "✅ Configuration validation passed"
+else
+    echo "❌ Configuration validation failed with $ERRORS errors"
+    exit 1
+fi
+```
+
+### Configuration Templates
+
+#### Basic Roleplay Server
+
+```bash
+# Basic RP Server Configuration
+sv_hostname "^2RP Server ^7| ^3Custom Scripts ^7| ^1discord.gg/myserver"
+sv_maxclients 32
+sv_endpointprivacy true
+
+# Essential resources
+ensure es_extended
+ensure ox_lib
+ensure oxmysql
+ensure ox_inventory
+
+# Roleplay features
+ensure esx_society
+ensure esx_jobs
+ensure esx_property
+ensure esx_vehicleshop
+
+# Quality of life
+ensure esx_menu_default
+ensure esx_notify
+ensure mythic_notify
+```
+
+#### Racing Server
+
+```bash
+# Racing Server Configuration
+sv_hostname "^3Racing Server ^7| ^2Custom Tracks ^7| ^1Fast Cars"
+sv_maxclients 64
+set onesync on
+
+# Racing resources
+ensure racing_system
+ensure custom_vehicles
+ensure race_tracks
+ensure leaderboards
+
+# Performance optimization
+set sv_netRateLimit 2000000
+set sv_netRateLimitPerClient 100000
+```
+
+#### Freeroam Server
+
+```bash
+# Freeroam Server Configuration
+sv_hostname "^4Freeroam ^7| ^3All Vehicles ^7| ^2No Rules"
+sv_maxclients 128
+set onesync_enableInfinity 1
+
+# Freeroam features
+ensure freeroam_spawns
+ensure vehicle_spawner
+ensure weapon_spawner
+ensure teleport_system
+
+# Minimal restrictions
+set sv_authMaxVariance 10
+set sv_authMinTrust 1
+```
+
+This comprehensive configuration guide covers all aspects of setting up and optimizing a FiveM server, from basic settings to advanced production configurations.

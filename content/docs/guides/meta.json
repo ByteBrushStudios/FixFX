@@ -1,0 +1,13 @@
+{
+    "root": true,
+    "pages": [
+        "index",
+        "database-setup",
+        "server-artifacts",
+        "server-configuration",
+        "resource-installation",
+        "backup-recovery",
+        "security-permissions",
+        "database-tools"
+    ]
+}

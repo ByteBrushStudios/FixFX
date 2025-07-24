@@ -1,6 +1,8 @@
 {
   "pages": [
     "core",
-    "cfx"
+    "cfx",
+    "frameworks",
+    "guides"
   ]
 }

@@ -1,0 +1,8 @@
+{
+    "pages": [
+        "client-optimization",
+        "server-optimization",
+        "resource-optimization",
+        "database-optimization"
+    ]
+}

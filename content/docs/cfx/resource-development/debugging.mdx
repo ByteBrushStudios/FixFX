@@ -1,0 +1,647 @@
+---
+title: Debugging & Testing
+description: Complete guide to debugging, testing, and optimizing FiveM resources.
+---
+
+# Debugging & Testing
+
+Effective debugging and testing are crucial for developing reliable FiveM resources. This guide covers tools, techniques, and best practices for identifying and fixing issues.
+
+## Debugging Tools
+
+### Console Logging
+
+```lua
+-- Basic logging
+print('Debug message')
+print('Player data:', json.encode(playerData))
+
+-- Conditional logging
+local DEBUG_MODE = true
+
+function DebugLog(message, ...)
+    if DEBUG_MODE then
+        print(string.format('[DEBUG] ' .. message, ...))
+    end
+end
+
+-- Usage
+DebugLog('Player %s joined with money: %d', playerName, playerMoney)
+```
+
+### Citizen.Trace
+
+```lua
+-- More detailed logging
+Citizen.Trace('Resource started successfully\n')
+
+-- Trace with formatting
+function TraceLog(level, message, ...)
+    local formatted = string.format(message, ...)
+    Citizen.Trace(string.format('[%s] %s\n', level, formatted))
+end
+
+-- Usage
+TraceLog('INFO', 'Player connected: %s', playerName)
+TraceLog('ERROR', 'Database connection failed: %s', error)
+```
+
+### Resource Monitor (resmon)
+
+```lua
+-- In-game command to check resource performance
+-- Type 'resmon' in F8 console to see:
+-- - CPU usage per resource
+-- - Memory usage
+-- - Tick time
+-- - Thread count
+
+-- Optimize based on resmon data
+Citizen.CreateThread(function()
+    while true do
+        -- Bad: Runs every frame (high CPU usage)
+        Citizen.Wait(0)
+        DoExpensiveOperation()
+    end
+end)
+
+-- Good: Runs every 100ms
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(100)
+        DoExpensiveOperation()
+    end
+end)
+```
+
+### Profiler
+
+```lua
+-- Built-in profiler for detailed performance analysis
+-- Type 'profiler' in F8 console
+
+-- Profile specific functions
+function ExpensiveFunction()
+    profiler.startTimer('ExpensiveFunction')
+    
+    -- Your code here
+    for i = 1, 1000 do
+        DoSomething()
+    end
+    
+    profiler.stopTimer('ExpensiveFunction')
+end
+```
+
+## Client-Side Debugging
+
+### Drawing Debug Information
+
+```lua
+local DEBUG_MODE = true
+
+function DrawDebugInfo()
+    if not DEBUG_MODE then return end
+    
+    local playerPed = PlayerPedId()
+    local coords = GetEntityCoords(playerPed)
+    local heading = GetEntityHeading(playerPed)
+    local vehicle = GetVehiclePedIsIn(playerPed, false)
+    
+    -- Draw coordinates
+    DrawText2D(0.01, 0.01, string.format('Coords: %.2f, %.2f, %.2f', coords.x, coords.y, coords.z))
+    DrawText2D(0.01, 0.04, string.format('Heading: %.2f', heading))
+    
+    -- Draw vehicle info if in vehicle
+    if vehicle ~= 0 then
+        local speed = GetEntitySpeed(vehicle) * 2.236936 -- Convert to MPH
+        local model = GetEntityModel(vehicle)
+        DrawText2D(0.01, 0.07, string.format('Vehicle: %s', GetDisplayNameFromVehicleModel(model)))
+        DrawText2D(0.01, 0.10, string.format('Speed: %.2f MPH', speed))
+    end
+end
+
+function DrawText2D(x, y, text)
+    SetTextFont(0)
+    SetTextProportional(1)
+    SetTextScale(0.25, 0.25)
+    SetTextColour(255, 255, 255, 255)
+    SetTextDropshadow(0, 0, 0, 0, 255)
+    SetTextEdge(2, 0, 0, 0, 150)
+    SetTextDropShadow()
+    SetTextOutline()
+    SetTextEntry("STRING")
+    AddTextComponentString(text)
+    DrawText(x, y)
+end
+
+-- Main debug loop
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        DrawDebugInfo()
+    end
+end)
+```
+
+### Debug Commands
+
+```lua
+-- Create debug commands for testing
+if DEBUG_MODE then
+    RegisterCommand('debugtp', function(source, args)
+        if #args >= 3 then
+            local x, y, z = tonumber(args[1]), tonumber(args[2]), tonumber(args[3])
+            SetEntityCoords(PlayerPedId(), x, y, z)
+            print('Teleported to:', x, y, z)
+        end
+    end)
+    
+    RegisterCommand('debugveh', function(source, args)
+        local model = args[1] or 'adder'
+        local hash = GetHashKey(model)
+        
+        RequestModel(hash)
+        while not HasModelLoaded(hash) do
+            Citizen.Wait(1)
+        end
+        
+        local coords = GetEntityCoords(PlayerPedId())
+        local vehicle = CreateVehicle(hash, coords.x, coords.y, coords.z, 0.0, true, false)
+        TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
+        
+        SetModelAsNoLongerNeeded(hash)
+        print('Spawned vehicle:', model)
+    end)
+    
+    RegisterCommand('debugmoney', function(source, args)
+        local amount = tonumber(args[1]) or 1000
+        TriggerServerEvent('debug:addMoney', amount)
+        print('Added money:', amount)
+    end)
+end
+```
+
+### Visual Debug Helpers
+
+```lua
+local debugMarkers = {}
+
+function AddDebugMarker(coords, color, duration)
+    table.insert(debugMarkers, {
+        coords = coords,
+        color = color or {255, 0, 0, 200},
+        endTime = GetGameTimer() + (duration or 5000)
+    })
+end
+
+function DrawDebugMarkers()
+    for i = #debugMarkers, 1, -1 do
+        local marker = debugMarkers[i]
+        
+        if GetGameTimer() > marker.endTime then
+            table.remove(debugMarkers, i)
+        else
+            DrawMarker(1, marker.coords.x, marker.coords.y, marker.coords.z,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      1.0, 1.0, 1.0,
+                      marker.color[1], marker.color[2], marker.color[3], marker.color[4],
+                      false, true, 2, false, false, false, false)
+        end
+    end
+end
+
+-- Usage
+AddDebugMarker(GetEntityCoords(PlayerPedId()), {0, 255, 0, 200}, 10000)
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        if DEBUG_MODE then
+            DrawDebugMarkers()
+        end
+    end
+end)
+```
+
+## Server-Side Debugging
+
+### Error Handling
+
+```lua
+function SafeExecute(func, ...)
+    local success, result = pcall(func, ...)
+    if not success then
+        print('^1[ERROR]^7 Function execution failed:', result)
+        print('^3[DEBUG]^7 Stack trace:', debug.traceback())
+        return false, result
+    end
+    return true, result
+end
+
+-- Usage
+local success, data = SafeExecute(function()
+    return json.decode(jsonString)
+end)
+
+if not success then
+    print('Failed to decode JSON:', data)
+    return
+end
+```
+
+### Database Debugging
+
+```lua
+-- MySQL debugging
+function ExecuteQueryWithDebug(query, parameters, callback)
+    local startTime = GetGameTimer()
+    
+    MySQL.Async.fetchAll(query, parameters, function(result)
+        local endTime = GetGameTimer()
+        local executionTime = endTime - startTime
+        
+        print(string.format('[DB] Query executed in %dms: %s', executionTime, query))
+        
+        if executionTime > 1000 then
+            print('^3[WARNING]^7 Slow query detected!')
+        end
+        
+        if callback then
+            callback(result)
+        end
+    end)
+end
+
+-- Usage
+ExecuteQueryWithDebug('SELECT * FROM users WHERE identifier = ?', {identifier}, function(result)
+    print('User data:', json.encode(result))
+end)
+```
+
+### Player State Debugging
+
+```lua
+local DEBUG_PLAYERS = {}
+
+function StartPlayerDebugging(src)
+    DEBUG_PLAYERS[src] = {
+        events = {},
+        lastSeen = GetGameTimer(),
+        totalEvents = 0
+    }
+end
+
+function LogPlayerEvent(src, eventName, data)
+    if DEBUG_PLAYERS[src] then
+        table.insert(DEBUG_PLAYERS[src].events, {
+            event = eventName,
+            data = data,
+            timestamp = GetGameTimer()
+        })
+        
+        DEBUG_PLAYERS[src].totalEvents = DEBUG_PLAYERS[src].totalEvents + 1
+        DEBUG_PLAYERS[src].lastSeen = GetGameTimer()
+        
+        -- Keep only last 50 events
+        if #DEBUG_PLAYERS[src].events > 50 then
+            table.remove(DEBUG_PLAYERS[src].events, 1)
+        end
+    end
+end
+
+function GetPlayerDebugInfo(src)
+    return DEBUG_PLAYERS[src]
+end
+
+-- Debug command
+RegisterCommand('playerdebug', function(source, args)
+    if source == 0 then -- Console only
+        local playerId = tonumber(args[1])
+        if playerId and DEBUG_PLAYERS[playerId] then
+            local info = DEBUG_PLAYERS[playerId]
+            print(string.format('Player %d - Total Events: %d, Last Seen: %d ms ago',
+                               playerId, info.totalEvents, GetGameTimer() - info.lastSeen))
+            
+            print('Recent events:')
+            for _, event in ipairs(info.events) do
+                print(string.format('  %s: %s (%d ms ago)',
+                                   event.event, json.encode(event.data),
+                                   GetGameTimer() - event.timestamp))
+            end
+        end
+    end
+end, true)
+```
+
+## Testing Strategies
+
+### Unit Testing
+
+```lua
+-- Simple unit testing framework
+local Tests = {}
+
+function Tests.assertEqual(actual, expected, message)
+    if actual ~= expected then
+        error(string.format('Assertion failed: %s. Expected %s, got %s',
+                           message or 'values should be equal', tostring(expected), tostring(actual)))
+    end
+end
+
+function Tests.assertTrue(condition, message)
+    if not condition then
+        error(string.format('Assertion failed: %s', message or 'condition should be true'))
+    end
+end
+
+function Tests.runTest(name, testFunc)
+    print(string.format('Running test: %s', name))
+    
+    local success, error = pcall(testFunc)
+    if success then
+        print(string.format('✓ Test passed: %s', name))
+    else
+        print(string.format('✗ Test failed: %s - %s', name, error))
+    end
+end
+
+-- Example tests
+Tests.runTest('Money calculation', function()
+    local player = {money = 1000}
+    local result = AddMoney(player, 500)
+    Tests.assertEqual(result.money, 1500, 'Money should be added correctly')
+end)
+
+Tests.runTest('Distance calculation', function()
+    local distance = GetDistance({x=0, y=0, z=0}, {x=3, y=4, z=0})
+    Tests.assertEqual(distance, 5.0, 'Distance should be calculated correctly')
+end)
+```
+
+### Integration Testing
+
+```lua
+-- Test player joining process
+function TestPlayerJoin()
+    local testIdentifier = 'test:player123'
+    local testName = 'TestPlayer'
+    
+    -- Simulate player join
+    local success = SafeExecute(function()
+        local playerData = CreateNewPlayer(testIdentifier, testName)
+        Tests.assertTrue(playerData ~= nil, 'Player data should be created')
+        Tests.assertEqual(playerData.name, testName, 'Player name should match')
+        Tests.assertEqual(playerData.money, 5000, 'Default money should be 5000')
+        
+        -- Test data persistence
+        SavePlayerData(playerData.id, playerData)
+        local loaded = LoadPlayerData(testIdentifier)
+        Tests.assertEqual(loaded.name, testName, 'Loaded data should match saved data')
+        
+        -- Cleanup test data
+        DeleteTestPlayer(testIdentifier)
+    end)
+    
+    if not success then
+        print('Player join test failed')
+    else
+        print('Player join test passed')
+    end
+end
+```
+
+### Load Testing
+
+```lua
+-- Simulate multiple players for performance testing
+function SimulatePlayerLoad(playerCount)
+    print(string.format('Simulating load for %d players...', playerCount))
+    
+    local startTime = GetGameTimer()
+    
+    for i = 1, playerCount do
+        local fakeId = 9000 + i
+        local identifier = 'test:loadtest' .. i
+        
+        -- Simulate player data operations
+        CreateTestPlayer(fakeId, identifier)
+        UpdatePlayerMoney(fakeId, math.random(1000, 10000))
+        SavePlayerData(fakeId)
+    end
+    
+    local endTime = GetGameTimer()
+    local totalTime = endTime - startTime
+    
+    print(string.format('Load test completed in %d ms (%.2f ms per player)',
+                       totalTime, totalTime / playerCount))
+    
+    -- Cleanup
+    for i = 1, playerCount do
+        local fakeId = 9000 + i
+        DeleteTestPlayer(fakeId)
+    end
+end
+```
+
+## Performance Monitoring
+
+### Resource Performance Tracking
+
+```lua
+local PerformanceTracker = {
+    metrics = {},
+    startTimes = {}
+}
+
+function PerformanceTracker.start(name)
+    PerformanceTracker.startTimes[name] = GetGameTimer()
+end
+
+function PerformanceTracker.stop(name)
+    local startTime = PerformanceTracker.startTimes[name]
+    if not startTime then return end
+    
+    local duration = GetGameTimer() - startTime
+    
+    if not PerformanceTracker.metrics[name] then
+        PerformanceTracker.metrics[name] = {
+            totalTime = 0,
+            calls = 0,
+            maxTime = 0,
+            minTime = math.huge
+        }
+    end
+    
+    local metric = PerformanceTracker.metrics[name]
+    metric.totalTime = metric.totalTime + duration
+    metric.calls = metric.calls + 1
+    metric.maxTime = math.max(metric.maxTime, duration)
+    metric.minTime = math.min(metric.minTime, duration)
+    
+    PerformanceTracker.startTimes[name] = nil
+end
+
+function PerformanceTracker.getReport()
+    for name, metric in pairs(PerformanceTracker.metrics) do
+        local avgTime = metric.totalTime / metric.calls
+        print(string.format('%s: %d calls, avg: %.2fms, max: %.2fms, min: %.2fms',
+                           name, metric.calls, avgTime, metric.maxTime, metric.minTime))
+    end
+end
+
+-- Usage
+function ExpensiveFunction()
+    PerformanceTracker.start('ExpensiveFunction')
+    
+    -- Your code here
+    Citizen.Wait(10)
+    
+    PerformanceTracker.stop('ExpensiveFunction')
+end
+
+-- Generate report command
+RegisterCommand('perfreport', function()
+    PerformanceTracker.getReport()
+end, true)
+```
+
+### Memory Monitoring
+
+```lua
+local MemoryMonitor = {
+    lastCheck = 0,
+    checkInterval = 30000, -- 30 seconds
+    threshold = 100 -- MB
+}
+
+function MemoryMonitor.check()
+    local now = GetGameTimer()
+    if now - MemoryMonitor.lastCheck < MemoryMonitor.checkInterval then
+        return
+    end
+    
+    local memUsage = collectgarbage('count') / 1024 -- Convert to MB
+    
+    if memUsage > MemoryMonitor.threshold then
+        print(string.format('^3[WARNING]^7 High memory usage: %.2f MB', memUsage))
+        
+        -- Force garbage collection
+        collectgarbage('collect')
+        
+        local afterGC = collectgarbage('count') / 1024
+        print(string.format('^2[INFO]^7 Memory after GC: %.2f MB (freed %.2f MB)',
+                           afterGC, memUsage - afterGC))
+    end
+    
+    MemoryMonitor.lastCheck = now
+end
+
+-- Monitor memory in main thread
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(1000)
+        MemoryMonitor.check()
+    end
+end)
+```
+
+## Common Issues and Solutions
+
+### Event Handling Issues
+
+```lua
+-- Problem: Event not firing
+-- Solution: Check event registration
+
+-- Wrong
+AddEventHandler('myevent', function() end) -- Missing RegisterNetEvent
+
+-- Correct
+RegisterNetEvent('myevent')
+AddEventHandler('myevent', function() end)
+```
+
+### Threading Issues
+
+```lua
+-- Problem: Blocking main thread
+-- Solution: Use proper waits
+
+-- Wrong
+Citizen.CreateThread(function()
+    while true do
+        -- No wait - blocks main thread
+        DoSomething()
+    end
+end)
+
+-- Correct
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(100) -- Proper wait
+        DoSomething()
+    end
+end)
+```
+
+### Memory Leaks
+
+```lua
+-- Problem: Not cleaning up references
+local players = {}
+
+AddEventHandler('playerDropped', function()
+    local src = source
+    -- Clean up player data
+    players[src] = nil
+end)
+
+-- Problem: Infinite table growth
+local eventLog = {}
+
+RegisterNetEvent('logevent')
+AddEventHandler('logevent', function(data)
+    table.insert(eventLog, data)
+    
+    -- Solution: Limit table size
+    if #eventLog > 1000 then
+        table.remove(eventLog, 1)
+    end
+end)
+```
+
+### Database Connection Issues
+
+```lua
+-- Retry mechanism for database operations
+function RetryDatabaseOperation(operation, maxRetries, delay)
+    maxRetries = maxRetries or 3
+    delay = delay or 1000
+    
+    local function attempt(retryCount)
+        local success, result = pcall(operation)
+        
+        if success then
+            return result
+        else
+            print(string.format('Database operation failed (attempt %d/%d): %s',
+                               retryCount, maxRetries, result))
+            
+            if retryCount < maxRetries then
+                Citizen.Wait(delay)
+                return attempt(retryCount + 1)
+            else
+                error('Database operation failed after ' .. maxRetries .. ' attempts')
+            end
+        end
+    end
+    
+    return attempt(1)
+end
+
+-- Usage
+RetryDatabaseOperation(function()
+    MySQL.Sync.execute('INSERT INTO users VALUES (?, ?)', {name, identifier})
+end, 3, 2000)
+```

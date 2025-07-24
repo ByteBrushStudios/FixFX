@@ -1,0 +1,760 @@
+---
+title: Resource Installation
+description: Complete guide to installing, managing, and configuring FiveM resources.
+icon: "Package"
+---
+
+# Resource Installation
+
+Proper resource installation and management is crucial for a stable and feature-rich FiveM server. This guide covers everything from basic installation to advanced dependency management.
+
+## Understanding FiveM Resources
+
+### Resource Types
+
+**Core Resources**
+- Essential for server operation
+- Include: mapmanager, chat, spawnmanager, sessionmanager
+- Usually not modified or replaced
+
+**Framework Resources**
+- Provide foundation for other resources
+- Examples: ESX, QBCore, vRP
+- Define player systems, jobs, economy
+
+**Feature Resources**
+- Add specific functionality
+- Examples: banking, vehicles, jobs, housing
+- Build upon framework resources
+
+**Utility Resources**
+- Provide tools and libraries
+- Examples: ox_lib, mysql-async, screenshot-basic
+- Used by other resources
+
+### Resource Structure
+
+```
+resource_name/
+├── fxmanifest.lua          # Resource manifest (required)
+├── client.lua              # Client-side script
+├── server.lua              # Server-side script
+├── shared.lua              # Shared code
+├── config.lua              # Configuration file
+├── README.md               # Documentation
+├── sql/                    # Database files
+│   └── install.sql
+├── html/                   # NUI files
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── locales/                # Language files
+    ├── en.lua
+    └── es.lua
+```
+
+## Pre-Installation Planning
+
+### Compatibility Assessment
+
+Before installing any resource, assess compatibility:
+
+```bash
+# Check framework compatibility
+Framework: ESX, QBCore, vRP, Standalone?
+Version: Which version is supported?
+Dependencies: What other resources are required?
+
+# Check server requirements
+OneSync: Required for this resource?
+Player Count: Any limitations?
+Performance: Resource-intensive features?
+
+# Check conflicts
+Existing Resources: Will this conflict with installed resources?
+File Conflicts: Any overlapping file names?
+Database: Any table name conflicts?
+```
+
+### Dependency Management
+
+Create a dependency checklist:
+
+```yaml
+# dependency_check.yml
+resource_name: esx_banking
+dependencies:
+  required:
+    - es_extended
+    - oxmysql
+  optional:
+    - esx_society
+    - esx_jobs
+conflicts:
+  - other_banking_system
+  - legacy_banking
+database_tables:
+  - bank_accounts
+  - bank_transactions
+```
+
+## Installation Methods
+
+### Manual Installation
+
+#### Download and Extract
+
+```bash
+# Windows
+# 1. Download resource from source
+# 2. Extract to resources folder
+# 3. Rename folder if needed (remove version numbers)
+
+# Linux
+cd /opt/fivem/resources
+wget https://github.com/author/resource/archive/main.zip
+unzip main.zip
+mv resource-main resource_name
+```
+
+#### Verify Structure
+
+```bash
+# Check required files
+ls -la resource_name/
+# Should contain fxmanifest.lua at minimum
+
+# Check manifest syntax
+lua -l fxmanifest.lua  # Basic syntax check
+```
+
+#### Configure Resource
+
+```lua
+-- Edit config.lua
+Config = {}
+Config.Framework = 'esx'  -- or 'qbcore', 'vrp'
+Config.Database = 'oxmysql'  -- or 'mysql-async'
+Config.Locale = 'en'
+
+-- Database configuration
+Config.MySQL = {
+    host = 'localhost',
+    database = 'fivem',
+    username = 'fivem_user',
+    password = 'password'
+}
+```
+
+### Git Installation
+
+#### Clone Repository
+
+```bash
+# Clone directly to resources folder
+cd /opt/fivem/resources
+git clone https://github.com/author/resource.git resource_name
+
+# Or clone and move
+git clone https://github.com/author/resource.git
+mv resource resource_name
+```
+
+#### Manage Updates
+
+```bash
+# Update resource
+cd /opt/fivem/resources/resource_name
+git pull origin main
+
+# Check for conflicts
+git status
+git diff
+
+# Handle conflicts if any
+git merge --abort  # If conflicts are too complex
+```
+
+### Automated Installation
+
+#### Resource Manager Script
+
+```bash
+#!/bin/bash
+# install_resource.sh
+
+RESOURCE_URL="$1"
+RESOURCE_NAME="$2"
+RESOURCES_DIR="/opt/fivem/resources"
+
+if [ -z "$RESOURCE_URL" ] || [ -z "$RESOURCE_NAME" ]; then
+    echo "Usage: $0 <resource_url> <resource_name>"
+    exit 1
+fi
+
+echo "Installing resource: $RESOURCE_NAME"
+
+# Create temporary directory
+TEMP_DIR=$(mktemp -d)
+cd "$TEMP_DIR"
+
+# Download resource
+if [[ "$RESOURCE_URL" == *.git ]]; then
+    git clone "$RESOURCE_URL" "$RESOURCE_NAME"
+else
+    wget "$RESOURCE_URL" -O resource.zip
+    unzip resource.zip
+    mv resource-* "$RESOURCE_NAME"
+fi
+
+# Verify installation
+if [ ! -f "$RESOURCE_NAME/fxmanifest.lua" ]; then
+    echo "Error: Invalid resource structure"
+    exit 1
+fi
+
+# Install to resources directory
+mv "$RESOURCE_NAME" "$RESOURCES_DIR/"
+
+# Set permissions
+chown -R fivem:fivem "$RESOURCES_DIR/$RESOURCE_NAME"
+
+# Cleanup
+rm -rf "$TEMP_DIR"
+
+echo "Resource installed successfully: $RESOURCE_NAME"
+echo "Don't forget to add 'ensure $RESOURCE_NAME' to server.cfg"
+```
+
+## Database Setup
+
+### SQL File Execution
+
+```bash
+# Using MySQL command line
+mysql -u fivem_user -p fivem < resource_name/sql/install.sql
+
+# Using HeidiSQL (Windows GUI)
+# 1. Connect to database
+# 2. Select fivem database
+# 3. Tools -> Load SQL file
+# 4. Select install.sql and execute
+
+# Using phpMyAdmin
+# 1. Select fivem database
+# 2. Go to Import tab
+# 3. Choose install.sql file
+# 4. Click Go
+```
+
+### Automated Database Setup
+
+```lua
+-- auto_install.lua (server-side)
+local function installDatabase()
+    local sqlFile = LoadResourceFile(GetCurrentResourceName(), 'sql/install.sql')
+    
+    if not sqlFile then
+        print('No SQL file found for ' .. GetCurrentResourceName())
+        return
+    end
+    
+    -- Split queries by semicolon
+    local queries = {}
+    for query in sqlFile:gmatch("[^;]+") do
+        query = query:gsub("^%s*(.-)%s*$", "%1")  -- Trim whitespace
+        if query ~= "" then
+            table.insert(queries, query)
+        end
+    end
+    
+    -- Execute queries
+    for i, query in ipairs(queries) do
+        exports.oxmysql:execute(query, {}, function(result)
+            if result then
+                print(string.format('Query %d/%d executed successfully', i, #queries))
+            else
+                print(string.format('Query %d/%d failed: %s', i, #queries, query))
+            end
+        end)
+    end
+end
+
+-- Auto-install on first start
+CreateThread(function()
+    Wait(5000)  -- Wait for database connection
+    
+    -- Check if already installed
+    exports.oxmysql:query('SHOW TABLES LIKE "resource_table"', {}, function(result)
+        if not result or #result == 0 then
+            print('Installing database for ' .. GetCurrentResourceName())
+            installDatabase()
+        else
+            print('Database already installed for ' .. GetCurrentResourceName())
+        end
+    end)
+end)
+```
+
+## Configuration Management
+
+### Framework Integration
+
+#### ESX Integration
+
+```lua
+-- For ESX resources
+ESX = exports['es_extended']:getSharedObject()
+
+-- Alternative (older method)
+ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+-- Player loading
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+    -- Initialize player data
+end)
+```
+
+#### QBCore Integration
+
+```lua
+-- For QBCore resources
+QBCore = exports['qb-core']:GetCoreObject()
+
+-- Player loading
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+    -- Initialize player data
+end)
+```
+
+### Environment-Specific Configuration
+
+```lua
+-- config.lua with environment detection
+Config = {}
+
+-- Detect environment
+local serverName = GetConvar('sv_hostname', '')
+local isDevelopment = serverName:find('%[DEV%]') or GetConvar('developer', '0') == '1'
+
+if isDevelopment then
+    -- Development settings
+    Config.Debug = true
+    Config.Webhooks = {
+        enabled = false
+    }
+    Config.Database = {
+        slow_query_warning = 50
+    }
+else
+    -- Production settings
+    Config.Debug = false
+    Config.Webhooks = {
+        enabled = true,
+        url = 'https://discord.com/api/webhooks/...'
+    }
+    Config.Database = {
+        slow_query_warning = 150
+    }
+end
+
+-- Common settings
+Config.Framework = 'esx'
+Config.Locale = GetConvar('locale', 'en')
+```
+
+## Resource Management
+
+### Loading Order Management
+
+```bash
+# server.cfg - Proper loading order
+
+# 1. Core resources
+ensure mapmanager
+ensure chat
+ensure spawnmanager
+ensure sessionmanager
+ensure hardcap
+ensure rconlog
+
+# 2. Dependencies
+ensure oxmysql
+ensure ox_lib
+
+# 3. Framework
+ensure es_extended
+
+# 4. Framework extensions
+ensure esx_menu_default
+ensure esx_menu_dialog
+ensure esx_menu_list
+
+# 5. Society system (if using ESX)
+ensure esx_society
+
+# 6. Core gameplay resources
+ensure esx_basicneeds
+ensure esx_identity
+ensure esx_license
+
+# 7. Job system
+ensure esx_jobs
+ensure esx_joblisting
+
+# 8. Property system
+ensure esx_property
+ensure esx_realestateagent
+
+# 9. Vehicle system
+ensure esx_vehicleshop
+ensure esx_vehiclelock
+
+# 10. Economy resources
+ensure esx_banking
+ensure esx_atm
+
+# 11. Custom resources
+ensure my_custom_hud
+ensure my_custom_menu
+```
+
+### Resource States
+
+```lua
+-- Check resource states programmatically
+local function checkResourceDependencies()
+    local dependencies = {
+        'es_extended',
+        'oxmysql',
+        'ox_lib'
+    }
+    
+    for _, resource in ipairs(dependencies) do
+        local state = GetResourceState(resource)
+        if state ~= 'started' then
+            print(string.format('Dependency %s is %s', resource, state))
+            return false
+        end
+    end
+    
+    return true
+end
+
+-- Wait for dependencies
+CreateThread(function()
+    while not checkResourceDependencies() do
+        Wait(1000)
+    end
+    
+    print('All dependencies loaded, starting resource...')
+    -- Initialize resource here
+end)
+```
+
+### Dynamic Resource Loading
+
+```lua
+-- server.lua - Dynamic resource management
+RegisterCommand('loadresource', function(source, args)
+    if source == 0 then  -- Console only
+        local resourceName = args[1]
+        if resourceName then
+            StartResource(resourceName)
+            print('Started resource: ' .. resourceName)
+        end
+    end
+end, true)
+
+RegisterCommand('unloadresource', function(source, args)
+    if source == 0 then  -- Console only
+        local resourceName = args[1]
+        if resourceName then
+            StopResource(resourceName)
+            print('Stopped resource: ' .. resourceName)
+        end
+    end
+end, true)
+
+RegisterCommand('restartresource', function(source, args)
+    if source == 0 then  -- Console only
+        local resourceName = args[1]
+        if resourceName then
+            StopResource(resourceName)
+            Wait(1000)
+            StartResource(resourceName)
+            print('Restarted resource: ' .. resourceName)
+        end
+    end
+end, true)
+```
+
+## Advanced Installation
+
+### Multi-Server Resource Sync
+
+```bash
+#!/bin/bash
+# sync_resources.sh
+
+MASTER_SERVER="/opt/fivem/master/resources"
+SERVERS=(
+    "/opt/fivem/server1/resources"
+    "/opt/fivem/server2/resources"
+    "/opt/fivem/server3/resources"
+)
+
+RESOURCE_NAME="$1"
+
+if [ -z "$RESOURCE_NAME" ]; then
+    echo "Usage: $0 <resource_name>"
+    exit 1
+fi
+
+if [ ! -d "$MASTER_SERVER/$RESOURCE_NAME" ]; then
+    echo "Resource not found in master server: $RESOURCE_NAME"
+    exit 1
+fi
+
+echo "Syncing resource: $RESOURCE_NAME"
+
+for server in "${SERVERS[@]}"; do
+    echo "Syncing to: $server"
+    
+    # Stop resource on target server
+    # This would require connecting to each server's console
+    
+    # Sync files
+    rsync -av --delete "$MASTER_SERVER/$RESOURCE_NAME/" "$server/$RESOURCE_NAME/"
+    
+    # Set permissions
+    chown -R fivem:fivem "$server/$RESOURCE_NAME"
+    
+    # Restart resource on target server
+    # This would require connecting to each server's console
+done
+
+echo "Resource sync completed"
+```
+
+### Resource Validation
+
+```lua
+-- validate_resource.lua
+local function validateResource(resourceName)
+    local issues = {}
+    
+    -- Check manifest
+    local manifest = LoadResourceFile(resourceName, 'fxmanifest.lua')
+    if not manifest then
+        table.insert(issues, 'Missing fxmanifest.lua')
+        return issues
+    end
+    
+    -- Check for common issues
+    if not manifest:find('fx_version') then
+        table.insert(issues, 'Missing fx_version in manifest')
+    end
+    
+    if not manifest:find('game') then
+        table.insert(issues, 'Missing game specification in manifest')
+    end
+    
+    -- Check dependencies
+    local dependencies = {}
+    for dep in manifest:gmatch('dependency%s+[\'"]([^\'"]+)[\'"]') do
+        table.insert(dependencies, dep)
+    end
+    
+    for dep in manifest:gmatch('dependencies%s+{([^}]+)}') do
+        for subdep in dep:gmatch('[\'"]([^\'"]+)[\'"]') do
+            table.insert(dependencies, subdep)
+        end
+    end
+    
+    for _, dep in ipairs(dependencies) do
+        if GetResourceState(dep) ~= 'started' then
+            table.insert(issues, string.format('Dependency not started: %s', dep))
+        end
+    end
+    
+    -- Check file existence
+    local files = {}
+    for file in manifest:gmatch('client_script%s+[\'"]([^\'"]+)[\'"]') do
+        table.insert(files, file)
+    end
+    for file in manifest:gmatch('server_script%s+[\'"]([^\'"]+)[\'"]') do
+        table.insert(files, file)
+    end
+    for file in manifest:gmatch('shared_script%s+[\'"]([^\'"]+)[\'"]') do
+        table.insert(files, file)
+    end
+    
+    for _, file in ipairs(files) do
+        if not LoadResourceFile(resourceName, file) then
+            table.insert(issues, string.format('Missing file: %s', file))
+        end
+    end
+    
+    return issues
+end
+
+-- Validate all resources
+RegisterCommand('validate_resources', function()
+    print('Validating all resources...')
+    
+    for i = 0, GetNumResources() - 1 do
+        local resourceName = GetResourceByFindIndex(i)
+        local issues = validateResource(resourceName)
+        
+        if #issues > 0 then
+            print(string.format('Issues found in %s:', resourceName))
+            for _, issue in ipairs(issues) do
+                print('  - ' .. issue)
+            end
+        else
+            print(string.format('✅ %s - OK', resourceName))
+        end
+    end
+end, true)
+```
+
+## Troubleshooting Installation
+
+### Common Issues
+
+**Resource Not Starting**
+```bash
+# Check console output
+tail -f server-console.log
+
+# Check specific resource
+restart resource_name
+
+# Check dependencies
+ensure dependency_name
+restart resource_name
+```
+
+**Database Connection Issues**
+```lua
+-- Test database connection
+exports.oxmysql:query('SELECT 1 as test', {}, function(result)
+    if result then
+        print('Database connection OK')
+    else
+        print('Database connection failed')
+    end
+end)
+```
+
+**File Permission Issues**
+```bash
+# Fix permissions (Linux)
+sudo chown -R fivem:fivem /opt/fivem/resources/
+sudo chmod -R 755 /opt/fivem/resources/
+
+# Check specific resource
+ls -la /opt/fivem/resources/resource_name/
+```
+
+### Installation Verification
+
+```bash
+#!/bin/bash
+# verify_installation.sh
+
+RESOURCE_NAME="$1"
+RESOURCES_DIR="/opt/fivem/resources"
+
+if [ -z "$RESOURCE_NAME" ]; then
+    echo "Usage: $0 <resource_name>"
+    exit 1
+fi
+
+RESOURCE_PATH="$RESOURCES_DIR/$RESOURCE_NAME"
+
+echo "Verifying installation of: $RESOURCE_NAME"
+
+# Check if resource exists
+if [ ! -d "$RESOURCE_PATH" ]; then
+    echo "❌ Resource directory not found"
+    exit 1
+fi
+
+# Check manifest
+if [ ! -f "$RESOURCE_PATH/fxmanifest.lua" ]; then
+    echo "❌ fxmanifest.lua not found"
+    exit 1
+fi
+
+# Check file permissions
+if [ ! -r "$RESOURCE_PATH/fxmanifest.lua" ]; then
+    echo "❌ fxmanifest.lua not readable"
+    exit 1
+fi
+
+# Check for SQL files
+if [ -d "$RESOURCE_PATH/sql" ]; then
+    echo "ℹ️  SQL files found - make sure to run database installation"
+fi
+
+# Check for config files
+if [ -f "$RESOURCE_PATH/config.lua" ]; then
+    echo "ℹ️  Config file found - review configuration settings"
+fi
+
+echo "✅ Installation verification completed"
+echo "Don't forget to:"
+echo "  1. Add 'ensure $RESOURCE_NAME' to server.cfg"
+echo "  2. Install database tables if required"
+echo "  3. Configure the resource settings"
+echo "  4. Restart the server or start the resource"
+```
+
+### Resource Health Check
+
+```lua
+-- health_check.lua (run as admin command)
+RegisterCommand('health_check', function(source)
+    if source ~= 0 then return end  -- Console only
+    
+    print('=== Resource Health Check ===')
+    
+    local totalResources = GetNumResources()
+    local startedResources = 0
+    local stoppedResources = 0
+    local errorResources = {}
+    
+    for i = 0, totalResources - 1 do
+        local resourceName = GetResourceByFindIndex(i)
+        local state = GetResourceState(resourceName)
+        
+        if state == 'started' then
+            startedResources = startedResources + 1
+        elseif state == 'stopped' then
+            stoppedResources = stoppedResources + 1
+        else
+            table.insert(errorResources, {name = resourceName, state = state})
+        end
+    end
+    
+    print(string.format('Total resources: %d', totalResources))
+    print(string.format('Started: %d', startedResources))
+    print(string.format('Stopped: %d', stoppedResources))
+    
+    if #errorResources > 0 then
+        print('Resources with issues:')
+        for _, resource in ipairs(errorResources) do
+            print(string.format('  %s: %s', resource.name, resource.state))
+        end
+    end
+    
+    print('=== End Health Check ===')
+end, true)
+```
+
+This comprehensive guide covers all aspects of resource installation, from basic manual installation to advanced automated deployment and validation systems.

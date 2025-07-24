@@ -1,0 +1,51 @@
+---
+title: Client Optimization
+description: Techniques to improve client-side performance for FiveM players.
+icon: "Monitor"
+---
+
+# Client Optimization
+
+## Graphics Settings
+
+- Lower texture, shadow, and reflection quality in the FiveM graphics menu.
+- Disable unnecessary post-processing effects.
+- Set population density sliders to minimum for best FPS.
+
+## Resource Usage
+
+- Avoid running unnecessary client-side scripts.
+- Use `resmon` to identify heavy resources.
+- Remove or optimize scripts that cause FPS drops.
+
+## Entity Management
+
+```lua
+-- Remove unused peds/vehicles
+for _, entity in ipairs(GetGamePool('CVehicle')) do
+    if not IsEntityOnScreen(entity) then
+        DeleteEntity(entity)
+    end
+end
+```
+
+## NUI Optimization
+
+- Use lightweight HTML/CSS/JS for NUI.
+- Minimize NUI callbacks and DOM updates.
+- Avoid large images and heavy JS libraries.
+
+## Streaming Assets
+
+- Compress textures and models.
+- Use LODs for custom models.
+- Remove unused streamed files.
+
+## Troubleshooting
+
+- Use F8 console to check for errors.
+- Monitor FPS with built-in overlay.
+- Disable overlays (Discord, Steam) if experiencing stutters.
+
+## Useful Commands
+

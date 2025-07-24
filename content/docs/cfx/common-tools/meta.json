@@ -1,5 +1,4 @@
 {
-  "defaultOpen": true,
   "pages": [
     "resource-monitor",
     "profiler",

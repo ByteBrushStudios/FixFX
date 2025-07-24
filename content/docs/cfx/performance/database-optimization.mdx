@@ -1,0 +1,56 @@
+---
+title: Database Optimization
+description: Optimize your database queries and structure for improved server performance.
+icon: "Database"
+---
+
+# Database Optimization
+
+## Use Indexes
+
+```sql
+CREATE INDEX idx_identifier ON players(identifier);
+CREATE INDEX idx_plate ON vehicles(plate);
+```
+
+## Query Optimization
+
+- Select only needed columns.
+- Use prepared statements.
+- Avoid `SELECT *` in production code.
+
+## Batch Operations
+
+```lua
+-- Batch insert example (OxMySQL)
+local params, placeholders = {}, {}
+for _, item in ipairs(items) do
+    table.insert(params, item.id, item.name)
+    table.insert(placeholders, '(?, ?)')
+end
+exports.oxmysql:execute('INSERT INTO items (id, name) VALUES ' .. table.concat(placeholders, ','), params)
+```
+
+## Async Operations
+
+- Use async DB calls (`MySQL.Async`, `oxmysql:execute`) to avoid blocking the server thread.
+- Never use sync DB calls in production.
+
+## Connection Pooling
+
+- Use OxMySQL or configure pool size in MySQL-Async.
+
+## Maintenance
+
+- Regularly run `OPTIMIZE TABLE` and `ANALYZE TABLE`.
+- Backup your database frequently.
+
+## Troubleshooting
+
+- Check server logs for slow query warnings.
+- Use `mysql_debug 1` in server.cfg for query logging.
+
+## Links
+
+- [OxMySQL Docs](https://overextended.github.io/oxmysql/)
+- [MySQL Optimization](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)

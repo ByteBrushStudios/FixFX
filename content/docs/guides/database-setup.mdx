@@ -1,0 +1,596 @@
+---
+title: Database Setup & Configuration
+description: Complete guide to setting up and configuring databases for FiveM servers.
+icon: "Database"
+---
+
+# Database Setup & Configuration
+
+A properly configured database is essential for any FiveM server. This guide covers everything from initial setup to advanced optimization techniques for MySQL/MariaDB databases.
+
+## Database Options
+
+### MySQL vs MariaDB
+
+**MySQL**
+- Industry standard, widely supported
+- Excellent performance and reliability
+- Extensive documentation and community
+- Commercial support available
+
+**MariaDB (Recommended)**
+- Fork of MySQL with enhanced features
+- Better performance in many scenarios
+- Fully open-source with no licensing concerns
+- Drop-in replacement for MySQL
+
+## Installation Guide
+
+### Windows Installation
+
+#### Installing MariaDB on Windows
+
+1. **Download MariaDB**
+   ```
+   Visit: https://mariadb.org/download/
+   Select: Windows x64 MSI Package
+   ```
+
+2. **Run the Installer**
+   - Choose "Custom" installation
+   - Enable "UTF8 as default server's character set"
+   - Set a strong root password
+   - Configure as Windows Service
+
+3. **Configure MariaDB**
+   ```sql
+   # Edit my.ini file (usually in C:\Program Files\MariaDB\data\)
+   [mysqld]
+   character-set-server=utf8mb4
+   collation-server=utf8mb4_unicode_ci
+   default-time-zone='+00:00'
+   max_connections=500
+   innodb_buffer_pool_size=1G
+   ```
+
+#### Installing MySQL on Windows
+
+1. **Download MySQL Installer**
+   ```
+   Visit: https://dev.mysql.com/downloads/installer/
+   Download: MySQL Installer for Windows
+   ```
+
+2. **Installation Steps**
+   - Choose "Developer Default" setup
+   - Configure MySQL Server with strong root password
+   - Create additional user accounts as needed
+   - Start MySQL as Windows Service
+
+### Linux Installation (Ubuntu/Debian)
+
+#### MariaDB Installation
+
+```bash
+# Update package list
+sudo apt update
+
+# Install MariaDB
+sudo apt install mariadb-server mariadb-client
+
+# Secure installation
+sudo mysql_secure_installation
+
+# Start and enable service
+sudo systemctl start mariadb
+sudo systemctl enable mariadb
+```
+
+#### MySQL Installation
+
+```bash
+# Update package list
+sudo apt update
+
+# Install MySQL
+sudo apt install mysql-server
+
+# Secure installation
+sudo mysql_secure_installation
+
+# Start and enable service
+sudo systemctl start mysql
+sudo systemctl enable mysql
+```
+
+### Docker Installation
+
+#### MariaDB with Docker
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: fivem-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: your_strong_password
+      MYSQL_DATABASE: fivem
+      MYSQL_USER: fivem_user
+      MYSQL_PASSWORD: fivem_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./config/mariadb.cnf:/etc/mysql/conf.d/custom.cnf
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  mariadb_data:
+```
+
+```bash
+# Start the container
+docker-compose up -d
+
+# Check container status
+docker-compose ps
+
+# View logs
+docker-compose logs mariadb
+```
+
+## Database Configuration
+
+### Optimal Configuration for FiveM
+
+#### my.cnf / my.ini Configuration
+
+```ini
+[mysqld]
+# Character set and collation
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+default-time-zone='+00:00'
+
+# Connection settings
+max_connections=500
+max_user_connections=50
+connect_timeout=60
+wait_timeout=600
+interactive_timeout=600
+
+# Memory settings (adjust based on available RAM)
+innodb_buffer_pool_size=1G          # 70-80% of available RAM
+innodb_buffer_pool_instances=4
+innodb_log_file_size=256M
+key_buffer_size=256M
+tmp_table_size=64M
+max_heap_table_size=64M
+
+# Performance settings
+innodb_flush_log_at_trx_commit=2
+innodb_flush_method=O_DIRECT
+innodb_file_per_table=1
+innodb_stats_on_metadata=0
+
+# Query cache (MySQL only, deprecated in MySQL 8.0+)
+query_cache_type=1
+query_cache_size=64M
+query_cache_limit=2M
+
+# Binary logging (for replication/backups)
+log-bin=mysql-bin
+binlog_format=ROW
+expire_logs_days=7
+
+# Error logging
+log-error=/var/log/mysql/error.log
+slow_query_log=1
+slow_query_log_file=/var/log/mysql/slow.log
+long_query_time=2
+```
+
+### User Creation and Permissions
+
+```sql
+-- Connect as root
+mysql -u root -p
+
+-- Create database
+CREATE DATABASE fivem CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Create user for FiveM server
+CREATE USER 'fivem_user'@'localhost' IDENTIFIED BY 'strong_password_here';
+
+-- Grant necessary permissions
+GRANT SELECT, INSERT, UPDATE, DELETE ON fivem.* TO 'fivem_user'@'localhost';
+
+-- For remote connections (if needed)
+CREATE USER 'fivem_user'@'%' IDENTIFIED BY 'strong_password_here';
+GRANT SELECT, INSERT, UPDATE, DELETE ON fivem.* TO 'fivem_user'@'%';
+
+-- Apply changes
+FLUSH PRIVILEGES;
+
+-- Verify user creation
+SELECT User, Host FROM mysql.user WHERE User = 'fivem_user';
+```
+
+## FiveM Database Integration
+
+### OxMySQL Setup (Recommended)
+
+1. **Download and Install**
+   ```bash
+   # Download latest release from GitHub
+   # https://github.com/overextended/oxmysql/releases
+   
+   # Extract to resources folder
+   # Ensure it's named exactly 'oxmysql'
+   ```
+
+2. **Configuration**
+   ```lua
+   -- Add to server.cfg
+   ensure oxmysql
+   
+   -- Database connection string
+   set mysql_connection_string "mysql://fivem_user:password@localhost/fivem?charset=utf8mb4"
+   
+   -- Alternative format
+   set mysql_connection_string "server=localhost;database=fivem;userid=fivem_user;password=password;charset=utf8mb4"
+   ```
+
+3. **Basic Usage**
+   ```lua
+   -- Single query
+   exports.oxmysql:execute('INSERT INTO users (name, money) VALUES (?, ?)', {
+       playerName, 
+       5000
+   })
+   
+   -- Fetch single result
+   local result = exports.oxmysql:single_sync('SELECT * FROM users WHERE id = ?', {userId})
+   
+   -- Fetch multiple results
+   local users = exports.oxmysql:query_sync('SELECT * FROM users WHERE money > ?', {1000})
+   
+   -- Prepared statements
+   local insertId = exports.oxmysql:insert_sync('INSERT INTO transactions (user_id, amount, type) VALUES (?, ?, ?)', {
+       userId, amount, 'deposit'
+   })
+   ```
+
+### MySQL-Async Setup (Legacy)
+
+```lua
+-- Add to server.cfg
+ensure mysql-async
+
+-- Connection configuration
+set mysql_connection_string "server=localhost;database=fivem;userid=fivem_user;password=password;sslmode=none;charset=utf8mb4"
+
+-- Usage example
+MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {
+    ['@identifier'] = identifier
+}, function(result)
+    if result[1] then
+        -- User exists
+        local userData = result[1]
+    else
+        -- Create new user
+    end
+end)
+```
+
+## Database Schema Design
+
+### User Management Schema
+
+```sql
+-- Users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    identifier VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    money BIGINT DEFAULT 5000,
+    bank BIGINT DEFAULT 0,
+    job VARCHAR(255) DEFAULT 'unemployed',
+    job_grade INT DEFAULT 0,
+    position JSON,
+    inventory JSON,
+    loadout JSON,
+    metadata JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_identifier (identifier),
+    INDEX idx_name (name)
+);
+
+-- User accounts (for multiple character support)
+CREATE TABLE user_accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    identifier VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    account VARCHAR(255) NOT NULL,
+    money BIGINT DEFAULT 0,
+    INDEX idx_identifier (identifier),
+    INDEX idx_account (account),
+    UNIQUE KEY unique_user_account (identifier, account)
+);
+
+-- Items/Inventory
+CREATE TABLE items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    label VARCHAR(255) NOT NULL,
+    type ENUM('item', 'weapon', 'ammo') DEFAULT 'item',
+    usable BOOLEAN DEFAULT FALSE,
+    rare BOOLEAN DEFAULT FALSE,
+    weight DECIMAL(8,2) DEFAULT 0.00,
+    metadata JSON,
+    INDEX idx_name (name),
+    INDEX idx_type (type)
+);
+
+-- User inventory
+CREATE TABLE user_inventory (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
+    count INT DEFAULT 1,
+    metadata JSON,
+    slot INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (item_name) REFERENCES items(name) ON UPDATE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_item_name (item_name),
+    UNIQUE KEY unique_user_slot (user_id, slot)
+);
+```
+
+### Vehicle Management Schema
+
+```sql
+-- Vehicle categories
+CREATE TABLE vehicle_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    label VARCHAR(255) NOT NULL
+);
+
+-- Vehicles
+CREATE TABLE vehicles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    model VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    price INT DEFAULT 0,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES vehicle_categories(id),
+    INDEX idx_model (model),
+    INDEX idx_category (category_id)
+);
+
+-- Owned vehicles
+CREATE TABLE owned_vehicles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    owner VARCHAR(255) NOT NULL,
+    plate VARCHAR(255) UNIQUE NOT NULL,
+    vehicle VARCHAR(255) NOT NULL,
+    type ENUM('car', 'boat', 'air', 'bike') DEFAULT 'car',
+    garage VARCHAR(255) DEFAULT 'city',
+    state ENUM('out', 'garaged', 'impounded') DEFAULT 'garaged',
+    vehicle_props JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_owner (owner),
+    INDEX idx_plate (plate),
+    INDEX idx_garage (garage),
+    INDEX idx_state (state)
+);
+```
+
+## Performance Optimization
+
+### Query Optimization
+
+```sql
+-- Add proper indexes
+CREATE INDEX idx_users_identifier ON users(identifier);
+CREATE INDEX idx_users_name ON users(name);
+CREATE INDEX idx_vehicles_owner ON owned_vehicles(owner);
+CREATE INDEX idx_vehicles_plate ON owned_vehicles(plate);
+
+-- Analyze table performance
+ANALYZE TABLE users;
+ANALYZE TABLE owned_vehicles;
+
+-- Check slow queries
+SHOW PROCESSLIST;
+SHOW FULL PROCESSLIST;
+```
+
+### Connection Pool Configuration
+
+```lua
+-- OxMySQL connection pool
+set mysql_connection_string "mysql://user:pass@localhost/db?charset=utf8mb4&pool_size=10&timeout=60"
+
+-- MySQL-Async pool settings
+set mysql_connection_string "server=localhost;database=fivem;userid=user;password=pass;pooling=true;minpoolsize=5;maxpoolsize=30;connectiontimeout=60;commandtimeout=300"
+```
+
+## Backup Strategies
+
+### Automated Backup Script
+
+```bash
+#!/bin/bash
+# backup_database.sh
+
+DB_NAME="fivem"
+DB_USER="fivem_user"
+DB_PASS="password"
+BACKUP_DIR="/backups/database"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+# Create backup directory
+mkdir -p $BACKUP_DIR
+
+# Create backup
+mysqldump -u$DB_USER -p$DB_PASS --single-transaction --routines --triggers $DB_NAME > $BACKUP_DIR/fivem_backup_$DATE.sql
+
+# Compress backup
+gzip $BACKUP_DIR/fivem_backup_$DATE.sql
+
+# Remove backups older than 30 days
+find $BACKUP_DIR -name "*.sql.gz" -mtime +30 -delete
+
+echo "Backup completed: fivem_backup_$DATE.sql.gz"
+```
+
+### Windows Backup Script
+
+```batch
+@echo off
+REM backup_database.bat
+
+set DB_NAME=fivem
+set DB_USER=fivem_user
+set DB_PASS=password
+set BACKUP_DIR=C:\backups\database
+set DATE=%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+
+REM Create backup directory
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%"
+
+REM Create backup
+mysqldump -u%DB_USER% -p%DB_PASS% --single-transaction --routines --triggers %DB_NAME% > %BACKUP_DIR%\fivem_backup_%DATE%.sql
+
+echo Backup completed: fivem_backup_%DATE%.sql
+```
+
+### Restore Procedure
+
+```bash
+# Restore from backup
+mysql -u fivem_user -p fivem < /backups/database/fivem_backup_20240724_120000.sql
+
+# Restore compressed backup
+gunzip -c /backups/database/fivem_backup_20240724_120000.sql.gz | mysql -u fivem_user -p fivem
+```
+
+## Monitoring and Maintenance
+
+### Performance Monitoring
+
+```sql
+-- Check database size
+SELECT 
+    table_schema AS 'Database',
+    ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'Size (MB)'
+FROM information_schema.tables 
+WHERE table_schema = 'fivem'
+GROUP BY table_schema;
+
+-- Check table sizes
+SELECT 
+    table_name AS 'Table',
+    ROUND(((data_length + index_length) / 1024 / 1024), 2) AS 'Size (MB)'
+FROM information_schema.TABLES 
+WHERE table_schema = 'fivem'
+ORDER BY (data_length + index_length) DESC;
+
+-- Check slow queries
+SELECT * FROM mysql.slow_log ORDER BY start_time DESC LIMIT 10;
+```
+
+### Regular Maintenance
+
+```sql
+-- Optimize tables (run weekly)
+OPTIMIZE TABLE users;
+OPTIMIZE TABLE owned_vehicles;
+OPTIMIZE TABLE user_inventory;
+
+-- Check table integrity
+CHECK TABLE users;
+CHECK TABLE owned_vehicles;
+
+-- Analyze tables for better query optimization
+ANALYZE TABLE users;
+ANALYZE TABLE owned_vehicles;
+```
+
+## Security Considerations
+
+### Secure Configuration
+
+```sql
+-- Remove anonymous users
+DELETE FROM mysql.user WHERE User='';
+
+-- Remove test database
+DROP DATABASE IF EXISTS test;
+
+-- Set secure passwords
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'very_strong_root_password';
+
+-- Limit remote access
+DELETE FROM mysql.user WHERE Host='%' AND User='root';
+```
+
+### Connection Security
+
+```lua
+-- Use SSL connections (recommended for remote databases)
+set mysql_connection_string "mysql://user:pass@host/db?charset=utf8mb4&ssl=true&ssl_ca=/path/to/ca.pem"
+
+-- Connection with SSL verification
+set mysql_connection_string "server=host;database=db;userid=user;password=pass;sslmode=required;sslca=/path/to/ca.pem"
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Connection Refused**
+```bash
+# Check if MySQL/MariaDB is running
+sudo systemctl status mariadb
+sudo systemctl start mariadb
+
+# Check port binding
+netstat -tlnp | grep :3306
+```
+
+**Access Denied**
+```sql
+-- Reset user password
+ALTER USER 'fivem_user'@'localhost' IDENTIFIED BY 'new_password';
+FLUSH PRIVILEGES;
+```
+
+**Character Set Issues**
+```sql
+-- Check current charset
+SHOW VARIABLES LIKE 'character_set%';
+
+-- Convert existing tables
+ALTER TABLE users CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+**Performance Issues**
+```sql
+-- Check running processes
+SHOW PROCESSLIST;
+
+-- Kill long-running query
+KILL <process_id>;
+
+-- Check InnoDB status
+SHOW ENGINE INNODB STATUS;
+```
