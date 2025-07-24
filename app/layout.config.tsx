@@ -94,14 +94,14 @@ export const baseOptions: HomeLayoutProps = {
           menu: {
             banner: (
               <div className="flex h-20 w-full items-center justify-center gap-x-1">
-                <FixFXIcon className="size-8" stroke="#6989de" />
+                <FixFXIcon className="size-8" stroke="#f97891" />
                 <h1 className="text-fd-foreground text-2xl font-bold">
                   Framework Documentation
                 </h1>
               </div>
             ),
           },
-          icon: <FixFXIcon className="size-6" stroke="#6989de" />,
+          icon: <FixFXIcon className="size-6" stroke="#f97891" />,
           text: "Framework Documentation",
           description:
             "Explore some guides and information about the CFX Frameworks.",

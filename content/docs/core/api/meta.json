@@ -1,6 +1,10 @@
 {
     "title": "API References",
     "pages": [
-        "artifacts"
+        "artifacts",
+        "natives",
+        "contributors",
+        "search",
+        "chat"
     ]
 }

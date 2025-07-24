@@ -30,7 +30,7 @@ const docsOptions: DocsLayoutProps = {
       },
       {
         title: "Guides",
-        icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#2563eb" />,
+        icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#79143b" />,
         description: "Step-by-step guides for CitizenFX.",
         url: "/docs/guides",
       },

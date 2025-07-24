@@ -1,0 +1,675 @@
+---
+title: Contributors
+description: Access GitHub contributors and repository statistics.
+icon: "Users"
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+<Callout type="info">
+  The Contributors API provides access to GitHub contributor information and repository statistics for our organization. This API helps showcase community involvement and track project contributions.
+</Callout>
+
+## Overview
+
+The Contributors API aggregates data from GitHub to provide insights into:
+
+- Organization-wide contributor statistics
+- Individual repository contributors
+- Contribution metrics and activity
+- Repository health and engagement
+
+This API is particularly useful for:
+- Displaying contributor acknowledgments
+- Building community dashboards
+- Tracking project activity
+- Generating contribution reports
+
+## Base URL
+
+```
+https://fixfx.wiki/api/contributors
+```
+
+## Authentication
+
+The Contributors API is public and doesn't require authentication. Data is refreshed periodically from GitHub.
+
+## Endpoints
+
+### GET /api/contributors
+
+Retrieves contributor information across the ByteBrushStudios organization.
+
+#### Query Parameters
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `repo` | string | Filter by specific repository name | All repositories |
+| `limit` | number | Maximum number of contributors (max 100) | 50 |
+| `sort` | string | Sort by (`contributions`, `name`, `recent`) | `contributions` |
+| `order` | string | Sort order (`asc` or `desc`) | `desc` |
+| `minContributions` | number | Minimum contribution count | 1 |
+| `since` | string | Include only contributions since date (ISO format) | No limit |
+| `includeStats` | boolean | Include detailed statistics | false |
+
+#### Response Format
+
+```json
+{
+  "data": [
+    {
+      "login": "string",
+      "id": number,
+      "avatar_url": "string",
+      "html_url": "string",
+      "contributions": number,
+      "repositories": ["string"],
+      "first_contribution": "string",
+      "last_contribution": "string",
+      "contribution_types": {
+        "commits": number,
+        "issues": number,
+        "pull_requests": number,
+        "reviews": number
+      }
+    }
+  ],
+  "metadata": {
+    "total_contributors": number,
+    "total_contributions": number,
+    "repositories": ["string"],
+    "organization": "ByteBrushStudios",
+    "last_updated": "string",
+    "stats": {
+      "active_contributors": number,
+      "new_contributors": number,
+      "top_repositories": [
+        {
+          "name": "string",
+          "contributors": number,
+          "contributions": number
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Example Usage
+
+<Tabs items={['JavaScript', 'Lua', 'C#']}>
+<Tab value="JavaScript">
+
+```javascript
+// Get top contributors
+const response = await fetch(
+  'https://fixfx.wiki/api/contributors?limit=10&includeStats=true'
+);
+const data = await response.json();
+
+// Display contributors
+console.log(`Total Contributors: ${data.metadata.total_contributors}`);
+console.log(`Total Contributions: ${data.metadata.total_contributions}`);
+
+data.data.forEach((contributor, index) => {
+  console.log(`${index + 1}. ${contributor.login}`);
+  console.log(`   Contributions: ${contributor.contributions}`);
+  console.log(`   Repositories: ${contributor.repositories.length}`);
+  console.log(`   GitHub: ${contributor.html_url}`);
+  
+  if (contributor.contribution_types) {
+    console.log(`   Commits: ${contributor.contribution_types.commits}`);
+    console.log(`   Issues: ${contributor.contribution_types.issues}`);
+    console.log(`   Pull Requests: ${contributor.contribution_types.pull_requests}`);
+  }
+});
+
+// Show repository stats
+console.log('\nTop Repositories:');
+data.metadata.stats.top_repositories.forEach(repo => {
+  console.log(`- ${repo.name}: ${repo.contributors} contributors, ${repo.contributions} contributions`);
+});
+```
+
+</Tab>
+<Tab value="Lua">
+
+```lua
+-- Get contributors for specific repository
+local function getRepositoryContributors(repoName)
+    local url = string.format(
+        "https://fixfx.wiki/api/contributors?repo=%s&includeStats=true",
+        repoName
+    )
+    
+    PerformHttpRequest(url, function(error, resultData, resultCode)
+        if error ~= 200 then
+            print("Error fetching contributors:", error)
+            return
+        end
+        
+        local data = json.decode(resultData)
+        
+        print("Repository: " .. repoName)
+        print("Contributors: " .. data.metadata.total_contributors)
+        print("Total Contributions: " .. data.metadata.total_contributions)
+        print("")
+        
+        -- Display top contributors
+        for i, contributor in ipairs(data.data) do
+            print(i .. ". " .. contributor.login)
+            print("   Contributions: " .. contributor.contributions)
+            print("   GitHub: " .. contributor.html_url)
+            
+            if contributor.first_contribution then
+                print("   First Contribution: " .. contributor.first_contribution)
+            end
+            if contributor.last_contribution then
+                print("   Last Contribution: " .. contributor.last_contribution)
+            end
+            print("")
+        end
+    end)
+end
+
+-- Example usage
+getRepositoryContributors("FixFX")
+```
+
+</Tab>
+<Tab value="C#">
+
+```csharp
+using System.Net.Http;
+using System.Text.Json;
+
+public class ContributorsClient
+{
+    private readonly HttpClient _client;
+    
+    public ContributorsClient()
+    {
+        _client = new HttpClient();
+    }
+    
+    public async Task<ContributorsData> GetContributors(string repo = null, int limit = 50, bool includeStats = false)
+    {
+        var url = $"https://fixfx.wiki/api/contributors?limit={limit}&includeStats={includeStats}";
+        if (!string.IsNullOrEmpty(repo))
+        {
+            url += $"&repo={repo}";
+        }
+        
+        var response = await _client.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+        
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<ContributorsData>(content);
+    }
+}
+
+// Example usage
+var client = new ContributorsClient();
+var contributors = await client.GetContributors("FixFX", 20, true);
+
+Console.WriteLine($"Total Contributors: {contributors.Metadata.TotalContributors}");
+Console.WriteLine($"Total Contributions: {contributors.Metadata.TotalContributions}");
+
+foreach (var (contributor, index) in contributors.Data.Select((c, i) => (c, i)))
+{
+    Console.WriteLine($"{index + 1}. {contributor.Login}");
+    Console.WriteLine($"   Contributions: {contributor.Contributions}");
+    Console.WriteLine($"   Repositories: {contributor.Repositories.Count}");
+    Console.WriteLine($"   GitHub: {contributor.HtmlUrl}");
+    
+    if (contributor.ContributionTypes != null)
+    {
+        Console.WriteLine($"   Commits: {contributor.ContributionTypes.Commits}");
+        Console.WriteLine($"   Issues: {contributor.ContributionTypes.Issues}");
+        Console.WriteLine($"   Pull Requests: {contributor.ContributionTypes.PullRequests}");
+    }
+}
+
+// Show repository stats
+Console.WriteLine("\nTop Repositories:");
+foreach (var repo in contributors.Metadata.Stats.TopRepositories)
+{
+    Console.WriteLine($"- {repo.Name}: {repo.Contributors} contributors, {repo.Contributions} contributions");
+}
+```
+
+</Tab>
+</Tabs>
+
+## Use Cases
+
+### Community Dashboard
+
+<Tabs items={['JavaScript', 'HTML']}>
+<Tab value="JavaScript">
+
+```javascript
+// Build a community contributors widget
+async function buildContributorsWidget() {
+  const response = await fetch(
+    'https://fixfx.wiki/api/contributors?limit=20&includeStats=true&sort=contributions'
+  );
+  const data = await response.json();
+  
+  // Create widget HTML
+  const widget = document.createElement('div');
+  widget.className = 'contributors-widget';
+  
+  // Add header
+  const header = document.createElement('h3');
+  header.textContent = `Our ${data.metadata.total_contributors} Contributors`;
+  widget.appendChild(header);
+  
+  // Add stats
+  const stats = document.createElement('div');
+  stats.className = 'contributor-stats';
+  stats.innerHTML = `
+    <div class="stat">
+      <span class="number">${data.metadata.total_contributions}</span>
+      <span class="label">Total Contributions</span>
+    </div>
+    <div class="stat">
+      <span class="number">${data.metadata.stats.active_contributors}</span>
+      <span class="label">Active Contributors</span>
+    </div>
+    <div class="stat">
+      <span class="number">${data.metadata.stats.new_contributors}</span>
+      <span class="label">New This Month</span>
+    </div>
+  `;
+  widget.appendChild(stats);
+  
+  // Add contributor grid
+  const grid = document.createElement('div');
+  grid.className = 'contributors-grid';
+  
+  data.data.slice(0, 12).forEach(contributor => {
+    const item = document.createElement('div');
+    item.className = 'contributor-item';
+    item.innerHTML = `
+      <img src="${contributor.avatar_url}" alt="${contributor.login}" class="avatar">
+      <div class="info">
+        <h4>${contributor.login}</h4>
+        <p>${contributor.contributions} contributions</p>
+        <a href="${contributor.html_url}" target="_blank">View Profile</a>
+      </div>
+    `;
+    grid.appendChild(item);
+  });
+  
+  widget.appendChild(grid);
+  return widget;
+}
+
+// Use the widget
+buildContributorsWidget().then(widget => {
+  document.getElementById('contributors-section').appendChild(widget);
+});
+```
+
+</Tab>
+<Tab value="HTML">
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contributors Dashboard</title>
+    <style>
+        .contributors-widget {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .contributor-stats {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .stat .number {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .stat .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .contributors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .contributor-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background: white;
+        }
+        
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .contributor-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+        
+        .contributor-item p {
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .contributor-item a {
+            color: #007cba;
+            text-decoration: none;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="contributors-section"></div>
+    
+    <script>
+        // JavaScript code from above goes here
+    </script>
+</body>
+</html>
+```
+
+</Tab>
+</Tabs>
+
+### Repository Analytics
+
+<Tabs items={['JavaScript', 'Python']}>
+<Tab value="JavaScript">
+
+```javascript
+// Analyze repository activity
+async function analyzeRepositoryActivity() {
+  const repositories = ['FixFX', 'fivem-boilerplate', 'redm-resources'];
+  const results = {};
+  
+  for (const repo of repositories) {
+    const response = await fetch(
+      `https://fixfx.wiki/api/contributors?repo=${repo}&includeStats=true`
+    );
+    const data = await response.json();
+    
+    results[repo] = {
+      contributors: data.metadata.total_contributors,
+      contributions: data.metadata.total_contributions,
+      topContributor: data.data[0],
+      activity: {
+        active: data.metadata.stats.active_contributors,
+        new: data.metadata.stats.new_contributors
+      }
+    };
+  }
+  
+  // Generate report
+  console.log('Repository Activity Report');
+  console.log('==========================');
+  
+  Object.entries(results).forEach(([repo, stats]) => {
+    console.log(`\n${repo}:`);
+    console.log(`  Contributors: ${stats.contributors}`);
+    console.log(`  Contributions: ${stats.contributions}`);
+    console.log(`  Top Contributor: ${stats.topContributor.login} (${stats.topContributor.contributions} contributions)`);
+    console.log(`  Active Contributors: ${stats.activity.active}`);
+    console.log(`  New Contributors: ${stats.activity.new}`);
+  });
+  
+  // Find most active repository
+  const mostActive = Object.entries(results)
+    .reduce((a, b) => results[a[0]].contributions > results[b[0]].contributions ? a : b);
+  
+  console.log(`\nMost Active Repository: ${mostActive[0]} (${mostActive[1].contributions} contributions)`);
+  
+  return results;
+}
+
+// Run analysis
+analyzeRepositoryActivity();
+```
+
+</Tab>
+<Tab value="Python">
+
+```python
+import requests
+import json
+from datetime import datetime
+
+def analyze_contributor_trends():
+    """Analyze contributor trends across repositories"""
+    
+    base_url = "https://fixfx.wiki/api/contributors"
+    repositories = ['FixFX', 'fivem-boilerplate', 'redm-resources']
+    
+    all_data = {}
+    
+    for repo in repositories:
+        response = requests.get(f"{base_url}?repo={repo}&includeStats=true")
+        
+        if response.status_code == 200:
+            data = response.json()
+            all_data[repo] = data
+        else:
+            print(f"Error fetching data for {repo}: {response.status_code}")
+    
+    # Analyze trends
+    print("Contributor Trends Analysis")
+    print("=" * 50)
+    
+    for repo, data in all_data.items():
+        contributors = data['data']
+        metadata = data['metadata']
+        
+        print(f"\n{repo}:")
+        print(f"  Total Contributors: {metadata['total_contributors']}")
+        print(f"  Total Contributions: {metadata['total_contributions']}")
+        
+        # Calculate contribution distribution
+        contributions = [c['contributions'] for c in contributors]
+        avg_contributions = sum(contributions) / len(contributions) if contributions else 0
+        
+        print(f"  Average Contributions per Contributor: {avg_contributions:.1f}")
+        
+        # Find top contributors
+        top_3 = contributors[:3]
+        print(f"  Top 3 Contributors:")
+        for i, contributor in enumerate(top_3, 1):
+            print(f"    {i}. {contributor['login']}: {contributor['contributions']} contributions")
+        
+        # Analyze contribution types if available
+        if contributors and 'contribution_types' in contributors[0]:
+            total_commits = sum(c.get('contribution_types', {}).get('commits', 0) for c in contributors)
+            total_issues = sum(c.get('contribution_types', {}).get('issues', 0) for c in contributors)
+            total_prs = sum(c.get('contribution_types', {}).get('pull_requests', 0) for c in contributors)
+            
+            print(f"  Contribution Breakdown:")
+            print(f"    Commits: {total_commits}")
+            print(f"    Issues: {total_issues}")
+            print(f"    Pull Requests: {total_prs}")
+    
+    return all_data
+
+# Run analysis
+analyze_contributor_trends()
+```
+
+</Tab>
+</Tabs>
+
+### Contribution Recognition
+
+<Tabs items={['JavaScript']}>
+<Tab value="JavaScript">
+
+```javascript
+// Generate contributor recognition badges
+async function generateContributorBadges() {
+  const response = await fetch(
+    'https://fixfx.wiki/api/contributors?includeStats=true&limit=100'
+  );
+  const data = await response.json();
+  
+  const badges = {
+    topContributor: null,
+    mostActive: null,
+    newcomer: null,
+    allRounder: null
+  };
+  
+  // Top Contributor (most contributions overall)
+  badges.topContributor = data.data[0];
+  
+  // Most Active (most recent activity)
+  badges.mostActive = data.data
+    .filter(c => c.last_contribution)
+    .sort((a, b) => new Date(b.last_contribution) - new Date(a.last_contribution))[0];
+  
+  // Newcomer (recent first contribution)
+  badges.newcomer = data.data
+    .filter(c => c.first_contribution)
+    .sort((a, b) => new Date(b.first_contribution) - new Date(a.first_contribution))[0];
+  
+  // All-Rounder (balanced contribution types)
+  badges.allRounder = data.data
+    .filter(c => c.contribution_types)
+    .map(c => ({
+      ...c,
+      diversity: Object.keys(c.contribution_types).filter(key => c.contribution_types[key] > 0).length
+    }))
+    .sort((a, b) => b.diversity - a.diversity)[0];
+  
+  console.log('Contributor Recognition Badges');
+  console.log('==============================');
+  
+  Object.entries(badges).forEach(([badge, contributor]) => {
+    if (contributor) {
+      console.log(`\n🏆 ${badge.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}:`);
+      console.log(`   ${contributor.login} (${contributor.contributions} contributions)`);
+      console.log(`   GitHub: ${contributor.html_url}`);
+      
+      if (contributor.contribution_types) {
+        const types = Object.entries(contributor.contribution_types)
+          .filter(([, count]) => count > 0)
+          .map(([type, count]) => `${type}: ${count}`)
+          .join(', ');
+        console.log(`   Types: ${types}`);
+      }
+    }
+  });
+  
+  return badges;
+}
+
+// Generate and display badges
+generateContributorBadges();
+```
+
+</Tab>
+</Tabs>
+
+## Data Freshness
+
+- Contributor data is refreshed every 6 hours
+- Statistics are calculated in real-time
+- GitHub API rate limits may affect update frequency
+- Cache headers indicate last update time
+
+## Rate Limiting
+
+- 100 requests per minute per IP address
+- Burst allowance of 20 requests
+- No authentication required
+
+## Error Handling
+
+Standard HTTP status codes:
+
+- `200`: Success
+- `400`: Bad Request - Invalid parameters
+- `404`: Not Found - Repository not found
+- `429`: Too Many Requests - Rate limit exceeded
+- `503`: Service Unavailable - GitHub API issues
+
+Example error response:
+```json
+{
+  "error": "Repository not found",
+  "message": "The specified repository does not exist in the organization",
+  "statusCode": 404
+}
+```
+
+## Best Practices
+
+1. **Caching**
+   - Cache contributor data locally for frequently accessed information
+   - Respect the API's cache headers
+   - Implement proper cache invalidation
+
+2. **Performance**
+   - Use pagination for large contributor lists
+   - Request only necessary data with query parameters
+   - Implement proper error handling
+
+3. **Recognition**
+   - Display contributor information prominently
+   - Link back to GitHub profiles
+   - Update contributor displays regularly
+
+4. **Privacy**
+   - Respect contributor privacy preferences
+   - Only display publicly available information
+   - Provide opt-out mechanisms where appropriate
+
+## Support
+
+For questions about the Contributors API, please [join our Discord](/discord). We can help with:
+
+- API integration
+- Data interpretation
+- Custom analytics
+- Recognition programs
+
+<Callout type="info">
+  The Contributors API helps build community engagement by recognizing valuable contributions across our projects.
+</Callout>
+
+<Callout type="note">
+  Contribution data is sourced from public GitHub activity and may not reflect all forms of contribution to our projects.
+</Callout>
