@@ -1,0 +1,264 @@
+---
+title: Server Optimization
+description: Comprehensive guide to optimizing your FiveM server for maximum performance.
+icon: "Settings"
+---
+
+# Server Optimization Guide
+
+Optimizing your FiveM server is crucial for providing a smooth experience for your players. This guide covers essential techniques to improve server performance, reduce latency, and prevent common issues.
+
+## Hardware Considerations
+
+### Recommended Specifications
+
+| Component | Minimum | Recommended | High Performance |
+|-----------|---------|-------------|------------------|
+| CPU | 4 cores, 3.0+ GHz | 8 cores, 3.5+ GHz | 12+ cores, 4.0+ GHz |
+| RAM | 8GB | 16GB | 32GB+ |
+| Storage | 120GB SSD | 250GB NVMe SSD | 500GB+ NVMe SSD |
+| Network | 100 Mbps | 1 Gbps | 1+ Gbps |
+
+<Callout type="info">
+  CPU single-thread performance is more important than core count for FiveM servers. Choose a CPU with high single-thread performance for the best results.
+</Callout>
+
+## Server Configuration
+
+### Optimizing server.cfg
+
+```cfg
+# Performance-related settings
+sv_maxclients 48                  # Set appropriate to your hardware
+sv_endpointprivacy true           # Reduces unnecessary network traffic
+sv_scriptHookAllowed false        # Disable script hook for better security
+sv_enforceGameBuild 2699          # Use a specific game build
+
+# Resource management
+onesync on                        # Enable OneSync
+onesync_distanceCullVehicles true # Enable vehicle distance culling
+onesync_forceMigration true       # Force entity migration for better sync
+onesync_workaround763185 true     # Fix common OneSync issues
+
+# Thread configuration
+setr sv_maxThreadVariance 1       # Thread variance control
+setr sv_tebexSecret ""            # Remove if not using Tebex
+
+# Rate limiter configuration
+sv_useDirectListing true                # More efficient server listing
+sv_listingIPOverride "auto"             # Auto IP listing
+sv_listingHostOverride "auto"           # Auto hostname
+sv_attemptHostReverseLookup false       # Disable reverse DNS lookups
+
+# Entity limits (adjust based on server needs)
+setr sv_maxObjects 1500
+setr sv_maxPeds 450 
+setr sv_maxVehicles 350
+```
+
+### Resource Loading Order
+
+Proper resource loading order is crucial for performance:
+
+1. **Database connectors** (mysql-async, oxmysql)
+2. **Core frameworks** (es_extended, qb-core)
+3. **Utility libraries** (ox_lib, meta_libs)
+4. **Framework resources** (esx_*, qb-*)
+5. **Custom resources**
+
+## Memory Management
+
+### Common Memory Issues
+
+1. **Memory Leaks**: Resources that don't properly clean up after themselves
+2. **Excessive Entity Creation**: Scripts creating too many entities without removing old ones
+3. **Inefficient Loops**: Scripts using poorly optimized loops
+
+### Solutions
+
+```lua
+-- Example of proper entity cleanup
+local entities = {}
+
+-- Create entity with tracking
+local function CreateManagedEntity(model, coords)
+    local entity = CreateObject(model, coords.x, coords.y, coords.z, true, false, false)
+    table.insert(entities, entity)
+    return entity
+end
+
+-- Cleanup function
+local function CleanupEntities()
+    for _, entity in ipairs(entities) do
+        if DoesEntityExist(entity) then
+            DeleteEntity(entity)
+        end
+    end
+    entities = {}
+end
+
+-- Cleanup on resource stop
+AddEventHandler('onResourceStop', function(resourceName)
+    if GetCurrentResourceName() ~= resourceName then return end
+    CleanupEntities()
+end)
+```
+
+## Database Optimization
+
+### MySQL Configuration
+
+```lua
+-- Configure longer connection timeouts
+MySQL.Async.execute('SET SESSION wait_timeout=86400', {})
+MySQL.Async.execute('SET SESSION interactive_timeout=86400', {})
+
+-- Use connection pooling
+MySQL.ready(function()
+    print('Database connection established')
+end)
+
+-- Use prepared statements for better performance
+local insertPlayer = 'INSERT INTO players (identifier, name, money) VALUES (?, ?, ?)'
+MySQL.Async.prepare(insertPlayer, {identifier, name, money})
+```
+
+### Query Optimization
+
+1. **Use Indexes**: Ensure your database tables have proper indexes
+2. **Batch Operations**: Combine multiple operations into batches
+3. **Limit Results**: Always limit query results to what you need
+4. **Use Prepared Statements**: Avoid SQL injection and improve performance
+
+## OneSync Configuration
+
+### Entity Management
+
+```lua
+-- Configure entity culling distances (server.cfg)
+setr onesync_radiusFrequency 0    # Default frequency updates
+setr onesync_distanceCullVehicles true
+setr onesync_distanceCulling true
+setr onesync_enableInfinity true
+setr onesync_enableBeyond true
+
+-- Configure entity population density (server.cfg)
+setr population_vehicle_base_multiplier 0.2
+setr population_ambient_base_multiplier 0.1
+setr population_ped_base_multiplier 0.1
+setr population_max_insects 0.0
+```
+
+### Distance-Based Syncing
+
+```lua
+-- Example: Only sync entities within a reasonable distance
+AddEventHandler('entityCreating', function(entity)
+    local model = GetEntityModel(entity)
+    
+    -- Define sync distances based on entity type
+    if IsModelAVehicle(model) then
+        SetEntityDistanceCullingRadius(entity, 300.0)
+    elseif IsModelAPed(model) then
+        SetEntityDistanceCullingRadius(entity, 200.0)
+    else -- objects
+        SetEntityDistanceCullingRadius(entity, 100.0)
+    end
+end)
+```
+
+## Script Optimization Techniques
+
+### Event Management
+
+```lua
+-- Bad practice: Spamming events
+Citizen.CreateThread(function()
+    while true do
+        TriggerServerEvent('updatePlayerPosition', GetEntityCoords(PlayerPedId()))
+        Citizen.Wait(0)
+    end
+end)
+
+-- Good practice: Rate limit events
+Citizen.CreateThread(function()
+    while true do
+        TriggerServerEvent('updatePlayerPosition', GetEntityCoords(PlayerPedId()))
+        Citizen.Wait(5000) -- Only update every 5 seconds
+    end
+end)
+```
+
+### Thread Management
+
+```lua
+-- Bad practice: Too many threads with Wait(0)
+Citizen.CreateThread(function()
+    while true do
+        -- Check player position
+        Citizen.Wait(0)
+    end
+end)
+
+Citizen.CreateThread(function()
+    while true do
+        -- Update UI
+        Citizen.Wait(0)
+    end
+end)
+
+-- Good practice: Consolidated thread with appropriate waits
+Citizen.CreateThread(function()
+    while true do
+        -- High priority tasks (input handling)
+        HandleControls()
+        
+        -- Medium priority tasks (game logic)
+        if GameState == 'active' then
+            UpdateGameLogic()
+        end
+        
+        -- Low priority tasks (UI updates)
+        if GetGameTimer() - lastUIUpdate > 100 then
+            UpdateUI()
+            lastUIUpdate = GetGameTimer()
+        end
+        
+        Citizen.Wait(0)
+    end
+end)
+```
+
+## Monitoring and Maintenance
+
+### Regular Performance Checks
+
+1. **Server Profiling**:
+   ```
+   profiler record 500
+   profiler saveJSON server_profile.json
+   ```
+
+2. **Resource Monitoring**:
+   ```
+   resmon
+   ```
+
+3. **Log Analysis**:
+   Review server logs regularly for warnings and errors
+
+### Scheduled Maintenance
+
+1. **Server Restarts**: Schedule regular restarts (every 6-12 hours)
+2. **Database Maintenance**: Regular backups and optimization
+3. **Resource Updates**: Keep all resources updated
+
+## Additional Resources
+
+- [FiveM Server Performance Documentation](https://docs.fivem.net/docs/server-manual/server-performance/)
+- [MySQL Performance Guide](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)
+- [OneSync Documentation](https://docs.fivem.net/docs/scripting-manual/onesync/)
+
+<Callout type="warning">
+  Always test optimizations in a development environment before applying them to your production server. Performance tuning is an iterative process that requires continuous monitoring and adjustment.
+</Callout>

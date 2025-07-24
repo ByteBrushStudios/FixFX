@@ -20,7 +20,7 @@ export const baseOptions: HomeLayoutProps = {
       type: "icon",
       text: "",
       icon: <FaDiscord className="size-6" />,
-      url: "https://discord.gg/saK4hyXxMN",
+      url: "https://discord.gg/Vv2bdC44Ge",
     },
     {
       type: "main",

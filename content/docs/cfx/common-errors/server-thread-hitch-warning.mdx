@@ -1,12 +1,22 @@
 ---
 title: Server Thread Hitch Warning
-description: Understanding and resolving server thread hitch warnings in CitizenFX.
+description: Understanding and resolving FiveM server thread performance warnings.
 icon: "AlertTriangle"
 ---
 
 # Server Thread Hitch Warning
 
-Server thread hitch warnings indicate that your server's main thread is being blocked for too long, which can cause lag and performance issues. This guide covers common causes and solutions for both server owners and developers.
+The "Server Thread Hitch Warning" is one of the most common performance-related warnings in FiveM servers. This guide will help you understand what causes these warnings and how to resolve them.
+
+## Understanding the Warning
+
+You might see messages like these in your server console:
+
+```
+WARNING: Server thread hitch detected! (XX ms)
+```
+
+This message indicates that the server's main thread was blocked for too long, causing a hitch. Hitches can lead to lag and other performance issues for players.
 
 ## Common Causes
 

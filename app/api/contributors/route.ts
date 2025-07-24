@@ -27,7 +27,7 @@ interface Contributor {
 }
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const ORG_NAME = "FixFXOSS";
+const ORG_NAME = "ByteBrushStudios";
 
 async function fetchRepos() {
   const response = await fetch(
@@ -78,7 +78,7 @@ export async function GET() {
   try {
     // Get all repositories in the organization
     const repos = await fetchRepos();
-    
+
     // Map to store contributor data
     const contributorsMap = new Map<string, Contributor>();
 
@@ -86,7 +86,7 @@ export async function GET() {
     for (const repo of repos) {
       try {
         const commits = await fetchCommits(repo.name);
-        
+
         // Process commits and aggregate contributor data
         for (const commit of commits) {
           const author = commit.author;

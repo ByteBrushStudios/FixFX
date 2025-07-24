@@ -1,0 +1,112 @@
+---
+title: Performance Optimization
+description: A comprehensive guide to optimizing CitizenFX server and client performance.
+icon: "Gauge"
+---
+
+# Performance Optimization
+
+Performance is a critical aspect of any FiveM server. This section provides comprehensive guides for optimizing both server and client performance to ensure a smooth experience for all players.
+
+## Understanding FiveM Performance
+
+FiveM performance depends on several key factors:
+
+1. **Server Hardware**: CPU, RAM, and network capabilities
+2. **Resource Efficiency**: Well-optimized scripts and resources
+3. **Database Performance**: Query optimization and connection management
+4. **Network Configuration**: Proper network settings and optimizations
+5. **Client-side Performance**: Client FPS and resource usage
+
+## Available Guides
+
+<Cards>
+  <Card title="Server Optimization" href="./server-optimization">
+    Learn how to optimize your server configuration, resources, and hardware for maximum performance.
+  </Card>
+  
+  <Card title="Client Optimization" href="./client-optimization">
+    Discover techniques to improve client-side performance for your players.
+  </Card>
+  
+  <Card title="Resource Optimization" href="./resource-optimization">
+    Best practices for creating and optimizing FiveM resources for better performance.
+  </Card>
+  
+  <Card title="Database Optimization" href="./database-optimization">
+    Optimize your database queries and structure for improved server performance.
+  </Card>
+</Cards>
+
+## Performance Monitoring Tools
+
+CitizenFX provides several built-in tools for monitoring and optimizing performance:
+
+1. **Resource Monitor (`resmon`)**: Shows real-time resource usage and performance metrics
+2. **Profiler**: Records detailed performance data for analysis
+3. **Network Monitor**: Displays network usage and latency information
+4. **Debug Tools**: Provides detailed debugging information
+
+For more information on these tools, visit the [Common Tools](/docs/cfx/common-tools) section.
+
+## Best Practices
+
+<Callout type="info">
+  Effective performance optimization is an ongoing process, not a one-time task. Regularly monitor your server and make incremental improvements.
+</Callout>
+
+### General Performance Tips
+
+1. **Start with a Clean Base**: Begin with a minimal server setup and add resources incrementally
+2. **Regular Monitoring**: Use monitoring tools to identify bottlenecks
+3. **Scheduled Maintenance**: Implement regular server restarts and maintenance
+4. **Resource Management**: Keep only necessary resources running
+5. **Stay Updated**: Keep your server artifacts and resources up to date
+
+## Common Performance Issues
+
+### Server-side Issues
+
+1. **High CPU Usage**: Often caused by inefficient scripts or too many entities
+2. **Memory Leaks**: Resources not properly cleaning up entities or data
+3. **Database Bottlenecks**: Slow or unoptimized database queries
+4. **Network Congestion**: Too much data being synchronized
+
+### Client-side Issues
+
+1. **Low FPS**: Often caused by too many entities or graphic-intensive resources
+2. **Stuttering**: Usually related to synchronization issues or resource loading
+3. **Long Loading Times**: Can be caused by large resource files or inefficient loading
+4. **Connection Issues**: Network configuration problems or server overload
+
+## Performance Benchmarking
+
+Establishing performance benchmarks helps track improvements over time:
+
+1. **Server Metrics**:
+   - CPU usage percentage
+   - Memory consumption
+   - Network bandwidth usage
+   - Entity count (vehicles, peds, objects)
+
+2. **Client Metrics**:
+   - Frames per second (FPS)
+   - Loading times
+   - Resource memory usage
+   - Network latency
+
+## Advanced Performance Techniques
+
+For advanced users, consider these techniques:
+
+1. **Custom Resource Scheduling**: Prioritize critical resources
+2. **Entity Management Systems**: Implement custom entity culling
+3. **Asynchronous Processing**: Use async patterns for intensive operations
+4. **Distributed Systems**: Split functionality across multiple servers
+5. **Resource Dependency Optimization**: Minimize dependencies between resources
+
+<Callout type="warning">
+  Always test performance optimizations in a development environment before applying them to production. Document all changes and their impacts for future reference.
+</Callout>
+
+For specific optimization techniques, refer to the individual guides in this section.
