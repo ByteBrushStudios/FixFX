@@ -19,8 +19,8 @@ export function Hero() {
           <span className="ml-2">Fx</span>
         </h1>
       </motion.div>
-      
-      <motion.p 
+
+      <motion.p
         className="text-fd-muted-foreground mb-8 max-w-2xl text-center text-lg md:text-xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -28,8 +28,8 @@ export function Hero() {
       >
         Your one-stop resource for FiveM, RedM, and CitizenFX. From server setup to troubleshooting, we've got you covered.
       </motion.p>
-      
-      <motion.div 
+
+      <motion.div
         className="w-full max-w-md mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -37,14 +37,14 @@ export function Hero() {
       >
         <SearchBar />
       </motion.div>
-      
-      <motion.div 
+
+      <motion.div
         className="flex flex-col gap-4 sm:flex-row"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
       >
-        <Link href="/docs/cfx">
+        <Link href="/docs/overview">
           <Button className="px-6 py-3" variant="default">
             Get Started <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

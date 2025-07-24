@@ -46,6 +46,20 @@ const sections = [
     icon: <Code className="h-6 w-6" />,
     href: "/docs/cfx/resource-development",
     color: "bg-yellow-500/10 text-yellow-500"
+  },
+  {
+    title: "Frameworks",
+    description: "Explore popular frameworks like ESX, QBCore, and vRP.",
+    icon: <Package className="h-6 w-6" />,
+    href: "/docs/frameworks",
+    color: "bg-teal-500/10 text-teal-500"
+  },
+  {
+    title: "Guides",
+    description: "In-depth guides on various aspects of FiveM development.",
+    icon: <LucideBook className="h-6 w-6" />,
+    href: "/docs/guides",
+    color: "bg-gray-500/10 text-gray-500"
   }
 ];
 

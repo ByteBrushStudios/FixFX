@@ -8,7 +8,7 @@ const docSections = [
   {
     title: "Getting Started",
     description: "Step-by-step guides for setting up your FiveM or RedM server.",
-    href: "/docs/getting-started",
+    href: "/docs/cfx",
     icon: "🚀",
   },
   {
@@ -20,7 +20,7 @@ const docSections = [
   {
     title: "Troubleshooting",
     description: "Fix common errors and crashes for servers and clients.",
-    href: "/docs/troubleshooting",
+    href: "/docs/",
     icon: "🔧",
   },
   {
@@ -54,7 +54,7 @@ export function DocsPreview() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Link 
+            <Link
               href={section.href}
               className="bg-fd-background border-fd-border hover:border-blue-500 flex flex-col h-full rounded-xl border p-6 transition-colors"
             >
