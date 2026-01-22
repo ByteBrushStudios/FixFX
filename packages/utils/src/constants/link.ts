@@ -2,11 +2,11 @@ import { HomeIcon, BookOpen, CodeIcon, FileCode2, MessageSquare } from 'lucide-r
 
 export const ENV_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://fixfx.wiki";
 export const DISCORD_LINK = "https://discord.gg/Vv2bdC44Ge";
-export const GITHUB_ORG = "https://github.com/ByteBrushStudios";
-export const GITHUB_LINK = "https://github.com/ByteBrushStudios/FixFX";
+export const GITHUB_ORG = "https://github.com/CodeMeAPixel";
+export const GITHUB_LINK = "https://github.com/CodeMeAPixel/FixFX";
 export const DOCS_URL = "https://fixfx.wiki";
 
-export const GIT_OWNER = "ByteBrushStudios";
+export const GIT_OWNER = "CodeMeAPixel";
 export const GIT_REPO = "FixFX";
 export const GIT_SHA = "master";
 
