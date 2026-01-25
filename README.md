@@ -1,6 +1,6 @@
 # FixFX Wiki
 
-[![Build](https://github.com/ByteBrushStudios/FixFX/actions/workflows/build-ci.yml/badge.svg)](https://github.com/ByteBrushStudios/FixFX/actions/workflows/build-ci.yml)
+[![Build](https://github.com/CodeMeAPixel/FixFX/actions/workflows/build-ci.yml/badge.svg)](https://github.com/CodeMeAPixel/FixFX/actions/workflows/build-ci.yml)
 
 A comprehensive documentation platform for FiveM development, providing detailed guides, tutorials, and best practices for the FiveM community.
 
