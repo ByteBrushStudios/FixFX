@@ -94,6 +94,40 @@ export const baseOptions: HomeLayoutProps = {
           menu: {
             banner: (
               <div className="flex h-20 w-full items-center justify-center gap-x-1">
+                <FixFXIcon className="size-8" stroke="#10b981" />
+                <h1 className="text-fd-foreground text-2xl font-bold">
+                  txAdmin Documentation
+                </h1>
+              </div>
+            ),
+          },
+          icon: <FixFXIcon className="size-6" stroke="#10b981" />,
+          text: "txAdmin Documentation",
+          description:
+            "Managing your servers with and setting up txAdmin.",
+          url: "/docs/txadmin",
+        },
+        {
+          menu: {
+            banner: (
+              <div className="flex h-20 w-full items-center justify-center gap-x-1">
+                <FixFXIcon className="size-8" stroke="#a855f7" />
+                <h1 className="text-fd-foreground text-2xl font-bold">
+                  vMenu Documentation
+                </h1>
+              </div>
+            ),
+          },
+          icon: <FixFXIcon className="size-6" stroke="#a855f7" />,
+          text: "vMenu Documentation",
+          description:
+            "Server administration menu for player and server management.",
+          url: "/docs/vmenu",
+        },
+        {
+          menu: {
+            banner: (
+              <div className="flex h-20 w-full items-center justify-center gap-x-1">
                 <FixFXIcon className="size-8" stroke="#f97891" />
                 <h1 className="text-fd-foreground text-2xl font-bold">
                   Framework Documentation

@@ -7,15 +7,18 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
     border?: "default" | "accent" | "destructive" | "none";
+    hover?: boolean;
   }
->(({ className, border = "default", ...props }, ref) => (
+>(({ className, border = "default", hover = false, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-lg bg-card text-card-foreground shadow-sm",
-      border === "default" && "border border-border/40",
-      border === "accent" && "border border-primary/20",
-      border === "destructive" && "border border-destructive/20",
+      "rounded-xl bg-fd-card text-fd-card-foreground shadow-sm transition-all duration-300",
+      border === "default" && "border border-fd-border",
+      border === "accent" && "border border-fd-primary/20",
+      border === "destructive" && "border border-fd-destructive/20",
+      border === "none" && "border-0",
+      hover && "hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 hover:border-fd-border/80",
       className
     )}
     {...props}
@@ -42,7 +45,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-xl font-semibold leading-none tracking-tight text-fd-foreground",
       className
     )}
     {...props}
@@ -56,7 +59,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-fd-muted-foreground", className)}
     {...props}
   />
 ));

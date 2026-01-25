@@ -1,0 +1,10 @@
+{
+    "root": true,
+    "pages": [
+        "setup",
+        "configuration",
+        "permissions",
+        "features",
+        "troubleshooting"
+    ]
+}

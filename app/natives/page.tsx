@@ -10,6 +10,7 @@ import { Button } from '@ui/components/button';
 import { MobileNavigation } from '@ui/core/common/mobile-navigation';
 import { useFetch } from '@core/useFetch';
 import { Input } from '@ui/components/input';
+import { API_URL } from '@/packages/utils/src/constants/link';
 
 export default function NativesPage() {
   // State with proper defaults and type enforcement
@@ -34,7 +35,7 @@ export default function NativesPage() {
       hasCfxNamespace: boolean
     }
   }>(
-    `/api/natives?game=${game}&limit=1&cfx=${includeCFX}&full=true`,
+    `${API_URL}/api/natives?game=${game}&limit=1&cfx=${includeCFX}&full=true`,
     {},
     [game, includeCFX]
   );

@@ -67,38 +67,482 @@ A properly configured database is essential for any FiveM server. This guide cov
 
 ### Linux Installation (Ubuntu/Debian)
 
-#### MariaDB Installation
+#### MariaDB Installation (Recommended)
+
+**Step 1: Update System Packages**
+```bash
+# Update package repositories
+sudo apt update && sudo apt upgrade -y
+
+# Install required dependencies
+sudo apt install software-properties-common apt-transport-https wget -y
+```
+
+**Step 2: Install MariaDB Server**
+```bash
+# Install MariaDB server and client
+sudo apt install mariadb-server mariadb-client -y
+
+# Verify installation
+mysql --version
+```
+
+**Step 3: Secure MariaDB Installation**
+```bash
+# Run security script
+sudo mysql_secure_installation
+
+# Follow the prompts:
+# - Set root password: YES (set a strong password)
+# - Remove anonymous users: YES
+# - Disallow root login remotely: YES (for security)
+# - Remove test database: YES
+# - Reload privilege tables: YES
+```
+
+**Step 4: Configure MariaDB**
+```bash
+# Edit MariaDB configuration
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+
+# Add/modify these settings:
+[mysqld]
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+max_connections=500
+innodb_buffer_pool_size=1G
+innodb_log_file_size=256M
+```
+
+**Step 5: Restart and Enable Service**
+```bash
+# Restart MariaDB to apply changes
+sudo systemctl restart mariadb
+
+# Enable MariaDB to start on boot
+sudo systemctl enable mariadb
+
+# Check service status
+sudo systemctl status mariadb
+```
+
+**Step 6: Configure Firewall (if needed)**
+```bash
+# Allow MySQL port through firewall
+sudo ufw allow 3306/tcp
+
+# If accessing from remote machines
+sudo ufw allow from 192.168.1.0/24 to any port 3306
+```
+
+#### MySQL Installation on Ubuntu/Debian
 
 ```bash
 # Update package list
 sudo apt update
 
-# Install MariaDB
-sudo apt install mariadb-server mariadb-client
+# Install MySQL Server
+sudo apt install mysql-server -y
 
-# Secure installation
+# Check if MySQL is running
+sudo systemctl status mysql
+
+# Run security script
 sudo mysql_secure_installation
+
+# Start and enable MySQL service
+sudo systemctl start mysql
+sudo systemctl enable mysql
+
+# Access MySQL (no password required initially on Ubuntu)
+sudo mysql
+```
+
+### Linux Installation (CentOS/RHEL/Rocky Linux)
+
+#### MariaDB on CentOS/RHEL 8+
+
+```bash
+# Install MariaDB
+sudo dnf install mariadb-server mariadb -y
 
 # Start and enable service
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
-```
-
-#### MySQL Installation
-
-```bash
-# Update package list
-sudo apt update
-
-# Install MySQL
-sudo apt install mysql-server
 
 # Secure installation
 sudo mysql_secure_installation
 
+# Configure firewall
+sudo firewall-cmd --permanent --add-service=mysql
+sudo firewall-cmd --reload
+```
+
+#### MySQL on CentOS/RHEL
+
+```bash
+# Add MySQL repository
+sudo dnf install https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm
+
+# Install MySQL
+sudo dnf install mysql-server -y
+
 # Start and enable service
-sudo systemctl start mysql
-sudo systemctl enable mysql
+sudo systemctl start mysqld
+sudo systemctl enable mysqld
+
+# Get temporary root password
+sudo grep 'temporary password' /var/log/mysqld.log
+
+# Secure installation with temporary password
+sudo mysql_secure_installation
+```
+
+### Linux Post-Installation Setup
+
+#### Create Database and User
+
+```bash
+# Log in to MySQL/MariaDB as root
+sudo mysql -u root -p
+
+# Or on Ubuntu without password initially
+sudo mysql
+```
+
+```sql
+-- Create database for FiveM
+CREATE DATABASE fivem CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Create user for local access
+CREATE USER 'fivem_user'@'localhost' IDENTIFIED BY 'strong_password_here';
+
+-- Grant permissions
+GRANT ALL PRIVILEGES ON fivem.* TO 'fivem_user'@'localhost';
+
+-- For remote access (optional, less secure)
+CREATE USER 'fivem_user'@'%' IDENTIFIED BY 'strong_password_here';
+GRANT ALL PRIVILEGES ON fivem.* TO 'fivem_user'@'%';
+
+-- Apply changes
+FLUSH PRIVILEGES;
+
+-- Exit MySQL
+EXIT;
+```
+
+#### Test Connection
+
+```bash
+# Test local connection
+mysql -u fivem_user -p fivem
+
+# Test remote connection (from another machine)
+mysql -h your_server_ip -u fivem_user -p fivem
+```
+
+#### Configure for Remote Access
+
+```bash
+# Edit MySQL/MariaDB configuration
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+# or for MySQL
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
+# Find and change bind-address
+# From: bind-address = 127.0.0.1
+# To: bind-address = 0.0.0.0
+
+# Save and restart service
+sudo systemctl restart mariadb
+# or
+sudo systemctl restart mysql
+```
+
+### Database Management Tools
+
+Now that your database is installed, you'll need tools to manage it effectively.
+
+#### HeidiSQL (Windows - Recommended)
+
+**Installation:**
+1. Download from [https://www.heidisql.com/download.php](https://www.heidisql.com/download.php)
+2. Run the installer (portable version also available)
+3. Launch HeidiSQL
+
+**Connecting to Your Database:**
+1. Click **"New"** at the bottom left
+2. Configure connection:
+   ```
+   Network type: MariaDB or MySQL (TCP/IP)
+   Hostname / IP: localhost (or your server IP)
+   User: fivem_user
+   Password: your_password
+   Port: 3306
+   Database: fivem
+   ```
+3. Click **"Open"**
+
+**Key Features:**
+- Visual table editor with drag-and-drop
+- Query builder and SQL editor with syntax highlighting
+- Import/export data (SQL, CSV, XML, etc.)
+- User management and permissions
+- Database comparison and synchronization
+- Table designer with visual foreign key relationships
+
+**Common Tasks:**
+```sql
+-- Create new table
+-- Use the visual table designer or SQL tab
+
+-- Import SQL file
+-- File → Load SQL file → Execute
+
+-- Export data
+-- Tools → Export database as SQL
+
+-- Search in all tables
+-- Tools → Find text on server
+```
+
+#### DBeaver (Cross-Platform - Recommended for Linux)
+
+**Installation:**
+
+**Linux (Ubuntu/Debian):**
+```bash
+# Download and install
+wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
+sudo dpkg -i dbeaver-ce_latest_amd64.deb
+sudo apt-get install -f
+
+# Launch DBeaver
+dbeaver
+```
+
+**Windows:**
+```
+Download from: https://dbeaver.io/download/
+Run the installer
+```
+
+**Connecting to Database:**
+1. Click **"New Database Connection"** or Ctrl+Shift+N
+2. Select **MariaDB** or **MySQL**
+3. Enter connection details:
+   ```
+   Server Host: localhost
+   Port: 3306
+   Database: fivem
+   Username: fivem_user
+   Password: your_password
+   ```
+4. Test connection and click **"Finish"**
+
+**Key Features:**
+- Universal database tool (supports 100+ databases)
+- Advanced SQL editor with autocomplete
+- ER diagrams and visual query builder
+- Data editor with inline editing
+- Mock data generation
+- Database compare and migration
+- SSH tunneling support for secure remote access
+
+#### phpMyAdmin (Web-Based)
+
+**Installation on Linux:**
+```bash
+# Ubuntu/Debian
+sudo apt update
+sudo apt install phpmyadmin php-mbstring php-zip php-gd php-json php-curl -y
+
+# During installation, select apache2 or nginx
+# Set up phpMyAdmin database and admin user
+
+# Enable PHP extensions
+sudo phpenmod mbstring
+
+# Restart web server
+sudo systemctl restart apache2
+# or
+sudo systemctl restart nginx
+```
+
+**Access phpMyAdmin:**
+```
+Navigate to: http://localhost/phpmyadmin
+or http://your-server-ip/phpmyadmin
+
+Login with database credentials
+```
+
+**Security Configuration:**
+```bash
+# Create .htaccess for additional security
+sudo nano /usr/share/phpmyadmin/.htaccess
+
+# Add these lines:
+AuthType Basic
+AuthName "Restricted Access"
+AuthUserFile /etc/phpmyadmin/.htpasswd
+Require valid-user
+
+# Create password file
+sudo htpasswd -c /etc/phpmyadmin/.htpasswd admin
+
+# Set permissions
+sudo chmod 640 /etc/phpmyadmin/.htpasswd
+```
+
+#### MySQL Workbench (Advanced Tool)
+
+**Installation:**
+
+**Linux (Ubuntu/Debian):**
+```bash
+# Download from MySQL website or use snap
+sudo snap install mysql-workbench-community
+
+# Or use apt
+sudo apt update
+sudo apt install mysql-workbench
+```
+
+**Windows:**
+```
+Download from: https://dev.mysql.com/downloads/workbench/
+Run the installer
+```
+
+**Key Features:**
+- Database design and modeling
+- Visual ER diagram editor
+- SQL development and administration
+- Data migration tools
+- Performance monitoring and optimization
+- Server administration
+
+**Creating a Connection:**
+1. Click **"+"** next to MySQL Connections
+2. Enter connection details:
+   ```
+   Connection Name: FiveM Server
+   Hostname: localhost
+   Port: 3306
+   Username: fivem_user
+   ```
+3. Store password in keychain (optional)
+4. Test connection and click **"OK"**
+
+#### Command Line Tools
+
+**MySQL/MariaDB Command Line Client:**
+```bash
+# Connect to database
+mysql -u fivem_user -p fivem
+
+# Common commands once connected
+SHOW DATABASES;                    # List all databases
+USE fivem;                         # Select database
+SHOW TABLES;                       # List tables
+DESCRIBE users;                    # Show table structure
+SELECT * FROM users LIMIT 10;     # Query data
+```
+
+**mycli (Enhanced CLI with Auto-completion):**
+```bash
+# Install mycli
+pip install mycli
+
+# Or on Ubuntu/Debian
+sudo apt install mycli
+
+# Connect with mycli
+mycli -u fivem_user -p fivem
+
+# Features:
+# - Auto-completion
+# - Syntax highlighting
+# - Query history
+# - Multi-line queries
+```
+
+**Adminer (Lightweight phpMyAdmin Alternative):**
+```bash
+# Download single PHP file
+sudo mkdir -p /var/www/html/adminer
+cd /var/www/html/adminer
+sudo wget https://www.adminer.org/latest.php -O index.php
+
+# Set permissions
+sudo chown -R www-data:www-data /var/www/html/adminer
+
+# Access at: http://localhost/adminer
+```
+
+#### Remote Database Management
+
+**SSH Tunnel for Secure Remote Access:**
+```bash
+# Create SSH tunnel from local machine to remote database
+ssh -L 3306:localhost:3306 user@your-server-ip
+
+# Now connect to localhost:3306 in your database tool
+# This encrypts all database traffic through SSH
+```
+
+**Using HeidiSQL with SSH Tunnel:**
+1. In HeidiSQL, click **"New"**
+2. Go to **"SSH tunnel"** tab
+3. Enable **"Use SSH tunnel"**
+4. Configure SSH:
+   ```
+   SSH host + port: your-server-ip:22
+   Username: your-ssh-username
+   Password/Private key: your-ssh-credentials
+   ```
+5. In **"Settings"** tab:
+   ```
+   Hostname: localhost (or 127.0.0.1)
+   Port: 3306
+   ```
+
+### Automated Management Scripts
+
+**Database Health Check Script (Linux):**
+```bash
+#!/bin/bash
+# db-health-check.sh
+
+echo "MySQL/MariaDB Health Check"
+echo "=========================="
+
+# Check if service is running
+if systemctl is-active --quiet mariadb; then
+    echo "✓ MariaDB service is running"
+else
+    echo "✗ MariaDB service is not running"
+    exit 1
+fi
+
+# Check connection
+if mysql -u fivem_user -p"$DB_PASSWORD" -e "SELECT 1" &> /dev/null; then
+    echo "✓ Database connection successful"
+else
+    echo "✗ Database connection failed"
+    exit 1
+fi
+
+# Check database size
+DB_SIZE=$(mysql -u fivem_user -p"$DB_PASSWORD" -e "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'Size (MB)' FROM information_schema.tables WHERE table_schema='fivem';" -s)
+echo "✓ Database size: ${DB_SIZE} MB"
+
+# Check for slow queries
+SLOW_QUERIES=$(mysql -u fivem_user -p"$DB_PASSWORD" -e "SHOW GLOBAL STATUS LIKE 'Slow_queries';" -s | awk '{print $2}')
+echo "✓ Slow queries: ${SLOW_QUERIES}"
+
+echo "✓ Health check completed successfully"
 ```
 
 ### Docker Installation

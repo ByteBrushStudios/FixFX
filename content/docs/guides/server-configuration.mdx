@@ -26,7 +26,7 @@ sv_licenseKey "YOUR_LICENSE_KEY_HERE"
 # Server settings
 sv_maxclients 32
 sv_endpointprivacy true
-sv_enforceGameBuild 2944
+# sv_enforceGameBuild - Set to specific build if needed (check runtime.fivem.net)
 
 # Network settings
 endpoint_add_tcp "0.0.0.0:30120"
@@ -104,18 +104,10 @@ sv_queueWaitTime 5000
 # Network optimization
 set sv_netRateLimit 1000000
 set sv_netRateLimitPerClient 50000
-set sv_maxStateBagRate 1000
-set sv_maxStateBagSize 1024
 
-# Scripting performance
-set sv_scriptRuntimeLimit 60000
-set sv_scriptTimeoutLimit 30000
-
-# OneSync configuration (if using)
+# OneSync configuration
+# Check https://docs.fivem.net/docs/scripting-reference/onesync/ for details
 set onesync on
-set onesync_enableInfinity 1
-set onesync_enableBeyond 1
-set onesync_population 1
 
 # Entity limits
 set sv_entityLockdownMode relaxed
@@ -127,31 +119,40 @@ set sv_entityLockdownMode relaxed
 # Anti-cheat and security
 set sv_authMaxVariance 1
 set sv_authMinTrust 5
-set sv_requestParanoia 1
-set sv_filterRequestControl 1
-set sv_scriptHookAllowed 0
+set sv_scriptHookAllowed 0    # Block Script Hook V
 
 # Rate limiting
 set sv_requestRateLimit 10
 set sv_requestRateLimitBurst 50
 
 # File verification
-set sv_enforceGameBuild 2944
-set sv_rejectInvalidLicense 1
+# Check https://runtime.fivem.net for latest build number
+# sv_enforceGameBuild - Set to specific build if needed
+set sv_pureLevel 1             # Resource integrity checking
 ```
+
+<Callout type="info">
+  Many server convars change between FiveM versions. Always check the [official FiveM documentation](https://docs.fivem.net/docs/server-manual/server-commands/) for the most current options.
+</Callout>
 
 ### Database Configuration
 
 ```bash
-# MySQL/MariaDB connection
+# oxmysql (Recommended - Modern connector)
 set mysql_connection_string "mysql://username:password@localhost/database_name?charset=utf8mb4"
+
+# Connection options
+set mysql_connection_string "mysql://user:pass@localhost/db?charset=utf8mb4&connectTimeout=60000"
 
 # Alternative format
 set mysql_connection_string "server=localhost;database=fivem;userid=username;password=password;charset=utf8mb4"
 
-# Connection pooling
-set mysql_slow_query_warning 150
-set mysql_debug 0
+# Performance tuning (check oxmysql documentation for options)
+set mysql_slow_query_warning 150  # Warn on slow queries (ms)
+set mysql_debug 0                 # Debug mode (0 = off)
+
+# Connection pooling (oxmysql)
+set mysql_connection_limit 10     # Max connections
 ```
 
 ## Resource Management
@@ -306,25 +307,16 @@ set sv_crashDumpEnabled 1
 
 ### OneSync Configuration
 
+OneSync enables synchronization for servers with more than 32 players. For current configuration options, check the [official OneSync documentation](https://docs.fivem.net/docs/scripting-reference/onesync/).
+
 ```bash
 # Enable OneSync (required for 32+ players)
 set onesync on
-
-# OneSync Infinity (up to 255 players)
-set onesync_enableInfinity 1
-
-# OneSync Beyond (up to 1024 players, experimental)
-set onesync_enableBeyond 1
-
-# Population control
-set onesync_population 1
-set onesync_workaround763185 1
-
-# Distance culling
-set onesync_distanceCullVehicles 1000.0
-set onesync_distanceCullPeds 500.0
-set onesync_distanceCullObjects 1000.0
 ```
+
+<Callout type="info">
+  OneSync configuration options may change. Always refer to the official FiveM documentation for current settings.
+</Callout>
 
 ### Voice Chat Configuration
 
@@ -332,7 +324,7 @@ set onesync_distanceCullObjects 1000.0
 # Built-in voice chat
 ensure voice-chat
 
-# Voice settings
+# Voice settings - check resource documentation for current options
 setr voice_useSendingRangeOnly true
 setr voice_defaultCycle "GRAVE"
 setr voice_defaultVolume 0.3
@@ -602,7 +594,7 @@ set sv_netRateLimitPerClient 100000
 # Freeroam Server Configuration
 sv_hostname "^4Freeroam ^7| ^3All Vehicles ^7| ^2No Rules"
 sv_maxclients 128
-set onesync_enableInfinity 1
+set onesync on  # Check docs.fivem.net for advanced onesync options
 
 # Freeroam features
 ensure freeroam_spawns
@@ -615,4 +607,4 @@ set sv_authMaxVariance 10
 set sv_authMinTrust 1
 ```
 
-This comprehensive configuration guide covers all aspects of setting up and optimizing a FiveM server, from basic settings to advanced production configurations.
+This comprehensive configuration guide covers all aspects of setting up and optimizing a FiveM server. For the most current configuration options, always refer to the [official FiveM documentation](https://docs.fivem.net/docs/server-manual/server-commands/).

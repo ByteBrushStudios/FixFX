@@ -6,11 +6,26 @@ import { Contributors } from "@ui/core/landing/contributors";
 
 export default function HomePage() {
   return (
-    <div className="mx-8 flex min-h-screen flex-col items-center justify-center py-16">
-      <Hero />
+    <main className="flex min-h-screen flex-col items-center">
+      {/* Hero Section */}
+      <div className="w-full pt-16 md:pt-24">
+        <Hero />
+      </div>
+
+      {/* How It Works */}
       <Tracer />
+
+      {/* Features Grid */}
       <Features />
+
+      {/* Documentation Preview */}
+      <DocsPreview />
+
+      {/* Contributors */}
       <Contributors />
-    </div>
+
+      {/* Bottom spacing */}
+      <div className="h-16 md:h-24" />
+    </main>
   );
 }

@@ -6,6 +6,7 @@ import { ScrollArea } from '@ui/components/scroll-area';
 import { useFetch } from '@core/useFetch';
 import { Code, Copy, Check, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import { cn } from '@utils/functions/cn';
+import { API_URL } from '@/packages/utils/src/constants/link';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import ReactMarkdown from 'react-markdown';
@@ -71,7 +72,7 @@ export function NativesContent({ game, environment, category, searchQuery, inclu
         if (category) params.set('ns', category);
         if (searchQuery) params.set('search', searchQuery);
 
-        return `/api/natives?${params.toString()}`;
+        return `${API_URL}/api/natives?${params.toString()}`;
     }, [game, environment, category, searchQuery, includeCFX, page]);
 
     // Use the enhanced fetch hook

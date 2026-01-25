@@ -1,0 +1,699 @@
+---
+title: Features Overview
+description: Complete guide to all vMenu features, categories, and functionality
+icon: Grid
+---
+
+import { Callout } from 'fumadocs-ui/components/callout'
+
+## Overview
+
+vMenu provides a comprehensive set of features for server administration, player management, and customization. This guide covers all available features organized by menu category.
+
+<Callout type="info">
+  Features shown depend on your permissions. Admins see all options, while regular players see limited features based on configuration.
+</Callout>
+
+## Main Menu Categories
+
+| Category | Description | Permission Required |
+|----------|-------------|---------------------|
+| **Online Players** | Manage connected players | `vMenu.OnlinePlayers` |
+| **Player Options** | Self modification options | `vMenu.PlayerOptions` |
+| **Vehicle Spawner** | Spawn any vehicle | `vMenu.VehicleSpawner` |
+| **Vehicle Options** | Modify current vehicle | `vMenu.VehicleOptions` |
+| **Saved Vehicles** | Spawn saved vehicles | `vMenu.SavedVehicles` |
+| **Personal Vehicle** | Personal vehicle management | `vMenu.PersonalVehicle` |
+| **Weapon Options** | Weapon management | `vMenu.WeaponOptions` |
+| **Weapon Loadouts** | Save/load weapon sets | `vMenu.WeaponLoadouts` |
+| **Player Appearance** | Character customization | `vMenu.PlayerAppearance` |
+| **Saved Characters** | Saved appearance presets | `vMenu.SavedCharacters` |
+| **Teleport Locations** | Teleport to locations | `vMenu.Teleport` |
+| **World Options** | Change time/weather | `vMenu.WorldOptions` |
+| **Voice Chat** | Voice chat settings | `vMenu.VoiceChat` |
+| **Misc Settings** | General settings | `vMenu.MiscSettings` |
+| **Recording** | Rockstar Editor controls | `vMenu.Recording` |
+
+## Online Players
+
+**Permission**: `vMenu.OnlinePlayers`
+
+Manage connected players on your server.
+
+### Player List Features
+
+- **View All Players**: See complete list of connected players
+- **Player Count**: Display current player count
+- **Server Info**: View server details
+
+### Player Actions
+
+**Permission**: `vMenu.OnlinePlayers.All` or specific sub-permissions
+
+| Action | Permission | Description |
+|--------|------------|-------------|
+| **Teleport To** | `.TeleportToPlayer` | Teleport to player's location |
+| **Summon** | `.Summon` | Bring player to you |
+| **Kill** | `.Kill` | Kill the player |
+| **Kick** | `.Kick` | Kick from server |
+| **Temp Ban** | `.TempBan` | Temporary ban (hours/days) |
+| **Perm Ban** | `.PermBan` | Permanent ban |
+| **Spectate** | `vMenu.Spectate` | View player's screen |
+| **Freeze** | `.Freeze` | Freeze player movement |
+| **Unfreeze** | `.Freeze` | Unfreeze player |
+| **Remove Weapons** | `.RemovePlayerWeapons` | Strip all weapons |
+| **View Identifiers** | `.SeePlayerIdentifiers` | Show steam, license, discord IDs |
+
+### Player Information Display
+
+- Current health and armor
+- Current vehicle (if in vehicle)
+- Current weapon
+- Distance from you
+- Player identifiers
+
+<Callout type="warn">
+  **Moderation Warning**: Always follow your server's moderation guidelines when using player management features.
+</Callout>
+
+## Player Options
+
+**Permission**: `vMenu.PlayerOptions`
+
+Modify your own character's abilities and status.
+
+### God Mode Options
+
+| Feature | Permission | Description |
+|---------|------------|-------------|
+| **God Mode** | `.God` | Invincibility (no damage) |
+| **Invisible** | `.Invisible` | Become invisible to players |
+| **Never Wanted** | `.NeverWanted` | Disable wanted level |
+| **Ignored By Police** | `.IgnoredByPolice` | Police won't chase you |
+| **Set Wanted Level** | `.SetWanted` | Manual wanted level (1-5 stars) |
+
+### Movement Options
+
+| Feature | Permission | Description |
+|---------|------------|-------------|
+| **Fast Run** | `.FastRun` | 2x running speed |
+| **Fast Swim** | `.FastSwim` | 2x swimming speed |
+| **Super Jump** | `.SuperJump` | Jump extra high |
+| **Unlimited Stamina** | `.UnlimitedStamina` | Never get tired |
+| **No Ragdoll** | `.NoRagdoll` | No falling animations |
+
+### Health & Armor
+
+| Feature | Permission | Description |
+|---------|------------|-------------|
+| **Restore Health** | `.MaxHealth` | Heal to full |
+| **Restore Armor** | `.MaxArmor` | Full armor |
+| **Stay In Vehicle** | `.StayInVehicle` | Don't fall off when shot |
+
+### Model Options
+
+- **Change Player Model**: Switch to any ped model
+- **Reset Model**: Return to default character
+- **Random Model**: Randomize appearance
+
+<Callout type="info">
+  Changes to player options are typically temporary and reset on respawn or reconnect, unless configured otherwise.
+</Callout>
+
+## Vehicle Spawner
+
+**Permission**: `vMenu.VehicleSpawner`
+
+Spawn vehicles by category.
+
+### Vehicle Categories
+
+| Category | Permission | Vehicle Count |
+|----------|------------|---------------|
+| **Compacts** | `.Compacts` | 14+ vehicles |
+| **Sedans** | `.Sedans` | 30+ vehicles |
+| **SUVs** | `.SUVs` | 25+ vehicles |
+| **Coupes** | `.Coupes` | 11+ vehicles |
+| **Muscle** | `.Muscle` | 25+ vehicles |
+| **Sports Classics** | `.SportsClassics` | 27+ vehicles |
+| **Sports** | `.Sports` | 30+ vehicles |
+| **Super** | `.Super` | 20+ vehicles |
+| **Motorcycles** | `.Motorcycles` | 25+ vehicles |
+| **Off-Road** | `.OffRoad` | 20+ vehicles |
+| **Industrial** | `.Industrial` | 10+ vehicles |
+| **Utility** | `.Utility` | 15+ vehicles |
+| **Vans** | `.Vans` | 10+ vehicles |
+| **Cycles** | `.Cycles` | 8+ bicycles |
+| **Boats** | `.Boats` | 15+ boats |
+| **Helicopters** | `.Helicopters` | 20+ helicopters |
+| **Planes** | `.Planes` | 20+ aircraft |
+| **Service** | `.Service` | 10+ vehicles |
+| **Emergency** | `.Emergency` | 20+ vehicles |
+| **Military** | `.Military` | 15+ vehicles |
+| **Commercial** | `.Commercial` | 8+ vehicles |
+| **Trains** | `.Trains` | 5+ trains |
+| **Open Wheel** | `.OpenWheel` | 2+ F1 cars |
+
+### Spawn Options
+
+- **Spawn Inside**: Automatically enter spawned vehicle
+- **Replace Current**: Delete current vehicle when spawning new one
+- **Spawn Upgraded**: Spawn with max upgrades
+- **Custom Plate**: Set custom license plate on spawn
+
+### Popular Vehicles
+
+**Super Cars**:
+- Adder, Entity XF/XXR, T20, Osiris, Zentorno, Turismo R, Infernus, Vacca, Cheetah
+
+**Sports Cars**:
+- Elegy RH8 (free), Kuruma, Jester, Massacro, Carbonizzare, Coquette
+
+**Emergency**:
+- Police Cruiser, Police Bike, Sheriff SUV, Fire Truck, Ambulance
+
+**Aircraft**:
+- Buzzard, Hydra, Savage, Valkyrie, Luxor, Shamal, Frogger
+
+## Vehicle Options
+
+**Permission**: `vMenu.VehicleOptions`
+
+Modify your current vehicle.
+
+### Quick Actions
+
+| Action | Permission | Description |
+|--------|------------|-------------|
+| **Repair** | `.Fix` | Instantly repair vehicle |
+| **Wash** | `.Wash` | Clean the vehicle |
+| **Toggle Engine** | `.Engine` | Start/stop engine |
+| **Flip Vehicle** | `.All` | Flip vehicle upright |
+
+### Visual Modifications
+
+**Permission**: `vMenu.VehicleOptions.Mod`
+
+- **Primary Color**: Change paint color
+- **Secondary Color**: Change secondary paint
+- **Pearlescent**: Add pearlescent finish
+- **Wheel Color**: Change wheel color
+- **Trim Color**: Interior trim color
+- **Dashboard Color**: Dashboard color
+- **Liveries**: Apply liveries/wraps
+- **Neon Lights**: Enable/customize underglow
+- **Tinted Windows**: Window tint level
+
+### Performance Modifications
+
+- **Engine**: Upgrade level 0-4
+- **Brakes**: Upgrade level 0-3
+- **Transmission**: Upgrade level 0-3
+- **Suspension**: Lower or stock
+- **Armor**: Protection level 0-5
+- **Turbo**: Enable turbo charger
+
+**Permissions for modification**:
+- `.Torque`: Modify engine torque multiplier
+- `.Power`: Modify engine power multiplier
+
+### Vehicle Components
+
+**Permission**: `vMenu.VehicleOptions.Components`
+
+- **Spoilers**: Add/change spoiler
+- **Front Bumper**: Custom front bumper
+- **Rear Bumper**: Custom rear bumper
+- **Side Skirts**: Add side skirts
+- **Exhaust**: Custom exhaust
+- **Hood**: Custom hood/bonnet
+- **Roof**: Modify roof
+- **Grille**: Custom grille
+
+### Door Management
+
+**Permission**: `vMenu.VehicleOptions.Doors`
+
+- Open/close individual doors
+- Remove individual doors
+- Fix broken doors
+
+### Window Management
+
+**Permission**: `vMenu.VehicleOptions.Windows`
+
+- Roll up/down windows
+- Break specific windows
+- Repair broken windows
+
+### Special Options
+
+| Option | Permission | Description |
+|--------|------------|-------------|
+| **Freeze Vehicle** | `.Freeze` | Lock vehicle in place |
+| **Invisible Vehicle** | `.Invisible` | Make vehicle invisible (you remain visible) |
+| **Engine Always On** | `.EngineAlwaysOn` | Engine never turns off |
+| **No Siren Sound** | `.NoSirenSound` | Disable siren audio |
+| **No Helmet** | `.NoHelmet` | Disable auto helmet on bikes |
+| **Flash Highbeams** | `.FlashHighbeamsOnHonk` | Flash lights when honking |
+
+## Saved Vehicles
+
+**Permission**: `vMenu.SavedVehicles`
+
+Save and spawn custom configured vehicles.
+
+### Features
+
+- **Save Current Vehicle**: Save vehicle with all mods
+- **Spawn Saved Vehicle**: Spawn any saved vehicle
+- **Delete Saved Vehicle**: Remove from saved list
+- **Rename Vehicle**: Change saved vehicle name
+- **Replace Vehicle**: Update saved vehicle with current
+
+### Saved Data Includes
+
+- Vehicle model
+- All modifications (engine, brakes, etc.)
+- Paint colors
+- Livery
+- Wheels and tires
+- Neon lights
+- Window tint
+- License plate
+- Extra components
+
+<Callout type="info">
+  Maximum saved vehicles per player is configurable via `vMenuMaxSavedVehicles` convar (default: 50).
+</Callout>
+
+## Personal Vehicle
+
+**Permission**: `vMenu.PersonalVehicle`
+
+Designate one vehicle as your personal vehicle with special features.
+
+### Features
+
+- **Set Personal Vehicle**: Make current vehicle personal
+- **Recall Vehicle**: Teleport vehicle to you
+- **Lock/Unlock**: Remote lock control
+- **Return To Storage**: Send vehicle to virtual garage
+- **Respawn Vehicle**: Respawn if destroyed
+
+### Exclusive Vehicle
+
+- Only you can drive your personal vehicle (configurable)
+- Vehicle persists across resource restarts
+- Auto-respawns when destroyed (optional)
+
+## Weapon Options
+
+**Permission**: `vMenu.WeaponOptions`
+
+Manage weapons and ammo.
+
+### Quick Actions
+
+| Action | Permission | Description |
+|--------|------------|-------------|
+| **Get All Weapons** | `.GetAll` | Spawn all weapons |
+| **Remove All Weapons** | `.RemoveAll` | Drop all weapons |
+| **Refill Ammo** | `.All` | Refill all weapon ammo |
+| **Infinite Ammo** | `.UnlimitedAmmo` | Never run out of ammo |
+| **No Reload** | `.NoReload` | No reload delay |
+
+### Weapon Spawner
+
+**Permission**: `vMenu.WeaponSpawner`
+
+Spawn weapons by category:
+
+- **Melee**: Knife, Baseball Bat, Hammer, Crowbar, Golf Club, etc.
+- **Pistols**: Pistol, Combat Pistol, AP Pistol, Heavy Pistol, etc.
+- **SMGs**: Micro SMG, SMG, Assault SMG, Combat PDW, etc.
+- **Shotguns**: Pump Shotgun, Sawed-Off, Assault Shotgun, Bullpup Shotgun
+- **Assault Rifles**: AK-47, Carbine Rifle, Advanced Rifle, Special Carbine
+- **Sniper Rifles**: Sniper Rifle, Heavy Sniper, Marksman Rifle
+- **Heavy Weapons**: RPG, Grenade Launcher, Minigun, Railgun
+- **Throwables**: Grenade, Sticky Bomb, Proximity Mine, Molotov
+
+### Weapon Customization
+
+- Add/remove attachments (scope, suppressor, flashlight, grip)
+- Change tint/camo
+- Max ammo capacity
+
+## Weapon Loadouts
+
+**Permission**: `vMenu.WeaponLoadouts`
+
+Save and load weapon configurations.
+
+### Features
+
+- **Save Loadout**: Save current weapons and ammo
+- **Load Loadout**: Equip saved weapon set
+- **Delete Loadout**: Remove saved loadout
+- **Rename Loadout**: Change loadout name
+
+### Saved Data
+
+- All weapons
+- Attachments for each weapon
+- Ammo counts
+- Weapon tints
+
+<Callout type="info">
+  Useful for quickly switching between roleplay roles (police, military, civilian) or event loadouts.
+</Callout>
+
+## Player Appearance
+
+**Permission**: `vMenu.PlayerAppearance`
+
+Customize character appearance using GTA V's character creator.
+
+### Customization Options
+
+**Inherited Features**:
+- Face shape (mother/father inheritance sliders)
+- Skin tone
+- Face features (nose, eyes, cheeks, jaw, etc.)
+
+**Appearance Details**:
+- Hairstyles (60+ options)
+- Hair colors
+- Eye colors
+- Facial hair (beards, mustaches, sideburns)
+- Eyebrows
+- Makeup
+- Blemishes & aging
+- Complexion
+
+**Clothing**:
+- Hats/Helmets
+- Glasses/Sunglasses
+- Tops/Shirts
+- Legs/Pants
+- Shoes
+- Accessories
+- Watches
+- Bracelets
+- Ears (earrings)
+- Body Armor
+
+**Props**:
+- Bags/Backpacks
+- Decals/Patches
+
+### Gender Switch
+
+- Switch between male and female models
+- Separate clothing for each gender
+
+## Saved Characters
+
+**Permission**: `vMenu.SavedCharacters`
+
+Save and load character appearances.
+
+### Features
+
+- **Save Character**: Store current appearance
+- **Load Character**: Apply saved appearance
+- **Delete Character**: Remove saved character
+- **Rename Character**: Change character name
+
+### Practical Uses
+
+- Quick character switching for roleplay
+- Store different uniforms (police, EMS, criminal)
+- Save civilian outfits
+- Event-specific appearances
+
+<Callout type="info">
+  Maximum saved characters per player is configurable via `vMenuMaxSavedCharacters` convar (default: 5).
+</Callout>
+
+## Teleport Locations
+
+**Permission**: `vMenu.Teleport`
+
+Teleport to predefined or custom locations.
+
+### Default Locations
+
+**Landmarks**:
+- Los Santos Airport
+- Sandy Shores Airfield
+- Fort Zancudo (military base)
+- Maze Bank Tower (tallest building)
+- Mt. Chiliad (mountain peak)
+- Vinewood Sign
+
+**Districts**:
+- Downtown Los Santos
+- Vespucci Beach
+- Vinewood Hills
+- Paleto Bay
+- Sandy Shores
+
+**Special Locations**:
+- Prison
+- Hospital
+- Police Station
+- Fire Station
+- Humane Labs
+
+### Custom Locations
+
+- **Save Location**: Add current position as teleport point
+- **Teleport to Waypoint**: TP to map marker
+- **Teleport to Coords**: Enter exact X, Y, Z coordinates
+- **Teleport into Vehicle**: Enter last vehicle
+
+## World Options
+
+**Permission**: `vMenu.WorldOptions`
+
+Control server environment.
+
+### Time Control
+
+**Permission**: `vMenu.WorldOptions.Time`
+
+- Set specific time (00:00 - 23:59)
+- Freeze time
+- Lock time (sync with all players)
+- Time sync toggle
+
+### Weather Control
+
+**Permission**: `vMenu.WorldOptions.Weather`
+
+Available weather types:
+- Extra Sunny
+- Clear
+- Clouds
+- Overcast
+- Rain
+- Thunder
+- Fog
+- Snow
+- Blizzard
+- Christmas
+- Halloween
+
+**Features**:
+- Instant weather change
+- Weather sync (all players)
+- Remove fog/clouds
+- Dynamic weather toggle
+
+### World Modifications
+
+**Permission**: `vMenu.WorldOptions.All`
+
+- **Blackout**: Remove all lights
+- **Disable Traffic**: Remove all AI vehicles
+- **Disable Peds**: Remove all pedestrians
+- **Randomize Peds**: Randomize NPC models
+
+<Callout type="warn">
+  World changes affect all players on the server. Use responsibly during active gameplay.
+</Callout>
+
+## Voice Chat
+
+**Permission**: `vMenu.VoiceChat`
+
+Control voice chat settings.
+
+### Features
+
+- **Enable/Disable Voice**: Toggle voice chat
+- **Staff Channel**: Private admin voice channel
+- **Proximity Range**: Adjust voice distance
+- **Show Speaker Indicators**: Display who's talking
+
+<Callout type="info">
+  Requires a voice chat resource like TokoVOIP, Mumble-VOIP, or pma-voice to be installed and configured.
+</Callout>
+
+## Misc Settings
+
+**Permission**: `vMenu.MiscSettings`
+
+General preferences and utilities.
+
+### Game Settings
+
+- **Respawn Location**: Choose spawn point
+- **Death Notifications**: Toggle death messages
+- **Join/Quit Notifications**: Player connection messages
+- **Show Coordinates**: Display X, Y, Z on screen
+- **Show Location**: Display street name
+- **Show Speedometer**: Vehicle speed display
+- **Speed Unit**: MPH or KPH
+
+### HUD Settings
+
+- **Hide HUD**: Remove all HUD elements
+- **Hide Radar**: Remove minimap
+- **Lock Minimap**: Lock minimap rotation
+- **Minimap Style**: Normal or expanded
+
+### Player Preferences
+
+- **Save Preferences**: Remember settings
+- **Clear Saved Data**: Reset all saved data
+- **Keybind Settings**: Change menu keybinds
+
+## Recording Options
+
+**Permission**: `vMenu.Recording`
+
+Rockstar Editor controls.
+
+### Features
+
+- **Start Recording**: Begin recording
+- **Stop Recording**: End recording
+- **Save Clip**: Save recorded footage
+- **Discard Recording**: Delete current recording
+- **Start/Stop Editor**: Open Rockstar Editor
+
+### Camera Controls
+
+- Toggle cinematic camera mode
+- Adjust field of view
+- Camera shake effects
+
+<Callout type="info">
+  Recorded clips are saved locally and can be edited in the Rockstar Editor.
+</Callout>
+
+## NoClip Mode
+
+**Permission**: `vMenu.NoClip`
+
+Free camera movement for admins.
+
+### Controls
+
+| Key | Action |
+|-----|--------|
+| **F2** | Toggle NoClip on/off |
+| **W/S** | Move forward/backward |
+| **A/D** | Move left/right |
+| **Space/Ctrl** | Move up/down |
+| **Shift** | Increase speed |
+| **Mouse** | Look around |
+
+### Settings
+
+- Adjustable speed multiplier
+- Configurable keybind
+- Invisible while in noclip (optional)
+
+<Callout type="warn">
+  **Admin Only**: NoClip is extremely powerful and should only be granted to trusted administrators.
+</Callout>
+
+## Developer Tools
+
+**Permission**: `vMenu.DeveloperTools`
+
+Tools for resource development and debugging.
+
+### Features
+
+- **Entity Inspector**: View nearby entity data
+- **Coordinates Display**: Show current coords
+- **Heading Display**: Show player heading
+- **Copy Coords**: Copy to clipboard
+- **Network Info**: View network statistics
+- **Performance Metrics**: FPS, ping, memory usage
+
+## Reports System
+
+**Permission**: `vMenu.Report`
+
+Player report system for staff.
+
+### For Players
+
+- Submit reports about other players
+- Include reason and description
+- Automatic reporter ID included
+
+### For Staff
+
+- View all active reports
+- Teleport to reporter/reported player
+- Close/resolve reports
+- Ban directly from report
+
+## Best Practices
+
+### For Server Owners
+
+- ✅ Configure permissions carefully
+- ✅ Train staff on feature usage
+- ✅ Document allowed vs prohibited actions
+- ✅ Regularly audit staff actions via logs
+- ✅ Test features thoroughly before production
+
+### For Staff
+
+- ✅ Always follow moderation guidelines
+- ✅ Document actions taken (screenshots/logs)
+- ✅ Use minimal necessary force
+- ✅ Communicate with players before taking action
+- ✅ Never abuse admin powers
+
+### For Players
+
+- ✅ Only use features you're permitted to access
+- ✅ Report bugs/issues to staff
+- ✅ Don't request admin permissions unnecessarily
+- ✅ Use /report for rule violations
+
+## Feature Requests
+
+Have an idea for vMenu?
+
+- 💬 Join [vMenu Discord](https://vespura.com/vmenu/discord)
+- 📝 Open [GitHub Issue](https://github.com/TomGrobbe/vMenu/issues)
+- 🌐 Post on [CFX Forums](https://forum.cfx.re/t/vmenu)
+
+## Next Steps
+
+- [Configure Permissions](/docs/vmenu/permissions) - Set up access control
+- [Troubleshooting](/docs/vmenu/troubleshooting) - Solve common issues
+- [Configuration](/docs/vmenu/configuration) - Customize vMenu settings
+
+<Callout type="success">
+  **Explore vMenu**: Now that you understand all features, configure your server to match your needs!
+</Callout>

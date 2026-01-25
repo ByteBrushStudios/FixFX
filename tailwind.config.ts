@@ -37,6 +37,7 @@ const confg: Pick<Config, "presets" | "plugins" | "content" | "theme"> = {
         shine: "shine var(--duration) infinite linear",
         "accordion-up": "accordion-up 0.2s ease-out",
         gradient: "gradient 5s linear infinite",
+        "indeterminate-progress": "indeterminate-progress 1.5s infinite ease-in-out",
       },
       keyframes: {
         marquee: {
@@ -81,6 +82,11 @@ const confg: Pick<Config, "presets" | "plugins" | "content" | "theme"> = {
           "100%": {
             "offset-distance": "100%",
           },
+        },
+        "indeterminate-progress": {
+          "0%": { transform: "translateX(-100%)" },
+          "50%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(100%)" },
         },
       },
     },

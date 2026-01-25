@@ -1,0 +1,544 @@
+---
+title: Backup System
+description: Configure automated backups, manage backup storage, and implement disaster recovery for your FiveM/RedM server.
+---
+
+This guide covers txAdmin's comprehensive backup system, helping you protect your server data and implement reliable disaster recovery procedures.
+
+## Backup Overview
+
+### What Gets Backed Up
+txAdmin's backup system protects critical server components:
+
+#### Server Files
+- **Resources Folder:** All custom and framework resources
+- **Server Configuration:** server.cfg and related config files
+- **Data Folder:** Server data including logs and cache
+- **Database:** MySQL/MariaDB database content (if configured)
+- **User Data:** Player profiles and save data
+
+#### Exclusions (Configurable)
+- **Cache Files:** Temporary files that can be regenerated
+- **Log Files:** Large log files (configurable retention)
+- **Temp Directories:** Temporary processing folders
+- **System Files:** Operating system and txAdmin installation files
+
+### Backup Types
+
+#### Full Backups
+Complete server backup including all data:
+- **Frequency:** Weekly or monthly
+- **Size:** Largest backup type
+- **Restore:** Complete server restoration possible
+- **Use Case:** Major updates, migrations, fresh installs
+
+#### Incremental Backups
+Only changed files since last backup:
+- **Frequency:** Daily or hourly
+- **Size:** Smaller, faster backups
+- **Restore:** Requires full backup + incrementals
+- **Use Case:** Regular protection with minimal storage
+
+#### Resource-Only Backups
+Backup only the resources folder:
+- **Frequency:** Before resource updates
+- **Size:** Medium size backups
+- **Restore:** Resource-specific restoration
+- **Use Case:** Development servers, resource testing
+
+## Configuring Automated Backups
+
+### Basic Backup Setup
+
+#### Enable Automated Backups
+1. Navigate to **Settings → Backup**
+2. Enable **Automatic Backups**
+3. Configure basic settings:
+
+```json
+{
+  "backup_config": {
+    "enabled": true,
+    "frequency": "daily",
+    "time": "03:00",
+    "timezone": "UTC",
+    "retention_days": 14,
+    "compression": true
+  }
+}
+```
+
+#### Backup Schedule Options
+Configure when backups run:
+
+**Daily Backups:**
+```json
+{
+  "schedule": {
+    "type": "daily",
+    "time": "03:00",
+    "timezone": "UTC"
+  }
+}
+```
+
+**Weekly Backups:**
+```json
+{
+  "schedule": {
+    "type": "weekly",
+    "day": "sunday",
+    "time": "02:00",
+    "timezone": "UTC"
+  }
+}
+```
+
+**Custom Schedule (Cron):**
+```json
+{
+  "schedule": {
+    "type": "cron",
+    "expression": "0 3 * * 0",
+    "description": "Every Sunday at 3 AM"
+  }
+}
+```
+
+### Advanced Backup Configuration
+
+#### Retention Policies
+Manage backup storage efficiently:
+
+```json
+{
+  "retention_policy": {
+    "daily_backups": {
+      "keep": 7,
+      "description": "Keep 7 daily backups"
+    },
+    "weekly_backups": {
+      "keep": 4,
+      "description": "Keep 4 weekly backups"
+    },
+    "monthly_backups": {
+      "keep": 12,
+      "description": "Keep 12 monthly backups"
+    }
+  }
+}
+```
+
+#### Include/Exclude Rules
+Customize what gets backed up:
+
+```json
+{
+  "backup_rules": {
+    "include": [
+      "resources/",
+      "server.cfg",
+      "data/",
+      "database/"
+    ],
+    "exclude": [
+      "cache/",
+      "logs/*.log",
+      "temp/",
+      "node_modules/",
+      "*.tmp"
+    ]
+  }
+}
+```
+
+#### Compression Settings
+Optimize backup size and speed:
+
+```json
+{
+  "compression": {
+    "enabled": true,
+    "algorithm": "gzip",
+    "level": 6,
+    "exclude_already_compressed": true
+  }
+}
+```
+
+## Backup Storage Options
+
+### Local Storage
+Default backup storage on the server:
+
+#### Configuration
+```json
+{
+  "storage": {
+    "type": "local",
+    "path": "/opt/txadmin/backups",
+    "max_size": "50GB",
+    "cleanup_enabled": true
+  }
+}
+```
+
+#### Advantages
+- **Fast Access:** Quick backup and restore operations
+- **No Dependencies:** Works without internet connection
+- **Low Latency:** Immediate access to backup files
+
+#### Considerations
+- **Single Point of Failure:** Vulnerable to hardware failure
+- **Limited Space:** Constrained by local storage
+- **Physical Security:** Relies on server physical security
+
+### Cloud Storage Integration
+
+#### Amazon S3
+Configure AWS S3 for backup storage:
+
+```json
+{
+  "storage": {
+    "type": "s3",
+    "bucket": "your-backup-bucket",
+    "region": "us-west-2",
+    "access_key": "YOUR_ACCESS_KEY",
+    "secret_key": "YOUR_SECRET_KEY",
+    "encryption": true,
+    "storage_class": "STANDARD_IA"
+  }
+}
+```
+
+#### Google Cloud Storage
+Set up Google Cloud for backups:
+
+```json
+{
+  "storage": {
+    "type": "gcs",
+    "bucket": "your-backup-bucket",
+    "project_id": "your-project-id",
+    "key_file": "/path/to/service-account.json",
+    "storage_class": "NEARLINE"
+  }
+}
+```
+
+#### Azure Blob Storage
+Configure Azure for backup storage:
+
+```json
+{
+  "storage": {
+    "type": "azure",
+    "container": "backups",
+    "account_name": "yourstorageaccount",
+    "account_key": "YOUR_ACCOUNT_KEY",
+    "tier": "Cool"
+  }
+}
+```
+
+### Network Storage
+
+#### SFTP/SSH Storage
+Use remote servers via SSH:
+
+```json
+{
+  "storage": {
+    "type": "sftp",
+    "host": "backup-server.com",
+    "port": 22,
+    "username": "backup_user",
+    "private_key": "/path/to/private_key",
+    "remote_path": "/backups/server1"
+  }
+}
+```
+
+#### SMB/CIFS Shares
+Network file sharing:
+
+```json
+{
+  "storage": {
+    "type": "smb",
+    "share": "//backup-server/backups",
+    "username": "backup_user",
+    "password": "secure_password",
+    "domain": "your_domain"
+  }
+}
+```
+
+## Manual Backup Operations
+
+### Creating Manual Backups
+
+#### Via Web Interface
+1. Go to **System → Backups**
+2. Click **Create Backup**
+3. Select backup options:
+   - **Backup Type:** Full, Resources Only, Custom
+   - **Description:** Custom backup description
+   - **Include Database:** Include database dump
+4. Start backup process
+
+#### Via Console Commands
+```bash
+# Create full backup
+backup create --type=full --description="Pre-update backup"
+
+# Create resource-only backup
+backup create --type=resources --description="Before resource update"
+
+# Create custom backup
+backup create --include="resources,data" --exclude="cache" --description="Custom backup"
+```
+
+#### Backup Verification
+Verify backup integrity:
+
+```bash
+# Verify backup
+backup verify --file="backup_20240115_030000.tar.gz"
+
+# List backup contents
+backup list --file="backup_20240115_030000.tar.gz"
+
+# Test backup extraction
+backup test --file="backup_20240115_030000.tar.gz" --test-path="/tmp/backup_test"
+```
+
+### Backup Management
+
+#### Viewing Backups
+Monitor existing backups:
+
+- **Backup List:** View all available backups
+- **Size Information:** Backup file sizes and compression ratios
+- **Creation Dates:** When each backup was created
+- **Verification Status:** Backup integrity status
+- **Storage Location:** Where backup is stored
+
+#### Backup Actions
+Available actions for each backup:
+
+- **Download:** Download backup to local machine
+- **Verify:** Check backup integrity
+- **Delete:** Remove backup from storage
+- **Restore:** Restore server from backup
+- **Clone:** Create new server from backup
+
+## Disaster Recovery
+
+### Restoration Procedures
+
+#### Full Server Restore
+Complete server restoration from backup:
+
+1. **Preparation:**
+   - Stop current server
+   - Backup current state (if possible)
+   - Ensure sufficient disk space
+
+2. **Restoration Process:**
+   ```bash
+   # Via txAdmin interface
+   1. Navigate to System → Backups
+   2. Select backup to restore
+   3. Choose restore options
+   4. Confirm restoration
+   
+   # Via command line
+   backup restore --file="backup_20240115_030000.tar.gz" --type=full
+   ```
+
+3. **Post-Restore Steps:**
+   - Verify resource integrity
+   - Update configuration if needed
+   - Test server startup
+   - Verify player data
+
+#### Partial Restoration
+Restore specific components:
+
+**Resource-Only Restore:**
+```bash
+backup restore --file="backup.tar.gz" --type=resources --target="/opt/server/resources"
+```
+
+**Database Restore:**
+```bash
+backup restore --file="backup.tar.gz" --type=database --target="server_database"
+```
+
+**Configuration Restore:**
+```bash
+backup restore --file="backup.tar.gz" --type=config --target="/opt/server"
+```
+
+### Recovery Scenarios
+
+#### Server Corruption
+When server files become corrupted:
+
+1. **Assessment:**
+   - Identify corrupted components
+   - Determine extent of damage
+   - Select appropriate backup
+
+2. **Recovery Steps:**
+   - Stop server immediately
+   - Backup current state for analysis
+   - Restore from last known good backup
+   - Verify restoration success
+
+#### Data Loss Events
+Recovering from data loss:
+
+1. **Player Data Loss:**
+   - Identify affected players
+   - Restore from database backup
+   - Merge with current data if possible
+   - Communicate with affected players
+
+2. **Resource Loss:**
+   - Identify missing resources
+   - Restore from resource backup
+   - Update resource configurations
+   - Test functionality
+
+#### Hardware Failure
+Recovering on new hardware:
+
+1. **Preparation:**
+   - Set up new server environment
+   - Install txAdmin and dependencies
+   - Configure network settings
+
+2. **Migration:**
+   - Download backup from cloud storage
+   - Restore complete server state
+   - Update network configurations
+   - Test all functionality
+
+## Monitoring and Alerts
+
+### Backup Monitoring
+
+#### Success/Failure Tracking
+Monitor backup operations:
+
+```json
+{
+  "monitoring": {
+    "track_duration": true,
+    "alert_on_failure": true,
+    "alert_on_long_duration": true,
+    "max_duration_minutes": 60,
+    "notification_channels": ["email", "discord"]
+  }
+}
+```
+
+#### Storage Monitoring
+Track backup storage usage:
+
+- **Storage Usage:** Monitor used vs available space
+- **Growth Trends:** Track storage usage over time
+- **Retention Compliance:** Ensure retention policies are followed
+- **Cost Monitoring:** Track cloud storage costs
+
+### Alerting System
+
+#### Backup Failure Alerts
+Get notified when backups fail:
+
+```json
+{
+  "alerts": {
+    "backup_failure": {
+      "enabled": true,
+      "channels": ["email", "discord", "slack"],
+      "retry_attempts": 3,
+      "escalation": true
+    }
+  }
+}
+```
+
+#### Storage Alerts
+Monitor storage issues:
+
+```json
+{
+  "storage_alerts": {
+    "low_space": {
+      "threshold": "85%",
+      "action": "cleanup_old_backups"
+    },
+    "backup_too_large": {
+      "threshold": "10GB",
+      "action": "investigate_growth"
+    }
+  }
+}
+```
+
+## Best Practices
+
+### Backup Strategy
+
+#### 3-2-1 Rule
+Implement the industry-standard backup strategy:
+- **3 Copies:** Keep 3 copies of important data
+- **2 Different Media:** Store on 2 different storage types
+- **1 Offsite:** Keep 1 copy in a different location
+
+#### Testing Procedures
+Regularly test backup integrity:
+
+1. **Monthly Tests:** Verify random backups
+2. **Quarterly Restores:** Perform full restoration tests
+3. **Documentation:** Document test procedures and results
+4. **Improvement:** Update procedures based on test results
+
+### Security Considerations
+
+#### Backup Encryption
+Protect sensitive data in backups:
+
+```json
+{
+  "encryption": {
+    "enabled": true,
+    "algorithm": "AES-256",
+    "key_management": "auto",
+    "encrypt_in_transit": true,
+    "encrypt_at_rest": true
+  }
+}
+```
+
+#### Access Control
+Limit backup access:
+
+- **Role-Based Access:** Limit who can create/restore backups
+- **Audit Logging:** Log all backup operations
+- **Secure Storage:** Use encrypted storage solutions
+- **Key Management:** Secure encryption key storage
+
+---
+
+<Callout type="success">
+**Backup Tip:** Test your disaster recovery procedures regularly to ensure they work when needed.
+</Callout>
+
+<Callout type="warning">
+**Important:** Store backups in multiple locations to protect against site-wide disasters.
+</Callout>

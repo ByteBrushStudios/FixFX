@@ -35,20 +35,83 @@ Proper resource installation and management is crucial for a stable and feature-
 ```
 resource_name/
 ├── fxmanifest.lua          # Resource manifest (required)
-├── client.lua              # Client-side script
-├── server.lua              # Server-side script
-├── shared.lua              # Shared code
-├── config.lua              # Configuration file
-├── README.md               # Documentation
-├── sql/                    # Database files
-│   └── install.sql
-├── html/                   # NUI files
-│   ├── index.html
-│   ├── style.css
-│   └── script.js
-└── locales/                # Language files
-    ├── en.lua
-    └── es.lua
+├── client/                 # Client-side scripts
+│   ├── main.lua
+│   └── utils.lua
+├── server/                 # Server-side scripts
+│   ├── main.lua
+│   └── database.lua
+├── shared/                 # Shared code
+│   ├── config.lua
+│   └── utils.lua
+├── locales/                # Language files
+│   ├── en.lua
+│   └── es.lua
+├── web/                    # NUI files (modern structure)
+│   ├── build/
+│   │   ├── index.html
+│   │   └── assets/
+│   └── src/
+│       └── components/
+├── data/                   # Static data files
+│   └── items.lua
+└── sql/                    # Database files
+    └── install.sql
+```
+
+### Modern fxmanifest.lua (v2)
+
+```lua
+-- Modern manifest using 'cerulean' fx_version
+fx_version 'cerulean'
+game 'gta5'  -- or 'rdr3' for RedM
+
+name 'Resource Name'
+author 'Your Name'
+version '1.0.0'
+description 'Resource description'
+
+-- Modern shared scripts
+shared_scripts {
+    '@ox_lib/init.lua',  -- Load ox_lib first
+    'shared/config.lua',
+    'shared/utils.lua'
+}
+
+-- Client scripts
+client_scripts {
+    'client/main.lua',
+    'client/utils.lua'
+}
+
+-- Server scripts
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',  -- MySQL integration
+    'server/main.lua',
+    'server/database.lua'
+}
+
+-- Files for download to client
+files {
+    'locales/*.lua',
+    'data/*.lua',
+    'web/build/index.html',
+    'web/build/**/*'
+}
+
+-- NUI page
+ui_page 'web/build/index.html'
+
+-- Dependencies
+dependencies {
+    '/server:5181',      -- Minimum server build (check docs.fivem.net)
+    '/onesync',          -- Requires OneSync
+    'oxmysql',           -- Database connector
+    'ox_lib'             -- Utility library
+}
+
+-- Lua 5.4 support
+lua54 'yes'
 ```
 
 ## Pre-Installation Planning

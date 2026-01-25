@@ -23,6 +23,18 @@ const docsOptions: DocsLayoutProps = {
         url: "/docs/cfx",
       },
       {
+        title: "txAdmin Documentation",
+        icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#10b981" />,
+        description: "Managing your servers with txAdmin.",
+        url: "/docs/txadmin",
+      },
+      {
+        title: "vMenu Documentation",
+        icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#a855f7" />,
+        description: "Setting up and using vMenu",
+        url: "/docs/vmenu",
+      },
+      {
         title: "Framework Documentation",
         icon: <FixFXIcon className="m-0 size-6 md:mb-7" stroke="#f97891" />,
         description: "Explore various frameworks built on top of CitizenFX.",

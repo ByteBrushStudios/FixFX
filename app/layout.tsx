@@ -1,6 +1,7 @@
 import { Banner } from 'fumadocs-ui/components/banner';
 import { RootProvider } from "fumadocs-ui/provider";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 import { inter, jetbrains } from "@/lib/fonts";
 import { keywords } from "@utils/index";
 import '@/styles/sheet-handle.css';
@@ -15,7 +16,6 @@ export const metadata: Metadata = {
     siteName: "FixFX",
     url: "https://fixfx.wiki",
     locale: "en_US",
-    images: "https://fixfx.wiki/og.png",
     creators: ["@CodeMeAPixel"],
     description: "Comprehensive guides and information for the CitizenFX ecosystem.",
   },
@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@CodeMeAPixel",
     site: "https://fixfx.wiki",
-    images: "https://fixfx.wiki/og.png",
     description: "Comprehensive guides and information for the CitizenFX ecosystem.",
   },
   /** OpenGraph */
@@ -91,6 +90,12 @@ export default function Layout({
           {children}
         </RootProvider>
         <Analytics />
+        <Script
+          async
+          src="https://ackee.bytebrush.dev/tracker.js"
+          data-ackee-server="https://ackee.bytebrush.dev"
+          data-ackee-domain-id="cda143c2-45f9-4884-96b6-9e73ffecaf15"
+        />
       </body>
     </html>
   );

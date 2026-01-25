@@ -1,0 +1,438 @@
+---
+title: Setup & Installation
+description: Complete guide for installing and setting up vMenu on your FiveM server
+icon: Settings
+---
+
+import { Callout } from 'fumadocs-ui/components/callout'
+
+## Overview
+
+This guide will walk you through the complete process of installing and configuring vMenu on your FiveM server. vMenu is straightforward to install, but proper configuration is essential for security and optimal performance.
+
+<Callout type="warn">
+  **Security Warning**: Always configure permissions before making your server public. Default settings may grant excessive permissions to all players.
+</Callout>
+
+## Prerequisites
+
+Before installing vMenu, ensure you have:
+
+- **FiveM Server**: Latest recommended artifacts
+- **Server Access**: FTP/SSH access or txAdmin panel access
+- **Basic Knowledge**: Understanding of server.cfg and resource management
+- **Text Editor**: For editing configuration files (VS Code, Notepad++, etc.)
+
+### Compatibility
+
+| Component | Requirement |
+|-----------|--------------|
+| FiveM Server | Latest recommended artifacts |
+| OneSync | Optional (but recommended) |
+| Framework | None required (standalone) |
+| Database | Not required |
+
+<Callout type="info">
+  vMenu works as a standalone resource and doesn't require ESX, QBCore, or any other framework. It uses FiveM's native ACE permission system.
+</Callout>
+
+## Installation Methods
+
+### Method 1: Direct Download (Recommended)
+
+1. **Download vMenu**
+
+   Visit the official vMenu GitHub releases page:
+   ```
+   https://github.com/TomGrobbe/vMenu/releases/latest
+   ```
+
+2. **Extract the Resource**
+
+   - Download the latest `vMenu.zip` file
+   - Extract to your server's `resources` folder
+   - Ensure the folder is named `vMenu` (not `vMenu-master` or similar)
+
+3. **Verify File Structure**
+
+   Your resources folder should look like this:
+   ```
+   resources/
+   └── vMenu/
+       ├── fxmanifest.lua
+       ├── config/
+       │   └── permissions.cfg
+       ├── vMenu/
+       │   ├── client.net.dll
+       │   └── server.net.dll
+       └── ...
+   ```
+
+### Method 2: Git Clone
+
+For easier updates, use Git to clone the repository:
+
+```bash
+cd /path/to/your/server/resources/
+git clone https://github.com/TomGrobbe/vMenu.git
+```
+
+**Updating with Git:**
+```bash
+cd vMenu
+git pull origin master
+```
+
+### Method 3: Manual from ZIP
+
+Alternatively, download directly from GitHub:
+
+1. Visit https://github.com/TomGrobbe/vMenu/releases
+2. Download the latest release ZIP
+3. Extract to your resources folder
+4. Rename folder if needed (remove version number)
+
+## Basic Configuration
+
+### 1. Add to server.cfg
+
+Add vMenu to your `server.cfg` file:
+
+```cfg
+# vMenu - Server Administration & Player Menu
+ensure vMenu
+```
+
+**Important placement:**
+```cfg
+# Load core resources first
+ensure mapmanager
+ensure chat
+ensure spawnmanager
+ensure sessionmanager
+ensure basic-gamemode
+ensure hardcap
+
+# Load vMenu
+ensure vMenu
+
+# Load other resources after vMenu
+ensure your_other_resources
+```
+
+### 2. Configure Permissions
+
+vMenu uses a `permissions.cfg` file located in `resources/vMenu/config/permissions.cfg`.
+
+**Basic permission structure:**
+
+```cfg
+# Admin permissions
+add_ace group.admin vMenu.Everything allow
+
+# Moderator permissions  
+add_ace group.moderator vMenu.OnlinePlayers allow
+add_ace group.moderator vMenu.PlayerOptions allow
+add_ace group.moderator vMenu.Report allow
+
+# VIP permissions
+add_ace group.vip vMenu.PersonalVehicle allow
+add_ace group.vip vMenu.WeaponOptions allow
+
+# Default player permissions
+add_ace builtin.everyone vMenu.NoClip deny
+add_ace builtin.everyone vMenu.Staff deny
+```
+
+<Callout type="warn">
+  **Critical**: By default, vMenu may grant all permissions to everyone. Always configure permissions before going live!
+</Callout>
+
+See our [Permissions Guide](/docs/vmenu/permissions) for detailed permission configuration.
+
+## Granting Admin Access
+
+### Method 1: Using Identifiers (Recommended)
+
+Add admin permissions by identifier in your `server.cfg`:
+
+```cfg
+# Grant admin to specific players
+add_principal identifier.steam:110000112345678 group.admin
+add_principal identifier.license:1a2b3c4d5e6f7g8h group.admin
+add_principal identifier.discord:123456789012345678 group.admin
+```
+
+### Method 2: Using ACE System
+
+Direct ACE permissions in `server.cfg`:
+
+```cfg
+# Grant all vMenu permissions
+add_ace identifier.steam:110000112345678 vMenu.Everything allow
+
+# Or grant specific permissions
+add_ace identifier.license:abc123 vMenu.OnlinePlayers allow
+add_ace identifier.license:abc123 vMenu.PlayerOptions allow
+```
+
+### Method 3: txAdmin Integration
+
+If using txAdmin:
+
+1. Open txAdmin web panel
+2. Go to **Settings** → **Admins**
+3. Add admin with identifier
+4. txAdmin will automatically grant ACE permissions
+
+### Finding Player Identifiers
+
+**In-game method:**
+1. Have player join server
+2. Check server console
+3. Look for connection message showing identifiers
+
+**Console command:**
+```
+status
+```
+
+This shows all connected players with their identifiers.
+
+## Keybind Configuration
+
+vMenu uses keybinds that can be customized by players in FiveM settings.
+
+### Default Keybinds
+
+| Action | Default Key | Description |
+|--------|-------------|-------------|
+| Open Menu | M | Opens main vMenu interface |
+| NoClip | F2 | Toggle noclip (admin only) |
+| Change Appearance | F11 | Quick appearance menu |
+
+### Custom Keybind Setup
+
+Players can change keybinds via:
+1. Press **ESC** → **Settings**
+2. Navigate to **Key Bindings**
+3. Scroll to **FiveM** section
+4. Find vMenu bindings
+5. Assign new keys
+
+## Testing Installation
+
+### 1. Start Your Server
+
+Start the server and watch for vMenu initialization:
+
+```
+[  vMenu] Resource starting...
+[  vMenu] vMenu successfully started!
+[  vMenu] Permissions loaded: permissions.cfg
+```
+
+### 2. Connect and Test
+
+1. Join your server
+2. Press **M** key to open vMenu
+3. Verify menu appears
+
+### 3. Test Permissions
+
+- Regular player should see limited options
+- Admin account should see all options
+- Test permission restrictions
+
+### 4. Check for Errors
+
+Monitor server console for errors:
+```
+# Look for these messages
+[ERROR] [vMenu] ...
+[WARN] [vMenu] ...
+```
+
+## Common Installation Issues
+
+### Menu Not Opening
+
+**Symptoms**: Pressing M does nothing
+
+**Solutions**:
+1. Check server console for errors
+2. Verify resource is started: `ensure vMenu`
+3. Check keybind settings in FiveM
+4. Restart resource: `restart vMenu`
+5. Check for conflicting resources using same key
+
+### Permission Errors
+
+**Symptoms**: "You don't have permission to access this" errors
+
+**Solutions**:
+1. Verify your identifier is added correctly
+2. Check `permissions.cfg` syntax
+3. Ensure principal groups are assigned
+4. Restart server after permission changes
+5. Check ACE permission hierarchy
+
+### Resource Won't Start
+
+**Symptoms**: vMenu fails to start, console shows errors
+
+**Solutions**:
+1. Verify file structure is correct
+2. Check folder name is exactly `vMenu`
+3. Ensure `fxmanifest.lua` exists
+4. Check for missing DLL files
+5. Update to latest FiveM artifacts
+
+### Outdated Version
+
+**Symptoms**: Missing features, crashes, bugs
+
+**Solutions**:
+1. Download latest release from GitHub
+2. Backup current configuration
+3. Replace old files with new version
+4. Restore configuration files
+5. Test thoroughly before going live
+
+## Advanced Installation
+
+### Multiple Server Setup
+
+If running multiple servers with vMenu:
+
+```cfg
+# Server 1 config
+# Server 1 permissions
+exec resources/vMenu/config/permissions-server1.cfg
+
+# Server 2 permissions  
+exec resources/vMenu/config/permissions-server2.cfg
+```
+
+<Callout type="info">
+  For server-specific convars, check the [official vMenu documentation](https://docs.vespura.com/vmenu/configuration).
+</Callout>
+
+### Custom Resource Name
+
+To rename vMenu (not recommended):
+
+1. Rename folder to your preference (e.g., `custom_menu`)
+2. Update `server.cfg`: `ensure custom_menu`
+3. Update any scripts that reference vMenu
+
+<Callout type="warn">
+  Renaming vMenu may cause compatibility issues with some resources. Only do this if absolutely necessary.
+</Callout>
+
+### Behind a Reverse Proxy
+
+If your server is behind a proxy:
+
+```cfg
+# Set correct endpoint
+endpoint_add_tcp "0.0.0.0:30120"
+endpoint_add_udp "0.0.0.0:30120"
+
+# Set public IP
+sv_licenseKey "your_license_key"
+sv_hostname "Your Server"
+```
+
+## Post-Installation Steps
+
+After successful installation:
+
+1. ✅ Configure detailed permissions → [Permissions Guide](/docs/vmenu/permissions)
+2. ✅ Customize menu settings → [Configuration Guide](/docs/vmenu/configuration)
+3. ✅ Review available features → [Features Guide](/docs/vmenu/features)
+4. ✅ Set up staff training
+5. ✅ Create admin guidelines
+6. ✅ Test all features thoroughly
+
+## Updating vMenu
+
+### Manual Update
+
+1. **Backup Current Installation**
+   ```bash
+   # Create backup
+   cp -r resources/vMenu resources/vMenu_backup
+   ```
+
+2. **Download Latest Version**
+   - Visit GitHub releases page
+   - Download latest version
+
+3. **Backup Configuration**
+   ```bash
+   # Backup permissions
+   cp resources/vMenu/config/permissions.cfg ~/vmenu_permissions_backup.cfg
+   ```
+
+4. **Replace Files**
+   - Delete old vMenu folder
+   - Extract new version
+   - Restore `permissions.cfg`
+
+5. **Test Update**
+   - Start server
+   - Verify functionality
+   - Check for new features
+
+### Git Update
+
+```bash
+cd resources/vMenu
+git stash # Save local changes
+git pull origin master
+git stash pop # Restore local changes
+```
+
+## Uninstalling vMenu
+
+To completely remove vMenu:
+
+1. **Remove from server.cfg**
+   ```cfg
+   # Comment out or delete
+   # ensure vMenu
+   ```
+
+2. **Delete Files**
+   ```bash
+   rm -rf resources/vMenu
+   ```
+
+3. **Clean Up Permissions**
+   Remove vMenu-related ACE permissions from `server.cfg`
+
+4. **Restart Server**
+
+## Getting Help
+
+If you encounter issues during installation:
+
+- 📖 Read our [Troubleshooting Guide](/docs/vmenu/troubleshooting)
+- 💬 Join [vMenu Discord Server](https://vespura.com/vmenu/discord)
+- 📝 Check [GitHub Issues](https://github.com/TomGrobbe/vMenu/issues)
+- 🌐 Visit [Official Documentation](https://docs.vespura.com/vmenu/)
+- 💡 Search [CFX Forums](https://forum.cfx.re/)
+
+## Next Steps
+
+Now that vMenu is installed:
+
+- [Configure Permissions](/docs/vmenu/permissions) - Set up proper access control
+- [Customize Settings](/docs/vmenu/configuration) - Adjust features and preferences  
+- [Explore Features](/docs/vmenu/features) - Learn about all available options
+- [Admin Training](/docs/vmenu/features) - Understand moderation tools
+
+<Callout type="success">
+  **Installation Complete!** You've successfully installed vMenu. Don't forget to configure permissions before making your server public.
+</Callout>

@@ -4,25 +4,25 @@ import { cn } from "@utils/index";
 import * as React from "react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 select-none",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 select-none active:scale-[0.98]",
   {
     variants: {
       variant: {
         default:
-          "bg-fd-primary text-fd-primary-foreground hover:bg-fd-primary/90",
+          "bg-fd-primary text-fd-primary-foreground shadow-sm hover:bg-fd-primary/90 hover:shadow-md",
         destructive:
-          "bg-fd-destructive text-fd-destructive-foreground hover:bg-fd-destructive/90",
+          "bg-fd-destructive text-fd-destructive-foreground shadow-sm hover:bg-fd-destructive/90",
         outline:
-          "border border-fd-input bg-fd-background hover:bg-fd-accent hover:text-fd-accent-foreground",
+          "border border-fd-border bg-fd-background hover:bg-fd-accent hover:text-fd-accent-foreground hover:border-fd-accent",
         secondary:
-          "bg-secondary text-fd-secondary-foreground hover:bg-fd-secondary/80",
-        ghost: "hover:bg-fd-accent hover:textfd--accent-foreground",
+          "bg-fd-secondary text-fd-secondary-foreground hover:bg-fd-secondary/80",
+        ghost: "hover:bg-fd-accent hover:text-fd-accent-foreground",
         link: "text-fd-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        sm: "h-9 rounded-md px-3 text-xs",
+        lg: "h-12 rounded-xl px-6 text-base",
         icon: "h-10 w-10",
       },
     },

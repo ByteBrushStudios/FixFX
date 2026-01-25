@@ -86,8 +86,14 @@ Today's date and day is ${new Date().toLocaleDateString('en-US', { weekday: 'lon
     console.log({ messages, model, temperature });
 
     let selectedModel;
-    if (model === "gpt-4o-mini") {
+    if (model === "gpt-4o") {
+        selectedModel = openai("gpt-4o");
+    } else if (model === "gpt-4o-mini") {
         selectedModel = openai("gpt-4o-mini");
+    } else if (model === "gpt-4-turbo") {
+        selectedModel = openai("gpt-4-turbo");
+    } else if (model === "gpt-3.5-turbo") {
+        selectedModel = openai("gpt-3.5-turbo");
     } else if (model === "gemini-1.5-flash") {
         selectedModel = google("models/gemini-1.5-flash-latest", {
             safetySettings: [

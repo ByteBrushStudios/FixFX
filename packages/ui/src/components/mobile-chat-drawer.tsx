@@ -223,40 +223,84 @@ export function MobileChatDrawer({
 
                         {activeTab === 'settings' && (
                             <div className="space-y-6">
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <Label htmlFor="model-mobile" className="text-sm font-medium">Model Selection</Label>
-                                    <ModelCard
-                                        model="gpt-4o-mini"
-                                        name="GPT-4o Mini"
-                                        description="Balanced performance for general questions"
-                                        provider="OpenAI"
-                                        icon={<Zap className="h-4 w-4" />}
-                                        color="#5865F2"
-                                        isSelected={model === "gpt-4o-mini"}
-                                        onClick={() => onModelChange("gpt-4o-mini")}
-                                    />
-                                    <ModelCard
-                                        model="gemini-1.5-flash"
-                                        name="Gemini 1.5 Flash"
-                                        description="Fast responses with good accuracy"
-                                        provider="Google"
-                                        icon={<Bot className="h-4 w-4" />}
-                                        color="#34A853"
-                                        isSelected={model === "gemini-1.5-flash"}
-                                        onClick={() => onModelChange("gemini-1.5-flash")}
-                                        disabled
-                                    />
-                                    <ModelCard
-                                        model="claude-3-haiku"
-                                        name="Claude 3 Haiku"
-                                        description="Creative with nuanced understanding"
-                                        provider="Anthropic"
-                                        icon={<Code className="h-4 w-4" />}
-                                        color="#FF6B6C"
-                                        isSelected={model === "claude-3-haiku"}
-                                        onClick={() => onModelChange("claude-3-haiku")}
-                                        disabled
-                                    />
+                                    <p className="text-xs text-fd-muted-foreground">Choose the AI model for your chat.</p>
+                                    
+                                    {/* OpenAI Models */}
+                                    <div className="space-y-2">
+                                        <span className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">OpenAI</span>
+                                        <ModelCard
+                                            model="gpt-4o"
+                                            name="GPT-4o"
+                                            description="Most capable model"
+                                            provider="OpenAI"
+                                            icon={<Zap className="h-4 w-4" />}
+                                            color="#10B981"
+                                            isSelected={model === "gpt-4o"}
+                                            onClick={() => onModelChange("gpt-4o")}
+                                            isNew
+                                        />
+                                        <ModelCard
+                                            model="gpt-4o-mini"
+                                            name="GPT-4o Mini"
+                                            description="Balanced performance"
+                                            provider="OpenAI"
+                                            icon={<Zap className="h-4 w-4" />}
+                                            color="#5865F2"
+                                            isSelected={model === "gpt-4o-mini"}
+                                            onClick={() => onModelChange("gpt-4o-mini")}
+                                        />
+                                        <ModelCard
+                                            model="gpt-4-turbo"
+                                            name="GPT-4 Turbo"
+                                            description="Fast and powerful"
+                                            provider="OpenAI"
+                                            icon={<Zap className="h-4 w-4" />}
+                                            color="#8B5CF6"
+                                            isSelected={model === "gpt-4-turbo"}
+                                            onClick={() => onModelChange("gpt-4-turbo")}
+                                            isNew
+                                        />
+                                        <ModelCard
+                                            model="gpt-3.5-turbo"
+                                            name="GPT-3.5 Turbo"
+                                            description="Fast for simple queries"
+                                            provider="OpenAI"
+                                            icon={<Bot className="h-4 w-4" />}
+                                            color="#6366F1"
+                                            isSelected={model === "gpt-3.5-turbo"}
+                                            onClick={() => onModelChange("gpt-3.5-turbo")}
+                                            isNew
+                                        />
+                                    </div>
+
+                                    {/* Coming Soon */}
+                                    <div className="space-y-2 pt-2">
+                                        <span className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Coming Soon</span>
+                                        <ModelCard
+                                            model="gemini-1.5-flash"
+                                            name="Gemini 1.5 Flash"
+                                            description="Fast responses"
+                                            provider="Google"
+                                            icon={<Bot className="h-4 w-4" />}
+                                            color="#34A853"
+                                            isSelected={model === "gemini-1.5-flash"}
+                                            onClick={() => onModelChange("gemini-1.5-flash")}
+                                            disabled
+                                        />
+                                        <ModelCard
+                                            model="claude-3-haiku"
+                                            name="Claude 3 Haiku"
+                                            description="Creative understanding"
+                                            provider="Anthropic"
+                                            icon={<Code className="h-4 w-4" />}
+                                            color="#FF6B6C"
+                                            isSelected={model === "claude-3-haiku"}
+                                            onClick={() => onModelChange("claude-3-haiku")}
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="space-y-4">

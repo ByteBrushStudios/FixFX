@@ -1,0 +1,834 @@
+---
+title: Advanced Features
+description: Explore advanced txAdmin features including custom recipes, automation, monitoring, and enterprise-grade server management.
+---
+
+This guide covers advanced txAdmin features for experienced administrators who want to maximize their server management capabilities and implement enterprise-grade solutions.
+
+## Custom Recipes System
+
+### Recipe Development
+
+#### Recipe Structure
+Create custom server deployment templates:
+
+```json
+{
+  "name": "Custom RP Server",
+  "version": "2.1.0",
+  "author": "YourName",
+  "description": "Complete roleplay server with custom features",
+  "fivemVersion": "latest",
+  "txAdminVersion": ">=5.0.0",
+  
+  "variables": {
+    "serverName": {
+      "type": "string",
+      "default": "My Roleplay Server",
+      "description": "The name of your server"
+    },
+    "maxPlayers": {
+      "type": "number",
+      "default": 48,
+      "min": 1,
+      "max": 256,
+      "description": "Maximum number of players"
+    },
+    "framework": {
+      "type": "select",
+      "options": ["esx", "qbcore", "custom"],
+      "default": "esx",
+      "description": "Choose your framework"
+    },
+    "discordToken": {
+      "type": "string",
+      "sensitive": true,
+      "description": "Discord bot token for integrations"
+    }
+  },
+
+  "resources": [
+    {
+      "name": "es_extended",
+      "source": "github",
+      "url": "https://github.com/esx-framework/esx-legacy",
+      "ref": "main",
+      "condition": "${framework} == 'esx'"
+    },
+    {
+      "name": "qb-core",
+      "source": "github", 
+      "url": "https://github.com/qbcore-framework/qb-core",
+      "ref": "main",
+      "condition": "${framework} == 'qbcore'"
+    },
+    {
+      "name": "custom-scripts",
+      "source": "local",
+      "path": "./custom-resources",
+      "condition": "always"
+    }
+  ],
+
+  "files": {
+    "server.cfg": {
+      "source": "template",
+      "template": "server.cfg.mustache"
+    },
+    "database.sql": {
+      "source": "template", 
+      "template": "database.sql.mustache"
+    }
+  },
+
+  "commands": [
+    {
+      "name": "setup_database",
+      "command": "mysql -u root -p${db_password} < database.sql",
+      "description": "Initialize database"
+    },
+    {
+      "name": "configure_resources",
+      "command": "node scripts/configure.js",
+      "description": "Configure installed resources"
+    }
+  ]
+}
+```
+
+#### Template Files
+Create dynamic configuration files:
+
+**server.cfg.mustache:**
+```bash
+## Server Configuration
+sv_hostname "{{serverName}}"
+set sv_maxclients {{maxPlayers}}
+
+## License Key
+set sv_licenseKey "{{licenseKey}}"
+
+## Framework Configuration
+{{#if framework == 'esx'}}
+start es_extended
+{{/if}}
+
+{{#if framework == 'qbcore'}}
+start qb-core
+{{/if}}
+
+## Custom Resources
+{{#each customResources}}
+start {{this}}
+{{/each}}
+
+## Discord Integration
+{{#if discordToken}}
+set discord_token "{{discordToken}}"
+{{/if}}
+```
+
+**database.sql.mustache:**
+```sql
+CREATE DATABASE IF NOT EXISTS {{databaseName}};
+USE {{databaseName}};
+
+{{#if framework == 'esx'}}
+-- ESX Tables
+SOURCE esx_tables.sql;
+{{/if}}
+
+{{#if framework == 'qbcore'}}
+-- QBCore Tables  
+SOURCE qbcore_tables.sql;
+{{/if}}
+
+-- Custom Tables
+CREATE TABLE IF NOT EXISTS server_config (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    config_key VARCHAR(255) NOT NULL,
+    config_value TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Recipe Deployment
+
+#### Automated Deployment
+Deploy recipes programmatically:
+
+```javascript
+// Deploy recipe via API
+const deployRecipe = async (recipeId, variables) => {
+  const response = await fetch('/api/recipes/deploy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiToken}`
+    },
+    body: JSON.stringify({
+      recipeId: recipeId,
+      variables: variables,
+      deploymentName: `deployment-${Date.now()}`
+    })
+  });
+  
+  return response.json();
+};
+```
+
+#### Conditional Logic
+Implement complex deployment logic:
+
+```json
+{
+  "conditions": {
+    "install_esx_jobs": "${framework} == 'esx' && ${includeJobs} == true",
+    "install_custom_ui": "${serverType} == 'roleplay' || ${serverType} == 'freeroam'",
+    "configure_whitelist": "${playerCount} <= 32"
+  },
+  
+  "resources": [
+    {
+      "name": "esx_jobs",
+      "condition": "install_esx_jobs"
+    },
+    {
+      "name": "custom-ui", 
+      "condition": "install_custom_ui"
+    }
+  ]
+}
+```
+
+## API Integration
+
+### RESTful API
+
+#### Authentication
+Secure API access with tokens:
+
+```javascript
+// Generate API token
+const generateApiToken = async () => {
+  const response = await fetch('/api/auth/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: 'admin',
+      password: 'secure_password',
+      scope: ['server:control', 'players:manage']
+    })
+  });
+  
+  const { token } = await response.json();
+  return token;
+};
+```
+
+#### Server Control API
+Control server programmatically:
+
+```javascript
+// Start server
+const startServer = async (apiToken) => {
+  const response = await fetch('/api/server/start', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiToken}`
+    }
+  });
+  
+  return response.json();
+};
+
+// Get server status
+const getServerStatus = async (apiToken) => {
+  const response = await fetch('/api/server/status', {
+    headers: {
+      'Authorization': `Bearer ${apiToken}`
+    }
+  });
+  
+  return response.json();
+};
+
+// Execute console command
+const executeCommand = async (apiToken, command) => {
+  const response = await fetch('/api/server/console', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiToken}`
+    },
+    body: JSON.stringify({
+      command: command
+    })
+  });
+  
+  return response.json();
+};
+```
+
+#### Player Management API
+Manage players via API:
+
+```javascript
+// Get player list
+const getPlayers = async (apiToken) => {
+  const response = await fetch('/api/players', {
+    headers: {
+      'Authorization': `Bearer ${apiToken}`
+    }
+  });
+  
+  return response.json();
+};
+
+// Kick player
+const kickPlayer = async (apiToken, playerId, reason) => {
+  const response = await fetch(`/api/players/${playerId}/kick`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiToken}`
+    },
+    body: JSON.stringify({
+      reason: reason
+    })
+  });
+  
+  return response.json();
+};
+
+// Ban player
+const banPlayer = async (apiToken, playerId, duration, reason) => {
+  const response = await fetch(`/api/players/${playerId}/ban`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiToken}`
+    },
+    body: JSON.stringify({
+      duration: duration,
+      reason: reason
+    })
+  });
+  
+  return response.json();
+};
+```
+
+### WebSocket Integration
+
+#### Real-time Events
+Monitor server events in real-time:
+
+```javascript
+// Connect to WebSocket
+const ws = new WebSocket('ws://localhost:40120/ws');
+
+// Authenticate WebSocket connection
+ws.onopen = () => {
+  ws.send(JSON.stringify({
+    type: 'auth',
+    token: apiToken
+  }));
+};
+
+// Handle incoming events
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  
+  switch (data.type) {
+    case 'player_join':
+      console.log(`Player ${data.player.name} joined`);
+      break;
+      
+    case 'player_leave':
+      console.log(`Player ${data.player.name} left`);
+      break;
+      
+    case 'server_status':
+      updateServerStatus(data.status);
+      break;
+      
+    case 'console_output':
+      displayConsoleMessage(data.message);
+      break;
+  }
+};
+```
+
+## Automation Scripts
+
+### Server Maintenance
+
+#### Automated Restart Script
+Schedule intelligent server restarts:
+
+```bash
+#!/bin/bash
+# smart-restart.sh - Intelligent server restart script
+
+API_TOKEN="your_api_token_here"
+TXADMIN_URL="http://localhost:40120"
+
+# Check current player count
+PLAYER_COUNT=$(curl -s -H "Authorization: Bearer $API_TOKEN" \
+  "$TXADMIN_URL/api/players" | jq '.players | length')
+
+# Only restart if player count is low
+if [ "$PLAYER_COUNT" -lt 5 ]; then
+  echo "Low player count ($PLAYER_COUNT), proceeding with restart"
+  
+  # Announce restart
+  curl -s -X POST -H "Authorization: Bearer $API_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{"command":"say Server restart in 5 minutes!"}' \
+    "$TXADMIN_URL/api/server/console"
+  
+  sleep 300  # Wait 5 minutes
+  
+  # Restart server
+  curl -s -X POST -H "Authorization: Bearer $API_TOKEN" \
+    "$TXADMIN_URL/api/server/restart"
+    
+else
+  echo "High player count ($PLAYER_COUNT), deferring restart"
+fi
+```
+
+#### Resource Update Automation
+Automatically update resources:
+
+```python
+#!/usr/bin/env python3
+# resource-updater.py
+
+import requests
+import json
+import subprocess
+import time
+
+class ResourceUpdater:
+    def __init__(self, api_token, txadmin_url):
+        self.api_token = api_token
+        self.txadmin_url = txadmin_url
+        self.headers = {'Authorization': f'Bearer {api_token}'}
+    
+    def check_updates(self):
+        """Check for resource updates"""
+        response = requests.get(
+            f'{self.txadmin_url}/api/resources/updates',
+            headers=self.headers
+        )
+        return response.json()
+    
+    def update_resource(self, resource_name):
+        """Update a specific resource"""
+        # Create backup first
+        self.backup_resource(resource_name)
+        
+        # Update resource
+        response = requests.post(
+            f'{self.txadmin_url}/api/resources/{resource_name}/update',
+            headers=self.headers
+        )
+        
+        if response.status_code == 200:
+            print(f"Successfully updated {resource_name}")
+            return True
+        else:
+            print(f"Failed to update {resource_name}")
+            return False
+    
+    def backup_resource(self, resource_name):
+        """Backup resource before update"""
+        backup_name = f"{resource_name}_backup_{int(time.time())}"
+        subprocess.run([
+            'cp', '-r', 
+            f'resources/{resource_name}',
+            f'backups/{backup_name}'
+        ])
+
+# Usage
+updater = ResourceUpdater('your_token', 'http://localhost:40120')
+updates = updater.check_updates()
+
+for resource in updates.get('available_updates', []):
+    updater.update_resource(resource['name'])
+```
+
+### Performance Monitoring
+
+#### Custom Monitoring Dashboard
+Create external monitoring:
+
+```javascript
+// monitoring-dashboard.js
+const express = require('express');
+const axios = require('axios');
+const app = express();
+
+class TxAdminMonitor {
+  constructor(apiToken, txadminUrl) {
+    this.apiToken = apiToken;
+    this.txadminUrl = txadminUrl;
+    this.metrics = {};
+  }
+
+  async collectMetrics() {
+    try {
+      // Server status
+      const statusResponse = await axios.get(
+        `${this.txadminUrl}/api/server/status`,
+        { headers: { Authorization: `Bearer ${this.apiToken}` } }
+      );
+
+      // Player count
+      const playersResponse = await axios.get(
+        `${this.txadminUrl}/api/players`,
+        { headers: { Authorization: `Bearer ${this.apiToken}` } }
+      );
+
+      // System metrics
+      const systemResponse = await axios.get(
+        `${this.txadminUrl}/api/system/metrics`,
+        { headers: { Authorization: `Bearer ${this.apiToken}` } }
+      );
+
+      this.metrics = {
+        timestamp: new Date(),
+        server: statusResponse.data,
+        players: playersResponse.data,
+        system: systemResponse.data
+      };
+
+      return this.metrics;
+    } catch (error) {
+      console.error('Error collecting metrics:', error);
+      return null;
+    }
+  }
+
+  async checkAlerts() {
+    const metrics = await this.collectMetrics();
+    if (!metrics) return;
+
+    // Check CPU usage
+    if (metrics.system.cpu > 80) {
+      this.sendAlert('High CPU usage detected', `CPU: ${metrics.system.cpu}%`);
+    }
+
+    // Check memory usage
+    if (metrics.system.memory > 90) {
+      this.sendAlert('High memory usage detected', `Memory: ${metrics.system.memory}%`);
+    }
+
+    // Check player capacity
+    const playerPercentage = (metrics.players.count / metrics.server.maxPlayers) * 100;
+    if (playerPercentage > 95) {
+      this.sendAlert('Server near capacity', `Players: ${metrics.players.count}/${metrics.server.maxPlayers}`);
+    }
+  }
+
+  sendAlert(title, message) {
+    // Send to Discord webhook
+    axios.post(process.env.DISCORD_WEBHOOK, {
+      embeds: [{
+        title: title,
+        description: message,
+        color: 0xff0000,
+        timestamp: new Date()
+      }]
+    });
+  }
+}
+
+// Start monitoring
+const monitor = new TxAdminMonitor(process.env.API_TOKEN, process.env.TXADMIN_URL);
+setInterval(() => monitor.checkAlerts(), 60000); // Check every minute
+```
+
+## Multi-Server Management
+
+### Centralized Control
+
+#### Server Fleet Manager
+Manage multiple servers from one interface:
+
+```javascript
+// fleet-manager.js
+class FleetManager {
+  constructor() {
+    this.servers = new Map();
+  }
+
+  addServer(name, config) {
+    this.servers.set(name, {
+      name: name,
+      url: config.url,
+      token: config.token,
+      status: 'unknown'
+    });
+  }
+
+  async getFleetStatus() {
+    const promises = Array.from(this.servers.entries()).map(async ([name, server]) => {
+      try {
+        const response = await axios.get(`${server.url}/api/server/status`, {
+          headers: { Authorization: `Bearer ${server.token}` }
+        });
+        
+        return {
+          name: name,
+          status: response.data.status,
+          players: response.data.players,
+          uptime: response.data.uptime
+        };
+      } catch (error) {
+        return {
+          name: name,
+          status: 'error',
+          error: error.message
+        };
+      }
+    });
+
+    return Promise.all(promises);
+  }
+
+  async executeFleetCommand(command) {
+    const results = [];
+    
+    for (const [name, server] of this.servers) {
+      try {
+        const response = await axios.post(
+          `${server.url}/api/server/console`,
+          { command: command },
+          { headers: { Authorization: `Bearer ${server.token}` } }
+        );
+        
+        results.push({
+          server: name,
+          success: true,
+          response: response.data
+        });
+      } catch (error) {
+        results.push({
+          server: name,
+          success: false,
+          error: error.message
+        });
+      }
+    }
+
+    return results;
+  }
+}
+
+// Usage
+const fleet = new FleetManager();
+fleet.addServer('server1', { url: 'http://server1:40120', token: 'token1' });
+fleet.addServer('server2', { url: 'http://server2:40120', token: 'token2' });
+
+// Get status of all servers
+fleet.getFleetStatus().then(status => console.log(status));
+
+// Execute command on all servers
+fleet.executeFleetCommand('say Hello from fleet manager!');
+```
+
+### Load Balancing
+
+#### Player Distribution
+Distribute players across servers:
+
+```javascript
+// load-balancer.js
+class LoadBalancer {
+  constructor(servers) {
+    this.servers = servers;
+    this.roundRobinIndex = 0;
+  }
+
+  async findBestServer() {
+    const statuses = await Promise.all(
+      this.servers.map(async (server) => {
+        const response = await axios.get(`${server.url}/api/server/status`, {
+          headers: { Authorization: `Bearer ${server.token}` }
+        });
+        
+        return {
+          ...server,
+          playerCount: response.data.players,
+          maxPlayers: response.data.maxPlayers,
+          cpu: response.data.cpu,
+          ping: response.data.ping
+        };
+      })
+    );
+
+    // Find server with lowest load
+    return statuses
+      .filter(server => server.playerCount < server.maxPlayers)
+      .sort((a, b) => {
+        const loadA = (a.playerCount / a.maxPlayers) + (a.cpu / 100);
+        const loadB = (b.playerCount / b.maxPlayers) + (b.cpu / 100);
+        return loadA - loadB;
+      })[0];
+  }
+
+  async redirectPlayer(playerId, targetServer) {
+    // Implementation depends on your redirect system
+    const command = `redirect ${playerId} ${targetServer.url}`;
+    
+    // Execute on current server
+    await axios.post('/api/server/console', {
+      command: command
+    }, {
+      headers: { Authorization: `Bearer ${this.currentServerToken}` }
+    });
+  }
+}
+```
+
+## Enterprise Features
+
+### High Availability Setup
+
+#### Failover Configuration
+Set up automatic failover:
+
+```yaml
+# docker-compose.yml for HA setup
+version: '3.8'
+services:
+  txadmin-primary:
+    image: txadmin:latest
+    ports:
+      - "40120:40120"
+    environment:
+      - TXADMIN_ROLE=primary
+      - TXADMIN_CLUSTER_SECRET=your_secret
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - database
+      
+  txadmin-secondary:
+    image: txadmin:latest
+    ports:
+      - "40121:40120"
+    environment:
+      - TXADMIN_ROLE=secondary
+      - TXADMIN_PRIMARY_HOST=txadmin-primary
+      - TXADMIN_CLUSTER_SECRET=your_secret
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - database
+      
+  database:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=secure_password
+      - MYSQL_DATABASE=txadmin
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass redis_password
+```
+
+#### Health Checks
+Implement comprehensive health monitoring:
+
+```javascript
+// health-check.js
+class HealthChecker {
+  constructor(config) {
+    this.config = config;
+    this.checks = [];
+  }
+
+  addCheck(name, checkFunction, critical = false) {
+    this.checks.push({
+      name,
+      check: checkFunction,
+      critical
+    });
+  }
+
+  async runChecks() {
+    const results = [];
+    
+    for (const check of this.checks) {
+      try {
+        const result = await check.check();
+        results.push({
+          name: check.name,
+          status: 'healthy',
+          result: result,
+          critical: check.critical
+        });
+      } catch (error) {
+        results.push({
+          name: check.name,
+          status: 'unhealthy',
+          error: error.message,
+          critical: check.critical
+        });
+      }
+    }
+
+    return {
+      timestamp: new Date(),
+      overall: this.calculateOverallHealth(results),
+      checks: results
+    };
+  }
+
+  calculateOverallHealth(results) {
+    const criticalFailed = results.some(r => r.critical && r.status === 'unhealthy');
+    const anyFailed = results.some(r => r.status === 'unhealthy');
+    
+    if (criticalFailed) return 'critical';
+    if (anyFailed) return 'degraded';
+    return 'healthy';
+  }
+}
+
+// Setup health checks
+const healthChecker = new HealthChecker();
+
+healthChecker.addCheck('database', async () => {
+  const result = await mysql.query('SELECT 1');
+  return { connected: true, responseTime: result.duration };
+}, true);
+
+healthChecker.addCheck('server_process', async () => {
+  const response = await axios.get('/api/server/status');
+  return { running: response.data.status === 'online' };
+}, true);
+
+healthChecker.addCheck('disk_space', async () => {
+  const stats = await fs.promises.statfs('/');
+  const freePercent = (stats.free / stats.size) * 100;
+  return { freePercent: freePercent, adequate: freePercent > 10 };
+}, false);
+```
+
+---
+
+<Callout type="success">
+**Pro Tip:** Use these advanced features gradually. Start with basic automation and build up to complex multi-server setups.
+</Callout>
+
+<Callout type="warning">
+**Security Note:** Always secure API endpoints and use proper authentication for advanced integrations.
+</Callout>

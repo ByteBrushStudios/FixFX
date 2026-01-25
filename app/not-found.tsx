@@ -1,71 +1,74 @@
 import { Button } from "@ui/components/button";
 import { FaDiscord } from "react-icons/fa";
-import { ArrowLeft, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Home, Search } from "lucide-react";
 import { DISCORD_LINK } from "@utils/constants/link";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background p-4">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
-        <div className="absolute left-0 top-0 h-32 w-32 animate-pulse rounded-full bg-primary/20 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-32 w-32 animate-pulse rounded-full bg-primary/20 blur-3xl" />
-      </div>
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-fd-background p-4">
+      {/* Gradient background orbs */}
+      <div className="absolute -top-40 left-1/4 h-80 w-80 rounded-full bg-blue-500/20 blur-[120px] animate-pulse" />
+      <div className="absolute -bottom-40 right-1/4 h-80 w-80 rounded-full bg-purple-500/15 blur-[100px] animate-pulse delay-700" />
+
+      {/* Grid pattern */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000,transparent)]" />
 
       {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center gap-8 text-center">
-        {/* 404 text with gaming style */}
-        <div className="relative">
-          <h1 className="text-9xl font-bold tracking-tighter text-primary">
-            404
+      <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-lg px-4">
+        {/* 404 display */}
+        <div className="relative mb-6">
+          <h1 className="text-[10rem] md:text-[12rem] font-bold leading-none tracking-tighter">
+            <span className="bg-gradient-to-b from-fd-foreground to-fd-muted-foreground/50 bg-clip-text text-transparent">
+              404
+            </span>
           </h1>
-          <div className="absolute -right-4 -top-4 h-4 w-4 animate-ping rounded-full bg-primary" />
-          <div className="absolute -bottom-4 -left-4 h-4 w-4 animate-ping rounded-full bg-primary" />
-        </div>
-
-        {/* Gamepad icon with animation */}
-        <div className="relative">
-          <Gamepad2 className="h-16 w-16 text-primary" />
-          <div className="absolute -inset-4 animate-ping rounded-full bg-primary/20" />
+          {/* Decorative dots */}
+          <div className="absolute -right-2 top-4 h-3 w-3 rounded-full bg-blue-500 animate-ping" />
+          <div className="absolute -left-2 bottom-8 h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
         </div>
 
         {/* Message */}
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Level Not Found
+        <div className="space-y-3 mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-fd-foreground">
+            Page not found
           </h2>
-          <p className="text-muted-foreground">
-            Looks like you've wandered into uncharted territory. Let's get you back on track!
+          <p className="text-fd-muted-foreground text-base md:text-lg leading-relaxed">
+            The page you're looking for doesn't exist or has been moved. Let's get you back on track.
           </p>
         </div>
 
         {/* Action buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Button asChild variant="default" size="default">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <Button asChild variant="default" size="lg" className="w-full sm:w-auto">
             <Link href="/" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Return to Base
+              <Home className="h-4 w-4" />
+              Back to Home
             </Link>
           </Button>
 
-          <Button asChild variant="outline" size="default">
-            <Link
-              href={DISCORD_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gap-2 "
-            >
-              <FaDiscord className="h-4 w-4" />
-              Join our Discord
+          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+            <Link href="/docs/core" className="gap-2">
+              <Search className="h-4 w-4" />
+              Browse Docs
             </Link>
           </Button>
         </div>
-      </div>
 
-      {/* Decorative elements */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+        {/* Help link */}
+        <p className="mt-8 text-sm text-fd-muted-foreground">
+          Need help?{" "}
+          <Link
+            href={DISCORD_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-400 transition-colors"
+          >
+            <FaDiscord className="h-3.5 w-3.5" />
+            Join our Discord
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

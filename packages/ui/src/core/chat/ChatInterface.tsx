@@ -81,7 +81,7 @@ export function ChatInterface({ model, temperature, initialMessages, fullHeight 
                 {
                     id: uuidv4(),
                     role: 'assistant',
-                    content: 'Hello! I\'m your AI assistant for CitizenFX. How can I help you today?',
+                    content: 'Hello! I\'m **Fixie**, your AI assistant for the CitizenFX ecosystem.\n\nI can help you with:\n- **FiveM & RedM** server setup and configuration\n- **Scripting** in Lua, JavaScript, and C#\n- **Framework** questions (ESX, QBCore, etc.)\n- **Troubleshooting** common errors and issues\n\nHow can I assist you today?',
                     createdAt: new Date(),
                 },
             ]);
@@ -388,19 +388,27 @@ export function ChatInterface({ model, temperature, initialMessages, fullHeight 
             )}
         >
             {showNotice && (
-                <div className="p-3 sm:p-4 border-b border-[#5865F2]/10 bg-[#5865F2]/5 relative z-30">
+                <div className="p-3 sm:p-4 border-b border-amber-500/20 bg-amber-500/5 relative z-30">
                     <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3">
-                            <div className="mt-0.5">
-                                <AlertCircle className="h-4 w-4 text-[#5865F2]" />
+                            <div className="mt-0.5 flex-shrink-0">
+                                <AlertCircle className="h-4 w-4 text-amber-500" />
                             </div>
-                            <div className="space-y-1">
-                                <h4 className="text-sm font-medium text-[#5865F2]">AI Assistant</h4>
-                                <p className="text-xs sm:text-sm text-muted-foreground">
-                                    This AI assistant helps with CFX development. Verify critical information with official documentation.
+                            <div className="space-y-1 flex-1">
+                                <h4 className="text-sm font-medium text-amber-500">AI responses may be inaccurate</h4>
+                                <p className="text-xs sm:text-sm text-fd-muted-foreground leading-relaxed">
+                                    This AI assistant can make mistakes or provide outdated information. Always verify important details with <a href="https://docs.fivem.net" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">official FiveM documentation</a> or <a href="/docs/core" className="text-blue-500 hover:underline">our guides</a> before implementing in production.
                                 </p>
                             </div>
                         </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 flex-shrink-0 text-fd-muted-foreground hover:text-fd-foreground"
+                            onClick={() => setShowNotice(false)}
+                        >
+                            <X className="h-3.5 w-3.5" />
+                        </Button>
                     </div>
                 </div>
             )}

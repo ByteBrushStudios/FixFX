@@ -1,59 +1,110 @@
 "use client";
 
 import { Button } from "@ui/components";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { SearchBar } from "./search";
 
 export function Hero() {
   return (
-    <div className="flex flex-col items-center justify-center mb-24">
+    <div className="relative flex flex-col items-center justify-center mb-16 md:mb-24 px-4">
+      {/* Decorative gradient orbs */}
+      <div className="absolute -top-20 left-1/4 h-72 w-72 rounded-full bg-blue-500/20 blur-[100px] animate-pulse" />
+      <div className="absolute -top-10 right-1/4 h-64 w-64 rounded-full bg-purple-500/15 blur-[80px] animate-pulse delay-1000" />
+
+      {/* Badge */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mb-6"
+      >
+        <span className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-500 backdrop-blur-sm">
+          <Sparkles className="h-3.5 w-3.5" />
+          Open Source Documentation
+        </span>
+      </motion.div>
+
+      {/* Main heading */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
       >
-        <h1 className="text-fd-foreground mb-4 text-center text-4xl font-extrabold md:text-5xl lg:text-6xl">
-          <span className="bg-gradient-to-r from-[#2563eb] to-[#3b82f6] bg-clip-text text-transparent">Fix</span>
-          <span className="ml-2">Fx</span>
+        <h1 className="text-fd-foreground mb-4 text-center text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+          <span className="relative inline-block">
+            <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-400 bg-clip-text text-transparent">
+              Fix
+            </span>
+            <span className="absolute -inset-1 -z-10 bg-gradient-to-r from-blue-600/20 to-cyan-400/20 blur-2xl" />
+          </span>
+          <span className="ml-1 md:ml-2">FX</span>
         </h1>
       </motion.div>
 
+      {/* Subtitle */}
       <motion.p
-        className="text-fd-muted-foreground mb-8 max-w-2xl text-center text-lg md:text-xl"
+        className="text-fd-muted-foreground mb-8 max-w-xl text-center text-base sm:text-lg md:text-xl leading-relaxed"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
       >
-        Your one-stop resource for FiveM, RedM, and CitizenFX. From server setup to troubleshooting, we've got you covered.
+        Your comprehensive resource for <span className="text-fd-foreground font-medium">FiveM</span>, <span className="text-fd-foreground font-medium">RedM</span>, and the <span className="text-fd-foreground font-medium">CitizenFX</span> ecosystem.
       </motion.p>
 
+      {/* Search bar */}
       <motion.div
-        className="w-full max-w-md mb-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+        className="w-full max-w-lg mb-8"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
       >
         <SearchBar />
       </motion.div>
 
+      {/* CTA buttons */}
       <motion.div
-        className="flex flex-col gap-4 sm:flex-row"
+        className="flex flex-col gap-3 sm:flex-row sm:gap-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+        transition={{ delay: 0.45, duration: 0.5 }}
       >
-        <Link href="/docs/overview">
-          <Button className="px-6 py-3" variant="default">
-            Get Started <ArrowRight className="ml-2 h-4 w-4" />
+        <Link href="/docs/core">
+          <Button className="group relative overflow-hidden px-6 py-3 text-base font-medium" variant="default">
+            <span className="relative z-10 flex items-center">
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
           </Button>
         </Link>
         <Link href="/docs/cfx/common-errors">
-          <Button className="px-6 py-3" variant="secondary">
-            Resolve Issues <ArrowRight className="ml-2 h-4 w-4" />
+          <Button className="group px-6 py-3 text-base font-medium" variant="outline">
+            Troubleshoot Issues
+            <ArrowRight className="ml-2 h-4 w-4 opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1" />
           </Button>
         </Link>
+      </motion.div>
+
+      {/* Stats/Trust indicators */}
+      <motion.div
+        className="mt-12 flex flex-wrap items-center justify-center gap-6 md:gap-10 text-sm text-fd-muted-foreground"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+          <span>Free & Open Source</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-blue-500" />
+          <span>Community Driven</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-purple-500" />
+          <span>Always Updated</span>
+        </div>
       </motion.div>
     </div>
   );

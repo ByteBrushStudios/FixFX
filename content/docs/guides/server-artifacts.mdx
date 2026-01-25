@@ -23,20 +23,23 @@ FiveM artifacts are the compiled server binaries that power your FiveM server. T
 **Recommended (Stable)**
 - Thoroughly tested builds
 - Recommended for production servers
-- Updated less frequently
+- Updated weekly or as needed
 - Maximum stability and compatibility
+- Check https://runtime.fivem.net for current build
 
 **Optional (Beta)**
 - Latest features and improvements
-- More frequent updates
-- May contain bugs or breaking changes
-- Good for testing and development
+- Updated 2-3 times per week
+- May contain minor bugs or breaking changes
+- Good for testing before production deployment
+- Usually 1-2 weeks ahead of recommended
 
-**Latest (Experimental)**
+**Latest (Canary/Experimental)**
 - Bleeding-edge development builds
-- Daily updates
+- Daily or multiple updates per day
 - Not recommended for production
 - For developers and testers only
+- May have incomplete features or stability issues
 
 ## Checking Current Version
 
@@ -83,17 +86,22 @@ print('Build number:', buildNumber)
 
 1. **Download Latest Artifacts**
    ```
-   Visit: https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/
-   Select: Latest recommended build
-   Download: server.zip
+   Windows: https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/
+   Linux: https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/
+   
+   Select: Latest recommended build (look for green "Recommended" badge)
+   Download: server.zip or server.7z
    ```
 
 2. **Prepare for Update**
    ```batch
-   # Stop the server
-   # Backup current artifacts (optional)
-   mkdir backup\%date%
-   copy server-files\*.* backup\%date%\
+   # Stop the server gracefully
+   # In txAdmin: Server → Stop
+   # Or press Ctrl+C in console
+   
+   # Backup current artifacts
+   mkdir backup\%date:~-4,4%%date:~-10,2%%date:~-7,2%
+   xcopy /E /I server-files backup\%date:~-4,4%%date:~-10,2%%date:~-7,2%
    ```
 
 3. **Extract New Artifacts**

@@ -1,0 +1,435 @@
+---
+title: Server Management
+description: txAdmin provides a comprehensive web interface for managing all aspects of your FiveM/RedM server. This guide covers the main features and how to use them effectively.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { ImageModal } from '@/app/components/image-modal';
+
+## Dashboard
+
+The Dashboard is your server's command center, displaying real-time statistics and performance metrics.
+
+<ImageModal src="/screenshots/txadmin/dashboard.png" alt="Dashboard Page" title="txAdmin Dashboard Page" />
+
+### Key Metrics
+
+- **Server Status** - Shows if your server is ONLINE or OFFLINE
+- **Uptime** - How long your server has been running
+- **Player Count** - Current and maximum player capacity
+- **Memory Usage** - FXServer and Node.js memory consumption
+- **Performance Metrics** - Server ping/frame time performance
+
+### Dashboard Widgets
+
+- **Player Drop Cause** - Last 6 hours of player disconnections
+- **Server Stats (Live)** - Uptime, median player count, memory usage
+- **svMain Performance** - Frame time distribution graph showing server responsiveness
+
+<Callout type="info">
+**Pro Tip:** Monitor the performance graph regularly. Spikes indicate resource issues or heavy load. If you see frequent red (high frame time), consider optimizing your resources.
+</Callout>
+
+## Live Console
+
+The Live Console displays real-time server output and allows you to execute commands.
+
+<ImageModal src="/screenshots/txadmin/live-console.png" alt="Live Console Page" title="txAdmin Live Console" />
+
+### Features
+
+- **Real-time Logs** - See server events as they happen (resource starts, player joins, errors)
+- **Log Filters** - Toggle specific event types:
+  - Player Joins
+  - Player Leaves
+  - Chat Messages
+  - Player Deaths
+  - Menu Actions
+  - Explosions
+  - Commands
+  - System Events
+
+- **Command Input** - Type and execute console commands directly
+- **Clear Console** - Remove all displayed logs
+- **View Navigation** - Older/Newer buttons to scroll through logs
+- **Save/Download** - Export logs for debugging
+
+### Common Commands
+
+```bash
+# Player management
+kick [id] [reason]           # Kick a player
+ban [identifier] [reason]    # Ban a player
+unban [identifier]           # Unban a player
+
+# Server control
+restart                       # Restart the server
+say [message]               # Broadcast a message
+refresh                     # Refresh resources
+
+# Admin commands
+add_principal [id] group.admin    # Make someone admin
+remove_principal [id] group.admin # Remove admin
+```
+
+<Callout type="warn">
+**Important:** Be careful with console commands. Some can destabilize the server if used incorrectly.
+</Callout>
+
+## Players
+
+The Players tab shows all connected players and their statistics.
+
+### Player Information
+
+- **Total Players** - Current player count
+- **Players Last 24h** - Connection statistics
+- **New Players** - New players in last 24h and 7d periods
+- **Display Name** - Player's in-game name
+- **Play Time** - How long they've been connected
+- **First Joined** - When they first joined the server
+- **Last Connection** - Most recent connection time
+
+### Player Actions
+
+- **Search by Name** - Find specific players
+- **Search Type Options**:
+  - Name - Search by display name
+  - Notes - Search by admin notes
+  - Player IDs - Search by identifiers
+  - Remember Option - Save search preferences
+
+- **Filters** - Available filters:
+  - Is Admin
+  - Is Online
+  - Has Whitelisted ID
+  - Has Profile Notes
+
+<Callout type="info">
+Use player search to quickly find someone causing issues. Add notes to player profiles for future reference.
+</Callout>
+
+## Resources
+
+The Resources tab lets you manage which resources are active on your server.
+
+### Resource Management
+
+- **Search Resources** - Find resources by name
+- **Default Resources** - Core resources required for server operation
+- **Stopped Resources** - Resources currently not running
+- **Reload & Refresh** - Restart all resources
+- **Collapse/Expand** - Organize resource list
+
+### Resource Actions
+
+- **Start/Stop** - Toggle individual resources on/off
+- **Restart** - Reload a specific resource
+- **Monitor** - Track resource performance
+
+<Callout type="warn">
+**Caution:** Reloading resources can cause temporary gameplay disruptions. Only do this during maintenance windows.
+</Callout>
+
+## Server Log
+
+The Server Log page provides detailed analytics and historical data.
+
+### Logger Filters
+
+Toggle logging for specific events:
+- Player Joins/Leaves
+- Chat Messages
+- Player Deaths
+- Menu Actions
+- Explosions
+- Commands
+- System Events
+
+### Log Features
+
+- **Mode Display** - Shows if logger is LIVE
+- **Time Range** - View logs from specific time periods
+- **Clear Console** - Remove logs
+- **View Navigation** - Scroll through historical logs
+
+This is useful for:
+- Investigating player disputes (who said what, when)
+- Tracking rule violations
+- Debugging resource issues
+- Building an audit trail for moderation
+
+## History
+
+The History tab maintains records of all player actions and admin interventions.
+
+### Action Types
+
+- **Warns** - Player warnings issued
+- **Bans** - Bans applied to players
+- **Kicks** - Players kicked from server
+- **Other Actions** - Various administrative actions
+
+### Search Options
+
+- **Search by Action ID** - Find specific actions
+- **Action Type Filter** - Filter by warn, ban, kick, etc.
+- **Admin Filter** - See which admin took action
+- **Sortable Columns**:
+  - Action
+  - Player
+  - Reason
+  - Author
+  - Date/Time
+
+This creates an accountability log for:
+- Verifying fairness of bans
+- Training new admins
+- Documenting rule enforcement
+- Appeals and disputes
+
+## Player Drops
+
+Analytics for unexpected player disconnections.
+
+### Metrics
+
+- **Expected Player Drops** - Players who left normally
+- **Unexpected Player Drops** - Crashes or network issues
+- **Resource Kicks** - Players removed by resource scripts
+- **Period Overview** - Time-based statistics
+
+### Use Cases
+
+- Identify if specific resources are causing crashes
+- Track network stability issues
+- Spot problematic resources that need optimization
+
+<Callout type="info">
+Frequent crashes in a specific resource? That resource likely needs optimization or bug fixes.
+</Callout>
+
+## Whitelist
+
+Manage which players can join your server when whitelist is enabled.
+
+### Whitelist Modes
+
+- **Approved License** - Server requires whitelist (recommended)
+- **Manual Mode** - Whitelist disabled (optional)
+
+### Whitelist Management
+
+- **Whitelist Requests** - Players requesting whitelist access
+  - View pending requests
+  - Approve or deny applications
+  - Search by player name
+
+- **Approved Whitelists** - Whitelisted players
+  - Shows approved but not yet joined
+  - Shows already joined players
+
+### Player Identifier Types
+
+Whitelist accepts any of these identifiers:
+- `steam:` - Steam ID
+- `fivem:` - FiveM ID
+- `license:` - Game license
+- `license2:` - License2
+- `discord:` - Discord ID
+- `live:` - Xbox Live ID
+
+### Setting Up Whitelist
+
+1. Enable whitelist mode in Settings → Player Manager
+2. Add players to whitelist individually or in bulk
+3. Players will see a whitelist rejection on connect
+4. Accept their applications or manually add their IDs
+
+<Callout type="info">
+**Best Practice:** Use Discord integration to automate whitelist approvals through bot commands.
+</Callout>
+
+## Admins
+
+Manage administrator accounts and permissions.
+
+### Admin Management
+
+- **All Admins List** - View all admin accounts
+- **Add Admin** - Create new admin accounts
+- **Edit Admin** - Modify existing admin permissions
+- **Remove Admin** - Revoke admin access
+
+### Admin Information
+
+- **Username** - Admin login name
+- **Auth Methods** - How they authenticate:
+  - CFX account (colored icons)
+  - Master account
+  - Other methods
+
+- **Permissions** - Actions they're allowed to perform:
+  - All Permissions
+  - Manage Admins
+  - Settings (View/Change)
+  - Console (View/Write)
+  - Start/Stop Server & Scheduler
+  - Send Announcements
+  - Start/Stop Resources
+  - Read/Write server.cfg
+  - View System Logs
+  - View Server Logs
+  - Spawn/Fix Vehicles
+  - Reset World Area
+  - View Player IDs in-game
+  - Direct Message
+  - Whitelist
+  - Warn
+  - Kick
+  - Ban
+  - Freeze Players
+  - Heal Players
+  - NoClip/God Mode
+  - Spectate
+  - Teleport
+
+### Creating Admins
+
+<Tabs items={["CFX Account", "Master Account"]}>
+  <Tab value="CFX Account">
+    **Best for:** Main administrators who have CFX forum accounts
+    
+    1. Click **Add** admin
+    2. Enter CFX username
+    3. Select permissions
+    4. Save
+    
+    They can login with CFX button
+  </Tab>
+  <Tab value="Master Account">
+    **Best for:** Local/backup admin accounts
+    
+    1. Click **Add** admin
+    2. Enter username (custom)
+    3. Set password
+    4. Add identifiers (optional)
+    5. Select permissions
+    6. Save
+  </Tab>
+</Tabs>
+
+### Admin Identifiers
+
+Link admin accounts to player identifiers:
+- **FiveM ID** - For in-game `/getid` integration
+- **Discord ID** - For Discord Bot commands
+
+<Callout type="warn">
+**Security:** Only grant admin permissions to trusted individuals. Review admin activity regularly in the History tab.
+</Callout>
+
+## Settings
+
+Server-wide configuration accessible only to master admins.
+
+### Available Settings
+
+- **Server Name/Description** - Modify how server appears in browser
+- **Whitelist Mode** - Enable/disable whitelist
+- **Player Manager** - Configure player limits and join restrictions
+- **Logging** - Configure what gets logged
+- **Security** - Password policies, API keys, etc.
+- **Integration** - Discord bot, webhook configuration
+- **Customization** - Custom commands, server-specific settings
+
+<Callout type="info">
+Settings changes take effect immediately for most options. Some may require server restart.
+</Callout>
+
+## Best Practices
+
+### Daily Management
+
+1. **Check Dashboard** - Monitor uptime and performance
+2. **Review Players** - Monitor for problematic players
+3. **Check Console** - Look for resource errors
+4. **Monitor Performance** - Watch frame times
+
+### Weekly Tasks
+
+1. **Review History** - Audit admin actions
+2. **Check Whitelist** - Process pending applications
+3. **Analyze Drops** - Investigate crashes
+4. **Backup Config** - Export server configuration
+
+### Monthly Tasks
+
+1. **Update Resources** - Check for resource updates
+2. **Review Admins** - Verify admin permissions are still appropriate
+3. **Audit Bans** - Review ban list for expired bans
+4. **Performance Review** - Analyze server stats and trends
+
+## Troubleshooting
+
+### High Frame Times
+
+- Check Console for errors
+- Review which resource was last started
+- Disable recently added resources
+- Monitor Player Drops for patterns
+
+### Players Can't Join
+
+- Check whitelist status
+- Verify server isn't full
+- Look at console for connection errors
+- Check firewall/port forwarding
+
+### Resource Crashes
+
+- Use Player Drops to identify problematic resource
+- Check Console for resource errors
+- Restart specific resource
+- Consider updating or replacing the resource
+
+### Admin Issues
+
+- Verify admin still has permissions in Admin list
+- Check if their identifier is correct
+- Confirm they're using right login method
+- Review their account settings
+
+## Advanced Features
+
+### Command Execution
+
+Execute server commands through the console:
+- `/say [message]` - Server-wide announcement
+- `/kick [id] [reason]` - Remove player from server
+- `/ban [identifier] [reason]` - Permanently ban player
+- Custom resource commands - Check your resource documentation
+
+### Player Notes
+
+Add notes to player profiles for:
+- Ban reasons
+- Warnings issued
+- Behavior notes
+- Contact information
+
+### Audit Trail
+
+All admin actions are logged:
+- Who did what
+- When they did it
+- What changed
+- Why (if reason provided)
+
+Use this for:
+- Accountability
+- Training new admins
+- Investigating disputes
+- Proving fair moderation
+

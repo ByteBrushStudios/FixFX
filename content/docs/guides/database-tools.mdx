@@ -575,6 +575,565 @@ For parameter styles:
 - [SQL Optimization Guide](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)
 - [CitizenFX Framework Discussion](https://forum.cfx.re/t/release-oxmysql-a-mysql-resource/4755550)
 
+## Database Management Applications
+
+Managing your database efficiently requires the right tools. Here are the best applications for managing MySQL/MariaDB databases used in FiveM servers.
+
+### HeidiSQL (Windows - Highly Recommended)
+
+**Why HeidiSQL?**
+- **Free and Open Source**: No licensing costs
+- **Lightweight**: Fast and responsive interface
+- **Portable**: Can run without installation
+- **Feature-Rich**: All essential database management features
+- **User-Friendly**: Intuitive interface for beginners and experts
+
+**Key Features:**
+- **Visual Table Designer**: Create and modify tables with drag-and-drop
+- **SQL Editor**: Syntax highlighting, auto-completion, query formatting
+- **Data Export/Import**: Support for SQL, CSV, HTML, XML, LaTeX, Wiki markup
+- **Session Manager**: Save multiple connection profiles
+- **Database Synchronization**: Compare and sync databases
+- **User Management**: Visual interface for managing MySQL users and permissions
+- **SSH Tunneling**: Secure remote connections
+- **Query Builder**: Visual query designer for complex queries
+
+**Getting Started with HeidiSQL:**
+
+1. **Download and Install**
+   ```
+   Visit: https://www.heidisql.com/download.php
+   Choose: Installer or Portable version
+   ```
+
+2. **Create Connection Profile**
+   - Click "New" button at bottom left
+   - Configure connection:
+     ```
+     Network type: MariaDB or MySQL (TCP/IP)
+     Library: libmariadb.dll (default)
+     Hostname/IP: localhost (or your server IP)
+     User: fivem_user
+     Password: your_password
+     Port: 3306
+     ```
+   - Name your session: "FiveM Production" or "FiveM Dev"
+   - Click "Save" then "Open"
+
+3. **Common Tasks**
+
+   **Creating a Table:**
+   - Right-click database → Create new → Table
+   - Add columns with visual editor
+   - Set primary keys, indexes, and foreign keys
+   - Click "Save"
+
+   **Importing SQL Files:**
+   - File → Load SQL file
+   - Select your .sql file
+   - Click "Execute" (F9)
+
+   **Exporting Database:**
+   - Tools → Export database as SQL
+   - Select tables to export
+   - Choose options (data, structure, both)
+   - Save file
+
+   **Search Across All Tables:**
+   - Tools → Find text on server
+   - Enter search term
+   - Select tables to search
+   - View results with context
+
+**Pro Tips:**
+```sql
+-- Use SQL snippets for common queries
+-- Tools → Preferences → SQL → Snippets
+
+-- Create custom formatting profiles
+-- Tools → Preferences → SQL → Query formatting
+
+-- Enable query history
+-- Tools → Preferences → SQL → Query history
+```
+
+### DBeaver (Cross-Platform Universal Tool)
+
+**Why DBeaver?**
+- **Cross-Platform**: Works on Windows, Linux, macOS
+- **Universal**: Supports 100+ different databases
+- **Free Community Edition**: Full-featured and open source
+- **Advanced Features**: ER diagrams, data analysis, visual query builder
+- **Enterprise Ready**: Professional tool used by DBAs worldwide
+
+**Installation:**
+
+**Windows:**
+```
+Download from: https://dbeaver.io/download/
+Choose: Community Edition (free) or Enterprise Edition
+Run installer and follow prompts
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+# Method 1: Using snap
+sudo snap install dbeaver-ce
+
+# Method 2: Using apt
+wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
+sudo dpkg -i dbeaver-ce_latest_amd64.deb
+sudo apt-get install -f
+
+# Launch DBeaver
+dbeaver
+```
+
+**Linux (Fedora/RHEL/CentOS):**
+```bash
+# Download RPM package
+wget https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
+
+# Install with dnf/yum
+sudo dnf install dbeaver-ce-latest-stable.x86_64.rpm
+
+# Launch DBeaver
+dbeaver
+```
+
+**Key Features:**
+- **SQL Editor**: Advanced editor with auto-complete and syntax validation
+- **Data Viewer**: Inline editing, filtering, sorting
+- **ER Diagrams**: Visual database structure diagrams
+- **Mock Data Generator**: Generate test data for development
+- **Database Compare**: Compare schemas and data between databases
+- **Visual Query Builder**: Build complex queries visually
+- **Data Transfer**: Migrate data between different database types
+- **SSH Tunneling**: Secure connections to remote databases
+
+**Getting Started:**
+
+1. **Create Database Connection**
+   - Click "New Database Connection" (Ctrl+Shift+N)
+   - Select "MariaDB" or "MySQL"
+   - Click "Next"
+
+2. **Configure Connection**
+   ```
+   Connect by: Host
+   Server Host: localhost (or server IP)
+   Port: 3306
+   Database: fivem
+   Authentication: Database Native
+   Username: fivem_user
+   Password: your_password
+   ```
+
+3. **Test and Connect**
+   - Click "Test Connection"
+   - If successful, click "Finish"
+   - Your database will appear in the Database Navigator
+
+**Advanced Features:**
+
+**Creating ER Diagrams:**
+```
+1. Right-click database → Generate ER Diagram
+2. Select tables to include
+3. Choose layout (hierarchical, spring, etc.)
+4. Export diagram as PNG/SVG/PDF
+```
+
+**Mock Data Generation:**
+```
+1. Right-click table → Generate SQL → Generate Mock Data
+2. Configure columns and data types
+3. Set number of rows to generate
+4. Execute or save SQL script
+```
+
+**Database Export:**
+```
+1. Right-click database → Tools → Export Data
+2. Select tables and format (SQL, CSV, XML, JSON)
+3. Configure export options
+4. Choose destination and export
+```
+
+### MySQL Workbench (Official MySQL Tool)
+
+**Why MySQL Workbench?**
+- **Official Tool**: Made by MySQL developers
+- **Complete Solution**: Design, development, and administration
+- **Database Design**: Visual data modeling with EER diagrams
+- **Migration Tools**: Migrate from other database systems
+- **Performance Dashboard**: Monitor and optimize server performance
+
+**Installation:**
+
+**Windows:**
+```
+Visit: https://dev.mysql.com/downloads/workbench/
+Download Windows MSI Installer
+Run installer and follow prompts
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+# Using apt
+sudo apt update
+sudo apt install mysql-workbench
+
+# Or using snap
+sudo snap install mysql-workbench-community
+```
+
+**Key Features:**
+- **Database Design**: Visual ER diagrams and forward/reverse engineering
+- **SQL Development**: Advanced query editor with debugging
+- **Server Administration**: User management, server configuration
+- **Performance Tools**: Dashboard, performance schema, query profiler
+- **Data Migration**: Wizard for migrating from other databases
+- **Schema Comparison**: Compare and synchronize database schemas
+
+**Common Tasks:**
+
+**Database Modeling:**
+```
+1. Database → Reverse Engineer
+2. Connect to your database
+3. Select schemas to import
+4. Edit model visually
+5. Database → Forward Engineer to apply changes
+```
+
+**Server Performance Monitoring:**
+```
+1. Connect to server
+2. Server → Performance Dashboard
+3. View real-time metrics:
+   - Client connections
+   - InnoDB buffer pool
+   - Query execution times
+   - Network traffic
+```
+
+### phpMyAdmin (Web-Based Interface)
+
+**Why phpMyAdmin?**
+- **Web-Based**: Access from any browser, anywhere
+- **No Installation**: Runs on web server
+- **Multi-User**: Multiple administrators can work simultaneously
+- **Feature Complete**: All database management functions
+- **Documentation**: Extensive user guide and community support
+
+**Quick Setup (Linux):**
+
+```bash
+# Ubuntu/Debian installation
+sudo apt update
+sudo apt install phpmyadmin php-mbstring php-zip php-gd php-json php-curl
+
+# Select web server during installation (apache2 or nginx)
+
+# Enable required PHP extensions
+sudo phpenmod mbstring
+
+# Restart web server
+sudo systemctl restart apache2
+# or
+sudo systemctl restart nginx
+
+# Access phpMyAdmin
+# Navigate to: http://localhost/phpmyadmin
+```
+
+**Nginx Configuration (if using Nginx):**
+```nginx
+# /etc/nginx/sites-available/phpmyadmin
+server {
+    listen 8080;
+    server_name localhost;
+    root /usr/share/phpmyadmin;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+# Enable site
+sudo ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+**Security Hardening:**
+
+```bash
+# Create .htaccess for additional authentication
+sudo nano /usr/share/phpmyadmin/.htaccess
+
+# Add content:
+AuthType Basic
+AuthName "Restricted Access"
+AuthUserFile /etc/phpmyadmin/.htpasswd
+Require valid-user
+
+# Create password file
+sudo mkdir -p /etc/phpmyadmin
+sudo htpasswd -c /etc/phpmyadmin/.htpasswd admin
+
+# Set permissions
+sudo chmod 640 /etc/phpmyadmin/.htpasswd
+sudo chown www-data:www-data /etc/phpmyadmin/.htpasswd
+
+# Change default URL (optional)
+sudo ln -s /usr/share/phpmyadmin /var/www/html/mydbadmin
+```
+
+### Adminer (Lightweight Alternative)
+
+**Why Adminer?**
+- **Single File**: Just one PHP file, easy deployment
+- **Fast**: Much lighter than phpMyAdmin
+- **Feature Rich**: Supports multiple databases (MySQL, PostgreSQL, SQLite, etc.)
+- **Clean Interface**: Simple and intuitive design
+- **No Configuration**: Works out of the box
+
+**Installation:**
+
+```bash
+# Create directory
+sudo mkdir -p /var/www/html/adminer
+
+# Download latest version
+cd /var/www/html/adminer
+sudo wget https://www.adminer.org/latest.php -O index.php
+
+# Set permissions
+sudo chown -R www-data:www-data /var/www/html/adminer
+sudo chmod 644 /var/www/html/adminer/index.php
+
+# Access at: http://localhost/adminer
+```
+
+**Custom Theme:**
+```bash
+# Download theme
+cd /var/www/html/adminer
+sudo wget https://raw.githubusercontent.com/vrana/adminer/master/designs/nette/adminer.css
+
+# Adminer will automatically use the CSS file
+```
+
+### Command-Line Tools
+
+#### mycli (Enhanced MySQL CLI)
+
+**Installation:**
+
+```bash
+# Ubuntu/Debian
+sudo apt install mycli
+
+# Or using pip
+pip install mycli
+
+# macOS
+brew install mycli
+```
+
+**Features:**
+- Auto-completion of SQL keywords and table/column names
+- Syntax highlighting
+- Query history with search
+- Multi-line editing
+- Smart completion (context-aware suggestions)
+- Vi mode support
+- Pretty formatted output
+
+**Usage:**
+```bash
+# Connect to database
+mycli -u fivem_user -p fivem
+
+# Or with full connection string
+mycli mysql://fivem_user:password@localhost/fivem
+
+# Common commands
+\dt          # List tables
+\d table_name  # Describe table
+\e           # Open editor for query
+\G           # Vertical output format
+\q           # Quit
+```
+
+**Configuration:**
+```bash
+# Edit config file
+nano ~/.myclirc
+
+# Useful settings:
+[main]
+multi_line = True
+vi_mode = False
+auto_vertical_output = True
+syntax_style = monokai
+key_bindings = emacs
+```
+
+### Remote Access Setup
+
+#### SSH Tunneling for Secure Remote Access
+
+**Linux/macOS:**
+```bash
+# Create SSH tunnel
+ssh -L 3306:localhost:3306 username@your-server-ip
+
+# Keep tunnel open in background
+ssh -f -N -L 3306:localhost:3306 username@your-server-ip
+
+# Now connect to localhost:3306 in your database tool
+# All traffic is encrypted through SSH
+```
+
+**Windows (using PuTTY):**
+```
+1. Open PuTTY
+2. Enter server hostname
+3. Go to: Connection → SSH → Tunnels
+4. Add port forwarding:
+   Source port: 3306
+   Destination: localhost:3306
+   Type: Local
+5. Click "Add"
+6. Connect to your server
+7. In database tool, connect to localhost:3306
+```
+
+**HeidiSQL with SSH Tunnel:**
+```
+1. Create new session
+2. Go to "SSH tunnel" tab
+3. Enable "Use SSH tunnel"
+4. Configure:
+   SSH host + port: your-server-ip:22
+   Username: ssh-username
+   Password or Private key file
+5. In "Settings" tab:
+   Hostname: 127.0.0.1
+   Port: 3306
+6. Save and connect
+```
+
+### Database Backup Tools
+
+#### Automated Backup with cron (Linux)
+
+```bash
+# Create backup script
+nano ~/backup-fivem-db.sh
+
+# Add content:
+#!/bin/bash
+BACKUP_DIR="/backups/database"
+DB_NAME="fivem"
+DB_USER="fivem_user"
+DB_PASS="your_password"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+mkdir -p $BACKUP_DIR
+mysqldump -u$DB_USER -p$DB_PASS --single-transaction --routines --triggers $DB_NAME | gzip > $BACKUP_DIR/fivem_$DATE.sql.gz
+
+# Keep only last 30 days
+find $BACKUP_DIR -name "*.sql.gz" -mtime +30 -delete
+
+# Make executable
+chmod +x ~/backup-fivem-db.sh
+
+# Add to crontab for daily 3 AM backups
+crontab -e
+
+# Add line:
+0 3 * * * /home/username/backup-fivem-db.sh
+```
+
+#### Windows Task Scheduler Backup
+
+```batch
+REM backup-fivem-db.bat
+@echo off
+set BACKUP_DIR=C:\backups\database
+set DB_NAME=fivem
+set DB_USER=fivem_user
+set DB_PASS=your_password
+set DATE=%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2%
+
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%"
+"C:\Program Files\MariaDB\bin\mysqldump.exe" -u%DB_USER% -p%DB_PASS% --single-transaction --routines --triggers %DB_NAME% > %BACKUP_DIR%\fivem_%DATE%.sql
+
+REM Create scheduled task:
+REM Task Scheduler → Create Basic Task
+REM Trigger: Daily at 3:00 AM
+REM Action: Start a program → backup-fivem-db.bat
+```
+
+### Monitoring and Alerts
+
+#### Database Monitoring Script
+
+```bash
+#!/bin/bash
+# db-monitor.sh - Monitor database health
+
+DB_USER="fivem_user"
+DB_PASS="your_password"
+DB_NAME="fivem"
+
+# Check if MySQL is running
+if ! systemctl is-active --quiet mariadb; then
+    echo "ERROR: MariaDB is not running!" | mail -s "DB Alert" admin@example.com
+    exit 1
+fi
+
+# Check connection
+if ! mysql -u$DB_USER -p$DB_PASS -e "SELECT 1" &>/dev/null; then
+    echo "ERROR: Cannot connect to database!" | mail -s "DB Alert" admin@example.com
+    exit 1
+fi
+
+# Check database size
+DB_SIZE=$(mysql -u$DB_USER -p$DB_PASS -e "SELECT ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) FROM information_schema.tables WHERE table_schema='$DB_NAME'" -s)
+
+if (( $(echo "$DB_SIZE > 5000" | bc -l) )); then
+    echo "WARNING: Database size is ${DB_SIZE}MB" | mail -s "DB Alert" admin@example.com
+fi
+
+# Check for slow queries
+SLOW_QUERIES=$(mysql -u$DB_USER -p$DB_PASS -e "SHOW GLOBAL STATUS LIKE 'Slow_queries'" -s | awk '{print $2}')
+
+if [ "$SLOW_QUERIES" -gt 100 ]; then
+    echo "WARNING: ${SLOW_QUERIES} slow queries detected" | mail -s "DB Alert" admin@example.com
+fi
+
+echo "Database health check passed"
+```
+
+<Callout type="info">
+**Tool Recommendation**: For Windows users, HeidiSQL is the best choice. For Linux users, DBeaver offers excellent cross-platform compatibility and advanced features.
+</Callout>
+
 <Callout type="warning">
   Avoid using synchronous database operations in production environments, as they can block the main thread and cause performance issues.
 </Callout>

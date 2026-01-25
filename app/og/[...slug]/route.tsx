@@ -3,6 +3,8 @@ import { type NextRequest } from "next/server";
 import { notFound } from "next/navigation";
 import { source } from "@/lib/docs/source";
 
+export const dynamic = "force-dynamic";
+
 export function GET(
   _: NextRequest,
   { params }: { params: { slug: string[] } },
@@ -18,8 +20,5 @@ export function GET(
 }
 
 export function generateStaticParams() {
-  return source.generateParams().map((params) => ({
-    ...params,
-    slug: [...params.slug, "og.png"],
-  }));
+  return [];
 }

@@ -8,5 +8,6 @@ export * from "./marquee";
 export * from "./retro";
 export * from "./shimmer";
 export * from "./shine";
+export * from "./source-code";
 export * from "./tooltip";
 export * from "./trace";

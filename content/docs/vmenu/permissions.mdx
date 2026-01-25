@@ -1,0 +1,728 @@
+---
+title: Permissions System
+description: Complete guide to configuring vMenu permissions using FiveM's ACE and Principal system
+icon: Shield
+---
+
+import { Callout } from 'fumadocs-ui/components/callout'
+
+## Overview
+
+vMenu uses FiveM's built-in **ACE (Access Control Entry)** and **Principal** system for permissions. This powerful system allows granular control over who can access specific features.
+
+<Callout type="warn">
+  **Critical Security**: By default, vMenu may grant all permissions to everyone. You MUST configure permissions before making your server public.
+</Callout>
+
+## Permission System Basics
+
+### Key Concepts
+
+| Term | Description |
+|------|-------------|
+| **ACE** | Access Control Entry - grants or denies a specific permission |
+| **Principal** | An entity that can have ACEs (player, group, identifier) |
+| **Group** | Collection of principals with shared permissions |
+| **Identifier** | Unique player identifier (Steam, License, Discord, etc.) |
+
+### How It Works
+
+1. **Players** have **identifiers** (steam:, license:, discord:, etc.)
+2. **Identifiers** can be added to **groups** (admin, moderator, vip)
+3. **Groups** (or individual identifiers) receive **ACE permissions**
+4. vMenu checks permissions when players access features
+
+## Permission Nodes
+
+### Complete Permission List
+
+#### Administrative Permissions
+
+```cfg
+vMenu.Everything                    # Full access to all features
+vMenu.Staff                         # Access to staff-only features
+vMenu.NoClip                        # Enable noclip mode
+vMenu.God                           # God mode/invincibility
+vMenu.Report                        # Receive and manage reports
+vMenu.Teleport                      # Teleport menu access
+vMenu.Spectate                      # Spectate other players
+```
+
+#### Player Management
+
+```cfg
+vMenu.OnlinePlayers                 # View online players menu
+vMenu.OnlinePlayers.All             # Full player management
+vMenu.OnlinePlayers.Teleport        # Teleport to players
+vMenu.OnlinePlayers.TeleportToPlayer # Bring players to you
+vMenu.OnlinePlayers.Summon          # Summon players
+vMenu.OnlinePlayers.Kill            # Kill players
+vMenu.OnlinePlayers.Kick            # Kick players
+vMenu.OnlinePlayers.TempBan         # Temporary ban
+vMenu.OnlinePlayers.PermBan         # Permanent ban
+vMenu.OnlinePlayers.Unban           # Unban players
+vMenu.OnlinePlayers.Freeze          # Freeze/unfreeze players
+vMenu.OnlinePlayers.ViewPlayerInventory # View inventories
+vMenu.OnlinePlayers.RemovePlayerWeapons # Remove weapons
+vMenu.OnlinePlayers.SeePlayerIdentifiers # View player identifiers
+```
+
+#### Player Options (Self)
+
+```cfg
+vMenu.PlayerOptions                 # Access player options menu
+vMenu.PlayerOptions.All             # All player options
+vMenu.PlayerOptions.God             # Toggle god mode
+vMenu.PlayerOptions.Invisible       # Toggle invisibility
+vMenu.PlayerOptions.FastRun         # Enable fast running
+vMenu.PlayerOptions.FastSwim        # Enable fast swimming
+vMenu.PlayerOptions.SuperJump       # Enable super jump
+vMenu.PlayerOptions.NoRagdoll       # Disable ragdoll physics
+vMenu.PlayerOptions.NeverWanted     # Disable wanted level
+vMenu.PlayerOptions.SetWanted       # Set custom wanted level
+vMenu.PlayerOptions.IgnoredByPolice # Toggle police ignore
+vMenu.PlayerOptions.StayInVehicle   # Stay in vehicle when shot
+vMenu.PlayerOptions.MaxHealth       # Increase max health
+vMenu.PlayerOptions.MaxArmor        # Set armor to maximum
+vMenu.PlayerOptions.UnlimitedStamina # Infinite stamina
+```
+
+#### Vehicle Options
+
+```cfg
+vMenu.VehicleOptions                # Access vehicle options menu
+vMenu.VehicleOptions.All            # All vehicle options
+vMenu.VehicleOptions.Fix            # Repair vehicle
+vMenu.VehicleOptions.Wash           # Wash vehicle
+vMenu.VehicleOptions.Engine         # Toggle engine
+vMenu.VehicleOptions.ChangePlate    # Change license plate
+vMenu.VehicleOptions.Mod            # Modify vehicle
+vMenu.VehicleOptions.Colors         # Change colors
+vMenu.VehicleOptions.Liveries       # Apply liveries
+vMenu.VehicleOptions.Components     # Toggle components
+vMenu.VehicleOptions.Doors          # Control doors
+vMenu.VehicleOptions.Windows        # Control windows
+vMenu.VehicleOptions.Freeze         # Freeze vehicle
+vMenu.VehicleOptions.Invisible      # Make vehicle invisible
+vMenu.VehicleOptions.SpawnInside    # Spawn inside vehicle
+vMenu.VehicleOptions.EngineAlwaysOn # Keep engine always on
+vMenu.VehicleOptions.NoSirenSound   # Disable siren sound
+vMenu.VehicleOptions.NoHelmet       # Disable helmet on bikes
+vMenu.VehicleOptions.Torque         # Modify engine torque
+vMenu.VehicleOptions.Power          # Modify engine power
+vMenu.VehicleOptions.FlashHighbeamsOnHonk # Flash highbeams when honking
+```
+
+#### Vehicle Spawning
+
+```cfg
+vMenu.VehicleSpawner                # Access vehicle spawner
+vMenu.VehicleSpawner.All            # Spawn any vehicle
+vMenu.VehicleSpawner.Compacts       # Spawn compacts
+vMenu.VehicleSpawner.Sedans         # Spawn sedans
+vMenu.VehicleSpawner.SUVs           # Spawn SUVs
+vMenu.VehicleSpawner.Coupes         # Spawn coupes
+vMenu.VehicleSpawner.Muscle         # Spawn muscle cars
+vMenu.VehicleSpawner.SportsClassics # Spawn sports classics
+vMenu.VehicleSpawner.Sports         # Spawn sports cars
+vMenu.VehicleSpawner.Super          # Spawn super cars
+vMenu.VehicleSpawner.Motorcycles    # Spawn motorcycles
+vMenu.VehicleSpawner.OffRoad        # Spawn off-road vehicles
+vMenu.VehicleSpawner.Industrial     # Spawn industrial vehicles
+vMenu.VehicleSpawner.Utility        # Spawn utility vehicles
+vMenu.VehicleSpawner.Vans           # Spawn vans
+vMenu.VehicleSpawner.Cycles         # Spawn bicycles
+vMenu.VehicleSpawner.Boats          # Spawn boats
+vMenu.VehicleSpawner.Helicopters    # Spawn helicopters
+vMenu.VehicleSpawner.Planes         # Spawn planes
+vMenu.VehicleSpawner.Service        # Spawn service vehicles
+vMenu.VehicleSpawner.Emergency      # Spawn emergency vehicles
+vMenu.VehicleSpawner.Military       # Spawn military vehicles
+vMenu.VehicleSpawner.Commercial     # Spawn commercial vehicles
+vMenu.VehicleSpawner.Trains         # Spawn trains
+vMenu.VehicleSpawner.OpenWheel      # Spawn open wheel vehicles
+```
+
+#### Saved Vehicles
+
+```cfg
+vMenu.PersonalVehicle               # Access personal vehicle feature
+vMenu.PersonalVehicle.All           # All personal vehicle options
+vMenu.SavedVehicles                 # Access saved vehicles menu
+vMenu.SavedVehicles.All             # All saved vehicle options
+vMenu.SavedVehicles.Spawn           # Spawn saved vehicles
+```
+
+#### Weapon Options
+
+```cfg
+vMenu.WeaponOptions                 # Access weapon options menu
+vMenu.WeaponOptions.All             # All weapon options
+vMenu.WeaponOptions.GetAll          # Get all weapons
+vMenu.WeaponOptions.RemoveAll       # Remove all weapons
+vMenu.WeaponOptions.UnlimitedAmmo   # Unlimited ammo
+vMenu.WeaponOptions.NoReload        # No reload required
+vMenu.WeaponLoadouts                # Access weapon loadouts
+vMenu.WeaponLoadouts.All            # All loadout options
+vMenu.WeaponLoadouts.Equip          # Equip saved loadouts
+```
+
+#### Weapon Spawning
+
+```cfg
+vMenu.WeaponSpawner                 # Access weapon spawner
+vMenu.WeaponSpawner.All             # Spawn any weapon
+vMenu.WeaponSpawner.Melee           # Spawn melee weapons
+vMenu.WeaponSpawner.Pistol          # Spawn pistols
+vMenu.WeaponSpawner.SMG             # Spawn SMGs
+vMenu.WeaponSpawner.Shotgun         # Spawn shotguns
+vMenu.WeaponSpawner.AssaultRifle    # Spawn assault rifles
+vMenu.WeaponSpawner.LMG             # Spawn LMGs
+vMenu.WeaponSpawner.Sniper          # Spawn sniper rifles
+vMenu.WeaponSpawner.Heavy           # Spawn heavy weapons
+vMenu.WeaponSpawner.Throwable       # Spawn throwable weapons
+vMenu.WeaponSpawner.Misc            # Spawn misc weapons
+```
+
+#### World Options
+
+```cfg
+vMenu.WorldOptions                  # Access world options menu
+vMenu.WorldOptions.All              # All world options
+vMenu.WorldOptions.Time             # Change time
+vMenu.WorldOptions.FreezeTime       # Freeze/unfreeze time
+vMenu.WorldOptions.Weather          # Change weather
+vMenu.WorldOptions.RemoveFog        # Remove fog
+vMenu.WorldOptions.RandomizePeds    # Randomize pedestrian models
+vMenu.WorldOptions.NoTraffic        # Disable traffic
+vMenu.WorldOptions.LockTime         # Lock time
+```
+
+#### Appearance Options
+
+```cfg
+vMenu.PlayerAppearance              # Access appearance menu
+vMenu.PlayerAppearance.All          # All appearance options
+vMenu.SavedCharacters               # Access saved characters
+vMenu.SavedCharacters.All           # All saved character options
+vMenu.SavedCharacters.Spawn         # Spawn saved characters
+```
+
+#### Voice Chat
+
+```cfg
+vMenu.VoiceChat                     # Access voice chat options
+vMenu.VoiceChat.All                 # All voice chat options
+vMenu.VoiceChat.Enable              # Enable voice chat
+vMenu.VoiceChat.ShowSpeaker         # Show speaker indicators
+vMenu.VoiceChat.StaffChannel        # Access staff channel
+```
+
+#### Recording & Developer
+
+```cfg
+vMenu.Recording                     # Access recording options
+vMenu.Recording.All                 # All recording options
+vMenu.DeveloperTools                # Access developer tools
+vMenu.DeveloperTools.All            # All developer tools
+```
+
+#### Miscellaneous
+
+```cfg
+vMenu.MiscSettings                  # Access misc settings
+vMenu.MiscSettings.All              # All misc settings
+vMenu.ConnectionMenu                # Server connection options
+vMenu.About                         # View vMenu about page
+```
+
+## Permission Configuration
+
+### Method 1: Using permissions.cfg (Recommended)
+
+Located at `resources/vMenu/config/permissions.cfg`
+
+#### Basic Structure
+
+```cfg
+# ===================================
+# vMenu Permissions Configuration
+# ===================================
+
+# ----- ADMIN GROUP -----
+add_ace group.admin vMenu.Everything allow
+
+# Assign players to admin group
+add_principal identifier.steam:110000112345678 group.admin
+add_principal identifier.license:abc123def456 group.admin
+
+# ----- MODERATOR GROUP -----
+add_ace group.moderator vMenu.OnlinePlayers allow
+add_ace group.moderator vMenu.PlayerOptions allow
+add_ace group.moderator vMenu.Report allow
+add_ace group.moderator vMenu.Spectate allow
+add_ace group.moderator vMenu.Teleport allow
+
+# Assign moderators
+add_principal identifier.steam:110000187654321 group.moderator
+add_principal identifier.discord:123456789012345678 group.moderator
+
+# ----- VIP GROUP -----
+add_ace group.vip vMenu.PersonalVehicle allow
+add_ace group.vip vMenu.SavedVehicles allow
+add_ace group.vip vMenu.WeaponLoadouts allow
+add_ace group.vip vMenu.SavedCharacters allow
+
+# Assign VIP members
+add_principal identifier.license:vip123 group.vip
+
+# ----- DEFAULT PERMISSIONS -----
+# Deny dangerous permissions by default
+add_ace builtin.everyone vMenu.Everything deny
+add_ace builtin.everyone vMenu.Staff deny
+add_ace builtin.everyone vMenu.NoClip deny
+add_ace builtin.everyone vMenu.OnlinePlayers.All deny
+```
+
+### Method 2: Using server.cfg
+
+Add permissions directly in your `server.cfg`:
+
+```cfg
+# Admin permissions
+add_ace group.admin vMenu.Everything allow
+add_principal identifier.steam:110000112345678 group.admin
+
+# Moderator permissions
+add_ace group.moderator vMenu.OnlinePlayers allow
+add_principal identifier.steam:110000187654321 group.moderator
+```
+
+## Permission Examples
+
+### Admin Configuration
+
+Full administrative access:
+
+```cfg
+# Create admin group
+add_ace group.admin vMenu.Everything allow
+
+# Assign admins
+add_principal identifier.steam:110000112345678 group.admin
+add_principal identifier.license:abc123 group.admin
+add_principal identifier.discord:123456789012345678 group.admin
+```
+
+### Moderator Configuration
+
+Limited moderation powers:
+
+```cfg
+# Create moderator group
+add_ace group.moderator vMenu.OnlinePlayers allow
+add_ace group.moderator vMenu.OnlinePlayers.Teleport allow
+add_ace group.moderator vMenu.OnlinePlayers.Kick allow
+add_ace group.moderator vMenu.OnlinePlayers.TempBan allow
+add_ace group.moderator vMenu.OnlinePlayers.Freeze allow
+add_ace group.moderator vMenu.Spectate allow
+add_ace group.moderator vMenu.Report allow
+add_ace group.moderator vMenu.Teleport allow
+
+# Assign moderators
+add_principal identifier.steam:110000187654321 group.moderator
+```
+
+### Support Staff Configuration
+
+Minimal support permissions:
+
+```cfg
+# Create support group
+add_ace group.support vMenu.OnlinePlayers allow
+add_ace group.support vMenu.Report allow
+add_ace group.support vMenu.Teleport allow
+
+# No ban/kick permissions
+add_ace group.support vMenu.OnlinePlayers.Kick deny
+add_ace group.support vMenu.OnlinePlayers.TempBan deny
+add_ace group.support vMenu.OnlinePlayers.PermBan deny
+
+# Assign support staff
+add_principal identifier.license:support123 group.support
+```
+
+### VIP/Donator Configuration
+
+Extra features for supporters:
+
+```cfg
+# Create VIP group
+add_ace group.vip vMenu.PersonalVehicle allow
+add_ace group.vip vMenu.SavedVehicles allow
+add_ace group.vip vMenu.WeaponLoadouts allow
+add_ace group.vip vMenu.SavedCharacters allow
+add_ace group.vip vMenu.PlayerOptions allow
+add_ace group.vip vMenu.PlayerOptions.God allow
+add_ace group.vip vMenu.PlayerOptions.FastRun allow
+add_ace group.vip vMenu.PlayerOptions.SuperJump allow
+
+# VIP vehicle access
+add_ace group.vip vMenu.VehicleSpawner allow
+add_ace group.vip vMenu.VehicleSpawner.Super allow
+add_ace group.vip vMenu.VehicleSpawner.Sports allow
+
+# Assign VIP members
+add_principal identifier.license:vip_member_1 group.vip
+```
+
+### Developer Configuration
+
+Testing and development access:
+
+```cfg
+# Create developer group
+add_ace group.developer vMenu.Everything allow
+add_ace group.developer vMenu.DeveloperTools.All allow
+add_ace group.developer vMenu.NoClip allow
+add_ace group.developer vMenu.God allow
+add_ace group.developer vMenu.Teleport allow
+
+# Assign developers
+add_principal identifier.steam:110000199999999 group.developer
+```
+
+### Roleplay Server Configuration
+
+Restrictive RP configuration:
+
+```cfg
+# === ADMIN ===
+add_ace group.admin vMenu.Everything allow
+add_principal identifier.steam:110000112345678 group.admin
+
+# === MODERATOR ===
+add_ace group.moderator vMenu.OnlinePlayers allow
+add_ace group.moderator vMenu.Report allow
+add_ace group.moderator vMenu.Spectate allow
+add_ace group.moderator vMenu.Teleport allow
+add_principal identifier.steam:110000187654321 group.moderator
+
+# === POLICE (In-game) ===
+add_ace group.police vMenu.PlayerOptions allow
+add_ace group.police vMenu.VehicleSpawner.Emergency allow
+add_ace group.police vMenu.WeaponSpawner.Pistol allow
+add_principal identifier.license:police_officer_1 group.police
+
+# === EMS (In-game) ===
+add_ace group.ems vMenu.VehicleSpawner.Emergency allow
+add_ace group.ems vMenu.PlayerOptions.MaxHealth allow
+add_principal identifier.license:ems_member_1 group.ems
+
+# === DENY ALL BY DEFAULT ===
+add_ace builtin.everyone vMenu.Everything deny
+add_ace builtin.everyone vMenu.Staff deny
+add_ace builtin.everyone vMenu.NoClip deny
+add_ace builtin.everyone vMenu.God deny
+add_ace builtin.everyone vMenu.VehicleSpawner deny
+add_ace builtin.everyone vMenu.WeaponSpawner deny
+```
+
+### Freeroam Server Configuration
+
+Permissive freeroam setup:
+
+```cfg
+# === ADMIN ===
+add_ace group.admin vMenu.Everything allow
+add_principal identifier.steam:110000112345678 group.admin
+
+# === ALLOW EVERYONE BASIC FEATURES ===
+add_ace builtin.everyone vMenu.PlayerOptions allow
+add_ace builtin.everyone vMenu.VehicleSpawner allow
+add_ace builtin.everyone vMenu.VehicleOptions allow
+add_ace builtin.everyone vMenu.WeaponSpawner allow
+add_ace builtin.everyone vMenu.WeaponOptions allow
+add_ace builtin.everyone vMenu.SavedVehicles allow
+add_ace builtin.everyone vMenu.PersonalVehicle allow
+add_ace builtin.everyone vMenu.PlayerAppearance allow
+add_ace builtin.everyone vMenu.Teleport allow
+
+# === DENY ADMIN FEATURES ===
+add_ace builtin.everyone vMenu.OnlinePlayers.All deny
+add_ace builtin.everyone vMenu.NoClip deny
+add_ace builtin.everyone vMenu.WorldOptions deny
+```
+
+## Finding Player Identifiers
+
+### In-Game Method
+
+1. Player joins server
+2. Check server console for connection message:
+   ```
+   [  script:vMenu] Player connected: PlayerName
+   [  script:vMenu] steam:110000112345678
+   [  script:vMenu] license:abc123def456ghi789
+   [  script:vMenu] discord:123456789012345678
+   ```
+
+### Console Command
+
+Use the `status` command in server console:
+
+```
+status
+```
+
+Output:
+```
+id: 1, PlayerName, steam: 110000112345678, license: abc123
+```
+
+### Script Method
+
+Use this snippet to log identifiers:
+
+```lua
+-- Add to a resource
+RegisterCommand('myid', function(source)
+    local identifiers = GetPlayerIdentifiers(source)
+    for _, id in pairs(identifiers) do
+        print(id)
+    end
+end, false)
+```
+
+## Permission Hierarchy
+
+### Understanding Allow/Deny
+
+```cfg
+# Deny takes precedence over allow
+add_ace builtin.everyone vMenu.Everything deny  # Denies everyone
+add_ace group.admin vMenu.Everything allow      # Allows admins only
+```
+
+### Group Inheritance
+
+Groups don't inherit from each other by default. Use principals:
+
+```cfg
+# Wrong - groups don't inherit
+add_ace group.admin vMenu.Everything allow
+add_principal group.moderator group.admin  # This doesn't work as expected
+
+# Right - explicitly add player to both groups
+add_principal identifier.steam:110000112345678 group.admin
+add_principal identifier.steam:110000112345678 group.moderator
+```
+
+### Permission Specificity
+
+More specific permissions override general ones:
+
+```cfg
+# Allow all vehicle spawning
+add_ace group.vip vMenu.VehicleSpawner allow
+
+# But deny military vehicles
+add_ace group.vip vMenu.VehicleSpawner.Military deny
+```
+
+## Advanced Permission Patterns
+
+### Time-Limited Permissions
+
+Use external script with ACE system:
+
+```lua
+-- Grant VIP for 30 days
+RegisterCommand('grantvip', function(source, args)
+    local target = tonumber(args[1])
+    local identifier = GetPlayerIdentifier(target, 0)
+    
+    -- Add to VIP group
+    ExecuteCommand(string.format('add_principal identifier.%s group.vip', identifier))
+    
+    -- Schedule removal (requires database/scheduler)
+    -- Implementation depends on your framework
+end, true)
+```
+
+### Dynamic Permission Assignment
+
+Integrate with your framework:
+
+```lua
+-- ESX Example
+RegisterServerEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(source, xPlayer)
+    if xPlayer.getGroup() == 'admin' then
+        ExecuteCommand('add_principal identifier.'..xPlayer.identifier..' group.admin')
+    end
+end)
+```
+
+### Conditional Permissions
+
+Based on player stats:
+
+```lua
+-- Grant features based on playtime
+AddEventHandler('playerConnecting', function()
+    local source = source
+    local playtime = GetPlayerPlaytime(source) -- Your function
+    
+    if playtime > 100 then  -- 100 hours
+        local identifier = GetPlayerIdentifier(source, 0)
+        ExecuteCommand('add_principal identifier.'..identifier..' group.veteran')
+    end
+end)
+```
+
+## Security Best Practices
+
+### Essential Security Measures
+
+1. ✅ **Always deny dangerous permissions by default**
+   ```cfg
+   add_ace builtin.everyone vMenu.Everything deny
+   add_ace builtin.everyone vMenu.NoClip deny
+   add_ace builtin.everyone vMenu.Staff deny
+   ```
+
+2. ✅ **Use specific permissions instead of wildcards**
+   ```cfg
+   # Bad - too permissive
+   add_ace group.moderator vMenu.OnlinePlayers.All allow
+   
+   # Good - specific permissions
+   add_ace group.moderator vMenu.OnlinePlayers.Kick allow
+   add_ace group.moderator vMenu.OnlinePlayers.TempBan allow
+   ```
+
+3. ✅ **Use identifier-based permissions, not IP-based**
+   ```cfg
+   # Bad - IPs change
+   add_principal identifier.ip:127.0.0.1 group.admin
+   
+   # Good - stable identifiers
+   add_principal identifier.steam:110000112345678 group.admin
+   ```
+
+4. ✅ **Regular audit of permissions**
+   - Review permissions monthly
+   - Remove inactive admins
+   - Check for permission conflicts
+
+5. ✅ **Log permission usage**
+   
+   Check the [official vMenu documentation](https://docs.vespura.com/vmenu/configuration) for logging options.
+
+### Common Security Mistakes
+
+❌ **Granting Everything to everyone**
+```cfg
+# Never do this!
+add_ace builtin.everyone vMenu.Everything allow
+```
+
+❌ **Using weak identifier types**
+```cfg
+# IP addresses change frequently
+add_principal identifier.ip:192.168.1.1 group.admin
+```
+
+❌ **Not denying dangerous permissions**
+```cfg
+# Forgetting to explicitly deny
+# (some features may be allowed by default)
+```
+
+❌ **Sharing admin accounts**
+```cfg
+# Each admin should have unique identifier
+add_principal identifier.license:shared_account group.admin
+```
+
+## Troubleshooting Permissions
+
+### Permission Not Working
+
+**Issue**: Player has permission but can't access feature
+
+**Solutions**:
+1. Verify permission syntax is exact (case-sensitive)
+2. Check for deny overriding allow
+3. Restart server after permission changes
+4. Verify player identifier is correct
+5. Check if feature is disabled via convar
+
+### Too Many Permissions
+
+**Issue**: Player has access to features they shouldn't
+
+**Solutions**:
+1. Check if accidentally added to admin group
+2. Review `builtin.everyone` permissions
+3. Check for `vMenu.Everything` or wildcard permissions
+4. Verify no conflicting permission systems
+
+### Permissions Not Persistent
+
+**Issue**: Permissions reset after restart
+
+**Solutions**:
+1. Add permissions to `permissions.cfg` or `server.cfg`
+2. Don't use console commands for permanent permissions
+3. Verify files are being read on startup
+4. Check file permissions (read/write access)
+
+## Testing Permissions
+
+### Test Account Setup
+
+Create test accounts for each permission level:
+
+```cfg
+# Test Admin
+add_principal identifier.steam:TESTADMIN group.admin
+
+# Test Moderator
+add_principal identifier.steam:TESTMOD group.moderator
+
+# Test VIP
+add_principal identifier.steam:TESTVIP group.vip
+
+# Test Regular Player
+# (no special permissions)
+```
+
+### Verification Checklist
+
+- [ ] Admins can access everything
+- [ ] Moderators can manage players but not change world
+- [ ] VIP has extra features but not admin powers
+- [ ] Regular players have appropriate restrictions
+- [ ] Denied permissions actually deny access
+- [ ] Logs show permission checks
+
+## Additional Resources
+
+- 📖 [FiveM ACE Documentation](https://docs.fivem.net/docs/server-manual/permissions/)
+- 💬 [vMenu Discord](https://vespura.com/vmenu/discord)
+- 📝 [Permission Examples GitHub](https://github.com/TomGrobbe/vMenu/tree/master/config)
+- 🌐 [CFX Forums](https://forum.cfx.re/)
+
+## Next Steps
+
+After configuring permissions:
+
+- [Explore Features](/docs/vmenu/features) - Learn what each permission unlocks
+- [Test Thoroughly](/docs/vmenu/troubleshooting) - Verify security
+- [Train Staff](/docs/vmenu/features) - Document your permission structure
+
+<Callout type="success">
+  **Permissions Configured!** Your server is now secure with properly configured access control.
+</Callout>

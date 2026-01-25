@@ -1,0 +1,210 @@
+---
+title: Configuration
+description: Guide to configuring vMenu settings and permissions
+icon: Wrench
+---
+
+import { Callout } from 'fumadocs-ui/components/callout'
+
+## Overview
+
+vMenu is configured primarily through **permissions** using FiveM's ACE permission system. Configuration options may change between versions.
+
+<Callout type="warn">
+  **Important**: Always check the [official vMenu documentation](https://docs.vespura.com/vmenu/) for the most accurate and current configuration options.
+</Callout>
+
+## Configuration Files
+
+### File Locations
+
+| File | Location | Purpose |
+|------|----------|---------|
+| `permissions.cfg` | `resources/vMenu/config/` | Permission definitions |
+| `server.cfg` | Server root | Server settings and ensure statement |
+
+## Basic Setup
+
+### 1. Add to server.cfg
+
+```cfg
+# Execute permissions file
+exec resources/vMenu/config/permissions.cfg
+
+# Ensure vMenu loads
+ensure vMenu
+```
+
+### 2. Permissions Configuration
+
+vMenu uses FiveM's ACE permission system. Edit `permissions.cfg`:
+
+```cfg
+# Grant all permissions to admin group
+add_ace group.admin vMenu.Everything allow
+
+# Grant specific permissions to moderators
+add_ace group.moderator vMenu.OnlinePlayers.Menu allow
+add_ace group.moderator vMenu.OnlinePlayers.Teleport allow
+add_ace group.moderator vMenu.OnlinePlayers.Spectate allow
+
+# Deny certain permissions to everyone by default
+add_ace builtin.everyone vMenu.OnlinePlayers.Menu deny
+add_ace builtin.everyone vMenu.NoClip deny
+```
+
+### 3. Assign Users to Groups
+
+```cfg
+# Add players to groups using their identifiers
+add_principal identifier.steam:110000112345678 group.admin
+add_principal identifier.license:abcdef123456 group.moderator
+add_principal identifier.discord:123456789012345678 group.admin
+```
+
+## Permission Categories
+
+vMenu permissions control access to various menus and features. Key permission categories include:
+
+- `vMenu.Everything` - Grants all permissions
+- `vMenu.OnlinePlayers.*` - Player management permissions
+- `vMenu.PlayerOptions.*` - Self-modification options
+- `vMenu.VehicleOptions.*` - Vehicle-related features
+- `vMenu.VehicleSpawner.*` - Vehicle spawning by category
+- `vMenu.WeaponOptions.*` - Weapon features
+- `vMenu.MiscSettings.*` - Miscellaneous settings
+- `vMenu.VoiceChat.*` - Voice chat options
+- `vMenu.NoClip` - NoClip mode
+
+For the complete list of permissions, see the [official vMenu permissions documentation](https://docs.vespura.com/vmenu/permissions-ref).
+
+## Server Convars
+
+vMenu uses convars for configuration. Add these to your `server.cfg` **before** the `ensure vMenu` line.
+
+<Callout type="info">
+  Convar names and availability may change between versions. Always verify against the [official documentation](https://docs.vespura.com/vmenu/configuration).
+</Callout>
+
+For the complete and up-to-date list of available convars, please refer to:
+- [vMenu Configuration Documentation](https://docs.vespura.com/vmenu/configuration)
+- [vMenu GitHub Repository](https://github.com/TomGrobbe/vMenu)
+
+## Example Permission Configurations
+
+### Roleplay Server
+
+```cfg
+# permissions.cfg for roleplay server
+
+# Admin - full access
+add_ace group.admin vMenu.Everything allow
+
+# Moderator - player management
+add_ace group.moderator vMenu.OnlinePlayers.Menu allow
+add_ace group.moderator vMenu.OnlinePlayers.Teleport allow
+add_ace group.moderator vMenu.OnlinePlayers.Kick allow
+add_ace group.moderator vMenu.OnlinePlayers.Spectate allow
+add_ace group.moderator vMenu.NoClip allow
+
+# Deny spawning for non-staff
+add_ace builtin.everyone vMenu.VehicleSpawner.Menu deny
+add_ace builtin.everyone vMenu.WeaponSpawner.Menu deny
+add_ace builtin.everyone vMenu.NoClip deny
+add_ace builtin.everyone vMenu.OnlinePlayers.Menu deny
+```
+
+### Freeroam Server
+
+```cfg
+# permissions.cfg for freeroam server
+
+# Admin - full access  
+add_ace group.admin vMenu.Everything allow
+
+# Allow everyone basic features
+add_ace builtin.everyone vMenu.VehicleSpawner.Menu allow
+add_ace builtin.everyone vMenu.VehicleOptions.Menu allow
+add_ace builtin.everyone vMenu.PlayerOptions.Menu allow
+add_ace builtin.everyone vMenu.WeaponOptions.Menu allow
+
+# Restrict admin-only features
+add_ace builtin.everyone vMenu.OnlinePlayers.Kick deny
+add_ace builtin.everyone vMenu.OnlinePlayers.Ban deny
+```
+
+## Resource Load Order
+
+Ensure vMenu loads at the correct time:
+
+```cfg
+# Load order in server.cfg
+ensure mapmanager
+ensure chat
+ensure spawnmanager
+ensure sessionmanager
+
+# Execute vMenu permissions
+exec resources/vMenu/config/permissions.cfg
+
+# Load vMenu after core resources
+ensure vMenu
+
+# Load dependent resources after vMenu
+ensure your_other_resources
+```
+
+## Troubleshooting Configuration
+
+### Permissions Not Working
+
+1. Ensure `permissions.cfg` is being executed before `ensure vMenu`
+2. Check for syntax errors in permission definitions
+3. Verify player identifiers are correct
+4. Restart server after permission changes
+
+### Menu Not Opening
+
+1. Check if vMenu is ensured in server.cfg
+2. Verify no conflicting keybinds
+3. Check server console for errors
+4. Ensure permissions allow menu access
+
+### Configuration Not Loading
+
+1. Place convars **before** `ensure vMenu` in server.cfg
+2. Use `setr` for client-replicated settings
+3. Restart server (not just resource)
+4. Check for typos in convar names
+
+## Best Practices
+
+### Security
+
+- ✅ Always configure permissions before going live
+- ✅ Use `builtin.everyone` with `deny` for restricted features
+- ✅ Never grant `vMenu.Everything` to regular players
+- ✅ Use identifier-based permissions, not IP-based
+
+### Organization
+
+- ✅ Keep permissions in a separate `permissions.cfg` file
+- ✅ Comment your permission configurations
+- ✅ Test permissions thoroughly before production
+- ✅ Document custom settings for your staff
+
+## Next Steps
+
+- [Set Up Permissions](/docs/vmenu/permissions) - Configure access control
+- [Explore Features](/docs/vmenu/features) - Learn about available options
+- [Review Troubleshooting](/docs/vmenu/troubleshooting) - Solve common issues
+
+## Additional Resources
+
+- 📖 [Official vMenu Documentation](https://docs.vespura.com/vmenu/)
+- 📝 [GitHub Repository](https://github.com/TomGrobbe/vMenu)
+- 💬 [vMenu Discord](https://vespura.com/discord)
+
+<Callout type="success">
+  Always refer to the official vMenu documentation for the most accurate configuration information.
+</Callout>

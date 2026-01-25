@@ -2,6 +2,8 @@
   "pages": [
     "core",
     "cfx",
+    "txadmin",
+    "vmenu",
     "frameworks",
     "guides"
   ]

@@ -60,44 +60,167 @@ sv_maxclients 64
 endpoint_add_tcp "0.0.0.0:30120"
 endpoint_add_udp "0.0.0.0:30120"
 
-# Disable unnecessary features
-sv_scriptHookAllowed 0
-sv_enableChatPrivateMessage 0
+# Modern security features
+sv_scriptHookAllowed 0           # Block Script Hook V
+sv_pureLevel 1                   # Resource integrity checking
+sv_requestParanoia 3             # Request validation (0-5, higher = stricter)
+sv_filterRequestControl 4        # Filter control requests
 
-# Rate limiting
+# Easy Anti-Cheat (if available - check docs.fivem.net)
+set ea_enabled 1                  # Enable EAC
+set ea_enableTelemetry 1         # Help improve detection
+
+# Rate limiting protection
 sv_playerConnectionsLogHistory 100
-sv_playerConnectionsLogHistorySize 1000
+sv_rateLimit 100                 # Connection rate limit
+sv_rateLimitBurst 200            # Burst allowance
+sv_requestRateLimit 10
+sv_requestRateLimitBurst 50
+sv_maxCommandRateLimitBurst 60
 
-# Security headers
-set sv_enforceGameBuild 2699
-set sv_licenseKeyToken "your_license_key_here"
+# Build enforcement
+# Check https://runtime.fivem.net for latest builds
+# sv_enforceGameBuild - Set if needed (check official FiveM docs)
+set sv_rejectInvalidLicense 1
 
-# Database security (if using MySQL)
-set mysql_connection_string "mysql://username:password@localhost/database?charset=utf8mb4"
-
-# Admin security
-add_principal identifier.steam:110000100000000 group.admin
-add_ace group.admin command.restart allow
-add_ace group.admin command.stop allow
-
-# Anti-cheat configuration
+# Authentication
 sv_authMaxVariance 1
 sv_authMinTrust 5
+
+# Database security (use environment variables for production)
+set mysql_connection_string "mysql://username:password@localhost/database?charset=utf8mb4"
 
 # Logging for security monitoring
 set sv_logFile "server.log"
 set sv_logLevel "info"
+```
 
-# Resource security
-start sessionmanager
-start chat
-start spawnmanager
-start hardcap
-start rconlog
+## FiveM ACE Permission System
 
-# Custom security resources
-start anticheat
-start security-monitor
+### Understanding ACE & Principals
+
+**ACE (Access Control Entry)**
+- Grants or denies specific permissions
+- Format: `add_ace <principal> <object> <allow|deny>`
+- Can be wildcarded with `*`
+
+**Principal**
+- An entity that can have ACEs assigned
+- Types: identifier, group, builtin
+- Format: `add_principal <child_principal> <parent_principal>`
+
+### Principal Types
+
+```cfg
+# Player identifier principals (most specific)
+identifier.steam:110000112345678    # Steam ID
+identifier.license:abc123def456     # Rockstar license
+identifier.discord:123456789012     # Discord ID
+identifier.fivem:123456             # FiveM ID
+identifier.ip:192.168.1.100         # IP address (not recommended)
+
+# Group principals (recommended for role-based access)
+group.admin                         # Admin group
+group.moderator                     # Moderator group
+group.vip                           # VIP group
+
+# Built-in principals
+builtin.everyone                    # All players
+builtin.console                     # Console/RCON
+```
+
+### Basic Permission Setup
+
+```cfg
+# ========================================
+# ACE Permission System Configuration
+# ========================================
+
+# Define admin group with full access
+add_ace group.admin command allow            # All commands
+add_ace group.admin resource allow           # All resources
+
+# Restrict dangerous commands even for admins
+add_ace group.admin command.quit deny        # Can't quit server
+add_ace group.admin command.exec deny        # Can't exec files
+
+# Assign admins by identifier
+add_principal identifier.steam:110000112345678 group.admin
+add_principal identifier.license:abc123def456 group.admin
+add_principal identifier.discord:123456789012345678 group.admin
+
+# Define moderator group with limited access
+add_ace group.moderator command.kick allow
+add_ace group.moderator command.ban allow  
+add_ace group.moderator command.tempban allow
+add_ace group.moderator command.unban allow
+add_ace group.moderator command.players allow
+
+# Assign moderators
+add_principal identifier.steam:110000187654321 group.moderator
+add_principal identifier.license:xyz789 group.moderator
+
+# VIP permissions (extra features, not moderation)
+add_ace group.vip command.tp allow           # Teleport command
+add_ace group.vip resource.vip_features allow
+
+# Assign VIP members
+add_principal identifier.license:vip_member_1 group.vip
+
+# Default permissions for everyone
+add_ace builtin.everyone command.me allow    # Chat command
+add_ace builtin.everyone command.report allow # Report system
+
+# Explicitly deny dangerous permissions
+add_ace builtin.everyone command.restart deny
+add_ace builtin.everyone command.stop deny
+add_ace builtin.everyone command.exec deny
+```
+
+### Advanced ACE Patterns
+
+```cfg
+# Wildcard permissions
+add_ace group.admin command.* allow          # All commands
+add_ace group.admin resource.* allow         # All resources
+
+# Resource-specific permissions
+add_ace group.moderator resource.admin_menu allow
+add_ace group.moderator resource.ban_system allow
+
+# Command-specific permissions
+add_ace group.support command.kick allow
+add_ace group.support command.warn allow
+add_ace group.support command.freeze allow
+
+# Nested group permissions (inheritance)
+add_principal group.superadmin group.admin   # Superadmins are also admins
+add_principal group.moderator group.support  # Moderators are also support
+
+# Per-resource custom permissions
+add_ace group.admin myresource.admin allow
+add_ace group.vip myresource.vip_features allow
+```
+
+### Testing Permissions
+
+```cfg
+# Console commands to test ACE system
+
+# Check if principal has permission
+test_ace identifier.steam:110000112345678 command.kick
+
+# List all principals
+list_principals
+
+# List ACEs for a principal
+list_ace identifier.steam:110000112345678
+
+# Add ACE at runtime (not persistent)
+add_ace identifier.steam:110000112345678 command.kick allow
+
+# Remove ACE at runtime
+remove_ace identifier.steam:110000112345678 command.kick
 ```
 
 ## Advanced Security Measures

@@ -15,6 +15,7 @@ import { Input } from "@/packages/ui/src/components/input";
 import { Separator } from "@/packages/ui/src/components/separator";
 import { Sheet, SheetContent, SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/packages/ui/src/components/sheet";
 import { cn } from "@/packages/utils/src/functions/cn";
+import { API_URL } from "@/packages/utils/src/constants/link";
 import { formatDistanceToNow } from "date-fns";
 import {
     Search,
@@ -33,67 +34,32 @@ import {
 // Types
 interface Artifact {
     version: string;
-    recommended: boolean;
-    critical: boolean;
-    download_urls: {
-        zip: string;
-        "7z": string;
-    };
-    artifact_url: string;
-    published_at: string;
-    eol: boolean;
-    supportStatus: "recommended" | "latest" | "active" | "deprecated" | "eol" | "unknown";
-    supportEnds: string;
+    platform: 'windows' | 'linux';
+    hash: string;
+    url: string;
+    size: number;
+    date: string;
+    supportStatus: "recommended" | "latest" | "active" | "deprecated" | "eol";
 }
 
 interface ArtifactsResponse {
-    data: {
-        windows?: Record<string, Artifact>;
-        linux?: Record<string, Artifact>;
-    };
+    data: Artifact[];
     metadata: {
+        total: number;
+        limit: number;
+        offset: number;
+        hasMore: boolean;
         platforms: string[];
-        recommended: Record<string, Artifact & { version: string }>;
-        latest: Record<string, Artifact & { version: string }>;
-        stats: Record<string, {
-            total: number;
-            filtered: number;
-            recommended: number;
-            latest: number;
-            active: number;
-            deprecated: number;
-            eol: number;
-        }>;
-        pagination: {
+        supportStatuses: string[];
+        query: {
+            platform?: string;
+            version?: string;
+            status?: string;
             limit: number;
             offset: number;
-            filtered: number;
-            total: number;
-            currentPage: number;
-            totalPages: number;
-        };
-        filters: {
-            search?: string;
-            platform?: string;
-            supportStatus?: string;
-            includeEol: boolean;
-            beforeDate?: string;
-            afterDate?: string;
             sortBy: string;
             sortOrder: string;
-        };
-        supportSchedule: {
-            recommended: string;
-            latest: string;
-            eol: string;
-        };
-        supportStatusExplanation: {
-            recommended: string;
-            latest: string;
-            active: string;
-            deprecated: string;
-            eol: string;
-            info: string;
+            includeEol: boolean;
         };
     };
 }
@@ -143,7 +109,7 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
             params.set('offset', offset.toString());
 
             console.log("Fetching artifacts with params:", params.toString());
-            const response = await fetch(`/api/artifacts/fetch?${params.toString()}`);
+            const response = await fetch(`${API_URL}/api/artifacts/fetch?${params.toString()}`);
             if (!response.ok) {
                 throw new Error(`Error fetching artifacts: ${response.status}`);
             }
@@ -151,8 +117,22 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
             const data = await response.json();
             console.log("API response:", data);
 
-            // Set the artifacts directly from the API response
-            setArtifacts(data);
+            // Normalize the API response - map capitalized keys to lowercase
+            const normalizedData = {
+                data: data.data.map((artifact: any) => ({
+                    version: artifact.Version,
+                    hash: artifact.Hash,
+                    platform: artifact.Platform.toLowerCase(),
+                    url: artifact.URL,
+                    size: artifact.Size,
+                    date: artifact.Date,
+                    supportStatus: artifact.SupportStatus.toLowerCase(),
+                })),
+                metadata: data.metadata,
+            };
+
+            // Set the normalized artifacts
+            setArtifacts(normalizedData);
             setCurrentPage(page);
         } catch (err) {
             console.error("Error fetching artifacts:", err);
@@ -652,137 +632,167 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                 {error}
                                             </AlertDescription>
                                         </Alert>
-                                    ) : artifacts && artifacts.data[platformKey as keyof typeof artifacts.data] ? (
+                                    ) : artifacts && artifacts.data && artifacts.data.length > 0 ? (
                                         <div className="space-y-6">
                                             {/* Recommended & Latest Artifacts */}
                                             <div className="grid gap-4 md:grid-cols-2">
                                                 {/* Recommended Artifact */}
-                                                {artifacts.metadata.recommended[platformKey] && (
-                                                    <Card className={cn(
-                                                        "border border-green-500/30",
-                                                        getStatusBgColor('recommended')
-                                                    )}>
-                                                        <CardHeader className="pb-2">
-                                                            <div className="flex items-start justify-between">
-                                                                <div>
-                                                                    <CardTitle className="flex items-center gap-1.5">
-                                                                        <span className="text-green-500">Recommended Artifact</span>
-                                                                        <Badge
-                                                                            className={getStatusColor('recommended')}
-                                                                        >
-                                                                            Recommended
-                                                                        </Badge>
-                                                                    </CardTitle>
-                                                                    <CardDescription>Best choice for production use</CardDescription>
+                                                {(() => {
+                                                    const recommendedArtifact = artifacts.data.find(
+                                                        artifact => artifact.platform === platformKey && artifact.supportStatus === 'recommended'
+                                                    );
+                                                    return recommendedArtifact ? (
+                                                        <Card className={cn(
+                                                            "border border-green-500/30",
+                                                            getStatusBgColor('recommended')
+                                                        )}>
+                                                            <CardHeader className="pb-2">
+                                                                <div className="flex items-start justify-between">
+                                                                    <div>
+                                                                        <CardTitle className="flex items-center gap-1.5">
+                                                                            <span className="text-green-500">Recommended Artifact</span>
+                                                                            <Badge
+                                                                                className={getStatusColor('recommended')}
+                                                                            >
+                                                                                Recommended
+                                                                            </Badge>
+                                                                        </CardTitle>
+                                                                        <CardDescription>Best choice for production use</CardDescription>
+                                                                    </div>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() => handleCopyVersion(recommendedArtifact.version)}
+                                                                    >
+                                                                        <Copy className="h-4 w-4" />
+                                                                    </Button>
                                                                 </div>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <h3 className="text-2xl font-bold mb-2">
+                                                                    Version {recommendedArtifact.version}
+                                                                </h3>
+                                                                <div className="flex items-center text-sm text-muted-foreground mb-2">
+                                                                    <span>Released {formatDate(recommendedArtifact.date)}</span>
+                                                                </div>
+                                                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                                                    <div>
+                                                                        <span className="text-muted-foreground">Size: </span>
+                                                                        <span className="font-mono">{(recommendedArtifact.size / 1024 / 1024).toFixed(1)}MB</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span className="text-muted-foreground">Commit: </span>
+                                                                        <span className="font-mono text-xs">{recommendedArtifact.hash.substring(0, 8)}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </CardContent>
+                                                            <CardFooter className="flex justify-end gap-2">
                                                                 <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={() => handleCopyVersion(artifacts.metadata.recommended[platformKey].version)}
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    asChild
                                                                 >
-                                                                    <Copy className="h-4 w-4" />
+                                                                    <a
+                                                                        href={recommendedArtifact.url}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="flex items-center"
+                                                                    >
+                                                                        <ExternalLink className="h-4 w-4 mr-1" />
+                                                                        View Artifact
+                                                                    </a>
                                                                 </Button>
-                                                            </div>
-                                                        </CardHeader>
-                                                        <CardContent>
-                                                            <h3 className="text-2xl font-bold mb-2">
-                                                                Version {artifacts.metadata.recommended[platformKey].version}
-                                                            </h3>
-                                                            <div className="flex items-center text-sm text-muted-foreground">
-                                                                <span>Released {formatDate(artifacts.metadata.recommended[platformKey].published_at)}</span>
-                                                            </div>
-                                                        </CardContent>
-                                                        <CardFooter className="flex justify-end gap-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                asChild
-                                                            >
-                                                                <a
-                                                                    href={artifacts.metadata.recommended[platformKey].artifact_url}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="flex items-center"
+                                                                <Button
+                                                                    size="sm"
+                                                                    className="bg-green-600 hover:bg-green-700"
+                                                                    onClick={() => handleDownload(recommendedArtifact.url)}
                                                                 >
-                                                                    <ExternalLink className="h-4 w-4 mr-1" />
-                                                                    View Artifact
-                                                                </a>
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                className="bg-green-600 hover:bg-green-700"
-                                                                onClick={() => handleDownload(artifacts.metadata.recommended[platformKey].download_urls.zip)}
-                                                            >
-                                                                <Download className="h-4 w-4 mr-1" />
-                                                                Download
-                                                            </Button>
-                                                        </CardFooter>
-                                                    </Card>
-                                                )}
+                                                                    <Download className="h-4 w-4 mr-1" />
+                                                                    Download
+                                                                </Button>
+                                                            </CardFooter>
+                                                        </Card>
+                                                    ) : null;
+                                                })()}
 
                                                 {/* Latest Artifact */}
-                                                {artifacts.metadata.latest[platformKey] && (
-                                                    <Card className={cn(
-                                                        "border border-blue-500/30",
-                                                        getStatusBgColor('latest')
-                                                    )}>
-                                                        <CardHeader className="pb-2">
-                                                            <div className="flex items-start justify-between">
-                                                                <div>
-                                                                    <CardTitle className="flex items-center gap-1.5">
-                                                                        <span className="text-blue-500">Latest Artifact</span>
-                                                                        <Badge
-                                                                            className={getStatusColor('latest')}
-                                                                        >
-                                                                            Latest
-                                                                        </Badge>
-                                                                    </CardTitle>
-                                                                    <CardDescription>Newest build for testing</CardDescription>
+                                                {(() => {
+                                                    const latestArtifact = artifacts.data.find(
+                                                        artifact => artifact.platform === platformKey && artifact.supportStatus === 'latest'
+                                                    );
+                                                    return latestArtifact ? (
+                                                        <Card className={cn(
+                                                            "border border-blue-500/30",
+                                                            getStatusBgColor('latest')
+                                                        )}>
+                                                            <CardHeader className="pb-2">
+                                                                <div className="flex items-start justify-between">
+                                                                    <div>
+                                                                        <CardTitle className="flex items-center gap-1.5">
+                                                                            <span className="text-blue-500">Latest Artifact</span>
+                                                                            <Badge
+                                                                                className={getStatusColor('latest')}
+                                                                            >
+                                                                                Latest
+                                                                            </Badge>
+                                                                        </CardTitle>
+                                                                        <CardDescription>Newest build for testing</CardDescription>
+                                                                    </div>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() => handleCopyVersion(latestArtifact.version)}
+                                                                    >
+                                                                        <Copy className="h-4 w-4" />
+                                                                    </Button>
                                                                 </div>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <h3 className="text-2xl font-bold mb-2">
+                                                                    Version {latestArtifact.version}
+                                                                </h3>
+                                                                <div className="flex items-center text-sm text-muted-foreground mb-2">
+                                                                    <span>Released {formatDate(latestArtifact.date)}</span>
+                                                                </div>
+                                                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                                                    <div>
+                                                                        <span className="text-muted-foreground">Size: </span>
+                                                                        <span className="font-mono">{(latestArtifact.size / 1024 / 1024).toFixed(1)}MB</span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span className="text-muted-foreground">Commit: </span>
+                                                                        <span className="font-mono text-xs">{latestArtifact.hash.substring(0, 8)}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </CardContent>
+                                                            <CardFooter className="flex justify-end gap-2">
                                                                 <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={() => handleCopyVersion(artifacts.metadata.latest[platformKey].version)}
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    asChild
                                                                 >
-                                                                    <Copy className="h-4 w-4" />
+                                                                    <a
+                                                                        href={latestArtifact.url}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="flex items-center"
+                                                                    >
+                                                                        <ExternalLink className="h-4 w-4 mr-1" />
+                                                                        View Artifact
+                                                                    </a>
                                                                 </Button>
-                                                            </div>
-                                                        </CardHeader>
-                                                        <CardContent>
-                                                            <h3 className="text-2xl font-bold mb-2">
-                                                                Version {artifacts.metadata.latest[platformKey].version}
-                                                            </h3>
-                                                            <div className="flex items-center text-sm text-muted-foreground">
-                                                                <span>Released {formatDate(artifacts.metadata.latest[platformKey].published_at)}</span>
-                                                            </div>
-                                                        </CardContent>
-                                                        <CardFooter className="flex justify-end gap-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                asChild
-                                                            >
-                                                                <a
-                                                                    href={artifacts.metadata.latest[platformKey].artifact_url}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="flex items-center"
+                                                                <Button
+                                                                    size="sm"
+                                                                    className="bg-blue-600 hover:bg-blue-700"
+                                                                    onClick={() => handleDownload(latestArtifact.url)}
                                                                 >
-                                                                    <ExternalLink className="h-4 w-4 mr-1" />
-                                                                    View Artifact
-                                                                </a>
-                                                            </Button>
-                                                            <Button
-                                                                size="sm"
-                                                                className="bg-blue-600 hover:bg-blue-700"
-                                                                onClick={() => handleDownload(artifacts.metadata.latest[platformKey].download_urls.zip)}
-                                                            >
-                                                                <Download className="h-4 w-4 mr-1" />
-                                                                Download
-                                                            </Button>
-                                                        </CardFooter>
-                                                    </Card>
-                                                )}
+                                                                    <Download className="h-4 w-4 mr-1" />
+                                                                    Download
+                                                                </Button>
+                                                            </CardFooter>
+                                                        </Card>
+                                                    ) : null;
+                                                })()}
                                             </div>
 
                                             {/* Stats and Filters */}
@@ -791,23 +801,23 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-3">
                                                     <div className="p-3 rounded-md bg-fd-background/50 border border-[#5865F2]/20 text-center">
                                                         <p className="text-xs text-muted-foreground">Total</p>
-                                                        <p className="text-xl font-bold">{artifacts.metadata.stats[platformKey]?.total || 0}</p>
+                                                        <p className="text-xl font-bold">{artifacts.data.filter(artifact => artifact.platform === platformKey).length}</p>
                                                     </div>
                                                     <div className="p-3 rounded-md bg-fd-background/50 border border-green-500/20 text-center">
                                                         <p className="text-xs text-muted-foreground">Recommended</p>
-                                                        <p className="text-xl font-bold text-green-500">{artifacts.metadata.stats[platformKey]?.recommended || 0}</p>
+                                                        <p className="text-xl font-bold text-green-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'recommended').length}</p>
                                                     </div>
                                                     <div className="p-3 rounded-md bg-fd-background/50 border border-blue-500/20 text-center">
                                                         <p className="text-xs text-muted-foreground">Latest</p>
-                                                        <p className="text-xl font-bold text-blue-500">{artifacts.metadata.stats[platformKey]?.latest || 0}</p>
+                                                        <p className="text-xl font-bold text-blue-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'latest').length}</p>
                                                     </div>
                                                     <div className="p-3 rounded-md bg-fd-background/50 border border-cyan-500/20 text-center">
                                                         <p className="text-xs text-muted-foreground">Active</p>
-                                                        <p className="text-xl font-bold text-cyan-500">{artifacts.metadata.stats[platformKey]?.active || 0}</p>
+                                                        <p className="text-xl font-bold text-cyan-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'active').length}</p>
                                                     </div>
                                                     <div className="p-3 rounded-md bg-fd-background/50 border border-red-500/20 text-center col-span-2 md:col-span-1">
                                                         <p className="text-xs text-muted-foreground">EOL</p>
-                                                        <p className="text-xl font-bold text-red-500">{artifacts.metadata.stats[platformKey]?.eol || 0}</p>
+                                                        <p className="text-xl font-bold text-red-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'eol').length}</p>
                                                     </div>
                                                 </div>
 
@@ -874,11 +884,12 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
 
                                             {/* Artifact List */}
                                             <div className="space-y-4">
-                                                {Object.entries(artifacts.data[platformKey as keyof typeof artifacts.data] || {}).length > 0 ? (
-                                                    Object.entries(artifacts.data[platformKey as keyof typeof artifacts.data] || {})
-                                                        .map(([version, artifact]) => (
+                                                {artifacts.data.filter(artifact => artifact.platform === platformKey).length > 0 ? (
+                                                    artifacts.data
+                                                        .filter(artifact => artifact.platform === platformKey)
+                                                        .map((artifact) => (
                                                             <Card
-                                                                key={version}
+                                                                key={`${artifact.platform}-${artifact.version}`}
                                                                 className={cn(
                                                                     "border border-[#5865F2]/20 transition-all hover:border-[#5865F2]/50",
                                                                     getStatusBgColor(artifact.supportStatus)
@@ -887,28 +898,23 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                                 <CardHeader className="pb-2">
                                                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                                                                         <div className="flex items-start md:items-center gap-2 flex-wrap">
-                                                                            <h3 className="text-lg font-bold">Version {version}</h3>
+                                                                            <h3 className="text-lg font-bold">Version {artifact.version}</h3>
                                                                             <div className="flex flex-wrap gap-1.5">
                                                                                 <Badge
                                                                                     className={getStatusColor(artifact.supportStatus)}
                                                                                 >
                                                                                     {artifact.supportStatus}
                                                                                 </Badge>
-                                                                                {artifact.critical && (
-                                                                                    <Badge variant="destructive">
-                                                                                        Critical
-                                                                                    </Badge>
-                                                                                )}
                                                                             </div>
                                                                         </div>
                                                                         <div className="flex items-center">
                                                                             <span className="text-sm text-muted-foreground">
-                                                                                Released {formatDate(artifact.published_at)}
+                                                                                Released {formatDate(artifact.date)}
                                                                             </span>
                                                                             <Button
                                                                                 variant="ghost"
                                                                                 size="icon"
-                                                                                onClick={() => handleCopyVersion(version)}
+                                                                                onClick={() => handleCopyVersion(artifact.version)}
                                                                             >
                                                                                 <Copy className="h-4 w-4" />
                                                                             </Button>
@@ -916,38 +922,35 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                                     </div>
                                                                 </CardHeader>
                                                                 <CardContent>
-                                                                    <p className="text-sm text-muted-foreground mb-2">
-                                                                        {artifact.supportStatus === "recommended" && "👍 Supported: ends " + formatDate(artifact.supportEnds)}
-                                                                        {artifact.supportStatus === "latest" && "👍 Supported: ends " + formatDate(artifact.supportEnds)}
-                                                                        {artifact.supportStatus === "active" && "👍 Supported: ends " + formatDate(artifact.supportEnds)}
-                                                                        {artifact.supportStatus === "deprecated" && "👎 Unsupported: as of " + formatDate(artifact.supportEnds)}
-                                                                        {artifact.supportStatus === "eol" && "☠️ End of life: no longer supported"}
-                                                                    </p>
+                                                                    <div className="grid grid-cols-2 gap-4 text-sm mb-2">
+                                                                        <div>
+                                                                            <span className="text-muted-foreground">Size: </span>
+                                                                            <span className="font-mono">{(artifact.size / 1024 / 1024).toFixed(1)}MB</span>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span className="text-muted-foreground">Commit: </span>
+                                                                            <span className="font-mono text-xs">{artifact.hash.substring(0, 8)}</span>
+                                                                        </div>
+                                                                    </div>
                                                                 </CardContent>
                                                                 <CardFooter className="pt-0 flex flex-col md:flex-row md:items-center justify-between gap-3">
                                                                     <div className="flex items-center gap-2 w-full md:w-auto">
-                                                                        <DropdownMenu>
-                                                                            <DropdownMenuTrigger asChild>
-                                                                                <Button variant="outline" size="sm">Download Options</Button>
-                                                                            </DropdownMenuTrigger>
-                                                                            <DropdownMenuContent align="start" className="bg-fd-background/80 border border-[#5865F2]/20">
-                                                                                <DropdownMenuItem onClick={() => handleDownload(artifact.download_urls.zip)}>
-                                                                                    {platformKey === 'windows' ? 'Download ZIP' : 'Download tar.xz'}
-                                                                                </DropdownMenuItem>
-                                                                                {platformKey === 'windows' && (
-                                                                                    <DropdownMenuItem onClick={() => handleDownload(artifact.download_urls["7z"])}>
-                                                                                        Download 7z
-                                                                                    </DropdownMenuItem>
-                                                                                )}
-                                                                            </DropdownMenuContent>
-                                                                        </DropdownMenu>
+                                                                        <Button
+                                                                            variant="outline"
+                                                                            size="sm"
+                                                                            onClick={() => handleDownload(artifact.url)}
+                                                                            className="flex items-center"
+                                                                        >
+                                                                            <Download className="h-4 w-4 mr-2" />
+                                                                            Download {artifact.platform === 'windows' ? 'ZIP' : 'TAR.XZ'}
+                                                                        </Button>
                                                                         <Button
                                                                             variant="outline"
                                                                             size="sm"
                                                                             asChild
                                                                         >
                                                                             <a
-                                                                                href={artifact.artifact_url}
+                                                                                href={artifact.url}
                                                                                 target="_blank"
                                                                                 rel="noopener noreferrer"
                                                                                 className="flex items-center"
@@ -957,14 +960,6 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                                             </a>
                                                                         </Button>
                                                                     </div>
-                                                                    {artifact.eol && (
-                                                                        <Alert className="m-0 py-2 px-3 h-auto">
-                                                                            <AlertCircle className="h-4 w-4" />
-                                                                            <AlertDescription className="text-xs">
-                                                                                This artifact is EOL and may not work with the latest server browser.
-                                                                            </AlertDescription>
-                                                                        </Alert>
-                                                                    )}
                                                                 </CardFooter>
                                                             </Card>
                                                         ))
@@ -984,45 +979,57 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                             </div>
 
                                             {/* Pagination */}
-                                            {artifacts.metadata.pagination.totalPages > 1 && (
-                                                <div className="flex items-center justify-center gap-2 py-4">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handlePageChange(1)}
-                                                        disabled={currentPage === 1}
-                                                    >
-                                                        First
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handlePageChange(currentPage - 1)}
-                                                        disabled={currentPage === 1}
-                                                    >
-                                                        <ChevronLeft className="h-4 w-4" />
-                                                    </Button>
-                                                    <span className="text-sm mx-2">
-                                                        Page {currentPage} of {artifacts.metadata.pagination.totalPages}
-                                                    </span>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handlePageChange(currentPage + 1)}
-                                                        disabled={currentPage === artifacts.metadata.pagination.totalPages}
-                                                    >
-                                                        <ChevronRight className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handlePageChange(artifacts.metadata.pagination.totalPages)}
-                                                        disabled={currentPage === artifacts.metadata.pagination.totalPages}
-                                                    >
-                                                        Last
-                                                    </Button>
-                                                </div>
-                                            )}
+                                            {artifacts && artifacts.metadata && (() => {
+                                                const totalPages = Math.ceil(artifacts.metadata.total / artifacts.metadata.limit);
+                                                const currentPageNum = Math.floor(artifacts.metadata.offset / artifacts.metadata.limit) + 1;
+                                                return totalPages > 1;
+                                            })() && (
+                                                    <div className="flex items-center justify-center gap-2 py-4">
+                                                        {(() => {
+                                                            const totalPages = Math.ceil(artifacts.metadata.total / artifacts.metadata.limit);
+                                                            const currentPageNum = Math.floor(artifacts.metadata.offset / artifacts.metadata.limit) + 1;
+                                                            return (
+                                                                <>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handlePageChange(1)}
+                                                                        disabled={currentPageNum === 1}
+                                                                    >
+                                                                        First
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handlePageChange(currentPageNum - 1)}
+                                                                        disabled={currentPageNum === 1}
+                                                                    >
+                                                                        <ChevronLeft className="h-4 w-4" />
+                                                                    </Button>
+                                                                    <span className="text-sm mx-2">
+                                                                        Page {currentPageNum} of {totalPages}
+                                                                    </span>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handlePageChange(currentPageNum + 1)}
+                                                                        disabled={currentPageNum === totalPages}
+                                                                    >
+                                                                        <ChevronRight className="h-4 w-4" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
+                                                                        onClick={() => handlePageChange(totalPages)}
+                                                                        disabled={currentPageNum === totalPages}
+                                                                    >
+                                                                        Last
+                                                                    </Button>
+                                                                </>
+                                                            );
+                                                        })()}
+                                                    </div>
+                                                )}
                                         </div>
                                     ) : (
                                         <Alert className="mb-6">

@@ -1,0 +1,578 @@
+---
+title: Troubleshooting
+description: Diagnose and resolve common txAdmin issues, server problems, and configuration challenges.
+---
+
+This comprehensive troubleshooting guide helps you identify and resolve common issues with txAdmin, server management, and configuration problems.
+
+## Common Issues
+
+### Installation Problems
+
+#### txAdmin Won't Start
+**Symptoms:**
+- txAdmin fails to launch
+- Error messages during startup
+- Web interface inaccessible
+
+**Diagnosis Steps:**
+1. Check server console for error messages
+2. Verify port availability (default 40120)
+3. Confirm FXServer version compatibility
+4. Check file permissions
+
+**Solutions:**
+
+**Port Conflict:**
+```bash
+# Check what's using the port
+netstat -tulpn | grep :40120
+
+# Kill conflicting process
+sudo kill -9 <process_id>
+
+# Or change txAdmin port
+export TXADMIN_PORT=40121
+```
+
+**Permission Issues (Linux):**
+```bash
+# Fix file permissions
+chmod -R 755 /opt/fivem-server/
+chown -R $(whoami):$(whoami) /opt/fivem-server/
+
+# Check SELinux (if applicable)
+setsebool -P httpd_can_network_connect 1
+```
+
+**Missing Dependencies:**
+```bash
+# Update Node.js
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Verify installation
+node --version
+npm --version
+```
+
+#### Web Interface Loading Issues
+**Symptoms:**
+- Blank page or loading errors
+- CSS/JavaScript not loading
+- Authentication problems
+
+**Solutions:**
+
+**Clear Browser Cache:**
+1. Press Ctrl+Shift+Delete
+2. Select "All time" as time range
+3. Clear cookies, cache, and site data
+4. Restart browser
+
+**Check Network Configuration:**
+```bash
+# Test local connection
+curl http://localhost:40120
+
+# Check firewall settings
+sudo ufw status
+sudo iptables -L
+
+# Open required ports
+sudo ufw allow 40120/tcp
+```
+
+**HTTPS Configuration Issues:**
+```bash
+# Verify SSL certificate
+openssl x509 -in /path/to/cert.pem -text -noout
+
+# Check certificate expiry
+openssl x509 -in /path/to/cert.pem -noout -dates
+
+# Generate new self-signed certificate
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+```
+
+### Server Management Issues
+
+#### Server Won't Start
+**Symptoms:**
+- Server fails to start from txAdmin
+- Error messages in console
+- Resources fail to load
+
+**Diagnosis:**
+1. Check server.cfg syntax
+2. Verify license key validity
+3. Review resource dependencies
+4. Check available system resources
+
+**Common Solutions:**
+
+**Invalid License Key:**
+```bash
+# Verify license key format
+set sv_licenseKey "your_valid_license_key_here"
+
+# Check key status at https://keymaster.fivem.net/
+# Ensure key isn't expired or banned
+```
+
+**Resource Conflicts:**
+```bash
+# Start server in safe mode
+start_minimal_resources_only
+
+# Test resources individually
+start resource_name
+stop resource_name
+
+# Check resource dependencies
+cd resources/resource_name/
+cat fxmanifest.lua | grep dependency
+```
+
+**Port Conflicts:**
+```bash
+# Check if ports are in use
+netstat -tulpn | grep :30120
+
+# Change server port in server.cfg
+endpoint_add_tcp "0.0.0.0:30121"
+endpoint_add_udp "0.0.0.0:30121"
+```
+
+#### Server Crashes Frequently
+**Symptoms:**
+- Server stops unexpectedly
+- High CPU or memory usage
+- Performance degradation
+
+**Troubleshooting Steps:**
+
+**Memory Issues:**
+```bash
+# Monitor memory usage
+free -h
+top -p $(pgrep FXServer)
+
+# Increase server memory limit (if VPS)
+# Optimize resource loading
+set sv_maxClients 32  # Reduce if needed
+```
+
+**Resource Problems:**
+```bash
+# Enable resource debugging
+set developer 1
+
+# Monitor resource performance
+profiler record 30
+profiler view
+
+# Identify problematic resources
+```
+
+**Network Issues:**
+```bash
+# Monitor network connections
+ss -tuln | grep :30120
+
+# Check bandwidth usage
+iftop -i eth0
+
+# Optimize network settings
+set sv_maxClients 32
+set onesync on
+```
+
+### Player Management Problems
+
+#### Players Can't Connect
+**Symptoms:**
+- Connection timeouts
+- Authentication failures
+- Whitelist issues
+
+**Solutions:**
+
+**Whitelist Problems:**
+1. Check if whitelist is enabled
+2. Verify player identifiers are correct
+3. Add player to whitelist:
+   ```bash
+   whitelist add steam:110000100000000
+   whitelist add license:1234567890abcdef
+   ```
+
+**Server Full Issues:**
+```bash
+# Check current player count
+status
+
+# Increase server capacity
+set sv_maxClients 48  # Increase limit
+
+# Enable connection queue
+set txAdmin-checkPlayerJoin true
+```
+
+**Network Connectivity:**
+```bash
+# Test server accessibility
+telnet your-server-ip 30120
+
+# Check firewall rules
+sudo ufw status verbose
+
+# Verify port forwarding (if behind NAT)
+```
+
+#### Moderation Tools Not Working
+**Symptoms:**
+- Commands don't execute
+- Player actions fail
+- Permission errors
+
+**Fixes:**
+
+**Permission Issues:**
+1. Verify admin permissions in txAdmin
+2. Check role assignments
+3. Test with Master Admin account
+
+**Command Syntax:**
+```bash
+# Correct command formats
+kick [player_id] [reason]
+ban [player_id] [duration] [reason]
+
+# Check player ID is correct
+status  # List all players with IDs
+```
+
+### Performance Issues
+
+#### High CPU Usage
+**Symptoms:**
+- Server FPS below 50
+- High CPU percentage
+- Lag and latency issues
+
+**Optimization Steps:**
+
+**Resource Optimization:**
+```bash
+# Profile resource usage
+profiler record 60
+
+# Identify CPU-heavy resources
+resmon
+
+# Optimize heavy resources or remove them
+```
+
+**Server Configuration:**
+```bash
+# Limit concurrent players
+set sv_maxClients 32
+
+# Optimize tick rate
+set sv_fivemTickRate 50
+
+# Enable OneSync if not already enabled
+set onesync on
+```
+
+#### Memory Leaks
+**Symptoms:**
+- Gradually increasing memory usage
+- Server becomes unstable over time
+- Need frequent restarts
+
+**Solutions:**
+
+**Memory Monitoring:**
+```bash
+# Monitor memory usage over time
+watch -n 5 'free -h && ps aux | grep FXServer'
+
+# Enable memory debugging
+set developer 1
+```
+
+**Resource Investigation:**
+```bash
+# Check resource memory usage
+resmon
+
+# Restart problematic resources
+restart resource_name
+
+# Update or replace leaky resources
+```
+
+### Database Issues
+
+#### Database Connection Problems
+**Symptoms:**
+- Resources can't connect to database
+- "Connection refused" errors
+- Data not saving
+
+**Solutions:**
+
+**MySQL/MariaDB Issues:**
+```bash
+# Check if MySQL is running
+sudo systemctl status mysql
+
+# Start MySQL service
+sudo systemctl start mysql
+
+# Test connection
+mysql -u username -p database_name
+```
+
+**Connection String Problems:**
+```lua
+-- Correct connection string format
+set mysql_connection_string "mysql://username:password@localhost/database?charset=utf8mb4"
+
+-- Alternative format
+set mysql_connection_string "user=root;password=yourpass;host=localhost;port=3306;database=fivem;SslMode=none;"
+```
+
+**Permission Issues:**
+```sql
+-- Grant proper permissions
+GRANT ALL PRIVILEGES ON database_name.* TO 'username'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Check user permissions
+SHOW GRANTS FOR 'username'@'localhost';
+```
+
+## Diagnostic Tools
+
+### Built-in Diagnostics
+
+#### txAdmin Health Check
+Access comprehensive health diagnostics:
+
+1. Navigate to **System → Diagnostics**
+2. Run **Health Check**
+3. Review results:
+   - Port accessibility
+   - File permissions
+   - Resource integrity
+   - Database connectivity
+
+#### Performance Profiler
+Monitor server performance:
+
+```bash
+# Start profiling
+profiler record 30
+
+# View results
+profiler view
+
+# Save profile data
+profiler save profile_$(date +%Y%m%d_%H%M%S).json
+```
+
+#### Resource Monitor
+Track resource performance:
+
+```bash
+# View resource statistics
+resmon
+
+# Monitor specific resource
+resmon resource_name
+
+# Export resource data
+resmon export
+```
+
+### External Tools
+
+#### System Monitoring
+**Linux Tools:**
+```bash
+# Monitor system resources
+htop
+iotop
+nethogs
+
+# Check disk usage
+df -h
+du -sh /opt/fivem-server/*
+
+# Monitor network
+ss -tuln
+tcpdump -i eth0 port 30120
+```
+
+**Windows Tools:**
+```powershell
+# Performance Monitor
+perfmon
+
+# Resource Monitor
+resmon
+
+# Network monitoring
+netstat -an | findstr :30120
+```
+
+#### Database Tools
+```sql
+-- Check database performance
+SHOW PROCESSLIST;
+SHOW STATUS LIKE '%connection%';
+
+-- Monitor slow queries
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL long_query_time = 2;
+
+-- Optimize tables
+OPTIMIZE TABLE table_name;
+```
+
+## Log Analysis
+
+### txAdmin Logs
+Understanding txAdmin log messages:
+
+#### Log Locations
+- **System Logs:** `data/logs/system.log`
+- **Admin Actions:** `data/logs/admin.log`
+- **Player Events:** `data/logs/players.log`
+- **Error Logs:** `data/logs/errors.log`
+
+#### Common Error Messages
+**"Port already in use":**
+```
+[ERROR] Port 40120 is already in use
+Solution: Change port or kill conflicting process
+```
+
+**"Failed to load resource":**
+```
+[ERROR] Failed to load resource 'resource_name': manifest not found
+Solution: Check resource files and fxmanifest.lua
+```
+
+**"Database connection failed":**
+```
+[ERROR] MySQL connection failed: Access denied
+Solution: Check credentials and database permissions
+```
+
+### FXServer Logs
+Interpreting server console output:
+
+#### Resource Errors
+```
+[ERROR] [resource_name] script error: attempt to index nil value
+Solution: Check Lua syntax in resource scripts
+```
+
+#### Network Issues
+```
+[WARN] Dropped client connection (timeout)
+Solution: Check network stability and firewall rules
+```
+
+#### Performance Warnings
+```
+[WARN] Server thread hitch warning: 150ms
+Solution: Optimize resources or increase server resources
+```
+
+## Recovery Procedures
+
+### Emergency Recovery
+
+#### Server Unresponsive
+When server becomes completely unresponsive:
+
+1. **Force Stop:**
+   ```bash
+   # Find FXServer process
+   ps aux | grep FXServer
+   
+   # Kill process
+   sudo kill -9 <process_id>
+   ```
+
+2. **Clean Start:**
+   ```bash
+   # Clear cache
+   rm -rf cache/*
+   
+   # Start with minimal resources
+   # Comment out most resources in server.cfg temporarily
+   ```
+
+#### Corrupted Configuration
+When server.cfg or other configs are corrupted:
+
+1. **Backup Current Config:**
+   ```bash
+   cp server.cfg server.cfg.backup
+   ```
+
+2. **Restore from Backup:**
+   ```bash
+   # Use txAdmin backup system
+   backup restore --file=latest_backup.tar.gz --type=config
+   ```
+
+3. **Manual Recovery:**
+   ```bash
+   # Start with minimal config
+   echo "endpoint_add_tcp 0.0.0.0:30120" > server.cfg
+   echo "endpoint_add_udp 0.0.0.0:30120" >> server.cfg
+   echo "sv_maxclients 32" >> server.cfg
+   echo "set sv_licenseKey YOUR_KEY" >> server.cfg
+   ```
+
+### Data Recovery
+
+#### Player Data Loss
+If player data is lost or corrupted:
+
+1. **Identify Scope:**
+   - Check which players are affected
+   - Determine what data is missing
+   - Find most recent good backup
+
+2. **Database Recovery:**
+   ```sql
+   -- Restore from backup
+   mysql -u username -p database_name < backup.sql
+   
+   -- Or restore specific tables
+   mysql -u username -p -e "DROP TABLE users"
+   mysql -u username -p database_name < users_backup.sql
+   ```
+
+3. **Communicate with Players:**
+   - Inform affected players
+   - Explain recovery process
+   - Provide compensation if needed
+
+---
+
+<Callout type="info">
+**Debug Tip:** Enable `set developer 1` for more detailed error messages and debugging information.
+</Callout>
+
+<Callout type="warning">
+**Recovery Warning:** Always backup current state before attempting major fixes or recovery procedures.
+</Callout>

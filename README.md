@@ -27,12 +27,12 @@ A comprehensive documentation platform for FiveM development, providing detailed
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/fixfx.wiki.git
+   git clone https://github.com/CodeMeAPixel/FixFX.git
    ```
 
 2. Install dependencies:
    ```bash
-   cd fixfx.wiki
+   cd FixFX
    pnpm install
    ```
 
@@ -65,32 +65,4 @@ Please ensure your contributions follow our [contribution guidelines](CONTRIBUTI
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [FiveM](https://fivem.net/) - The platform this documentation is built for
-- [Next.js](https://nextjs.org/) - The React framework used
-- [Tailwind CSS](https://tailwindcss.com/) - The utility-first CSS framework
-- [MDX](https://mdxjs.com/) - The documentation format
-- [Shiki](https://shiki.matsu.io/) - The syntax highlighter
-- [Lucide](https://lucide.dev/) - The icon library
-
-## Support
-
-If you need help or have questions:
-
-- Open an issue on GitHub
-- Join our Discord community
-- Check out our FAQ section
-
-## Roadmap
-
-- [ ] Add more language support
-- [ ] Implement interactive tutorials
-- [ ] Add video tutorials
-- [ ] Create a community forum
-- [ ] Add API documentation
-- [ ] Implement user authentication
-- [ ] Add contribution guidelines
-- [ ] Create a style guide
+This project is licensed under the AGPL 3.0 License - see the [LICENSE](LICENSE) file for details.

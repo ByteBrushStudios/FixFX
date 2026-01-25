@@ -1,6 +1,8 @@
 import { metadataImage } from "@/lib/docs/metadata";
 import { generateOGImage } from "fumadocs-ui/og";
 
+export const dynamic = "force-dynamic";
+
 export const GET = metadataImage.createAPI((page) => {
   return generateOGImage({
     title: page.data.title,
@@ -10,5 +12,5 @@ export const GET = metadataImage.createAPI((page) => {
 });
 
 export function generateStaticParams() {
-  return metadataImage.generateParams();
+  return [];
 }

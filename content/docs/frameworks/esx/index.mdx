@@ -4,18 +4,25 @@ description: The ESX framework for FiveM servers.
 icon: "Package"
 ---
 
-ESX (ExtendedScript) is one of the most popular frameworks for FiveM servers, providing a comprehensive system for roleplay servers with a player-centric architecture.
+ESX (ES Extended) is one of the most popular frameworks for FiveM servers, providing a comprehensive system for roleplay servers. **ESX Legacy** is the modern, actively maintained version with significant improvements.
 
 ## Overview
 
-ESX is a lightweight, extensible framework that provides essential systems for FiveM roleplay servers:
+ESX Legacy is a completely refactored framework offering enhanced performance, security, and modern FiveM compatibility:
 
-- **Player Management** - Character data persistence and multi-character support
-- **Economy System** - Multi-currency support with banking and transactions
-- **Job Framework** - Dynamic jobs with grade-based hierarchy and society systems
-- **Inventory Management** - Weight-based inventory with item categorization
-- **Vehicle System** - Ownership, garages, and modification persistence
-- **Property Systems** - Real estate and storage management
+### ESX Legacy Features
+
+- **Modern Codebase** - Lua 5.4 support with optimized performance
+- **ox_lib Integration** - Modern UI components and utilities
+- **oxmysql Database** - Improved database performance and async queries  
+- **Player Management** - Enhanced multi-character support with identity system
+- **Economy System** - Cash, bank, and black money with transaction logging
+- **Job Framework** - Dynamic jobs with grade hierarchy and society banking
+- **Inventory Management** - Weight-based system with item metadata support
+- **Vehicle System** - Ownership, garages, keys, and modification persistence
+- **Property Systems** - Real estate, apartments, and storage management
+- **Society System** - Organization banking and employee management
+- **Status Effects** - Hunger, thirst, and status effect system
 
 ## Key Features
 
@@ -63,41 +70,87 @@ ESX is a lightweight, extensible framework that provides essential systems for F
 
 ## Quick Start
 
-### Basic ESX Integration
+### Modern ESX Legacy Integration
 
 ```lua
--- Get ESX object (modern method)
-ESX = exports['es_extended']:getSharedObject()
+-- Modern ESX initialization (ESX Legacy)
+local ESX = exports['es_extended']:getSharedObject()
+
+-- Using ox_lib for UI
+local ox_lib = exports.ox_lib
 
 -- Player management
-local xPlayer = ESX.GetPlayerFromId(source)
-local playerData = ESX.GetPlayerData() -- Client-side
+local xPlayer = ESX.GetPlayerFromId(source)  -- Server-side
+local playerData = ESX.GetPlayerData()       -- Client-side
 
--- Economy operations
-xPlayer.addMoney(1000)
-xPlayer.removeAccountMoney('bank', 500)
+-- Modern account operations
+xPlayer.addMoney(1000)                       -- Add cash
+xPlayer.addAccountMoney('bank', 5000)        -- Add bank money
+xPlayer.removeAccountMoney('bank', 500)      -- Remove from bank
+xPlayer.getAccount('bank').money             -- Get bank balance
 
--- Inventory management
-xPlayer.addInventoryItem('bread', 5)
+-- Inventory management with metadata
+xPlayer.addInventoryItem('bread', 5, {quality = 100})
 local itemCount = xPlayer.getInventoryItem('water').count
+xPlayer.removeInventoryItem('bread', 2)
 
 -- Job system
-xPlayer.setJob('police', 2)
-if xPlayer.job.name == 'police' then
-    -- Police-specific code
+xPlayer.setJob('police', 2)  -- Set job with grade
+if xPlayer.job.name == 'police' and xPlayer.job.grade >= 2 then
+    -- Lieutenant or higher
 end
+
+-- Using ox_lib for notifications
+ox_lib:notify({
+    title = 'ESX',
+    description = 'You received $1000',
+    type = 'success'
+})
 ```
 
-### Essential Events
+### Modern UI with ox_lib
 
 ```lua
--- Player loaded (client)
-RegisterNetEvent('esx:playerLoaded', function(xPlayer)
-    ESX.PlayerData = xPlayer
-    -- Initialize client-side systems
-end)
+-- Context menu (replaces old esx_menu)
+ox_lib:registerContext({
+    id = 'my_menu',
+    title = 'Menu Title',
+    options = {
+        {
+            title = 'Option 1',
+            description = 'Description',
+            icon = 'hand',
+            onSelect = function()
+                -- Action
+            end
+        },
+        {
+            title = 'Option 2',
+            arrow = true,
+            event = 'my:event'
+        }
+    }
+})
 
--- Job changed (client)
+ox_lib:showContext('my_menu')
+
+-- Progress bar
+ox_lib:progressBar({
+    duration = 5000,
+    label = 'Crafting...',
+    useWhileDead = false,
+    canCancel = true,
+    disable = {
+        move = true,
+        car = true,
+        combat = true
+    }
+})
+
+-- Text UI
+ox_lib:showTextUI('[E] - Interact')
+ox_lib:hideTextUI()
+```
 RegisterNetEvent('esx:setJob', function(job)
     ESX.PlayerData.job = job
     -- Update UI/permissions

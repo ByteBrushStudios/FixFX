@@ -7,47 +7,67 @@ icon: "Users"
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
 <Callout type="info">
-  The Contributors API provides access to GitHub contributor information and repository statistics for our organization. This API helps showcase community involvement and track project contributions.
+  The Contributors API provides access to GitHub contributor information for the CodeMeAPixel organization. Built with Go and Fiber, it fetches real-time data from GitHub and caches it for optimal performance.
 </Callout>
 
 ## Overview
 
-The Contributors API aggregates data from GitHub to provide insights into:
+The Contributors API provides access to GitHub contributor information and repository statistics. It helps:
 
-- Organization-wide contributor statistics
-- Individual repository contributors
-- Contribution metrics and activity
-- Repository health and engagement
+- Display contributor acknowledgments on documentation
+- Showcase community involvement in projects
+- Track project activity and contributions
+- Generate contributor reports
+- Build community dashboards
 
-This API is particularly useful for:
-- Displaying contributor acknowledgments
-- Building community dashboards
-- Tracking project activity
-- Generating contribution reports
+This API fetches data directly from GitHub's API and caches it for performance.
 
 ## Base URL
 
-```
-https://fixfx.wiki/api/contributors
-```
+**Production:** `https://core.fixfx.wiki/api/contributors`
+
+**Development:** `http://localhost:3001/api/contributors`
 
 ## Authentication
 
-The Contributors API is public and doesn't require authentication. Data is refreshed periodically from GitHub.
+The Contributors API is public and doesn't require authentication. However, it respects GitHub's rate limiting. For higher rate limits, provide a GitHub token via the `GITHUB_TOKEN` environment variable when self-hosting.
 
 ## Endpoints
 
 ### GET /api/contributors
 
-Retrieves contributor information across the ByteBrushStudios organization.
+Retrieves contributor information for the CodeMeAPixel organization repositories.
 
 #### Query Parameters
 
 | Parameter | Type | Description | Default |
 |-----------|------|-------------|---------|
 | `repo` | string | Filter by specific repository name | All repositories |
-| `limit` | number | Maximum number of contributors (max 100) | 50 |
+| `limit` | number | Maximum number of contributors | `50` |
 | `sort` | string | Sort by (`contributions`, `name`, `recent`) | `contributions` |
+
+#### Response Format
+
+```json
+{
+  "success": true,
+  "contributors": [
+    {
+      "login": "contributor-name",
+      "id": 12345,
+      "avatar_url": "https://avatars.githubusercontent.com/u/12345?v=4",
+      "url": "https://github.com/contributor-name",
+      "contributions": 42
+    }
+  ],
+  "metadata": {
+    "total": 15,
+    "organization": "CodeMeAPixel",
+    "lastUpdated": "2026-01-25T09:00:00Z",
+    "cacheExpiry": "2026-01-25T13:00:00Z"
+  }
+}
+```
 | `order` | string | Sort order (`asc` or `desc`) | `desc` |
 | `minContributions` | number | Minimum contribution count | 1 |
 | `since` | string | Include only contributions since date (ISO format) | No limit |
