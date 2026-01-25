@@ -1,7 +1,7 @@
 name: Build Website
 on:
   push:
-    branches: [master, development]
+    branches: [master, develop]
 
 jobs:
   build_test:
