@@ -284,7 +284,7 @@ When adding new features:
 ## Questions?
 
 - Check existing issues and discussions
-- Ask in our [Discord community](/discord)
+- Ask in our [Discord community](https://discord.gg/ErBmGbZfwT)
 - Create a discussion on GitHub
 
 ## License
