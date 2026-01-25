@@ -21,23 +21,45 @@ export async function Contributors() {
   let contributors: Contributor[] = [];
 
   try {
-    const response = await fetch(`${API_URL}/api/contributors`);
+    // Add timeout to prevent hanging on production when API is unavailable
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+    const response = await fetch(`${API_URL}/api/contributors`, {
+      signal: controller.signal,
+      // Add revalidation for static generation
+      next: { revalidate: 3600 }, // Revalidate every hour
+    });
+
+    clearTimeout(timeoutId);
 
     if (response.ok) {
-      contributors = await response.json();
+      const data = await response.json();
+      // Ensure data is an array
+      if (Array.isArray(data)) {
+        contributors = data;
+      }
     }
   } catch (error) {
-    console.error("Failed to fetch contributors:", error);
+    // Silently fail - contributors endpoint is optional
+    // This happens when API is not available or times out
+    if (error instanceof Error) {
+      if (error.name === "AbortError") {
+        console.warn("Contributors API request timeout");
+      } else {
+        console.warn("Failed to fetch contributors:", error.message);
+      }
+    }
   }
 
-  // If no contributors or error, use mock data
+  // If no contributors or error, use fallback with GitHub org
   if (contributors.length === 0) {
     contributors = [
       {
         id: 1,
-        login: "FixFX",
-        avatar_url: "https://github.com/FixFXOSS.png",
-        html_url: "https://github.com/FixFXOSS",
+        login: "CodeMeAPixel",
+        avatar_url: "https://github.com/CodeMeAPixel.png",
+        html_url: "https://github.com/CodeMeAPixel",
         contributions: 100,
       },
     ];

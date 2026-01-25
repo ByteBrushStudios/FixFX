@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://fixfx.wiki"),
   /** OpenGraph */
   openGraph: {
+    type: "website",
     siteName: "FixFX",
     url: "https://fixfx.wiki",
     locale: "en_US",
