@@ -5,7 +5,7 @@
 We actively maintain security updates for the following versions:
 
 | Version | Supported |
-|---------|-----------|
+| ------- | --------- |
 | Latest  | Yes       |
 | < 1.0   | No        |
 

@@ -16,6 +16,7 @@ While FiveM dominates the modern crime and roleplay scene, its sibling platform 
 When Red Dead Redemption 2 launched on PC in 2019, the modding community immediately saw the potential for creating custom multiplayer experiences. The CitizenFX team, riding high on FiveM's success, recognized this opportunity and began developing RedM - a Red Dead Redemption 2 multiplayer modification platform built on the same foundation as FiveM.
 
 RedM brought the proven FiveM formula to the Wild West:
+
 - Custom server hosting capabilities
 - Lua-based scripting system
 - Resource management and modding support
@@ -27,6 +28,7 @@ RedM brought the proven FiveM formula to the Wild West:
 Adapting the FiveM framework to Red Dead Redemption 2 presented unique challenges:
 
 **Game Engine Differences**
+
 - Different native functions and APIs
 - Unique physics and animation systems
 - Horse and vehicle mechanics
@@ -34,12 +36,14 @@ Adapting the FiveM framework to Red Dead Redemption 2 presented unique challenge
 - Period-appropriate technology limitations
 
 **Performance Considerations**
+
 - Larger, more detailed world than GTA V
 - Complex NPC behavior systems
 - Advanced graphics requiring optimization
 - Memory management for detailed environments
 
 **Gameplay Mechanics**
+
 - Honor system integration
 - Hunting and crafting systems
 - Camp and settlement mechanics
@@ -52,6 +56,7 @@ Adapting the FiveM framework to Red Dead Redemption 2 presented unique challenge
 RedM servers excel at creating authentic Wild West experiences that feel genuine to the time period:
 
 **Environmental Immersion**
+
 - Vast open landscapes perfect for exploration
 - Dynamic weather systems affecting gameplay
 - Day/night cycles that matter for activities
@@ -59,6 +64,7 @@ RedM servers excel at creating authentic Wild West experiences that feel genuine
 - Natural hazards and challenges
 
 **Period-Appropriate Technology**
+
 - Horse-based transportation as primary travel
 - Telegraph systems for long-distance communication
 - Oil lamps and candles for lighting
@@ -66,6 +72,7 @@ RedM servers excel at creating authentic Wild West experiences that feel genuine
 - Limited technological conveniences
 
 **Social Dynamics**
+
 - Emphasis on face-to-face interactions
 - Honor and reputation systems
 - Community-dependent survival
@@ -75,20 +82,21 @@ RedM servers excel at creating authentic Wild West experiences that feel genuine
 ### Unique Gameplay Opportunities
 
 **Frontier Life Simulation**
+
 ```lua
 -- Example: Ranch management system
 RegisterNetEvent('ranch:feedCattle', function()
     local playerPed = PlayerPedId()
     local coords = GetEntityCoords(playerPed)
-    
+
     -- Check if player is near cattle feeding area
     if #(coords - vector3(-1234.5, 2345.6, 456.7)) < 5.0 then
         -- Animate feeding cattle
         TaskStartScenarioInPlace(playerPed, "PROP_HUMAN_BUM_SHOPPING_CART", 0, true)
-        
+
         -- Update cattle health and ranch productivity
         TriggerServerEvent('ranch:updateCattleHealth', 10)
-        
+
         -- Give player experience and payment
         TriggerServerEvent('player:addExperience', 'ranching', 25)
         TriggerServerEvent('player:addMoney', math.random(5, 15))
@@ -98,6 +106,7 @@ end)
 
 **Economic Systems**
 RedM's economy naturally reflects the frontier era:
+
 - Resource scarcity creating meaningful choices
 - Bartering systems alongside monetary transactions
 - Seasonal changes affecting supply and demand
@@ -105,17 +114,18 @@ RedM's economy naturally reflects the frontier era:
 - Risk vs. reward in business ventures
 
 **Law and Order**
+
 ```lua
 -- Example: Bounty hunting system
 RegisterNetEvent('bounty:startHunt', function(targetData)
     local bountyAmount = targetData.reward
     local lastKnownLocation = targetData.location
     local crimeCommitted = targetData.crime
-    
+
     -- Create bounty hunting mission
     SetNewWaypoint(lastKnownLocation.x, lastKnownLocation.y)
     ShowNotification("~r~WANTED~w~\n" .. targetData.name .. "\n~g~$" .. bountyAmount .. "~w~ reward\nLast seen: " .. targetData.locationName)
-    
+
     -- Start tracking timer
     TriggerServerEvent('bounty:startTracking', targetData.id)
 end)
@@ -126,6 +136,7 @@ end)
 RedM communities excel at collaborative storytelling:
 
 **Player-Created Narratives**
+
 - Emergent storylines developing naturally
 - Character backstories influencing interactions
 - Community events shaping server history
@@ -133,6 +144,7 @@ RedM communities excel at collaborative storytelling:
 - Interconnected character relationships
 
 **Historical Events and Seasons**
+
 - Civil War aftermath storylines
 - Gold rush scenarios and mining booms
 - Railroad expansion and territorial disputes
@@ -146,6 +158,7 @@ RedM communities excel at collaborative storytelling:
 These servers emphasize maximum immersion and realism:
 
 **Features:**
+
 - Strict character creation and backstory requirements
 - Permadeath or serious injury consequences
 - Limited fast travel and convenience features
@@ -153,25 +166,26 @@ These servers emphasize maximum immersion and realism:
 - In-character communication requirements
 
 **Examples of Mechanics:**
+
 ```lua
 -- Realistic hunger and thirst system
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(60000) -- Check every minute
-        
+
         local playerPed = PlayerPedId()
         local hunger = GetPlayerHunger()
         local thirst = GetPlayerThirst()
-        
+
         -- Decrease stats over time
         SetPlayerHunger(hunger - 2)
         SetPlayerThirst(thirst - 3)
-        
+
         -- Apply effects based on levels
         if hunger < 20 then
             SetPlayerStamina(playerPed, GetPlayerStamina(playerPed) * 0.8)
         end
-        
+
         if thirst < 15 then
             ShakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.1)
         end
@@ -184,6 +198,7 @@ end)
 Focused on action and adventure in the Wild West setting:
 
 **Features:**
+
 - Bank robberies and train heists
 - Gunfighter duels and competitions
 - Cattle rustling and ranch protection
@@ -191,6 +206,7 @@ Focused on action and adventure in the Wild West setting:
 - Gang warfare and territory control
 
 **Unique Systems:**
+
 - Reputation systems affecting NPC interactions
 - Skill-based progression for various activities
 - Dynamic events and random encounters
@@ -201,6 +217,7 @@ Focused on action and adventure in the Wild West setting:
 Emphasizing frontier commerce and community building:
 
 **Features:**
+
 - Player-owned businesses and properties
 - Supply chain and trade route management
 - Mining operations and resource extraction
@@ -212,13 +229,13 @@ Emphasizing frontier commerce and community building:
 RegisterNetEvent('mining:startOperation', function(mineLocation)
     local playerPed = PlayerPedId()
     local pickaxe = GetHashKey('WEAPON_MELEE_PICKAXE')
-    
+
     -- Give player mining equipment
     GiveWeaponToPed(playerPed, pickaxe, 1, false, true)
-    
+
     -- Start mining animation and progress
     TaskStartScenarioInPlace(playerPed, "WORLD_HUMAN_HAMMERING", 0, true)
-    
+
     -- Progress bar for mining
     exports['progressbar']:Progress({
         name = "mining_ore",
@@ -248,6 +265,7 @@ end)
 Dedicated to historical accuracy and education:
 
 **Features:**
+
 - Accurate historical timelines and events
 - Educational content about the era
 - Period-appropriate language and behavior
@@ -287,6 +305,7 @@ SetBlockingOfNonTemporaryEvents(campNPC, true)
 RedM resource development follows similar patterns to FiveM but with period-appropriate considerations:
 
 **Manifest Example:**
+
 ```lua
 fx_version 'cerulean'
 game 'rdr3'
@@ -366,18 +385,21 @@ CREATE TABLE player_horses (
 Balancing authenticity with fun gameplay presents ongoing challenges:
 
 **Historical Constraints:**
+
 - Limited communication technology
 - Slower transportation methods
 - Period-appropriate medical knowledge
 - Technology limitations affecting quality of life
 
 **Modern Player Expectations:**
+
 - Instant communication desires
 - Fast-paced action preferences
 - Convenience feature expectations
 - Reduced patience for realistic limitations
 
 **Solutions:**
+
 - Gradual introduction of period limitations
 - Creative interpretation of historical possibilities
 - Focus on unique experiences unavailable elsewhere
@@ -386,12 +408,14 @@ Balancing authenticity with fun gameplay presents ongoing challenges:
 ### 2. Content Creation Challenges
 
 **Asset Limitations:**
+
 - Smaller modding community compared to FiveM
 - Fewer custom assets and modifications available
 - Limited clothing and equipment options
 - Challenges in creating period-appropriate content
 
 **Development Resources:**
+
 - Smaller developer community
 - Less documentation and tutorials
 - Fewer pre-built systems and frameworks
@@ -400,12 +424,14 @@ Balancing authenticity with fun gameplay presents ongoing challenges:
 ### 3. Player Retention
 
 **Niche Appeal:**
+
 - Smaller target audience than modern settings
 - Requires interest in Western/historical themes
 - Slower-paced gameplay not appealing to all
 - Learning curve for period-appropriate behavior
 
 **Solutions:**
+
 - Welcoming onboarding for new players
 - Educational content about the time period
 - Varied gameplay options within the theme
@@ -416,6 +442,7 @@ Balancing authenticity with fun gameplay presents ongoing challenges:
 ### Wild West RP
 
 One of the most successful RedM roleplay servers, known for:
+
 - Strict roleplay standards and character development
 - Complex economic systems and player businesses
 - Regular community events and storylines
@@ -423,17 +450,18 @@ One of the most successful RedM roleplay servers, known for:
 - Strong moderation and community management
 
 **Key Features:**
+
 ```lua
 -- Example: Property ownership system
 RegisterNetEvent('property:purchase', function(propertyId, propertyType)
     local playerPed = PlayerPedId()
     local playerMoney = GetPlayerMoney()
     local propertyPrice = GetPropertyPrice(propertyId)
-    
+
     if playerMoney >= propertyPrice then
         -- Process purchase
         TriggerServerEvent('property:completePurchase', propertyId, propertyPrice)
-        
+
         -- Set up property features
         if propertyType == 'ranch' then
             SpawnCattle(propertyId)
@@ -442,7 +470,7 @@ RegisterNetEvent('property:purchase', function(propertyId, propertyType)
             CreateBarArea(propertyId)
             SpawnSaloonNPCs(propertyId)
         end
-        
+
         ShowNotification("~g~Property purchased successfully!")
     else
         ShowNotification("~r~Insufficient funds for purchase.")
@@ -453,6 +481,7 @@ end)
 ### RedM Frontier
 
 A server focused on community building and collaborative storytelling:
+
 - Player-driven narrative development
 - Democratic decision-making for server changes
 - Seasonal events reflecting historical periods
@@ -462,6 +491,7 @@ A server focused on community building and collaborative storytelling:
 ### New Austin Roleplay
 
 Emphasizing the lawless frontier experience:
+
 - Outlaw vs. lawman dynamics
 - Territory control and gang warfare
 - High-stakes robberies and heists
@@ -475,12 +505,14 @@ Emphasizing the lawless frontier experience:
 Despite being newer and more niche than FiveM, RedM is experiencing steady growth:
 
 **Community Expansion:**
+
 - Increasing number of active servers
 - Growing developer community
 - More content creators showcasing RedM
 - Educational institutions using RedM for historical teaching
 
 **Technical Development:**
+
 - Improved performance and stability
 - Enhanced native function access
 - Better development tools and documentation
@@ -489,18 +521,21 @@ Despite being newer and more niche than FiveM, RedM is experiencing steady growt
 ### Emerging Trends
 
 **Cross-Server Universes:**
+
 - Connected server networks sharing storylines
 - Character migration between affiliated servers
 - Shared economies and political systems
 - Collaborative events across multiple communities
 
 **Enhanced Realism:**
+
 - More sophisticated survival mechanics
 - Advanced weather and seasonal effects
 - Realistic disease and medical systems
 - Complex social hierarchy simulations
 
 **Educational Applications:**
+
 - History classes using RedM for immersive learning
 - Museum partnerships for interactive exhibits
 - Historical research and reconstruction projects
@@ -509,47 +544,48 @@ Despite being newer and more niche than FiveM, RedM is experiencing steady growt
 ### Technology Integration
 
 **Modern Development Tools:**
+
 ```javascript
 // Example: RedM development with modern tooling
-const RedMServer = require('redm-server-api');
-const express = require('express');
-const mysql = require('mysql2/promise');
+const RedMServer = require("redm-server-api");
+const express = require("express");
+const mysql = require("mysql2/promise");
 
 class WildWestEconomy {
-    constructor() {
-        this.server = new RedMServer();
-        this.database = mysql.createConnection({
-            host: 'localhost',
-            user: 'redm_user',
-            password: 'secure_password',
-            database: 'wild_west_rp'
-        });
+  constructor() {
+    this.server = new RedMServer();
+    this.database = mysql.createConnection({
+      host: "localhost",
+      user: "redm_user",
+      password: "secure_password",
+      database: "wild_west_rp",
+    });
+  }
+
+  async initializeEconomy() {
+    // Set up dynamic pricing based on supply and demand
+    await this.updateMarketPrices();
+
+    // Initialize trade routes
+    await this.setupTradeRoutes();
+
+    // Start economic simulation
+    setInterval(() => {
+      this.simulateEconomicActivity();
+    }, 300000); // Every 5 minutes
+  }
+
+  async simulateEconomicActivity() {
+    // Simulate NPC trading and economic changes
+    const activeTraders = await this.getActiveNPCTraders();
+
+    for (const trader of activeTraders) {
+      await this.processNPCTrade(trader);
     }
-    
-    async initializeEconomy() {
-        // Set up dynamic pricing based on supply and demand
-        await this.updateMarketPrices();
-        
-        // Initialize trade routes
-        await this.setupTradeRoutes();
-        
-        // Start economic simulation
-        setInterval(() => {
-            this.simulateEconomicActivity();
-        }, 300000); // Every 5 minutes
-    }
-    
-    async simulateEconomicActivity() {
-        // Simulate NPC trading and economic changes
-        const activeTraders = await this.getActiveNPCTraders();
-        
-        for (const trader of activeTraders) {
-            await this.processNPCTrade(trader);
-        }
-        
-        // Update market conditions
-        await this.updateMarketConditions();
-    }
+
+    // Update market conditions
+    await this.updateMarketConditions();
+  }
 }
 ```
 
@@ -558,12 +594,14 @@ class WildWestEconomy {
 ### Setting Up a RedM Server
 
 **Requirements:**
+
 - Red Dead Redemption 2 PC version
 - RedM server files (similar to FiveM setup)
 - Basic understanding of Lua scripting
 - Patience for the learning curve
 
 **Basic Setup Steps:**
+
 1. Download RedM server files
 2. Configure server.cfg for Red Dead Redemption 2
 3. Install essential resources
@@ -573,12 +611,14 @@ class WildWestEconomy {
 ### Development Resources
 
 **Documentation:**
+
 - [RedM Documentation](https://docs.redm.gg/)
 - [CitizenFX Cookbook for RedM](https://cookbook.fivem.net/)
 - Community forums and Discord servers
 - GitHub repositories with example resources
 
 **Essential Resources:**
+
 - Character creation and management
 - Horse spawning and management systems
 - Basic economy and job systems
@@ -621,4 +661,4 @@ Ready to answer the call of the frontier? Saddle up, partner - the Wild West is 
 
 ---
 
-*Interested in exploring RedM development or finding a server to join? Check out our [RedM resources](/docs) and connect with the community on [Discord](/discord) to start your Wild West adventure.*
+_Interested in exploring RedM development or finding a server to join? Check out our [RedM resources](/docs) and connect with the community on [Discord](/discord) to start your Wild West adventure._

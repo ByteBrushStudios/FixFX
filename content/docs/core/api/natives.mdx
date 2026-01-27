@@ -4,11 +4,29 @@ description: Access FiveM and RedM native functions and documentation.
 icon: "Code"
 ---
 
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 <Callout type="info">
-  The Natives API provides high-performance access to FiveM and RedM native functions. Built with Go and Fiber, it fetches from multiple sources (GTA5, RDR3, CitizenFX) and provides comprehensive search and filtering capabilities.
+  The Natives API provides high-performance access to FiveM and RedM native
+  functions. Built with Go and Fiber, it fetches from multiple sources (GTA5,
+  RDR3, CitizenFX) and provides comprehensive search and filtering capabilities.
 </Callout>
 
 ## Overview
@@ -40,17 +58,17 @@ Retrieves native function information with comprehensive filtering and paginatio
 
 #### Query Parameters
 
-| Parameter | Type | Description | Default |
-|-----------|------|-------------|---------|
-| `game` | string | Target game (`gta5`, `rdr3`, `cfx`) | All games |
-| `search` | string | Search query for native names or descriptions | No search |
-| `ns` | string | Filter by namespace (e.g., `PLAYER`, `VEHICLE`) | All namespaces |
-| `environment` | string | Filter by environment (`client`, `server`, `shared`) | All environments |
-| `cfx` | boolean | Include CitizenFX-specific natives | `false` |
-| `limit` | number | Results per page (max 100) | `20` |
-| `offset` | number | Pagination offset | `0` |
-| `sortBy` | string | Sort field (`name`, `namespace`) | `name` |
-| `sortOrder` | string | Sort direction (`asc` or `desc`) | `asc` |
+| Parameter     | Type    | Description                                          | Default          |
+| ------------- | ------- | ---------------------------------------------------- | ---------------- |
+| `game`        | string  | Target game (`gta5`, `rdr3`, `cfx`)                  | All games        |
+| `search`      | string  | Search query for native names or descriptions        | No search        |
+| `ns`          | string  | Filter by namespace (e.g., `PLAYER`, `VEHICLE`)      | All namespaces   |
+| `environment` | string  | Filter by environment (`client`, `server`, `shared`) | All environments |
+| `cfx`         | boolean | Include CitizenFX-specific natives                   | `false`          |
+| `limit`       | number  | Results per page (max 100)                           | `20`             |
+| `offset`      | number  | Pagination offset                                    | `0`              |
+| `sortBy`      | string  | Sort field (`name`, `namespace`)                     | `name`           |
+| `sortOrder`   | string  | Sort direction (`asc` or `desc`)                     | `asc`            |
 
 #### Response Format
 
@@ -100,12 +118,12 @@ Full-text search across all native functions with relevance scoring.
 
 #### Query Parameters
 
-| Parameter | Type | Description | Default |
-|-----------|------|-------------|---------|
-| `q` | string | Search query | Required |
-| `game` | string | Filter by game (`gta5`, `rdr3`, `cfx`) | All games |
-| `limit` | number | Results per page | `20` |
-| `offset` | number | Pagination offset | `0` |
+| Parameter | Type   | Description                            | Default   |
+| --------- | ------ | -------------------------------------- | --------- |
+| `q`       | string | Search query                           | Required  |
+| `game`    | string | Filter by game (`gta5`, `rdr3`, `cfx`) | All games |
+| `limit`   | number | Results per page                       | `20`      |
+| `offset`  | number | Pagination offset                      | `0`       |
 
 #### Response Format
 
@@ -115,7 +133,7 @@ Full-text search across all native functions with relevance scoring.
     {
       "name": "GET_ENTITY_HEALTH",
       "hash": "0xebd235cf",
-      "relevance": 0.95,
+      "relevance": 0.95
       // ... full native object
     }
   ],
@@ -139,7 +157,7 @@ Get a specific native by its hash value.
   "data": [
     {
       "name": "GET_ENTITY_HEALTH",
-      "hash": "0xebd235cf",
+      "hash": "0xebd235cf"
       // ... full native object
     }
   ],
@@ -179,7 +197,9 @@ Get statistics about the natives database.
 ### Search for natives by name
 
 ```javascript
-const response = await fetch('https://core.fixfx.wiki/api/natives/search?q=player');
+const response = await fetch(
+  "https://core.fixfx.wiki/api/natives/search?q=player",
+);
 const data = await response.json();
 console.log(`Found ${data.metadata.total} natives matching 'player'`);
 ```
@@ -187,9 +207,11 @@ console.log(`Found ${data.metadata.total} natives matching 'player'`);
 ### Get natives for specific namespace
 
 ```javascript
-const response = await fetch('https://core.fixfx.wiki/api/natives?ns=PLAYER&game=gta5&limit=20');
+const response = await fetch(
+  "https://core.fixfx.wiki/api/natives?ns=PLAYER&game=gta5&limit=20",
+);
 const data = await response.json();
-data.data.forEach(native => {
+data.data.forEach((native) => {
   console.log(`${native.name} - ${native.description}`);
 });
 ```
@@ -197,7 +219,9 @@ data.data.forEach(native => {
 ### Filter by environment
 
 ```javascript
-const response = await fetch('https://core.fixfx.wiki/api/natives?environment=client&limit=50');
+const response = await fetch(
+  "https://core.fixfx.wiki/api/natives?environment=client&limit=50",
+);
 const data = await response.json();
 console.log(`Retrieved ${data.data.length} client-side natives`);
 ```
@@ -222,17 +246,21 @@ For questions about the Natives API, please [join our Discord](/discord). Our co
 - Implementation guidance
 
 <Callout type="info">
-  The Natives API is continuously updated with new native discoveries and improved documentation.
+  The Natives API is continuously updated with new native discoveries and
+  improved documentation.
 </Callout>
 
 <Callout type="warning">
-  Always verify native compatibility with your target FiveM/RedM version before implementation.
+  Always verify native compatibility with your target FiveM/RedM version before
+  implementation.
 </Callout>
 
 <Callout type="info">
-  The Natives API is continuously updated with new native discoveries and improved documentation.
+  The Natives API is continuously updated with new native discoveries and
+  improved documentation.
 </Callout>
 
 <Callout type="warning">
-  Always verify native compatibility with your target FiveM/RedM version before implementation.
+  Always verify native compatibility with your target FiveM/RedM version before
+  implementation.
 </Callout>

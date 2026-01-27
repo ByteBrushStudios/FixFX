@@ -1,7 +1,4 @@
 {
-    "root": true,
-    "pages": [
-        "esx",
-        "qbcore"
-    ]
+  "root": true,
+  "pages": ["esx", "qbcore"]
 }

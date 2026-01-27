@@ -5,7 +5,11 @@ description: "Discover how txAdmin has revolutionized FiveM server management wi
 date: 2025-07-10
 ---
 
-import { FeatureList, CheckList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 # txAdmin: The Ultimate FiveM Server Management Tool
 
@@ -23,7 +27,7 @@ txAdmin is a comprehensive web-based management panel for FiveM servers, develop
     "Reliability - Robust systems that work when you need them",
     "Community - Tools that enhance community building",
     "Automation - Reducing manual tasks through intelligent automation",
-    "Transparency - Clear insights into server performance and behavior"
+    "Transparency - Clear insights into server performance and behavior",
   ]}
   variant="check"
 />
@@ -40,38 +44,38 @@ txAdmin is a comprehensive web-based management panel for FiveM servers, develop
     {
       feature: "Management Interface",
       optionA: "Command Line Interface",
-      optionB: "Web-Based Dashboard"
+      optionB: "Web-Based Dashboard",
     },
     {
       feature: "Log Review",
       optionA: "Manual file searching",
-      optionB: "Real-time monitoring"
+      optionB: "Real-time monitoring",
     },
     {
       feature: "Player Management",
       optionA: "Basic commands only",
-      optionB: "Comprehensive tools"
+      optionB: "Comprehensive tools",
     },
     {
       feature: "Resource Management",
       optionA: "Manual installation",
-      optionB: "Easy one-click management"
+      optionB: "Easy one-click management",
     },
     {
       feature: "Backups",
       optionA: "Manual process",
-      optionB: "Automated scheduling"
+      optionB: "Automated scheduling",
     },
     {
       feature: "Security",
       optionA: "Limited tools",
-      optionB: "Built-in protections"
+      optionB: "Built-in protections",
     },
     {
       feature: "Access",
       optionA: "Server access required",
-      optionB: "Any device with browser"
-    }
+      optionB: "Any device with browser",
+    },
   ]}
 />
 
@@ -85,20 +89,20 @@ The txAdmin dashboard provides a comprehensive overview of your server's health:
   features={[
     {
       title: "Real-time Monitoring",
-      description: "Server statistics, player count, and performance metrics"
+      description: "Server statistics, player count, and performance metrics",
     },
     {
       title: "Quick Actions",
-      description: "Server control, resource management, player administration"
+      description: "Server control, resource management, player administration",
     },
     {
       title: "Visual Indicators",
-      description: "Color-coded status, performance graphs, alert systems"
+      description: "Color-coded status, performance graphs, alert systems",
     },
     {
       title: "Mobile Support",
-      description: "Responsive design for on-the-go management"
-    }
+      description: "Responsive design for on-the-go management",
+    },
   ]}
   columns={2}
 />
@@ -114,13 +118,14 @@ One of txAdmin's strongest features is its sophisticated player management syste
     "Moderation Tools - Kicks, bans, warnings with reasons",
     "Session Recordings - Optional session recording for review",
     "Identifiers - Display and track player identifiers",
-    "Notes System - Admin notes for reference"
+    "Notes System - Admin notes for reference",
   ]}
   variant="check"
   columns={2}
 />
 
 **Player Profile Example**
+
 ```json
 {
   "playerId": "12345",
@@ -141,6 +146,7 @@ One of txAdmin's strongest features is its sophisticated player management syste
 ```
 
 **Moderation Tools**
+
 - **Warning System**: Progressive discipline with tracked warnings
 - **Temporary Bans**: Time-based restrictions with automatic removal
 - **Permanent Bans**: Persistent blocking across all player identifiers
@@ -148,6 +154,7 @@ One of txAdmin's strongest features is its sophisticated player management syste
 - **Notes System**: Staff notes for player behavior tracking
 
 **Ban Management**
+
 - Multiple identifier support (Steam, License, Discord, etc.)
 - Reason tracking and evidence storage
 - Appeal system integration
@@ -159,12 +166,14 @@ One of txAdmin's strongest features is its sophisticated player management syste
 txAdmin simplified resource management dramatically:
 
 **One-Click Installation**
+
 - Recipe system for popular resource combinations
 - Dependency resolution and installation
 - Configuration wizard for complex resources
 - Update notifications and management
 
 **Resource Recipes**
+
 ```yaml
 # Example txAdmin recipe
 name: "Basic Roleplay Server"
@@ -187,6 +196,7 @@ configuration:
 ```
 
 **Configuration Management**
+
 - Visual configuration editors
 - Validation of configuration files
 - Backup before changes
@@ -198,12 +208,14 @@ configuration:
 Data loss is every server owner's nightmare. txAdmin addresses this with:
 
 **Scheduled Backups**
+
 - Automatic daily, weekly, or custom schedules
 - Resource-specific backups
 - Database backup integration
 - Configurable retention policies
 
 **Backup Features**
+
 - Incremental backups to save space
 - Compression for efficient storage
 - Cloud storage integration (FTP, S3, etc.)
@@ -211,6 +223,7 @@ Data loss is every server owner's nightmare. txAdmin addresses this with:
 - Backup verification and integrity checking
 
 **Disaster Recovery**
+
 - Quick restoration from any backup point
 - Partial restoration (specific resources only)
 - Migration assistance for server moves
@@ -221,18 +234,21 @@ Data loss is every server owner's nightmare. txAdmin addresses this with:
 txAdmin includes robust security features:
 
 **Built-in Anti-Cheat**
+
 - Real-time cheat detection
 - Automatic punishment systems
 - Pattern recognition for common exploits
 - Integration with external anti-cheat systems
 
 **Security Monitoring**
+
 - Failed login attempt tracking
 - Suspicious activity detection
 - Resource integrity verification
 - Player behavior analysis
 
 **Protection Features**
+
 - DDoS mitigation assistance
 - Rate limiting for connections
 - Whitelist and blacklist management
@@ -243,6 +259,7 @@ txAdmin includes robust security features:
 ### Installation Methods
 
 **Method 1: New Server Setup**
+
 ```bash
 # Download txAdmin-enabled FiveM server
 # Extract and run the setup wizard
@@ -250,6 +267,7 @@ txAdmin includes robust security features:
 ```
 
 **Method 2: Existing Server Migration**
+
 ```bash
 # Backup existing server
 # Download txAdmin
@@ -259,6 +277,7 @@ txAdmin includes robust security features:
 
 **Method 3: Hosting Provider Integration**
 Many hosting providers now offer txAdmin pre-installed:
+
 - ZAP-Hosting
 - GTXGaming
 - Iceline Hosting
@@ -267,6 +286,7 @@ Many hosting providers now offer txAdmin pre-installed:
 ### Initial Configuration
 
 **Setup Wizard Steps:**
+
 1. **Admin Account Creation**: Set up your master admin account
 2. **Server Information**: Configure server name, description, and branding
 3. **Resource Selection**: Choose from popular resource recipes
@@ -275,6 +295,7 @@ Many hosting providers now offer txAdmin pre-installed:
 6. **First Launch**: Start your server and verify everything works
 
 **Configuration Best Practices:**
+
 ```javascript
 // Example txAdmin configuration
 {
@@ -303,12 +324,14 @@ Many hosting providers now offer txAdmin pre-installed:
 txAdmin provides sophisticated staff management capabilities:
 
 **Permission System**
+
 - Granular permissions for different staff levels
 - Role-based access control
 - Action logging and audit trails
 - Session management and security
 
 **Staff Roles**
+
 ```javascript
 // Example permission structure
 {
@@ -339,6 +362,7 @@ txAdmin provides sophisticated staff management capabilities:
 ```
 
 **Activity Monitoring**
+
 - Real-time staff activity tracking
 - Action history and logs
 - Performance metrics for staff members
@@ -347,12 +371,14 @@ txAdmin provides sophisticated staff management capabilities:
 ### 2. Community Integration
 
 **Discord Integration**
+
 - Automatic role synchronization
 - Ban notifications and alerts
 - Player join/leave announcements
 - Staff action logging to Discord channels
 
 **Webhook Support**
+
 ```javascript
 // Example Discord webhook configuration
 {
@@ -370,6 +396,7 @@ txAdmin provides sophisticated staff management capabilities:
 ```
 
 **Community Analytics**
+
 - Player retention statistics
 - Peak hours analysis
 - Popular resource usage
@@ -378,18 +405,21 @@ txAdmin provides sophisticated staff management capabilities:
 ### 3. Development Tools
 
 **Live Console**
+
 - Real-time server console access
 - Command execution from web interface
 - Log filtering and search
 - Multiple console session support
 
 **Resource Development**
+
 - Hot-reload capability for development
 - Error tracking and debugging
 - Performance profiling tools
 - Dependency management
 
 **Testing Environment**
+
 - Staging server setup
 - A/B testing for configurations
 - Safe testing of new resources
@@ -402,12 +432,14 @@ txAdmin provides sophisticated staff management capabilities:
 **Challenge**: Managing a high-population roleplay server with multiple staff members and complex resource requirements.
 
 **txAdmin Solution**:
+
 - Automated moderation reduced staff workload by 60%
 - Resource management simplified updates across 200+ resources
 - Player analytics helped optimize server performance
 - Staff management tools prevented administrative conflicts
 
 **Results**:
+
 - 99.8% server uptime
 - 40% reduction in player complaints
 - 50% faster issue resolution
@@ -418,12 +450,14 @@ txAdmin provides sophisticated staff management capabilities:
 **Challenge**: Managing multiple servers with consistent configurations and shared player databases.
 
 **txAdmin Solution**:
+
 - Template system for consistent server setup
 - Centralized player management across servers
 - Synchronized ban lists and player data
 - Coordinated backup and disaster recovery
 
 **Results**:
+
 - 80% reduction in setup time for new servers
 - Unified player experience across network
 - Simplified staff management across multiple servers
@@ -434,12 +468,14 @@ txAdmin provides sophisticated staff management capabilities:
 **Challenge**: Rapidly prototyping and testing new features while maintaining stable production environment.
 
 **txAdmin Solution**:
+
 - Separate development and production environments
 - Easy resource deployment and rollback
 - Real-time monitoring and debugging tools
 - Automated testing and validation
 
 **Results**:
+
 - 70% faster development cycle
 - Reduced production bugs and issues
 - Improved code quality through better testing
@@ -452,12 +488,14 @@ txAdmin provides sophisticated staff management capabilities:
 txAdmin is designed to be lightweight and efficient:
 
 **System Requirements**:
+
 - CPU: Minimal overhead (1-2% additional usage)
 - RAM: 50-100MB additional memory usage
 - Storage: Small footprint with configurable log retention
 - Network: Efficient data transfer with compression
 
 **Performance Benefits**:
+
 - Reduced server downtime through automated monitoring
 - Faster issue resolution with real-time alerts
 - Optimized resource management reduces bloat
@@ -466,6 +504,7 @@ txAdmin is designed to be lightweight and efficient:
 ### Optimization Tips
 
 1. **Configure Appropriate Log Levels**
+
    ```javascript
    {
      "logging": {
@@ -491,18 +530,21 @@ txAdmin is designed to be lightweight and efficient:
 ### Upcoming Features
 
 **Enhanced Analytics**
+
 - Advanced player behavior analysis
 - Predictive maintenance capabilities
 - Machine learning for cheat detection
 - Performance optimization recommendations
 
 **Improved Integration**
+
 - Better Discord bot functionality
 - Third-party service integrations
 - API expansions for custom tools
 - Mobile app development
 
 **Advanced Automation**
+
 - Smart resource updates
 - Intelligent player moderation
 - Automated performance tuning
@@ -511,6 +553,7 @@ txAdmin is designed to be lightweight and efficient:
 ### Community Contributions
 
 The txAdmin project benefits from:
+
 - Active community feedback and suggestions
 - Plugin and extension development
 - Translation and localization efforts
@@ -563,7 +606,8 @@ The txAdmin project benefits from:
 ### Performance Issues
 
 **Problem**: txAdmin interface becomes slow or unresponsive
-**Solution**: 
+**Solution**:
+
 - Check server resource usage
 - Optimize log retention settings
 - Reduce unnecessary monitoring frequency
@@ -573,6 +617,7 @@ The txAdmin project benefits from:
 
 **Problem**: Cannot access txAdmin web interface
 **Solution**:
+
 - Verify firewall and port settings
 - Check txAdmin service status
 - Review network configuration
@@ -582,6 +627,7 @@ The txAdmin project benefits from:
 
 **Problem**: Player bans not working correctly
 **Solution**:
+
 - Verify player identifier collection
 - Check ban database integrity
 - Review anti-cheat configuration
@@ -603,7 +649,7 @@ Whether you're running a small private server for friends or managing a large co
 
 ### Getting Started
 
-Ready to transform your FiveM server management experience? 
+Ready to transform your FiveM server management experience?
 
 1. **Download txAdmin**: Get the latest version from the official repository
 2. **Follow the Setup Guide**: Use the step-by-step installation instructions
@@ -613,4 +659,4 @@ Ready to transform your FiveM server management experience?
 
 ---
 
-*Want to learn more about FiveM server management and development? Check out our comprehensive [documentation](/docs) and join our [Discord community](/discord) for expert advice and support.*
+_Want to learn more about FiveM server management and development? Check out our comprehensive [documentation](/docs) and join our [Discord community](/discord) for expert advice and support._

@@ -26,11 +26,13 @@ export default async function BlogPost(props: {
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
           <div className="flex items-center gap-2 text-sm text-fd-muted-foreground">
             <Calendar className="size-4" />
-            <span>{new Date(page.data.date).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric'
-            })}</span>
+            <span>
+              {new Date(page.data.date).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
             {page.data.author && (
               <>
                 <span className="mx-2">•</span>
@@ -54,16 +56,22 @@ export default async function BlogPost(props: {
         <hr className="border-t-fd-border my-12 border-t" />
         <div className="flex flex-col gap-6 text-sm">
           <div>
-            <p className="text-fd-muted-foreground mb-2 font-semibold">Written by</p>
-            <p className="font-medium text-fd-foreground text-base">{page.data.author}</p>
+            <p className="text-fd-muted-foreground mb-2 font-semibold">
+              Written by
+            </p>
+            <p className="font-medium text-fd-foreground text-base">
+              {page.data.author}
+            </p>
           </div>
           <div>
-            <p className="text-fd-muted-foreground mb-2 font-semibold">Published</p>
+            <p className="text-fd-muted-foreground mb-2 font-semibold">
+              Published
+            </p>
             <p className="font-medium text-fd-foreground text-base">
-              {new Date(page.data.date).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
+              {new Date(page.data.date).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
               })}
             </p>
           </div>

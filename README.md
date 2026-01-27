@@ -5,8 +5,8 @@
 
 A documentation platform for FiveM, RedM, and the CitizenFX ecosystem. Guides, tutorials, native references, and tools for server developers.
 
-> [!INFO]
->FixFX is an independent community project. It is not affiliated with or endorsed by Cfx.re, Rockstar Games, txAdmin, Take-Two Interactive or any other entities referenced throughout the documentation.
+> [!CAUTION]
+> FixFX is an independent community project. It is not affiliated with or endorsed by Cfx.re, Rockstar Games, txAdmin, Take-Two Interactive or any other entities referenced throughout the documentation.
 
 ## Features
 
@@ -90,7 +90,7 @@ This project includes a partnership program for hosting providers offering exclu
 
 ### For Server Owners
 
-Visit the [Hosting Partners page](/hosting) to browse verified hosting providers with exclusive FixFX discounts:
+Visit the [Hosting Partners page](https://fixfx.wiki/hosting) to browse verified hosting providers with exclusive FixFX discounts:
 
 - **Affiliate Partners**: Providers with exclusive discount codes (e.g., ZAP-Hosting with 20% off)
 - **Trusted Hosts**: Automatically curated list from [fivem.net/server-hosting](https://fivem.net/server-hosting)
@@ -102,7 +102,7 @@ We're always looking for quality hosting providers interested in partnerships. H
 ✅ **Reach**: Exposure to thousands of FiveM/RedM server owners  
 ✅ **Trust**: Featured on our dedicated hosting page  
 ✅ **Tracking**: Affiliate links for conversion attribution  
-✅ **Support**: Community visibility and marketing assistance  
+✅ **Support**: Community visibility and marketing assistance
 
 #### Partnership Requirements & Code of Conduct
 
@@ -117,7 +117,7 @@ Your hosting service should meet these criteria:
 
 #### How to Apply
 
-1. **Review** the [Provider Guidelines & Code of Conduct](./packages/providers/GUIDELINES.md) 
+1. **Review** the [Provider Guidelines & Code of Conduct](./packages/providers/GUIDELINES.md)
 2. **Read** the [Partnership Requirements & Process](./packages/providers/README.md)
 3. **Create** your provider directory with `provider.json`
 4. **Submit** a Pull Request to `frontend/packages/providers/`
@@ -163,6 +163,7 @@ Your hosting service should meet these criteria:
 - **CI/CD Integration**: Automatic PR creation for provider updates
 
 For detailed information, see:
+
 - [Provider Guidelines & Code of Conduct](./packages/providers/GUIDELINES.md) - Standards and expectations
 - [Partnership Requirements & Process](./packages/providers/README.md) - Detailed how-to guide
 - [Trusted Hosts Documentation](./packages/providers/TRUSTED_HOSTS_README.md) - Automation details

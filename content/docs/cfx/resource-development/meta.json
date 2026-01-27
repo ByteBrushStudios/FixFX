@@ -1,9 +1,9 @@
 {
-    "pages": [
-        "manifest-files",
-        "client-side",
-        "server-side",
-        "nui-development",
-        "debugging"
-    ]
+  "pages": [
+    "manifest-files",
+    "client-side",
+    "server-side",
+    "nui-development",
+    "debugging"
+  ]
 }

@@ -3,7 +3,7 @@ name: Validate tsconfig.json Changes
 on:
   pull_request:
     paths:
-      - 'tsconfig.json'
+      - "tsconfig.json"
 
 jobs:
   validate-tsconfig:
@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Validate tsconfig.json changes
         run: node .github/scripts/validate-tsconfig.js

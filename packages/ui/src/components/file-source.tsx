@@ -1,6 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';import { API_URL } from "@/packages/utils/src/constants/link";import { SourceCode } from '@ui/components';
+import { useEffect, useState } from "react";
+import { API_URL } from "@/packages/utils/src/constants/link";
+import { SourceCode } from "@ui/components";
 
 interface FileSourceProps {
   filePath: string;
@@ -8,41 +10,41 @@ interface FileSourceProps {
 }
 
 const languageMap: Record<string, string> = {
-  '.ts': 'typescript',
-  '.tsx': 'tsx',
-  '.js': 'javascript',
-  '.jsx': 'jsx',
-  '.json': 'json',
-  '.md': 'markdown',
-  '.mdx': 'mdx',
-  '.css': 'css',
-  '.scss': 'scss',
-  '.html': 'html',
-  '.yaml': 'yaml',
-  '.yml': 'yaml',
-  '.sh': 'bash',
-  '.bash': 'bash',
-  '.sql': 'sql',
-  '.lua': 'lua',
-  '.go': 'go',
-  '.mod': 'go',
-  '.sum': 'text',
-  '.py': 'python',
-  '.rb': 'ruby',
-  '.java': 'java',
-  '.cs': 'csharp',
-  '.cpp': 'cpp',
-  '.c': 'c',
-  '.h': 'c',
-  '.hpp': 'cpp',
-  '.xml': 'xml',
-  '.toml': 'toml',
-  '.env': 'bash',
+  ".ts": "typescript",
+  ".tsx": "tsx",
+  ".js": "javascript",
+  ".jsx": "jsx",
+  ".json": "json",
+  ".md": "markdown",
+  ".mdx": "mdx",
+  ".css": "css",
+  ".scss": "scss",
+  ".html": "html",
+  ".yaml": "yaml",
+  ".yml": "yaml",
+  ".sh": "bash",
+  ".bash": "bash",
+  ".sql": "sql",
+  ".lua": "lua",
+  ".go": "go",
+  ".mod": "go",
+  ".sum": "text",
+  ".py": "python",
+  ".rb": "ruby",
+  ".java": "java",
+  ".cs": "csharp",
+  ".cpp": "cpp",
+  ".c": "c",
+  ".h": "c",
+  ".hpp": "cpp",
+  ".xml": "xml",
+  ".toml": "toml",
+  ".env": "bash",
 };
 
 function getLanguage(filePath: string): string {
-  const ext = filePath.substring(filePath.lastIndexOf('.'));
-  return languageMap[ext] || 'text';
+  const ext = filePath.substring(filePath.lastIndexOf("."));
+  return languageMap[ext] || "text";
 }
 
 export function FileSource({ filePath, title }: FileSourceProps) {
@@ -53,14 +55,16 @@ export function FileSource({ filePath, title }: FileSourceProps) {
   useEffect(() => {
     async function fetchCode() {
       try {
-        const res = await fetch(`${API_URL}/api/source?path=${encodeURIComponent(filePath)}`);
+        const res = await fetch(
+          `${API_URL}/api/source?path=${encodeURIComponent(filePath)}`,
+        );
         if (!res.ok) {
-          throw new Error('Failed to load file');
+          throw new Error("Failed to load file");
         }
         const data = await res.json();
         setCode(data.code);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }

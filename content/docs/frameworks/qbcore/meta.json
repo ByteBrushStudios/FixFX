@@ -1,9 +1,5 @@
 {
-    "title": "QBCore",
-    "defaultOpen": true,
-    "pages": [
-        "setup",
-        "development",
-        "troubleshooting"
-    ]
+  "title": "QBCore",
+  "defaultOpen": true,
+  "pages": ["setup", "development", "troubleshooting"]
 }

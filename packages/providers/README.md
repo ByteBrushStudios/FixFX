@@ -7,6 +7,7 @@ This directory contains configurations for FixFX hosting partnerships and truste
 ## Directory Structure
 
 Each hosting provider has its own directory containing `provider.json`:
+
 ```
 packages/providers/
 ├── zap-hosting/
@@ -22,20 +23,24 @@ packages/providers/
 ## Types of Providers
 
 ### 1. Affiliate Partners
+
 Hosting providers with whom we have established affiliate relationships and exclusive discount codes. These appear on the `/hosting` page with full partner cards.
 
 **Examples:** ZAP-Hosting with 20% discount code
 
 **How it works:**
+
 - You receive exclusive discount codes for FixFX users
 - We link to your affiliate/referral links
 - Users get tracked discounts automatically
 - Both parties benefit from the partnership
 
 ### 2. Trusted Hosts
+
 Hosting providers officially listed on [fivem.net/server-hosting](https://fivem.net/server-hosting). These are scraped automatically once weekly to maintain currency. No affiliation required.
 
 **How it works:**
+
 - Automatically scraped from FiveM's official registry
 - GitHub Action validates updates weekly
 - Community can see official FiveM-approved providers
@@ -68,6 +73,7 @@ Read the [Provider Guidelines & Code of Conduct](./GUIDELINES.md) and ensure you
 #### Step 2: Prepare Your Information
 
 Gather these details:
+
 - Company name and website
 - 2-3 sentence description of your hosting service
 - Exclusive discount offer (percentage and code)
@@ -135,6 +141,7 @@ The `provider.json` file format:
 #### Step 5: Review & Testing
 
 Our team will:
+
 1. Verify compliance with [Provider Guidelines & Code of Conduct](./GUIDELINES.md)
 2. Validate your JSON against the schema
 3. Test discount codes and affiliate links
@@ -146,6 +153,7 @@ Approval typically takes 5-7 business days.
 #### Step 6: Go Live!
 
 Once approved, your provider will automatically appear on the FixFX `/hosting` page and be featured across our documentation.
+
 #### Step 5: PR Description Template
 
 Include this information in your PR:
@@ -158,42 +166,47 @@ Include this information in your PR:
 **Contact Email:** [email]
 
 ### About Your Company
+
 [2-3 sentences about your hosting company and why you're a good fit for FixFX]
 
 ### Offer Details
+
 - **Discount:** [percentage]% off with code `[CODE]`
 - **Duration:** [how long the discount lasts]
 - **Affiliate Link:** [your affiliate/referral link]
 
 ### Why Partner with FixFX?
+
 [Explain your motivation and what you hope to achieve]
 
 ### Community Focus
+
 [How will this partnership benefit the FiveM/RedM community?]
 ```
 
 ### Field Reference
 
-| Field | Required | Type | Constraints | Example |
-|-------|----------|------|-------------|---------|
-| `id` | ✅ | string | Kebab-case, unique | `zap-hosting` |
-| `name` | ✅ | string | 1-100 chars | `ZAP-Hosting` |
-| `website` | ❌ | string | Valid URL | `https://zap-hosting.com` |
-| `description` | ✅ | string | 1-300 chars | `Premium game server hosting...` |
-| `discount.percentage` | ✅ | number | 1-100 | `20` |
-| `discount.code` | ✅ | string | 3-50 chars | `FIXFX-a-8909` |
-| `discount.duration` | ✅ | string | 1-50 chars | `Lifetime` |
-| `links` | ✅ | array | 1-10 items | `[{...}]` |
-| `links[].label` | ✅ | string | 1-50 chars | `FiveM Servers` |
-| `links[].url` | ✅ | string | Valid URL | `https://zap-hosting.com/...` |
-| `links[].description` | ✅ | string | 1-150 chars | `High-performance servers` |
-| `features` | ✅ | array | 3-8 strings | `["DDoS", "Backup"]` |
-| `highlight` | ❌ | string | 1-30 chars | `Best Value` |
-| `priority` | ❌ | number | 0-100 | `10` |
+| Field                 | Required | Type   | Constraints        | Example                          |
+| --------------------- | -------- | ------ | ------------------ | -------------------------------- |
+| `id`                  | ✅       | string | Kebab-case, unique | `zap-hosting`                    |
+| `name`                | ✅       | string | 1-100 chars        | `ZAP-Hosting`                    |
+| `website`             | ❌       | string | Valid URL          | `https://zap-hosting.com`        |
+| `description`         | ✅       | string | 1-300 chars        | `Premium game server hosting...` |
+| `discount.percentage` | ✅       | number | 1-100              | `20`                             |
+| `discount.code`       | ✅       | string | 3-50 chars         | `FIXFX-a-8909`                   |
+| `discount.duration`   | ✅       | string | 1-50 chars         | `Lifetime`                       |
+| `links`               | ✅       | array  | 1-10 items         | `[{...}]`                        |
+| `links[].label`       | ✅       | string | 1-50 chars         | `FiveM Servers`                  |
+| `links[].url`         | ✅       | string | Valid URL          | `https://zap-hosting.com/...`    |
+| `links[].description` | ✅       | string | 1-150 chars        | `High-performance servers`       |
+| `features`            | ✅       | array  | 3-8 strings        | `["DDoS", "Backup"]`             |
+| `highlight`           | ❌       | string | 1-30 chars         | `Best Value`                     |
+| `priority`            | ❌       | number | 0-100              | `10`                             |
 
 ### Validation & Review
 
 **Automatic Checks:**
+
 - Schema validation (JSON structure)
 - ID uniqueness (no duplicates)
 - URL accessibility
@@ -201,6 +214,7 @@ Include this information in your PR:
 - Field length constraints
 
 **Manual Review (within 3-5 business days):**
+
 1. Partnership alignment with community values
 2. Provider reputation and reliability research
 3. Affiliate link verification
@@ -209,11 +223,13 @@ Include this information in your PR:
 ### Questions & Support
 
 **Need help?**
+
 - 📖 Review the [JSON Schema](./schema.json) for technical specs
 - 💬 Ask on our [Discord](https://discord.gg/cYauqJfnNK)
 - 🐛 [Open an issue](https://github.com/CodeMeAPixel/FixFX/issues) for technical problems
 
 **Partnership inquiries:**
+
 - Email: partnerships@fixfx.dev (when available)
 - Or reach out via Discord
 

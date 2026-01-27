@@ -4,27 +4,47 @@ description: Comprehensive guide to managing and maintaining CitizenFX servers e
 icon: "Server"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Proper server management is crucial for maintaining a stable and enjoyable gaming experience. This guide covers essential practices for managing your CitizenFX server.
 
 <Callout type="warning">
-  Regular maintenance and monitoring are essential for server stability and security.
+  Regular maintenance and monitoring are essential for server stability and
+  security.
 </Callout>
 
 <Callout type="info">
-  For more detailed information about specific aspects of server management, refer to the relevant sections in the documentation.
-</Callout> 
+  For more detailed information about specific aspects of server management,
+  refer to the relevant sections in the documentation.
+</Callout>
 
 ## Server Setup
 
-<StepList steps={[
-  "Verify hardware meets minimum requirements for player count",
-  "Install server artifacts and dependencies",
-  "Configure server.cfg with essential settings",
-  "Set up database connection and initialize tables",
-  "Test resource loading and server startup"
-]} />
+<StepList
+  steps={[
+    "Verify hardware meets minimum requirements for player count",
+    "Install server artifacts and dependencies",
+    "Configure server.cfg with essential settings",
+    "Set up database connection and initialize tables",
+    "Test resource loading and server startup",
+  ]}
+/>
 
 ### 1. Hardware Requirements
 
@@ -93,7 +113,7 @@ client_scripts {
 -- Example of optimized resource loading
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() ~= resourceName then return end
-    
+
     -- Initialize with proper error handling
     local success, error = pcall(InitializeResource)
     if not success then
@@ -119,10 +139,10 @@ end)
 local function SavePlayerData(playerId, data)
     -- Validate data
     if not IsValidPlayer(playerId) then return false end
-    
+
     -- Encrypt sensitive data
     local encryptedData = EncryptData(data)
-    
+
     -- Save with proper error handling
     local success = SaveToDatabase(playerId, encryptedData)
     return success
@@ -167,7 +187,7 @@ cp /server/server.cfg $BACKUP_DIR/
 function LogServerEvent(event, data)
     local timestamp = os.date('%Y-%m-%d %H:%M:%S')
     local logEntry = string.format('[%s] %s: %s', timestamp, event, json.encode(data))
-    
+
     -- Write to log file
     local logFile = io.open('server.log', 'a')
     if logFile then

@@ -18,10 +18,10 @@ export default async function Page({
   params: Promise<{ slug?: string[] }>;
 }) {
   const { slug } = await params;
-  
+
   // Redirect to overview if no slug is provided (root /docs path)
   if (!slug || slug.length === 0) {
-    return source.getPage(['overview']);
+    return source.getPage(["overview"]);
   }
 
   const page = source.getPage(slug);
@@ -35,7 +35,7 @@ export default async function Page({
       full={page.data.full}
       lastUpdate={page.data.lastModified}
       tableOfContent={{
-        style: 'clerk',
+        style: "clerk",
         single: false,
       }}
     >
@@ -45,8 +45,9 @@ export default async function Page({
         <MDX
           components={{
             ...defaultMdxComponents,
-            img: (props) => props.src ? <ImageZoom {...(props as any)} /> : null,
-            Editor: Editor
+            img: (props) =>
+              props.src ? <ImageZoom {...(props as any)} /> : null,
+            Editor: Editor,
           }}
         />
       </DocsBody>

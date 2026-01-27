@@ -3,40 +3,69 @@ title: Install and Setup
 description: Complete guide to installing txAdmin on Windows.
 ---
 
-import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
-import { Callout } from 'fumadocs-ui/components/callout';
-import { FileSource } from '@ui/components/file-source';
-import { FeatureList, CheckList, QuickLinks, DefinitionList, PropertyCard, InfoBanner, CategoryGrid, ConfigBlock, TroubleshootingCard, StepList, CommandCard } from '@ui/components/mdx-components';
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
+import { Callout } from "fumadocs-ui/components/callout";
+import { FileSource } from "@ui/components/file-source";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  PropertyCard,
+  InfoBanner,
+  CategoryGrid,
+  ConfigBlock,
+  TroubleshootingCard,
+  StepList,
+  CommandCard,
+} from "@ui/components/mdx-components";
 
 This guide covers the complete installation and initial setup process for txAdmin, from downloading the files to launching your first server. For this guide we will use RedM but the setup should be more or less the same for FiveM!
 
 <InfoBanner type="info" title="Installation Overview">
-This comprehensive guide will walk you through downloading artifacts, configuring txAdmin, and deploying your first server.
+  This comprehensive guide will walk you through downloading artifacts,
+  configuring txAdmin, and deploying your first server.
 </InfoBanner>
 
 <FeatureList
   title="What You'll Learn"
   columns={2}
   features={[
-    { title: "Download FXServer Artifacts", description: "Get the latest server files", icon: "download" },
-    { title: "Initialize txAdmin", description: "Set up the web interface", icon: "settings" },
-    { title: "Configure Server", description: "Deploy your chosen template", icon: "wrench" },
-    { title: "Launch Server", description: "Start your game server", icon: "play" }
+    {
+      title: "Download FXServer Artifacts",
+      description: "Get the latest server files",
+      icon: "download",
+    },
+    {
+      title: "Initialize txAdmin",
+      description: "Set up the web interface",
+      icon: "settings",
+    },
+    {
+      title: "Configure Server",
+      description: "Deploy your chosen template",
+      icon: "wrench",
+    },
+    {
+      title: "Launch Server",
+      description: "Start your game server",
+      icon: "play",
+    },
   ]}
 />
 
 ## Step 1: Download FXServer Artifacts
 
 <InfoBanner type="info" title="Artifact Selection">
-For this guide, we're using artifact version 24769. Always use recommended versions for stability.
-![](/screenshots/txadmin/recommended-versions.png)
+  For this guide, we're using artifact version 24769. Always use recommended
+  versions for stability. ![](/screenshots/txadmin/recommended-versions.png)
 </InfoBanner>
 
 ### Automated Download (Recommended)
 
-<CommandCard 
+<CommandCard
   command='Invoke-WebRequest -Uri "https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/24769-315823736cfbc085104ca0d32779311cd2f1a5a8/server.7z" -OutFile "server.zip"
 Expand-Archive -Path "server.zip" -DestinationPath "C:\FiveM-Server"'
   description="PowerShell commands to download and extract server files"
@@ -45,62 +74,66 @@ Expand-Archive -Path "server.zip" -DestinationPath "C:\FiveM-Server"'
 
 ### Manual Download Alternative
 
-<QuickLinks links={[
-  {
-    title: "Windows Artifacts",
-    href: "/artifacts?platform=windows",
-    icon: "download",
-    description: "Browse recommended Windows server builds"
-  },
-  {
-    title: "Linux Artifacts", 
-    href: "/artifacts?platform=linux",
-    icon: "download",
-    description: "Browse recommended Linux server builds"
-  }
-]} />
-
+<QuickLinks
+  links={[
+    {
+      title: "Windows Artifacts",
+      href: "/artifacts?platform=windows",
+      icon: "download",
+      description: "Browse recommended Windows server builds",
+    },
+    {
+      title: "Linux Artifacts",
+      href: "/artifacts?platform=linux",
+      icon: "download",
+      description: "Browse recommended Linux server builds",
+    },
+  ]}
+/>
 
 <InfoBanner type="warning" title="Avoid These Buttons">
-If you choose to use the official [runtime.fivem.net](https://runtime.fivem.net) for your artifacts **do not** use the "Latest" and "Optional" buttons they often point to outdated versions.
-![](/screenshots/citizenfx/these-buttons-suck.png)
+  If you choose to use the official
+  [runtime.fivem.net](https://runtime.fivem.net) for your artifacts **do not**
+  use the "Latest" and "Optional" buttons they often point to outdated versions.
+  ![](/screenshots/citizenfx/these-buttons-suck.png)
 </InfoBanner>
 
 <Accordions>
   <Accordion title="Why Our Artifact System is Better">
-    We built our own artifact explorer because CFX doesn't update their buttons regularly. Here's how we implemented a better solution:
-    
+    We built our own artifact explorer because CFX doesn't update their buttons
+    regularly. Here's how we implemented a better solution:
     <Tabs items={["Service Layer", "Handler Logic", "API Route"]}>
       <Tab value="Service Layer">
-        <FileSource 
-          filePath="internal/services/artifacts.go" 
+        <FileSource
+          filePath="internal/services/artifacts.go"
           title={{
-             text: "internal/services/artifacts.go",
-             href: "https://github.com/CodeMeAPixel/FixFX-Core/blob/master/internal/services/artifacts.go"
-          }} 
+            text: "internal/services/artifacts.go",
+            href: "https://github.com/CodeMeAPixel/FixFX-Core/blob/master/internal/services/artifacts.go",
+          }}
         />
       </Tab>
-      
+
       <Tab value="Handler Logic">
-        <FileSource 
-          filePath="internal/handlers/artifacts.go" 
+        <FileSource
+          filePath="internal/handlers/artifacts.go"
           title={{
-             text: "internal/handlers/artifacts.go",
-             href: "https://github.com/CodeMeAPixel/FixFX-Core/blob/master/internal/handlers/artifacts.go"
-          }} 
+            text: "internal/handlers/artifacts.go",
+            href: "https://github.com/CodeMeAPixel/FixFX-Core/blob/master/internal/handlers/artifacts.go",
+          }}
         />
       </Tab>
-      
+
       <Tab value="API Route">
-        <FileSource 
-          filePath="internal/routes/artifacts.go" 
+        <FileSource
+          filePath="internal/routes/artifacts.go"
           title={{
-             text: "internal/routes/artifacts.go",
-             href: "https://github.com/CodeMeAPixel/FixFX-Core/blob/master/internal/routes/artifacts.go"
-          }} 
+            text: "internal/routes/artifacts.go",
+            href: "https://github.com/CodeMeAPixel/FixFX-Core/blob/master/internal/routes/artifacts.go",
+          }}
         />
       </Tab>
     </Tabs>
+
   </Accordion>
 </Accordions>
 
@@ -113,8 +146,8 @@ If you choose to use the official [runtime.fivem.net](https://runtime.fivem.net)
 />
 
 <InfoBanner type="success" title="First Run Success">
-txAdmin will automatically initialize and display a web URL with PIN for setup.
-![](/screenshots/txadmin/txadmin-init-console.png)
+  txAdmin will automatically initialize and display a web URL with PIN for
+  setup. ![](/screenshots/txadmin/txadmin-init-console.png)
 </InfoBanner>
 
 ## Step 3: Authentication & Setup
@@ -124,32 +157,37 @@ txAdmin will automatically initialize and display a web URL with PIN for setup.
   steps={[
     {
       title: "Access Setup Page",
-      description: "Visit the URL from console output and enter the provided PIN (often auto-filled)",
+      description:
+        "Visit the URL from console output and enter the provided PIN (often auto-filled)",
       image: "/screenshots/txadmin/txadmin-init-setup.png",
-      imageAlt: "txAdmin setup page with PIN entry"
+      imageAlt: "txAdmin setup page with PIN entry",
     },
     {
-      title: "CFX Authorization", 
-      description: "Login to your CFX Forums account or create a new one for resource access",
+      title: "CFX Authorization",
+      description:
+        "Login to your CFX Forums account or create a new one for resource access",
       image: "/screenshots/citizenfx/cfx-auth.png",
-      imageAlt: "CFX account authorization flow"
+      imageAlt: "CFX account authorization flow",
     },
     {
       title: "Master Account",
-      description: "Create a backup password and optionally add your Discord ID for recovery",
+      description:
+        "Create a backup password and optionally add your Discord ID for recovery",
       image: "/screenshots/txadmin/master-account.png",
       imageAlt: "Master account creation",
       alert: {
         type: "warning",
-        message: "Keep your master account credentials safe - they're your backup if you lose CFX access."
-      }
+        message:
+          "Keep your master account credentials safe - they're your backup if you lose CFX access.",
+      },
     },
     {
       title: "Server Naming",
-      description: "Choose a name for your server (appears in txAdmin interface and Discord messages)",
+      description:
+        "Choose a name for your server (appears in txAdmin interface and Discord messages)",
       image: "/screenshots/txadmin/server-name.png",
-      imageAlt: "Server name configuration"
-    }
+      imageAlt: "Server name configuration",
+    },
   ]}
 />
 
@@ -164,30 +202,34 @@ After naming your server, you'll be prompted to select a deployment type. This d
   categories={[
     {
       name: "Popular Recipes",
-      description: "Recommended for beginners. Includes QBCore, ESX, and vanilla templates that auto-configure everything",
-      icon: "star"
+      description:
+        "Recommended for beginners. Includes QBCore, ESX, and vanilla templates that auto-configure everything",
+      icon: "star",
     },
     {
       name: "Existing Server Data",
-      description: "Use if you already have a server_cfg and resources folder from a previous setup",
-      icon: "folder"
+      description:
+        "Use if you already have a server_cfg and resources folder from a previous setup",
+      icon: "folder",
     },
     {
       name: "Remote URL Template",
-      description: "Deploy from a custom Recipe URL in YAML format - useful for shared team configurations",
-      icon: "globe"
+      description:
+        "Deploy from a custom Recipe URL in YAML format - useful for shared team configurations",
+      icon: "globe",
     },
     {
       name: "Custom Template",
       description: "For advanced users writing their own recipe from scratch",
-      icon: "wrench"
-    }
+      icon: "wrench",
+    },
   ]}
   columns={2}
 />
 
 <InfoBanner type="tip" title="First Time Setup">
-If this is your first server, select **Popular Recipes** - it handles all the complex configuration automatically and gives you a working server in minutes.
+  If this is your first server, select **Popular Recipes** - it handles all the
+  complex configuration automatically and gives you a working server in minutes.
 </InfoBanner>
 
 ### Choose Your Template
@@ -201,56 +243,64 @@ Once you select Popular Recipes, you'll see the template selection screen. Each 
   categories={[
     {
       name: "FiveM Basic Server",
-      description: "A minimal server without framework, with just the config required to run FiveM",
-      icon: "server"
+      description:
+        "A minimal server without framework, with just the config required to run FiveM",
+      icon: "server",
     },
     {
       name: "ESX Legacy",
-      description: "The official recipe of the most popular FiveM RP framework with jobs, housing, vehicles & more",
-      icon: "crown"
+      description:
+        "The official recipe of the most popular FiveM RP framework with jobs, housing, vehicles & more",
+      icon: "crown",
     },
     {
       name: "Qbox",
-      description: "The most modern and optimized framework, while compatible with QBCore resources",
-      icon: "zap"
+      description:
+        "The most modern and optimized framework, while compatible with QBCore resources",
+      icon: "zap",
     },
     {
       name: "QBCore",
-      description: "An advanced FiveM RP framework including jobs, gangs, housing & more",
-      icon: "shield"
+      description:
+        "An advanced FiveM RP framework including jobs, gangs, housing & more",
+      icon: "shield",
     },
     {
       name: "RedM Basic Server",
-      description: "A minimal server without framework, with just the config required to run RedM",
-      icon: "star"
+      description:
+        "A minimal server without framework, with just the config required to run RedM",
+      icon: "star",
     },
     {
       name: "VORP Core",
-      description: "The leading RP Framework for RedM containing jobs, stables, hunting, housing & more",
-      icon: "crown"
-    }
+      description:
+        "The leading RP Framework for RedM containing jobs, stables, hunting, housing & more",
+      icon: "crown",
+    },
   ]}
   columns={2}
 />
 
 <InfoBanner type="info" title="Framework Selection">
-Choose a **Basic Server** for simplicity and full control, or pick a **Roleplay framework** (ESX, QBCore, Qbox, VORP) if you want pre-built economy features like shops, jobs, and player progression.
+  Choose a **Basic Server** for simplicity and full control, or pick a
+  **Roleplay framework** (ESX, QBCore, Qbox, VORP) if you want pre-built economy
+  features like shops, jobs, and player progression.
 </InfoBanner>
 
 ### Deployment Process
 
-<CheckList 
+<CheckList
   variant="check"
   items={[
     "Select deployment type: Popular Recipes (recommended for beginners)",
-    "Choose your server template from the options above", 
+    "Choose your server template from the options above",
     "Confirm data location (usually auto-detected by txAdmin)",
     "Start the recipe deployer with the green button",
     "Review template settings and customizations",
     "Generate or paste your CFX server license key",
     "Run the deployment recipe to install files",
-    "Complete setup validation and configuration"
-  ]} 
+    "Complete setup validation and configuration",
+  ]}
 />
 
 ### Getting Your Server License
@@ -260,41 +310,44 @@ Choose a **Basic Server** for simplicity and full control, or pick a **Roleplay 
   steps={[
     {
       title: "Access CFX Portal",
-      description: "Visit [portal.cfx.re](https://portal.cfx.re) and login with your CFX account",
+      description:
+        "Visit [portal.cfx.re](https://portal.cfx.re) and login with your CFX account",
       image: "/screenshots/citizenfx/cfx-portal.png",
-      imageAlt: "Visit the CFX Portal"
+      imageAlt: "Visit the CFX Portal",
     },
     {
       title: "Create License Key",
       description: "Click 'Create a key' and name it after your server",
       image: "/screenshots/citizenfx/create-a-key.png",
-      imageAlt: "Create a key button on CFX portal"
+      imageAlt: "Create a key button on CFX portal",
     },
     {
       title: "Name Your Key",
-      description: "Enter a descriptive name - your server name is the easiest option",
+      description:
+        "Enter a descriptive name - your server name is the easiest option",
       image: "/screenshots/citizenfx/server-license-name.png",
-      imageAlt: "Naming your key in the CFX Portal"
+      imageAlt: "Naming your key in the CFX Portal",
     },
     {
       title: "Copy License",
       description: "Use the eye icon to reveal and copy your license key",
       image: "/screenshots/citizenfx/view-your-key.png",
-      imageAlt: "Viewing your key in the CFX Portal"
+      imageAlt: "Viewing your key in the CFX Portal",
     },
     {
       title: "Apply to Server",
       description: "Paste the key in txAdmin and click 'Run Recipe'",
       image: "/screenshots/txadmin/using-your-key.png",
-      imageAlt: "Paste your license key in txAdmin"
-    }
+      imageAlt: "Paste your license key in txAdmin",
+    },
   ]}
 />
 
 ### Deployment Execution
 
 <InfoBanner type="info" title="Deployment Progress">
-The deployer will automatically download and configure all necessary files. This process typically takes 2-5 minutes.
+  The deployer will automatically download and configure all necessary files.
+  This process typically takes 2-5 minutes.
 </InfoBanner>
 
 ![Deployer in Action](/screenshots/txadmin/deployer-1.png)
@@ -307,10 +360,26 @@ The deployer will automatically download and configure all necessary files. This
   title="Final Server Settings"
   language="ini"
   options={[
-    { name: "sv_hostname", value: "Your Server Name", description: "Name displayed in server browser" },
-    { name: "sv_licenseKey", value: "your_license_key_here", description: "CFX license key from portal" },
-    { name: "sv_maxclients", value: "48", description: "Maximum concurrent players" },
-    { name: "sets locale", value: "en-US", description: "Default server language" }
+    {
+      name: "sv_hostname",
+      value: "Your Server Name",
+      description: "Name displayed in server browser",
+    },
+    {
+      name: "sv_licenseKey",
+      value: "your_license_key_here",
+      description: "CFX license key from portal",
+    },
+    {
+      name: "sv_maxclients",
+      value: "48",
+      description: "Maximum concurrent players",
+    },
+    {
+      name: "sets locale",
+      value: "en-US",
+      description: "Default server language",
+    },
   ]}
 />
 
@@ -319,7 +388,8 @@ The deployer will automatically download and configure all necessary files. This
 ## Welcome to txAdmin
 
 <InfoBanner type="success" title="Setup Complete!">
-Your txAdmin server is now running and ready for players. Access the live console to monitor your server.
+  Your txAdmin server is now running and ready for players. Access the live
+  console to monitor your server.
 </InfoBanner>
 
 ![Welcome to txAdmin](/screenshots/txadmin/welcome.png)
@@ -327,7 +397,8 @@ Your txAdmin server is now running and ready for players. Access the live consol
 ## Post-Installation
 
 <InfoBanner type="success" title="Installation Complete">
-Congratulations! Your txAdmin server is now running. Here are some important next steps.
+  Congratulations! Your txAdmin server is now running. Here are some important
+  next steps.
 </InfoBanner>
 
 ### Essential First Steps
@@ -335,10 +406,26 @@ Congratulations! Your txAdmin server is now running. Here are some important nex
 <FeatureList
   columns={2}
   features={[
-    { title: "Configure Permissions", description: "Set up admin accounts and user roles", icon: "shield" },
-    { title: "Customize Server", description: "Add resources and modify settings", icon: "settings" },
-    { title: "Monitor Performance", description: "Check server metrics and logs", icon: "zap" },
-    { title: "Backup Configuration", description: "Save your server setup", icon: "folder" }
+    {
+      title: "Configure Permissions",
+      description: "Set up admin accounts and user roles",
+      icon: "shield",
+    },
+    {
+      title: "Customize Server",
+      description: "Add resources and modify settings",
+      icon: "settings",
+    },
+    {
+      title: "Monitor Performance",
+      description: "Check server metrics and logs",
+      icon: "zap",
+    },
+    {
+      title: "Backup Configuration",
+      description: "Save your server setup",
+      icon: "folder",
+    },
   ]}
 />
 
@@ -364,29 +451,31 @@ Congratulations! Your txAdmin server is now running. Here are some important nex
 
 ## Next Steps
 
-<QuickLinks links={[
-  {
-    title: "Server Management",
-    href: "/docs/txadmin/server-management",
-    icon: "server",
-    description: "Learn to manage your server through txAdmin"
-  },
-  {
-    title: "Permissions System",
-    href: "/docs/txadmin/permissions",
-    icon: "shield",
-    description: "Configure user roles and access control"
-  },
-  {
-    title: "Configuration Guide",
-    href: "/docs/txadmin/configuration",
-    icon: "settings",
-    description: "Customize server settings and options"
-  },
-  {
-    title: "Troubleshooting",
-    href: "/docs/txadmin/troubleshooting",
-    icon: "wrench",
-    description: "Solve common problems and issues"
-  }
-]} />
+<QuickLinks
+  links={[
+    {
+      title: "Server Management",
+      href: "/docs/txadmin/server-management",
+      icon: "server",
+      description: "Learn to manage your server through txAdmin",
+    },
+    {
+      title: "Permissions System",
+      href: "/docs/txadmin/permissions",
+      icon: "shield",
+      description: "Configure user roles and access control",
+    },
+    {
+      title: "Configuration Guide",
+      href: "/docs/txadmin/configuration",
+      icon: "settings",
+      description: "Customize server settings and options",
+    },
+    {
+      title: "Troubleshooting",
+      href: "/docs/txadmin/troubleshooting",
+      icon: "wrench",
+      description: "Solve common problems and issues",
+    },
+  ]}
+/>

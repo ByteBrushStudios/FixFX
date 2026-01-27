@@ -50,7 +50,11 @@ export function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.25, duration: 0.5 }}
       >
-        Your comprehensive resource for <span className="text-fd-foreground font-medium">FiveM</span>, <span className="text-fd-foreground font-medium">RedM</span>, and the <span className="text-fd-foreground font-medium">CitizenFX</span> ecosystem.
+        Your comprehensive resource for{" "}
+        <span className="text-fd-foreground font-medium">FiveM</span>,{" "}
+        <span className="text-fd-foreground font-medium">RedM</span>, and the{" "}
+        <span className="text-fd-foreground font-medium">CitizenFX</span>{" "}
+        ecosystem.
       </motion.p>
 
       {/* Search bar */}
@@ -71,7 +75,10 @@ export function Hero() {
         transition={{ delay: 0.45, duration: 0.5 }}
       >
         <Link href="/docs/core">
-          <Button className="group relative overflow-hidden px-6 py-3 text-base font-medium" variant="default">
+          <Button
+            className="group relative overflow-hidden px-6 py-3 text-base font-medium"
+            variant="default"
+          >
             <span className="relative z-10 flex items-center">
               Get Started
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -79,7 +86,10 @@ export function Hero() {
           </Button>
         </Link>
         <Link href="/docs/cfx/common-errors">
-          <Button className="group px-6 py-3 text-base font-medium" variant="outline">
+          <Button
+            className="group px-6 py-3 text-base font-medium"
+            variant="outline"
+          >
             <span className="relative z-10 flex items-center">
               Troubleshoot Issues
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

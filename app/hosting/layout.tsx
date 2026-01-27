@@ -5,13 +5,15 @@ import { baseOptions } from "@/app/layout.config";
 
 export const metadata: Metadata = {
   title: "Hosting Partners - FixFX",
-  description: "Explore our trusted hosting partners for your FiveM and RedM servers. Get exclusive discounts on high-performance game server hosting.",
+  description:
+    "Explore our trusted hosting partners for your FiveM and RedM servers. Get exclusive discounts on high-performance game server hosting.",
   alternates: {
     canonical: "https://fixfx.wiki/hosting",
   },
   openGraph: {
     title: "Hosting Partners - FixFX",
-    description: "Explore our trusted hosting partners for your FiveM and RedM servers. Get exclusive discounts on high-performance game server hosting.",
+    description:
+      "Explore our trusted hosting partners for your FiveM and RedM servers. Get exclusive discounts on high-performance game server hosting.",
     url: "https://fixfx.wiki/hosting",
     type: "website",
   },

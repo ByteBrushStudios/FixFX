@@ -1,10 +1,4 @@
 {
-    "title": "API References",
-    "pages": [
-        "artifacts",
-        "natives",
-        "contributors",
-        "search",
-        "chat"
-    ]
+  "title": "API References",
+  "pages": ["artifacts", "natives", "contributors", "search", "chat"]
 }

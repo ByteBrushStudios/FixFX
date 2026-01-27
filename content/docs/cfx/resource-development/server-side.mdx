@@ -3,7 +3,23 @@ title: Server-Side Development
 description: Complete guide to developing server-side scripts for FiveM resources.
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Server-side scripts handle game logic, player management, database operations, and security validation. They run on the server and communicate with clients through events.
 
@@ -13,28 +29,28 @@ Server-side scripts handle game logic, player management, database operations, a
     {
       title: "Initialize Resource",
       description: "Handle resource startup events and load configuration",
-      code: "AddEventHandler('onResourceStart', function(resourceName)\n  if resourceName == GetCurrentResourceName() then\n    print('Resource started')\n  end\nend)"
+      code: "AddEventHandler('onResourceStart', function(resourceName)\n  if resourceName == GetCurrentResourceName() then\n    print('Resource started')\n  end\nend)",
     },
     {
       title: "Manage Players",
       description: "Handle player connections, disconnections, and data",
-      code: "AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)\n  deferrals.defer()\n  -- Validate player\nend)"
+      code: "AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)\n  deferrals.defer()\n  -- Validate player\nend)",
     },
     {
       title: "Register Server Callbacks",
       description: "Create callbacks for client requests",
-      code: "ESX.RegisterServerCallback('myresource:getData', function(source, cb)\n  cb({data = 'example'})\nend)"
+      code: "ESX.RegisterServerCallback('myresource:getData', function(source, cb)\n  cb({data = 'example'})\nend)",
     },
     {
       title: "Handle Network Events",
       description: "Listen for and respond to client events",
-      code: "RegisterNetEvent('myresource:action')\nAddEventHandler('myresource:action', function()\n  -- Process action\nend)"
+      code: "RegisterNetEvent('myresource:action')\nAddEventHandler('myresource:action', function()\n  -- Process action\nend)",
     },
     {
       title: "Cleanup on Stop",
       description: "Clean up resources when resource stops",
-      code: "AddEventHandler('onResourceStop', function(resourceName)\n  if resourceName == GetCurrentResourceName() then\n    print('Cleanup')\n  end\nend)"
-    }
+      code: "AddEventHandler('onResourceStop', function(resourceName)\n  if resourceName == GetCurrentResourceName() then\n    print('Cleanup')\n  end\nend)",
+    },
   ]}
 />
 
@@ -77,16 +93,16 @@ end
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
     local src = source
     local identifiers = GetPlayerIdentifiers(src)
-    
+
     deferrals.defer()
     deferrals.update('Checking player data...')
-    
+
     -- Validate player
     if IsPlayerBanned(identifiers) then
         deferrals.done('You are banned from this server.')
         return
     end
-    
+
     deferrals.done()
 end)
 
@@ -98,7 +114,7 @@ end)
 AddEventHandler('playerDropped', function(reason)
     local src = source
     print(('[%s] %s left the server: %s'):format(src, GetPlayerName(src), reason))
-    
+
     -- Save player data before disconnect
     SavePlayerData(src)
     playerData[src] = nil
@@ -152,16 +168,16 @@ end
 RegisterServerEvent('myresource:saveData')
 AddEventHandler('myresource:saveData', function(data)
     local src = source
-    
+
     -- Validate source
     if not src or src == 0 then return end
-    
+
     -- Validate data
     if not data or type(data) ~= 'table' then
         print('Invalid data received from player ' .. src)
         return
     end
-    
+
     -- Process data
     SavePlayerData(src, data)
 end)
@@ -172,7 +188,7 @@ RegisterCommand('heal', function(source, args, rawCommand)
         print('This command can only be used in-game')
         return
     end
-    
+
     -- Check permissions
     if not IsPlayerAdmin(source) then
         TriggerClientEvent('chat:addMessage', source, {
@@ -181,7 +197,7 @@ RegisterCommand('heal', function(source, args, rawCommand)
         })
         return
     end
-    
+
     -- Execute command
     TriggerClientEvent('myresource:heal', source)
 end, false)
@@ -244,7 +260,7 @@ end
 
 function SavePlayerData(src, data)
     local identifier = GetPlayerIdentifier(src, 0)
-    
+
     MySQL.Async.execute('UPDATE users SET money = @money, job = @job WHERE identifier = @identifier', {
         ['@money'] = data.money,
         ['@job'] = data.job,
@@ -296,8 +312,8 @@ end
 
 function SavePlayerDataOx(src, data)
     local identifier = GetPlayerIdentifier(src, 0)
-    
-    MySQL:update('UPDATE users SET money = ?, job = ? WHERE identifier = ?', 
+
+    MySQL:update('UPDATE users SET money = ?, job = ? WHERE identifier = ?',
     {data.money, data.job, identifier}, function(affectedRows)
         if affectedRows > 0 then
             print('Player data saved for ' .. GetPlayerName(src))
@@ -314,32 +330,32 @@ end
 function ValidateInput(data, schema)
     for key, rules in pairs(schema) do
         local value = data[key]
-        
+
         -- Check required fields
         if rules.required and (value == nil or value == '') then
             return false, 'Missing required field: ' .. key
         end
-        
+
         -- Check data types
         if value ~= nil and rules.type and type(value) ~= rules.type then
             return false, 'Invalid type for field: ' .. key
         end
-        
+
         -- Check string length
         if rules.maxLength and type(value) == 'string' and #value > rules.maxLength then
             return false, 'Field too long: ' .. key
         end
-        
+
         -- Check numeric ranges
         if rules.min and type(value) == 'number' and value < rules.min then
             return false, 'Value too small for field: ' .. key
         end
-        
+
         if rules.max and type(value) == 'number' and value > rules.max then
             return false, 'Value too large for field: ' .. key
         end
     end
-    
+
     return true, nil
 end
 
@@ -353,13 +369,13 @@ local transferSchema = {
 RegisterServerEvent('banking:transfer')
 AddEventHandler('banking:transfer', function(data)
     local src = source
-    
+
     local valid, error = ValidateInput(data, transferSchema)
     if not valid then
         TriggerClientEvent('banking:error', src, 'Invalid input: ' .. error)
         return
     end
-    
+
     -- Process transfer
     ProcessTransfer(src, data.targetId, data.amount, data.reason)
 end)
@@ -390,13 +406,13 @@ end
 function HasPermission(src, permission)
     local role = GetPlayerRole(src)
     local rolePerms = permissions[role] or {}
-    
+
     for _, perm in ipairs(rolePerms) do
         if perm == permission then
             return true
         end
     end
-    
+
     return false
 end
 
@@ -409,7 +425,7 @@ RegisterCommand('money', function(source, args, rawCommand)
         })
         return
     end
-    
+
     local amount = tonumber(args[1])
     if amount then
         GivePlayerMoney(source, amount)
@@ -424,17 +440,17 @@ local playerActions = {}
 
 function LogPlayerAction(src, action, data)
     local timestamp = os.time()
-    
+
     if not playerActions[src] then
         playerActions[src] = {}
     end
-    
+
     table.insert(playerActions[src], {
         action = action,
         data = data,
         timestamp = timestamp
     })
-    
+
     -- Keep only last 100 actions
     if #playerActions[src] > 100 then
         table.remove(playerActions[src], 1)
@@ -443,10 +459,10 @@ end
 
 function CheckSpamming(src, action, timeLimit, maxActions)
     if not playerActions[src] then return false end
-    
+
     local currentTime = os.time()
     local actionCount = 0
-    
+
     for i = #playerActions[src], 1, -1 do
         local log = playerActions[src][i]
         if currentTime - log.timestamp > timeLimit then
@@ -456,7 +472,7 @@ function CheckSpamming(src, action, timeLimit, maxActions)
             actionCount = actionCount + 1
         end
     end
-    
+
     return actionCount >= maxActions
 end
 
@@ -464,15 +480,15 @@ end
 RegisterServerEvent('myresource:buyItem')
 AddEventHandler('myresource:buyItem', function(itemId, quantity)
     local src = source
-    
+
     -- Check for spamming
     if CheckSpamming(src, 'buyItem', 60, 10) then -- 10 purchases per minute max
         TriggerClientEvent('myresource:error', src, 'Too many purchase attempts')
         return
     end
-    
+
     LogPlayerAction(src, 'buyItem', {item = itemId, qty = quantity})
-    
+
     -- Process purchase
     ProcessPurchase(src, itemId, quantity)
 end)
@@ -524,17 +540,17 @@ local cacheTimeout = 60000 -- 1 minute
 
 function GetCachedData(key, fetchFunction)
     local now = GetGameTimer()
-    
+
     if cache[key] and (now - cache[key].timestamp) < cacheTimeout then
         return cache[key].data
     end
-    
+
     local data = fetchFunction()
     cache[key] = {
         data = data,
         timestamp = now
     }
-    
+
     return data
 end
 
@@ -606,29 +622,29 @@ local jobs = {
 
 function SetPlayerJob(src, jobName, grade)
     grade = grade or 0
-    
+
     if not jobs[jobName] then
         print('Invalid job: ' .. tostring(jobName))
         return false
     end
-    
+
     if not jobs[jobName].grades[grade] then
         print('Invalid grade for job ' .. jobName .. ': ' .. tostring(grade))
         return false
     end
-    
+
     SetPlayerData(src, 'job', jobName)
     SetPlayerData(src, 'job_grade', grade)
-    
+
     TriggerClientEvent('job:updated', src, jobName, grade)
-    
+
     return true
 end
 
 function GetPlayerJob(src)
     local jobName = GetPlayerData(src).job or 'unemployed'
     local grade = GetPlayerData(src).job_grade or 0
-    
+
     return jobName, grade, jobs[jobName]
 end
 ```
@@ -644,29 +660,29 @@ local economy = {
 
 function AddMoney(src, amount, reason)
     if amount <= 0 then return false end
-    
+
     local currentMoney = GetPlayerMoney(src)
     SetPlayerMoney(src, currentMoney + amount)
-    
+
     LogTransaction(src, 'add', amount, reason)
     TriggerClientEvent('money:updated', src, currentMoney + amount)
-    
+
     return true
 end
 
 function RemoveMoney(src, amount, reason)
     if amount <= 0 then return false end
-    
+
     local currentMoney = GetPlayerMoney(src)
     if currentMoney < amount then
         return false, 'Insufficient funds'
     end
-    
+
     SetPlayerMoney(src, currentMoney - amount)
-    
+
     LogTransaction(src, 'remove', amount, reason)
     TriggerClientEvent('money:updated', src, currentMoney - amount)
-    
+
     return true
 end
 
@@ -678,7 +694,7 @@ function LogTransaction(src, type, amount, reason)
         reason = reason,
         timestamp = os.time()
     })
-    
+
     -- Save to database
     MySQL.Async.execute('INSERT INTO transactions (player_id, type, amount, reason, timestamp) VALUES (@player_id, @type, @amount, @reason, @timestamp)', {
         ['@player_id'] = src,
@@ -706,15 +722,15 @@ local currentLogLevel = LogLevel.INFO
 
 function Log(level, message, ...)
     if level < currentLogLevel then return end
-    
+
     local levelNames = {'DEBUG', 'INFO', 'WARN', 'ERROR'}
     local levelName = levelNames[level] or 'UNKNOWN'
-    
+
     local timestamp = os.date('%Y-%m-%d %H:%M:%S')
     local formattedMessage = string.format(message, ...)
-    
+
     print(string.format('[%s][%s] %s', timestamp, levelName, formattedMessage))
-    
+
     -- Also save to file if needed
     if level >= LogLevel.ERROR then
         SaveToLogFile(timestamp, levelName, formattedMessage)

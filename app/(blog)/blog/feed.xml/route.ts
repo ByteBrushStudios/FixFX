@@ -3,7 +3,7 @@ import { DOCS_URL } from "@utils/index";
 
 export async function GET() {
   const posts = blogPosts.getPages();
-  
+
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
@@ -19,7 +19,10 @@ export async function GET() {
       <link>${DOCS_URL}</link>
     </image>
     ${posts
-      .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+      )
       .map(
         (post) => `
     <item>
@@ -29,7 +32,7 @@ export async function GET() {
       <description><![CDATA[${post.data.description || ""}]]></description>
       <author>${post.data.author}</author>
       <pubDate>${new Date(post.data.date).toUTCString()}</pubDate>
-    </item>`
+    </item>`,
       )
       .join("")}
   </channel>

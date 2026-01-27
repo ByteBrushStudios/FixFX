@@ -1,6 +1,6 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "@utils/functions/cn"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@utils/functions/cn";
 
 const badgeVariants = cva(
   "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 select-none animate-in fade-in-50 duration-300",
@@ -18,12 +18,10 @@ const badgeVariants = cva(
           "border-transparent bg-green-500 text-white hover:bg-green-500/80",
         warning:
           "border-transparent bg-yellow-500 text-white hover:bg-yellow-500/80",
-        info:
-          "border-transparent bg-blue-500 text-white hover:bg-blue-500/80",
+        info: "border-transparent bg-blue-500 text-white hover:bg-blue-500/80",
         ghost:
           "bg-background/30 backdrop-blur-sm text-foreground hover:bg-background/50 border-background/10",
-        cfx:
-          "border-transparent bg-[#5865F2] text-white hover:bg-[#5865F2]/80",
+        cfx: "border-transparent bg-[#5865F2] text-white hover:bg-[#5865F2]/80",
       },
       size: {
         default: "px-2.5 py-0.5 text-xs",
@@ -41,7 +39,7 @@ const badgeVariants = cva(
       shape: {
         pill: "rounded-full",
         square: "rounded-md",
-      }
+      },
     },
     defaultVariants: {
       variant: "default",
@@ -50,12 +48,13 @@ const badgeVariants = cva(
       interactive: "default",
       shape: "pill",
     },
-  }
-)
+  },
+);
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof badgeVariants> {
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {
   icon?: React.ReactNode;
   clickable?: boolean;
   asChild?: boolean;
@@ -97,7 +96,7 @@ function Badge({
   // Improved layout logic
   const hasContent = Boolean(props.children);
   const iconOnly = icon && !hasContent;
-  const enhancedSize = iconOnly && size === 'default' ? 'sm' : size;
+  const enhancedSize = iconOnly && size === "default" ? "sm" : size;
 
   const Comp = asChild ? React.Fragment : "div";
 
@@ -109,11 +108,11 @@ function Badge({
           size: enhancedSize,
           glow,
           interactive: enhancedInteractive,
-          shape
+          shape,
         }),
         iconOnly && "aspect-square justify-center p-0", // Make icon-only badges square
         hasContent && "px-3", // More horizontal padding for badges with content
-        className
+        className,
       )}
       style={badgeStyle as React.CSSProperties}
       role={clickable ? "button" : undefined}
@@ -123,7 +122,7 @@ function Badge({
       {icon && <span className="flex-shrink-0">{icon}</span>}
       {asChild ? props.children : hasContent && <span>{props.children}</span>}
     </Comp>
-  )
+  );
 }
 
-export { Badge, badgeVariants }
+export { Badge, badgeVariants };

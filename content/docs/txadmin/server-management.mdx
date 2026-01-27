@@ -3,28 +3,74 @@ title: Server Management
 description: txAdmin provides a comprehensive web interface for managing all aspects of your FiveM/RedM server. This guide covers the main features and how to use them effectively.
 ---
 
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { Callout } from 'fumadocs-ui/components/callout';
-import { TypeTable, SimpleTypeTable } from '@ui/components/type-table';
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid } from '@ui/components/mdx-components';
-import { ImageModal } from '@ui/components/image-modal';
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+import { TypeTable, SimpleTypeTable } from "@ui/components/type-table";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+  RoleCard,
+  PermissionCodeBlock,
+  KeyboardShortcutTable,
+  ActionTable,
+  InfoBanner,
+  CategoryGrid,
+} from "@ui/components/mdx-components";
+import { ImageModal } from "@ui/components/image-modal";
 
 ## Dashboard
 
 The Dashboard is your server's command center, displaying real-time statistics and performance metrics.
 
-<ImageModal src="/screenshots/txadmin/dashboard.png" alt="Dashboard Page" title="txAdmin Dashboard Page" />
+<ImageModal
+  src="/screenshots/txadmin/dashboard.png"
+  alt="Dashboard Page"
+  title="txAdmin Dashboard Page"
+/>
 
 ### Key Metrics
 
 <FeatureList
   columns={2}
   features={[
-    { title: "Server Status", description: "Shows if your server is ONLINE or OFFLINE", icon: "server" },
-    { title: "Uptime", description: "How long your server has been running", icon: "clock" },
-    { title: "Player Count", description: "Current and maximum player capacity", icon: "users" },
-    { title: "Memory Usage", description: "FXServer and Node.js memory consumption", icon: "cpu" },
-    { title: "Performance Metrics", description: "Server ping/frame time performance", icon: "activity" },
+    {
+      title: "Server Status",
+      description: "Shows if your server is ONLINE or OFFLINE",
+      icon: "server",
+    },
+    {
+      title: "Uptime",
+      description: "How long your server has been running",
+      icon: "clock",
+    },
+    {
+      title: "Player Count",
+      description: "Current and maximum player capacity",
+      icon: "users",
+    },
+    {
+      title: "Memory Usage",
+      description: "FXServer and Node.js memory consumption",
+      icon: "cpu",
+    },
+    {
+      title: "Performance Metrics",
+      description: "Server ping/frame time performance",
+      icon: "activity",
+    },
   ]}
 />
 
@@ -32,31 +78,57 @@ The Dashboard is your server's command center, displaying real-time statistics a
 
 <DefinitionList
   items={[
-    { term: "Player Drop Cause", description: "Last 6 hours of player disconnections" },
-    { term: "Server Stats (Live)", description: "Uptime, median player count, memory usage" },
-    { term: "svMain Performance", description: "Frame time distribution graph showing server responsiveness" },
+    {
+      term: "Player Drop Cause",
+      description: "Last 6 hours of player disconnections",
+    },
+    {
+      term: "Server Stats (Live)",
+      description: "Uptime, median player count, memory usage",
+    },
+    {
+      term: "svMain Performance",
+      description:
+        "Frame time distribution graph showing server responsiveness",
+    },
   ]}
 />
 
 <InfoBanner type="tip" title="Pro Tip">
-Monitor the performance graph regularly. Spikes indicate resource issues or heavy load. If you see frequent red (high frame time), consider optimizing your resources.
+  Monitor the performance graph regularly. Spikes indicate resource issues or
+  heavy load. If you see frequent red (high frame time), consider optimizing
+  your resources.
 </InfoBanner>
 
 ## Live Console
 
 The Live Console displays real-time server output and allows you to execute commands.
 
-<ImageModal src="/screenshots/txadmin/live-console.png" alt="Live Console Page" title="txAdmin Live Console" />
+<ImageModal
+  src="/screenshots/txadmin/live-console.png"
+  alt="Live Console Page"
+  title="txAdmin Live Console"
+/>
 
 ### Features
 
 <DefinitionList
   variant="bordered"
   items={[
-    { term: "Real-time Logs", description: "See server events as they happen (resource starts, player joins, errors)" },
-    { term: "Command Input", description: "Type and execute console commands directly" },
+    {
+      term: "Real-time Logs",
+      description:
+        "See server events as they happen (resource starts, player joins, errors)",
+    },
+    {
+      term: "Command Input",
+      description: "Type and execute console commands directly",
+    },
     { term: "Clear Console", description: "Remove all displayed logs" },
-    { term: "View Navigation", description: "Older/Newer buttons to scroll through logs" },
+    {
+      term: "View Navigation",
+      description: "Older/Newer buttons to scroll through logs",
+    },
     { term: "Save/Download", description: "Export logs for debugging" },
   ]}
 />
@@ -67,7 +139,7 @@ The Live Console displays real-time server output and allows you to execute comm
   columns={2}
   items={[
     "Player Joins",
-    "Player Leaves", 
+    "Player Leaves",
     "Chat Messages",
     "Player Deaths",
     "Menu Actions",
@@ -82,8 +154,14 @@ The Live Console displays real-time server output and allows you to execute comm
 <CommandTable
   title="Player Management"
   commands={[
-    { command: "kick [id] [reason]", description: "Kick a player from the server" },
-    { command: "ban [identifier] [reason]", description: "Ban a player permanently" },
+    {
+      command: "kick [id] [reason]",
+      description: "Kick a player from the server",
+    },
+    {
+      command: "ban [identifier] [reason]",
+      description: "Ban a player permanently",
+    },
     { command: "unban [identifier]", description: "Remove a player's ban" },
   ]}
 />
@@ -92,7 +170,10 @@ The Live Console displays real-time server output and allows you to execute comm
   title="Server Control"
   commands={[
     { command: "restart", description: "Restart the server" },
-    { command: "say [message]", description: "Broadcast a message to all players" },
+    {
+      command: "say [message]",
+      description: "Broadcast a message to all players",
+    },
     { command: "refresh", description: "Refresh all resources" },
   ]}
 />
@@ -100,52 +181,63 @@ The Live Console displays real-time server output and allows you to execute comm
 <CommandTable
   title="Admin Commands"
   commands={[
-    { command: "add_principal [id] group.admin", description: "Grant admin permissions to a player" },
-    { command: "remove_principal [id] group.admin", description: "Revoke admin permissions from a player" },
+    {
+      command: "add_principal [id] group.admin",
+      description: "Grant admin permissions to a player",
+    },
+    {
+      command: "remove_principal [id] group.admin",
+      description: "Revoke admin permissions from a player",
+    },
   ]}
 />
 
 <InfoBanner type="warning" title="Important">
-Be careful with console commands. Some can destabilize the server if used incorrectly.
+  Be careful with console commands. Some can destabilize the server if used
+  incorrectly.
 </InfoBanner>
 
 ## Players
 
 The Players tab shows all connected players and their statistics.
 
-<ImageModal src="/screenshots/txadmin/players-page.png" alt="Players Page" title="txAdmin Players Tab" />
+<ImageModal
+  src="/screenshots/txadmin/players-page.png"
+  alt="Players Page"
+  title="txAdmin Players Tab"
+/>
 
 ### Player Information
 
 <TypeTable
   type={{
     totalPlayers: {
-      type: 'number',
-      description: 'Current player count on the server',
+      type: "number",
+      description: "Current player count on the server",
     },
     playersLast24h: {
-      type: 'object',
-      description: 'Connection statistics for the last 24 hours',
+      type: "object",
+      description: "Connection statistics for the last 24 hours",
     },
     newPlayers: {
-      type: 'object',
-      description: 'New players in last 24h and 7d periods',
+      type: "object",
+      description: "New players in last 24h and 7d periods",
     },
     displayName: {
-      type: 'string',
+      type: "string",
       description: "Player's in-game display name",
     },
     playTime: {
-      type: 'string',
-      description: 'How long they have been connected to the server',
+      type: "string",
+      description: "How long they have been connected to the server",
     },
     firstJoined: {
-      type: 'Date',
-      description: 'When they first joined the server',
+      type: "Date",
+      description: "When they first joined the server",
     },
     lastConnection: {
-      type: 'Date',
-      description: 'Most recent connection time',
+      type: "Date",
+      description: "Most recent connection time",
     },
   }}
 />
@@ -166,14 +258,19 @@ The Players tab shows all connected players and their statistics.
   - Has Profile Notes
 
 <Callout type="info">
-Use player search to quickly find someone causing issues. Add notes to player profiles for future reference.
+  Use player search to quickly find someone causing issues. Add notes to player
+  profiles for future reference.
 </Callout>
 
 ## Resources
 
 The Resources tab lets you manage which resources are active on your server.
 
-<ImageModal src="/screenshots/txadmin/resources-tab.png" alt="Resources Tab" title="txAdmin Resources Tab" />
+<ImageModal
+  src="/screenshots/txadmin/resources-tab.png"
+  alt="Resources Tab"
+  title="txAdmin Resources Tab"
+/>
 
 ### Resource Management
 
@@ -190,7 +287,8 @@ The Resources tab lets you manage which resources are active on your server.
 - **Monitor** - Track resource performance
 
 <Callout type="warn">
-**Caution:** Reloading resources can cause temporary gameplay disruptions. Only do this during maintenance windows.
+  **Caution:** Reloading resources can cause temporary gameplay disruptions.
+  Only do this during maintenance windows.
 </Callout>
 
 ## Server Log
@@ -200,6 +298,7 @@ The Server Log page provides detailed analytics and historical data.
 ### Logger Filters
 
 Toggle logging for specific events:
+
 - Player Joins/Leaves
 - Chat Messages
 - Player Deaths
@@ -216,6 +315,7 @@ Toggle logging for specific events:
 - **View Navigation** - Scroll through historical logs
 
 This is useful for:
+
 - Investigating player disputes (who said what, when)
 - Tracking rule violations
 - Debugging resource issues
@@ -245,6 +345,7 @@ The History tab maintains records of all player actions and admin interventions.
   - Date/Time
 
 This creates an accountability log for:
+
 - Verifying fairness of bans
 - Training new admins
 - Documenting rule enforcement
@@ -268,7 +369,8 @@ Analytics for unexpected player disconnections.
 - Spot problematic resources that need optimization
 
 <Callout type="info">
-Frequent crashes in a specific resource? That resource likely needs optimization or bug fixes.
+  Frequent crashes in a specific resource? That resource likely needs
+  optimization or bug fixes.
 </Callout>
 
 ## Whitelist
@@ -294,6 +396,7 @@ Manage which players can join your server when whitelist is enabled.
 ### Player Identifier Types
 
 Whitelist accepts any of these identifiers:
+
 - `steam:` - Steam ID
 - `fivem:` - FiveM ID
 - `license:` - Game license
@@ -309,7 +412,8 @@ Whitelist accepts any of these identifiers:
 4. Accept their applications or manually add their IDs
 
 <Callout type="info">
-**Best Practice:** Use Discord integration to automate whitelist approvals through bot commands.
+  **Best Practice:** Use Discord integration to automate whitelist approvals
+  through bot commands.
 </Callout>
 
 ## Admins
@@ -360,35 +464,27 @@ Manage administrator accounts and permissions.
 
 <Tabs items={["CFX Account", "Master Account"]}>
   <Tab value="CFX Account">
-    **Best for:** Main administrators who have CFX forum accounts
-    
-    1. Click **Add** admin
-    2. Enter CFX username
-    3. Select permissions
-    4. Save
-    
-    They can login with CFX button
+    **Best for:** Main administrators who have CFX forum accounts 1. Click
+    **Add** admin 2. Enter CFX username 3. Select permissions 4. Save They can
+    login with CFX button
   </Tab>
   <Tab value="Master Account">
-    **Best for:** Local/backup admin accounts
-    
-    1. Click **Add** admin
-    2. Enter username (custom)
-    3. Set password
-    4. Add identifiers (optional)
-    5. Select permissions
-    6. Save
+    **Best for:** Local/backup admin accounts 1. Click **Add** admin 2. Enter
+    username (custom) 3. Set password 4. Add identifiers (optional) 5. Select
+    permissions 6. Save
   </Tab>
 </Tabs>
 
 ### Admin Identifiers
 
 Link admin accounts to player identifiers:
+
 - **FiveM ID** - For in-game `/getid` integration
 - **Discord ID** - For Discord Bot commands
 
 <Callout type="warn">
-**Security:** Only grant admin permissions to trusted individuals. Review admin activity regularly in the History tab.
+  **Security:** Only grant admin permissions to trusted individuals. Review
+  admin activity regularly in the History tab.
 </Callout>
 
 ## Settings
@@ -406,7 +502,8 @@ Server-wide configuration accessible only to master admins.
 - **Customization** - Custom commands, server-specific settings
 
 <Callout type="info">
-Settings changes take effect immediately for most options. Some may require server restart.
+  Settings changes take effect immediately for most options. Some may require
+  server restart.
 </Callout>
 
 ## Best Practices
@@ -467,6 +564,7 @@ Settings changes take effect immediately for most options. Some may require serv
 ### Command Execution
 
 Execute server commands through the console:
+
 - `/say [message]` - Server-wide announcement
 - `/kick [id] [reason]` - Remove player from server
 - `/ban [identifier] [reason]` - Permanently ban player
@@ -475,6 +573,7 @@ Execute server commands through the console:
 ### Player Notes
 
 Add notes to player profiles for:
+
 - Ban reasons
 - Warnings issued
 - Behavior notes
@@ -483,14 +582,15 @@ Add notes to player profiles for:
 ### Audit Trail
 
 All admin actions are logged:
+
 - Who did what
 - When they did it
 - What changed
 - Why (if reason provided)
 
 Use this for:
+
 - Accountability
 - Training new admins
 - Investigating disputes
 - Proving fair moderation
-

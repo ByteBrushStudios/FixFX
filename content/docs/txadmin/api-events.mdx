@@ -3,7 +3,13 @@ title: "API Events"
 description: "Learn about txAdmin Events and how to integrate them with your resources."
 ---
 
-import { FeatureList, DefinitionList, StepList, PropertyCard, CommandCard } from "@ui/components";
+import {
+  FeatureList,
+  DefinitionList,
+  StepList,
+  PropertyCard,
+  CommandCard,
+} from "@ui/components";
 import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
 
 # txAdmin Events API
@@ -16,24 +22,28 @@ txAdmin broadcasts **server events** that allow you to integrate functionalities
   features={[
     {
       name: "Server Events",
-      description: "Real-time notifications for server state changes like shutdowns, restarts, and announcements",
-      icon: "server"
+      description:
+        "Real-time notifications for server state changes like shutdowns, restarts, and announcements",
+      icon: "server",
     },
     {
       name: "Player Events",
-      description: "Events triggered by player actions including bans, warns, kicks, and direct messages",
-      icon: "users"
+      description:
+        "Events triggered by player actions including bans, warns, kicks, and direct messages",
+      icon: "users",
     },
     {
       name: "Whitelist Management",
-      description: "Track whitelist changes, requests, and pre-approvals as they happen",
-      icon: "shield"
+      description:
+        "Track whitelist changes, requests, and pre-approvals as they happen",
+      icon: "shield",
     },
     {
       name: "Admin Events",
-      description: "Monitor admin authentication, permission changes, and console commands",
-      icon: "userCog"
-    }
+      description:
+        "Monitor admin authentication, permission changes, and console commands",
+      icon: "userCog",
+    },
   ]}
   columns={2}
 />
@@ -41,8 +51,16 @@ txAdmin broadcasts **server events** that allow you to integrate functionalities
 <div className="my-6 p-4 border border-blue-500/30 bg-blue-500/10 rounded-lg flex gap-3">
   <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
   <div>
-    <p className="font-semibold text-blue-500 mb-1">CFX Events, Not txAdmin API</p>
-    <p className="text-sm text-blue-500/90">These events are part of the <strong>CFX event system</strong> and are broadcast by txAdmin into the server's game environment. txAdmin does not currently expose a separate HTTP/REST API. To integrate with these events, you must listen for them using game event handlers in your server-side resources.</p>
+    <p className="font-semibold text-blue-500 mb-1">
+      CFX Events, Not txAdmin API
+    </p>
+    <p className="text-sm text-blue-500/90">
+      These events are part of the <strong>CFX event system</strong> and are
+      broadcast by txAdmin into the server's game environment. txAdmin does not
+      currently expose a separate HTTP/REST API. To integrate with these events,
+      you must listen for them using game event handlers in your server-side
+      resources.
+    </p>
   </div>
 </div>
 
@@ -50,7 +68,12 @@ txAdmin broadcasts **server events** that allow you to integrate functionalities
   <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
   <div>
     <p className="font-semibold text-amber-500 mb-1">Important Notice</p>
-    <p className="text-sm text-amber-500/90">Do not fully rely on events where consistency is key since they may be executed while the server is not online. For example, while the server is stopped, one could whitelist or ban player identifiers without triggering events.</p>
+    <p className="text-sm text-amber-500/90">
+      Do not fully rely on events where consistency is key since they may be
+      executed while the server is not online. For example, while the server is
+      stopped, one could whitelist or ban player identifiers without triggering
+      events.
+    </p>
   </div>
 </div>
 
@@ -70,12 +93,14 @@ Broadcasted when an announcement is made using txAdmin.
 />
 
 **Event Data:**
-- `author` *(string)* - The name of the admin or `txAdmin`
-- `message` *(string)* - The message content of the announcement
+
+- `author` _(string)_ - The name of the admin or `txAdmin`
+- `message` _(string)_ - The message content of the announcement
 
 **Customization:** You can hide the default notification in `txAdmin → Settings → Game → Notifications`.
 
 **Example:**
+
 ```lua
 AddEventHandler('txAdmin:events:announcement', function(eventData)
     print("Announcement from " .. eventData.author .. ": " .. eventData.message)
@@ -97,11 +122,13 @@ Broadcasted when the server is about to shut down. This can be triggered by sche
 />
 
 **Event Data:**
-- `delay` *(number)* - Milliseconds txAdmin will wait before killing the server process
-- `author` *(string)* - The name of the admin or `txAdmin`
-- `message` *(string)* - The shutdown message
+
+- `delay` _(number)_ - Milliseconds txAdmin will wait before killing the server process
+- `author` _(string)_ - The name of the admin or `txAdmin`
+- `message` _(string)_ - The shutdown message
 
 **Example:**
+
 ```lua
 AddEventHandler('txAdmin:events:serverShuttingDown', function(eventData)
     print("Server shutting down in " .. (eventData.delay / 1000) .. " seconds")
@@ -123,12 +150,14 @@ Broadcasted automatically `[30, 15, 10, 5, 4, 3, 2, 1]` minutes before a schedul
 />
 
 **Event Data:**
-- `secondsRemaining` *(number)* - Seconds before the scheduled restart
-- `translatedMessage` *(string)* - Translated message to show on the announcement
+
+- `secondsRemaining` _(number)_ - Seconds before the scheduled restart
+- `translatedMessage` _(string)_ - Translated message to show on the announcement
 
 **Customization:** Hide the default notification in `txAdmin → Settings → Game → Notifications`.
 
 **Example (ESX v1.2):**
+
 ```lua
 ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -160,9 +189,10 @@ Broadcasted when an admin skips the next scheduled restart.
 />
 
 **Event Data:**
-- `secondsRemaining` *(number)* - Seconds before the previously scheduled restart
-- `temporary` *(boolean)* - Whether it was a temporary or configured restart
-- `author` *(string)* - Name of the admin that skipped the restart
+
+- `secondsRemaining` _(number)_ - Seconds before the previously scheduled restart
+- `temporary` _(boolean)_ - Whether it was a temporary or configured restart
+- `author` _(string)_ - Name of the admin that skipped the restart
 
 ---
 
@@ -180,17 +210,18 @@ Broadcasted when a player is banned using txAdmin.
 />
 
 **Event Data:**
-- `author` *(string)* - The name of the admin
-- `reason` *(string)* - The reason for the ban
-- `actionId` *(string)* - The ID of this action
-- `expiration` *(number|boolean)* - Unix timestamp for ban expiration, or `false` if permanent (added in v4.9)
-- `durationInput` *(string)* - Duration input (added in v5.0)
-- `durationTranslated` *(string|null)* - Translated duration or `null` (added in v5.0)
-- `targetNetId` *(number|null)* - Network ID of banned player, or `null` if identifiers-only ban (added in v5.0)
-- `targetIds` *(table)* - Identifiers that were banned (added in v5.0)
-- `targetHwids` *(table)* - Hardware identifiers that were banned (added in v6.0)
-- `targetName` *(string)* - Clean name of banned player or `identifiers` for legacy bans (added in v5.0)
-- `kickMessage` *(string)* - Message shown to player as kick reason (added in v5.0)
+
+- `author` _(string)_ - The name of the admin
+- `reason` _(string)_ - The reason for the ban
+- `actionId` _(string)_ - The ID of this action
+- `expiration` _(number|boolean)_ - Unix timestamp for ban expiration, or `false` if permanent (added in v4.9)
+- `durationInput` _(string)_ - Duration input (added in v5.0)
+- `durationTranslated` _(string|null)_ - Translated duration or `null` (added in v5.0)
+- `targetNetId` _(number|null)_ - Network ID of banned player, or `null` if identifiers-only ban (added in v5.0)
+- `targetIds` _(table)_ - Identifiers that were banned (added in v5.0)
+- `targetHwids` _(table)_ - Hardware identifiers that were banned (added in v6.0)
+- `targetName` _(string)_ - Clean name of banned player or `identifiers` for legacy bans (added in v5.0)
+- `kickMessage` _(string)_ - Message shown to player as kick reason (added in v5.0)
 
 ---
 
@@ -206,12 +237,13 @@ Broadcasted when a player is warned using txAdmin.
 />
 
 **Event Data:**
-- `author` *(string)* - The name of the admin
-- `reason` *(string)* - The reason for the warning
-- `actionId` *(string)* - The ID of this action
-- `targetNetId` *(number|null)* - Network ID of warned player, or `null` if offline (added in v7.3)
-- `targetIds` *(table)* - Identifiers that were warned (added in v7.3)
-- `targetName` *(string)* - Clean name of warned player (added in v7.3)
+
+- `author` _(string)_ - The name of the admin
+- `reason` _(string)_ - The reason for the warning
+- `actionId` _(string)_ - The ID of this action
+- `targetNetId` _(number|null)_ - Network ID of warned player, or `null` if offline (added in v7.3)
+- `targetIds` _(table)_ - Identifiers that were warned (added in v7.3)
+- `targetName` _(string)_ - Clean name of warned player (added in v7.3)
 
 **Customization:** Hide the default notification in `txAdmin → Settings → Game → Notifications`.
 
@@ -229,10 +261,11 @@ Broadcasted when a player is kicked using txAdmin. Note: Starting on v8.0, the `
 />
 
 **Event Data:**
-- `target` *(number)* - Player ID that was kicked, or `-1` if kicking everyone
-- `author` *(string)* - The name of the admin
-- `reason` *(string)* - The reason for the kick
-- `dropMessage` *(string)* - Translated message players will see when kicked (added in v8.0)
+
+- `target` _(number)_ - Player ID that was kicked, or `-1` if kicking everyone
+- `author` _(string)_ - The name of the admin
+- `reason` _(string)_ - The reason for the kick
+- `dropMessage` _(string)_ - Translated message players will see when kicked (added in v8.0)
 
 ---
 
@@ -248,8 +281,9 @@ Broadcasted when a heal event is triggered for a player or the whole server. Thi
 />
 
 **Event Data:**
-- `target` *(number)* - Player ID that was healed, or `-1` if the entire server was healed
-- `author` *(string)* - Name of the admin that triggered the heal
+
+- `target` _(number)_ - Player ID that was healed, or `-1` if the entire server was healed
+- `author` _(string)_ - Name of the admin that triggered the heal
 
 ---
 
@@ -265,9 +299,10 @@ Broadcasted when an admin DMs a player.
 />
 
 **Event Data:**
-- `target` *(number)* - ID of the player to receive the DM
-- `author` *(string)* - The name of the admin
-- `message` *(string)* - The message content
+
+- `target` _(number)_ - ID of the player to receive the DM
+- `author` _(string)_ - The name of the admin
+- `message` _(string)_ - The message content
 
 **Customization:** Hide the default notification in `txAdmin → Settings → Game → Notifications`.
 
@@ -287,10 +322,11 @@ Broadcasted when a player is whitelisted or has their whitelisted status revoked
 />
 
 **Event Data:**
-- `action` *(string)* - `added` or `removed`
-- `license` *(string)* - The license of the player
-- `playerName` *(string)* - The player display name
-- `adminName` *(string)* - Name of the admin that performed the action
+
+- `action` _(string)_ - `added` or `removed`
+- `license` _(string)_ - The license of the player
+- `playerName` _(string)_ - The player display name
+- `adminName` _(string)_ - Name of the admin that performed the action
 
 ---
 
@@ -306,10 +342,11 @@ Broadcasted when manually adding identifiers to whitelist pre-approvals. Players
 />
 
 **Event Data:**
-- `action` *(string)* - `added` or `removed`
-- `identifier` *(string)* - The identifier that was pre-approved (e.g., `discord:xxxxxx`)
-- `playerName?` *(string)* - The player display name (except when action is `removed`)
-- `adminName` *(string)* - Name of the admin that performed the action
+
+- `action` _(string)_ - `added` or `removed`
+- `identifier` _(string)_ - The identifier that was pre-approved (e.g., `discord:xxxxxx`)
+- `playerName?` _(string)_ - The player display name (except when action is `removed`)
+- `adminName` _(string)_ - Name of the admin that performed the action
 
 **Note:** This event is NOT triggered when a whitelist request is approved. Use `txAdmin:events:whitelistRequest` for that.
 
@@ -327,11 +364,12 @@ Broadcasted whenever an event related to whitelist requests occurs.
 />
 
 **Event Data:**
-- `action` *(string)* - `requested`, `approved`, `denied`, or `deniedAll`
-- `playerName?` *(string)* - The player display name (except when action is `deniedAll`)
-- `requestId?` *(string)* - The request ID (e.g., `Rxxxx`), except when action is `deniedAll`
-- `license?` *(string)* - The license of the player/requester (except when action is `deniedAll`)
-- `adminName?` *(string)* - Name of the admin that performed the action (except when action is `requested`)
+
+- `action` _(string)_ - `requested`, `approved`, `denied`, or `deniedAll`
+- `playerName?` _(string)_ - The player display name (except when action is `deniedAll`)
+- `requestId?` _(string)_ - The request ID (e.g., `Rxxxx`), except when action is `deniedAll`
+- `license?` _(string)_ - The license of the player/requester (except when action is `deniedAll`)
+- `adminName?` _(string)_ - Name of the admin that performed the action (except when action is `requested`)
 
 ---
 
@@ -349,9 +387,10 @@ Broadcasted whenever an admin is authenticated in-game or loses admin permission
 />
 
 **Event Data:**
-- `netid` *(number)* - Player ID or `-1` when revoking all admin permissions (forced reauth)
-- `isAdmin` *(boolean)* - Whether the player is an admin
-- `username?` *(string)* - The txAdmin username of the authenticated admin
+
+- `netid` _(number)_ - Player ID or `-1` when revoking all admin permissions (forced reauth)
+- `isAdmin` _(boolean)_ - Whether the player is an admin
+- `username?` _(string)_ - The txAdmin username of the authenticated admin
 
 ---
 
@@ -367,6 +406,7 @@ Broadcasted whenever the admin list changes, including permission or identifier 
 />
 
 **Event Data:**
+
 - Array of Network IDs of admins currently online
 
 ---
@@ -383,14 +423,15 @@ Broadcasted when an admin revokes a database action (ban, warn, etc.).
 />
 
 **Event Data:**
-- `actionId` *(string)* - The ID of the revoked action
-- `actionType` *(string)* - The type of action that was revoked (ban, warn, etc.)
-- `actionReason` *(string)* - The action reason
-- `actionAuthor` *(string)* - Name of the admin that issued the action
-- `playerName` *(string|boolean)* - Name of the player that received the action, or `false` if not applicable
-- `playerIds` *(table)* - Array of identifiers the action applied to (license, discord, etc.)
-- `playerHwids` *(table)* - Array of hardware ID tokens the action applied to (added in v6.0)
-- `revokedBy` *(string)* - Name of the admin that revoked the action
+
+- `actionId` _(string)_ - The ID of the revoked action
+- `actionType` _(string)_ - The type of action that was revoked (ban, warn, etc.)
+- `actionReason` _(string)_ - The action reason
+- `actionAuthor` _(string)_ - Name of the admin that issued the action
+- `playerName` _(string|boolean)_ - Name of the player that received the action, or `false` if not applicable
+- `playerIds` _(table)_ - Array of identifiers the action applied to (license, discord, etc.)
+- `playerHwids` _(table)_ - Array of hardware ID tokens the action applied to (added in v6.0)
+- `revokedBy` _(string)_ - Name of the admin that revoked the action
 
 ---
 
@@ -423,9 +464,10 @@ Broadcasted whenever an admin sends a command through the Live Console.
 />
 
 **Event Data:**
-- `author` *(string)* - The txAdmin username of the admin who sent the command
-- `channel` *(string)* - Currently always `txAdmin`, but may be `rcon` or `game` in the future
-- `command` *(string)* - The command that was executed
+
+- `author` _(string)_ - The txAdmin username of the admin who sent the command
+- `channel` _(string)_ - Currently always `txAdmin`, but may be `rcon` or `game` in the future
+- `command` _(string)_ - The command that was executed
 
 ---
 
@@ -437,16 +479,18 @@ The following events have been deprecated and should not be used in new resource
   items={[
     {
       term: "txAdmin:events:playerWhitelisted",
-      definition: "Deprecated in v5.0.0. Use whitelist-related events instead."
+      definition: "Deprecated in v5.0.0. Use whitelist-related events instead.",
     },
     {
       term: "txAdmin:events:healedPlayer",
-      definition: "Deprecated in v8.0. Use `txAdmin:events:playerHealed` instead."
+      definition:
+        "Deprecated in v8.0. Use `txAdmin:events:playerHealed` instead.",
     },
     {
       term: "txAdmin:events:skippedNextScheduledRestart",
-      definition: "Deprecated in v8.0. Use `txAdmin:events:scheduledRestartSkipped` instead."
-    }
+      definition:
+        "Deprecated in v8.0. Use `txAdmin:events:scheduledRestartSkipped` instead.",
+    },
   ]}
 />
 
@@ -519,24 +563,28 @@ end)
   features={[
     {
       name: "Handle Offline Actions",
-      description: "Some events (like bans and warns) can occur while the server is offline. Don't assume players are always online.",
-      icon: "warning"
+      description:
+        "Some events (like bans and warns) can occur while the server is offline. Don't assume players are always online.",
+      icon: "warning",
     },
     {
       name: "Use Identifiers",
-      description: "When dealing with bans and warns, use the identifier arrays instead of just network IDs for persistence across restarts.",
-      icon: "shield"
+      description:
+        "When dealing with bans and warns, use the identifier arrays instead of just network IDs for persistence across restarts.",
+      icon: "shield",
     },
     {
       name: "Log Everything",
-      description: "Consider logging significant events to a database for audit trails and compliance.",
-      icon: "database"
+      description:
+        "Consider logging significant events to a database for audit trails and compliance.",
+      icon: "database",
     },
     {
       name: "Handle Failures Gracefully",
-      description: "Don't block event handlers on heavy operations; use threads for async work.",
-      icon: "check"
-    }
+      description:
+        "Don't block event handlers on heavy operations; use threads for async work.",
+      icon: "check",
+    },
   ]}
   columns={2}
 />

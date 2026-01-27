@@ -1,5 +1,5 @@
 import { DocsLayout, type DocsLayoutProps } from "fumadocs-ui/layouts/docs";
-import { GithubInfo } from '@ui/components/githubInfo';
+import { GithubInfo } from "@ui/components/githubInfo";
 import { baseOptions } from "@/app/layout.config";
 import { FixFXIcon } from "@ui/icons";
 import { source } from "@/lib/docs/source";
@@ -11,13 +11,15 @@ export const metadata: Metadata = {
     default: "Documentation",
     template: "%s | FixFX Docs",
   },
-  description: "Comprehensive documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem. Guides, tutorials, and API references.",
+  description:
+    "Comprehensive documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem. Guides, tutorials, and API references.",
   alternates: {
     canonical: "https://fixfx.wiki/docs",
   },
   openGraph: {
     title: "FixFX Documentation",
-    description: "Comprehensive documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem.",
+    description:
+      "Comprehensive documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem.",
     url: "https://fixfx.wiki/docs",
     type: "website",
   },

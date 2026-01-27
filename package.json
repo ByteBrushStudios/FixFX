@@ -1,13 +1,13 @@
 {
+  "type": "module",
   "name": "@fixfx/website",
   "description": "A comprehensive documentation platform for FiveM development, providing detailed guides, tutorials, and best practices for the FiveM community.",
   "author": "CodeMeAPixel <https://cmap.lol>",
-
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "version": "node .github/scripts/get-version.js",
@@ -72,6 +72,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "19.8.1",
+    "@next/eslint-plugin-next": "^16.1.5",
     "@types/mdx": "^2.0.13",
     "@types/node": "22.5.4",
     "@types/react": "^18.3.5",
@@ -80,25 +81,15 @@
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
     "commitlint": "19.8.1",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.5",
     "husky": "^8.0.3",
     "knip": "^5.78.0",
     "postcss": "^8.4.45",
     "prettier": "^3.7.4",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
-    "tailwind-merge": "^2.6.0",
     "typescript": "^5.5.4"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "next lint .",
-      "prettier -w ."
-    ],
-    "*.{css,scss}": [
-      "prettier -w ."
-    ],
-    "*.{json,md}": [
-      "prettier -w ."
-    ]
   }
 }

@@ -2,11 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,18 +16,10 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@core/*": [
-        "./packages/core/src/*"
-      ],
-      "@utils/*": [
-        "./packages/utils/src/*"
-      ],
-      "@ui/*": [
-        "./packages/ui/src/*"
-      ]
+      "@/*": ["./*"],
+      "@core/*": ["./packages/core/src/*"],
+      "@utils/*": ["./packages/utils/src/*"],
+      "@ui/*": ["./packages/ui/src/*"]
     },
     "plugins": [
       {
@@ -49,7 +37,5 @@
     "../../packages/ui/src/icons/npm.tsx",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

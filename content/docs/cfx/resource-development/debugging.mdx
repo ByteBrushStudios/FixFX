@@ -3,7 +3,23 @@ title: Debugging & Testing
 description: Complete guide to debugging, testing, and optimizing FiveM resources.
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Effective debugging and testing are crucial for developing reliable FiveM resources. This guide covers tools, techniques, and best practices for identifying and fixing issues.
 
@@ -16,7 +32,7 @@ Effective debugging and testing are crucial for developing reliable FiveM resour
     "Test with single resource to isolate issues",
     "Use profiler to identify performance bottlenecks",
     "Implement proper error handling in all functions",
-    "Document known issues and workarounds"
+    "Document known issues and workarounds",
   ]}
   variant="check"
 />
@@ -97,12 +113,12 @@ end)
 -- Profile specific functions
 function ExpensiveFunction()
     profiler.startTimer('ExpensiveFunction')
-    
+
     -- Your code here
     for i = 1, 1000 do
         DoSomething()
     end
-    
+
     profiler.stopTimer('ExpensiveFunction')
 end
 ```
@@ -116,16 +132,16 @@ local DEBUG_MODE = true
 
 function DrawDebugInfo()
     if not DEBUG_MODE then return end
-    
+
     local playerPed = PlayerPedId()
     local coords = GetEntityCoords(playerPed)
     local heading = GetEntityHeading(playerPed)
     local vehicle = GetVehiclePedIsIn(playerPed, false)
-    
+
     -- Draw coordinates
     DrawText2D(0.01, 0.01, string.format('Coords: %.2f, %.2f, %.2f', coords.x, coords.y, coords.z))
     DrawText2D(0.01, 0.04, string.format('Heading: %.2f', heading))
-    
+
     -- Draw vehicle info if in vehicle
     if vehicle ~= 0 then
         local speed = GetEntitySpeed(vehicle) * 2.236936 -- Convert to MPH
@@ -170,24 +186,24 @@ if DEBUG_MODE then
             print('Teleported to:', x, y, z)
         end
     end)
-    
+
     RegisterCommand('debugveh', function(source, args)
         local model = args[1] or 'adder'
         local hash = GetHashKey(model)
-        
+
         RequestModel(hash)
         while not HasModelLoaded(hash) do
             Citizen.Wait(1)
         end
-        
+
         local coords = GetEntityCoords(PlayerPedId())
         local vehicle = CreateVehicle(hash, coords.x, coords.y, coords.z, 0.0, true, false)
         TaskWarpPedIntoVehicle(PlayerPedId(), vehicle, -1)
-        
+
         SetModelAsNoLongerNeeded(hash)
         print('Spawned vehicle:', model)
     end)
-    
+
     RegisterCommand('debugmoney', function(source, args)
         local amount = tonumber(args[1]) or 1000
         TriggerServerEvent('debug:addMoney', amount)
@@ -212,7 +228,7 @@ end
 function DrawDebugMarkers()
     for i = #debugMarkers, 1, -1 do
         local marker = debugMarkers[i]
-        
+
         if GetGameTimer() > marker.endTime then
             table.remove(debugMarkers, i)
         else
@@ -270,17 +286,17 @@ end
 -- MySQL debugging
 function ExecuteQueryWithDebug(query, parameters, callback)
     local startTime = GetGameTimer()
-    
+
     MySQL.Async.fetchAll(query, parameters, function(result)
         local endTime = GetGameTimer()
         local executionTime = endTime - startTime
-        
+
         print(string.format('[DB] Query executed in %dms: %s', executionTime, query))
-        
+
         if executionTime > 1000 then
             print('^3[WARNING]^7 Slow query detected!')
         end
-        
+
         if callback then
             callback(result)
         end
@@ -313,10 +329,10 @@ function LogPlayerEvent(src, eventName, data)
             data = data,
             timestamp = GetGameTimer()
         })
-        
+
         DEBUG_PLAYERS[src].totalEvents = DEBUG_PLAYERS[src].totalEvents + 1
         DEBUG_PLAYERS[src].lastSeen = GetGameTimer()
-        
+
         -- Keep only last 50 events
         if #DEBUG_PLAYERS[src].events > 50 then
             table.remove(DEBUG_PLAYERS[src].events, 1)
@@ -336,7 +352,7 @@ RegisterCommand('playerdebug', function(source, args)
             local info = DEBUG_PLAYERS[playerId]
             print(string.format('Player %d - Total Events: %d, Last Seen: %d ms ago',
                                playerId, info.totalEvents, GetGameTimer() - info.lastSeen))
-            
+
             print('Recent events:')
             for _, event in ipairs(info.events) do
                 print(string.format('  %s: %s (%d ms ago)',
@@ -371,7 +387,7 @@ end
 
 function Tests.runTest(name, testFunc)
     print(string.format('Running test: %s', name))
-    
+
     local success, error = pcall(testFunc)
     if success then
         print(string.format('✓ Test passed: %s', name))
@@ -400,23 +416,23 @@ end)
 function TestPlayerJoin()
     local testIdentifier = 'test:player123'
     local testName = 'TestPlayer'
-    
+
     -- Simulate player join
     local success = SafeExecute(function()
         local playerData = CreateNewPlayer(testIdentifier, testName)
         Tests.assertTrue(playerData ~= nil, 'Player data should be created')
         Tests.assertEqual(playerData.name, testName, 'Player name should match')
         Tests.assertEqual(playerData.money, 5000, 'Default money should be 5000')
-        
+
         -- Test data persistence
         SavePlayerData(playerData.id, playerData)
         local loaded = LoadPlayerData(testIdentifier)
         Tests.assertEqual(loaded.name, testName, 'Loaded data should match saved data')
-        
+
         -- Cleanup test data
         DeleteTestPlayer(testIdentifier)
     end)
-    
+
     if not success then
         print('Player join test failed')
     else
@@ -431,25 +447,25 @@ end
 -- Simulate multiple players for performance testing
 function SimulatePlayerLoad(playerCount)
     print(string.format('Simulating load for %d players...', playerCount))
-    
+
     local startTime = GetGameTimer()
-    
+
     for i = 1, playerCount do
         local fakeId = 9000 + i
         local identifier = 'test:loadtest' .. i
-        
+
         -- Simulate player data operations
         CreateTestPlayer(fakeId, identifier)
         UpdatePlayerMoney(fakeId, math.random(1000, 10000))
         SavePlayerData(fakeId)
     end
-    
+
     local endTime = GetGameTimer()
     local totalTime = endTime - startTime
-    
+
     print(string.format('Load test completed in %d ms (%.2f ms per player)',
                        totalTime, totalTime / playerCount))
-    
+
     -- Cleanup
     for i = 1, playerCount do
         local fakeId = 9000 + i
@@ -475,9 +491,9 @@ end
 function PerformanceTracker.stop(name)
     local startTime = PerformanceTracker.startTimes[name]
     if not startTime then return end
-    
+
     local duration = GetGameTimer() - startTime
-    
+
     if not PerformanceTracker.metrics[name] then
         PerformanceTracker.metrics[name] = {
             totalTime = 0,
@@ -486,13 +502,13 @@ function PerformanceTracker.stop(name)
             minTime = math.huge
         }
     end
-    
+
     local metric = PerformanceTracker.metrics[name]
     metric.totalTime = metric.totalTime + duration
     metric.calls = metric.calls + 1
     metric.maxTime = math.max(metric.maxTime, duration)
     metric.minTime = math.min(metric.minTime, duration)
-    
+
     PerformanceTracker.startTimes[name] = nil
 end
 
@@ -507,10 +523,10 @@ end
 -- Usage
 function ExpensiveFunction()
     PerformanceTracker.start('ExpensiveFunction')
-    
+
     -- Your code here
     Citizen.Wait(10)
-    
+
     PerformanceTracker.stop('ExpensiveFunction')
 end
 
@@ -534,20 +550,20 @@ function MemoryMonitor.check()
     if now - MemoryMonitor.lastCheck < MemoryMonitor.checkInterval then
         return
     end
-    
+
     local memUsage = collectgarbage('count') / 1024 -- Convert to MB
-    
+
     if memUsage > MemoryMonitor.threshold then
         print(string.format('^3[WARNING]^7 High memory usage: %.2f MB', memUsage))
-        
+
         -- Force garbage collection
         collectgarbage('collect')
-        
+
         local afterGC = collectgarbage('count') / 1024
         print(string.format('^2[INFO]^7 Memory after GC: %.2f MB (freed %.2f MB)',
                            afterGC, memUsage - afterGC))
     end
-    
+
     MemoryMonitor.lastCheck = now
 end
 
@@ -617,7 +633,7 @@ local eventLog = {}
 RegisterNetEvent('logevent')
 AddEventHandler('logevent', function(data)
     table.insert(eventLog, data)
-    
+
     -- Solution: Limit table size
     if #eventLog > 1000 then
         table.remove(eventLog, 1)
@@ -632,16 +648,16 @@ end)
 function RetryDatabaseOperation(operation, maxRetries, delay)
     maxRetries = maxRetries or 3
     delay = delay or 1000
-    
+
     local function attempt(retryCount)
         local success, result = pcall(operation)
-        
+
         if success then
             return result
         else
             print(string.format('Database operation failed (attempt %d/%d): %s',
                                retryCount, maxRetries, result))
-            
+
             if retryCount < maxRetries then
                 Citizen.Wait(delay)
                 return attempt(retryCount + 1)
@@ -650,7 +666,7 @@ function RetryDatabaseOperation(operation, maxRetries, delay)
             end
         end
     end
-    
+
     return attempt(1)
 end
 

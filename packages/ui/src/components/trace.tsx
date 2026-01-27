@@ -23,7 +23,7 @@ export function Trace({
   vertical = false,
 }: TraceProps) {
   const gradientId = `pulse-${useId()}`;
-  
+
   // Convert width and height to numbers if they're strings for calculations
   const widthNum = typeof width === "string" ? parseInt(width) : width;
   const heightNum = typeof height === "string" ? parseInt(height) : height;

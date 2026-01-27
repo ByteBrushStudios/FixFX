@@ -4,7 +4,23 @@ description: Understanding and resolving FiveM server thread performance warning
 icon: "AlertTriangle"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 The "Server Thread Hitch Warning" is one of the most common performance-related warnings in FiveM servers. This guide will help you understand what causes these warnings and how to resolve them.
 
@@ -22,21 +38,21 @@ WARNING: Server thread hitch detected! (XX ms)
     "WARNING: Server thread hitch detected",
     "Server becomes unresponsive temporarily",
     "Players experience lag spikes",
-    "Resource tick times spike suddenly"
+    "Resource tick times spike suddenly",
   ]}
   causes={[
     "Heavy synchronous operations blocking the main thread",
     "Long-running loops without proper yielding (Wait)",
     "Excessive database queries without pagination",
     "Complex calculations on the main thread",
-    "Too many resources with heavy load"
+    "Too many resources with heavy load",
   ]}
   solutions={[
     "Add Citizen.Wait() or proper yields in loops",
     "Move heavy operations to async callbacks",
     "Optimize database queries and add pagination",
     "Distribute calculations across multiple frames",
-    "Profile resources with resmon to identify bottlenecks"
+    "Profile resources with resmon to identify bottlenecks",
   ]}
 />
 
@@ -160,7 +176,7 @@ local function processData(data)
     -- Split work into chunks
     local chunkSize = 100
     local chunks = {}
-    
+
     for i = 1, #data, chunkSize do
         local chunk = {}
         for j = i, math.min(i + chunkSize - 1, #data) do
@@ -168,7 +184,7 @@ local function processData(data)
         end
         table.insert(chunks, chunk)
     end
-    
+
     -- Process chunks asynchronously
     for _, chunk in ipairs(chunks) do
         CreateThread(function()
@@ -183,7 +199,7 @@ local function getCachedData(key)
     if cache[key] then
         return cache[key]
     end
-    
+
     local data = fetchData(key)
     cache[key] = data
     return data
@@ -199,7 +215,7 @@ local function safeOperation()
         -- Potentially dangerous operation
         heavyOperation()
     end)
-    
+
     if not success then
         print('Operation failed:', error)
         -- Implement fallback or cleanup
@@ -211,11 +227,11 @@ local function validateInput(data)
     if type(data) ~= 'table' then
         return false, 'Invalid input type'
     end
-    
+
     if not data.requiredField then
         return false, 'Missing required field'
     end
-    
+
     return true
 end
 ```
@@ -226,12 +242,12 @@ end
 -- Add performance monitoring to your operations
 local function monitoredOperation()
     local startTime = GetGameTimer()
-    
+
     -- Your operation code here
-    
+
     local endTime = GetGameTimer()
     local duration = endTime - startTime
-    
+
     if duration > 10 then  -- 10ms threshold
         print('Warning: Operation took', duration, 'ms')
     end
@@ -249,6 +265,7 @@ end
 ## Best Practices
 
 ### For Server Owners
+
 1. **Regular Monitoring**
    - Use `resmon` to track resource performance
    - Monitor network performance
@@ -271,6 +288,7 @@ end
    - Test resource compatibility
 
 ### For Developers
+
 1. **Code Optimization**
    - Use asynchronous operations
    - Implement proper thread management
@@ -301,9 +319,12 @@ end
 - [FiveM Resource Guidelines](https://docs.fivem.net/docs/scripting-manual/resource-manifest/)
 
 <Callout type="warning">
-  Always monitor your server's performance and address thread hitches promptly to prevent server instability. Regular monitoring and maintenance are essential for optimal server performance.
+  Always monitor your server's performance and address thread hitches promptly
+  to prevent server instability. Regular monitoring and maintenance are
+  essential for optimal server performance.
 </Callout>
 
 <Callout type="info">
-  For more information about thread management and performance optimization, refer to the CitizenFX documentation and server commands reference.
+  For more information about thread management and performance optimization,
+  refer to the CitizenFX documentation and server commands reference.
 </Callout>

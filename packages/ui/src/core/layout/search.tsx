@@ -27,7 +27,9 @@ export function SearchBar() {
 
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        const response = await fetch(
+          `/api/search?query=${encodeURIComponent(query)}`,
+        );
         const data = await response.json();
 
         // Filter and sort results
@@ -145,8 +147,12 @@ export function SearchBar() {
               </div>
             ) : query.length > 0 ? (
               <div className="p-6 text-center">
-                <p className="text-fd-muted-foreground text-sm">No results found for "{query}"</p>
-                <p className="text-fd-muted-foreground/60 text-xs mt-1">Try different keywords</p>
+                <p className="text-fd-muted-foreground text-sm">
+                  No results found for "{query}"
+                </p>
+                <p className="text-fd-muted-foreground/60 text-xs mt-1">
+                  Try different keywords
+                </p>
               </div>
             ) : null}
           </motion.div>
@@ -154,4 +160,4 @@ export function SearchBar() {
       </AnimatePresence>
     </div>
   );
-} 
+}

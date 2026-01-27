@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Home, Terminal, Code, Folder, Github, Book } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  Terminal,
+  Code,
+  Folder,
+  Github,
+  Book,
+} from "lucide-react";
 import { GITHUB_ORG, DISCORD_LINK } from "@utils/constants";
 import { Button } from "./button";
 import { cn } from "@utils/functions/cn";
@@ -29,35 +38,37 @@ export function Navbar({ items, activeHref }: NavigationProps) {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Default navigation items
   const defaultNavItems: NavItem[] = [
-    { label: 'Home', icon: Home, href: '/' },
-    { label: 'Artifacts', icon: Folder, href: '/artifacts' },
-    { label: 'Natives', icon: Terminal, href: '/natives' },
-    { label: 'Documentation', icon: Code, href: '/docs' },
+    { label: "Home", icon: Home, href: "/" },
+    { label: "Artifacts", icon: Folder, href: "/artifacts" },
+    { label: "Natives", icon: Terminal, href: "/natives" },
+    { label: "Documentation", icon: Code, href: "/docs" },
     { label: "Blog", icon: Book, href: "/blog" },
   ];
 
   // Use provided items or default items
-  const navItems = items || defaultNavItems.map(item => ({
-    ...item,
-    active: item.href === activeHref
-  }));
+  const navItems =
+    items ||
+    defaultNavItems.map((item) => ({
+      ...item,
+      active: item.href === activeHref,
+    }));
 
   return (
     <>
       {/* Desktop & Mobile Navigation */}
-      <header 
+      <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-200",
-          isScrolled 
-            ? "bg-fd-background/80 backdrop-blur-md border-b shadow-sm" 
-            : "bg-transparent"
+          isScrolled
+            ? "bg-fd-background/80 backdrop-blur-md border-b shadow-sm"
+            : "bg-transparent",
         )}
       >
         <div className="container mx-auto">
@@ -81,7 +92,7 @@ export function Navbar({ items, activeHref }: NavigationProps) {
                     "flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors",
                     item.active
                       ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
+                      : "hover:bg-muted",
                   )}
                 >
                   <item.icon className="mr-2 h-4 w-4" />
@@ -109,10 +120,7 @@ export function Navbar({ items, activeHref }: NavigationProps) {
                 </a>
               </Button>
               <Button asChild size="sm" className="rounded-full">
-                <a
-                  href={DISCORD_LINK}
-                  className="flex items-center"
-                >
+                <a href={DISCORD_LINK} className="flex items-center">
                   <span>Join Discord</span>
                 </a>
               </Button>
@@ -148,7 +156,7 @@ export function Navbar({ items, activeHref }: NavigationProps) {
                     "flex items-center p-3 text-base font-medium rounded-lg transition-colors",
                     item.active
                       ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
+                      : "hover:bg-muted",
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -175,10 +183,7 @@ export function Navbar({ items, activeHref }: NavigationProps) {
                 </a>
               </Button>
               <Button asChild className="w-full justify-start">
-                <a
-                  href="/discord"
-                  className="flex items-center"
-                >
+                <a href="/discord" className="flex items-center">
                   <span>Join Discord</span>
                 </a>
               </Button>

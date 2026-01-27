@@ -5,7 +5,12 @@ description: "A comprehensive step-by-step guide to setting up your first FiveM 
 date: 2025-06-24
 ---
 
-import { CheckList, FeatureList, StepList, QuickLinks } from '@ui/components/mdx-components'
+import {
+  CheckList,
+  FeatureList,
+  StepList,
+  QuickLinks,
+} from "@ui/components/mdx-components";
 
 # Building Your First FiveM Server: A 2024 Complete Guide
 
@@ -21,24 +26,24 @@ Before diving into technical setup, decide what type of server you want to creat
   features={[
     {
       title: "Roleplay Server",
-      description: "Character-driven immersive experiences"
+      description: "Character-driven immersive experiences",
     },
     {
       title: "Racing Server",
-      description: "Competitive racing with custom tracks"
+      description: "Competitive racing with custom tracks",
     },
     {
       title: "PvP/Combat Server",
-      description: "Action-focused gameplay"
+      description: "Action-focused gameplay",
     },
     {
       title: "Creative/Building Server",
-      description: "Sandbox construction experiences"
+      description: "Sandbox construction experiences",
     },
     {
       title: "Mini-Game Hub",
-      description: "Multiple game modes and activities"
-    }
+      description: "Multiple game modes and activities",
+    },
   ]}
   columns={2}
 />
@@ -51,7 +56,7 @@ Before diving into technical setup, decide what type of server you want to creat
     "Identify unique features - What makes your server special?",
     "Plan resource allocation - Time and financial investment needed",
     "Assess technical skills - Lua scripting, database management, etc.",
-    "Consider server hosting - Self-hosted vs managed hosting"
+    "Consider server hosting - Self-hosted vs managed hosting",
   ]}
   variant="check"
 />
@@ -59,12 +64,14 @@ Before diving into technical setup, decide what type of server you want to creat
 ### Resource Planning
 
 **Time Investment**
+
 - Initial setup: 10-20 hours for basic server
 - Ongoing maintenance: 5-10 hours per week
 - Community management: Variable based on player count
 - Content development: Ongoing as needed
 
 **Financial Considerations**
+
 - Server hosting: $15-100+ per month
 - Domain name: $10-15 per year
 - Custom scripts/resources: $0-1000+ (optional)
@@ -78,7 +85,7 @@ Before diving into technical setup, decide what type of server you want to creat
   items={[
     "Pros: Complete control, no monthly fees, unlimited customization",
     "Cons: Technical expertise required, 24/7 internet needed, security responsibility",
-    "Requires: Dedicated computer/VPS, static IP, 8GB+ RAM, fast internet"
+    "Requires: Dedicated computer/VPS, static IP, 8GB+ RAM, fast internet",
   ]}
   variant="bullet"
 />
@@ -89,16 +96,17 @@ Before diving into technical setup, decide what type of server you want to creat
   features={[
     {
       title: "ZAP-Hosting",
-      description: "€15-50/month - FiveM-optimized, official partner, easy setup"
+      description:
+        "€15-50/month - FiveM-optimized, official partner, easy setup",
     },
     {
       title: "Nodecraft",
-      description: "$10-40/month - User-friendly interface, good performance"
+      description: "$10-40/month - User-friendly interface, good performance",
     },
     {
       title: "xREALM",
-      description: "$15-45/month - FiveM-specialized, reliable uptime"
-    }
+      description: "$15-45/month - FiveM-specialized, reliable uptime",
+    },
   ]}
   columns={3}
 />
@@ -128,6 +136,7 @@ Before diving into technical setup, decide what type of server you want to creat
 ### Option C: txAdmin Integration
 
 Many hosting providers now offer txAdmin pre-installed, which significantly simplifies server management. txAdmin provides:
+
 - Web-based server management
 - Resource management interface
 - Player management tools
@@ -139,6 +148,7 @@ Many hosting providers now offer txAdmin pre-installed, which significantly simp
 ### Getting Your Server Files
 
 1. **Download the FiveM Server**
+
    ```bash
    # Windows
    # Download from https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/
@@ -258,11 +268,13 @@ ensure mumble-voip        # Alternative voice system
    - From resource marketplaces
 
 2. **Extract to Resources Folder**
+
    ```
    server-data/resources/[category]/resource-name/
    ```
 
 3. **Add to server.cfg**
+
    ```bash
    ensure resource-name
    ```
@@ -279,11 +291,13 @@ Most modern FiveM servers use databases for player data persistence.
 ### Installing MySQL/MariaDB
 
 **Windows (XAMPP):**
+
 1. Download and install XAMPP
 2. Start Apache and MySQL services
 3. Access phpMyAdmin at http://localhost/phpmyadmin
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 sudo apt update
 sudo apt install mysql-server
@@ -293,6 +307,7 @@ sudo mysql_secure_installation
 ### Database Resource Setup
 
 1. **Install oxmysql**
+
    ```bash
    # Add to server.cfg
    ensure oxmysql
@@ -300,6 +315,7 @@ sudo mysql_secure_installation
    ```
 
 2. **Create Database**
+
    ```sql
    CREATE DATABASE fivem_server CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
    CREATE USER 'fivem_user'@'localhost' IDENTIFIED BY 'secure_password';
@@ -320,6 +336,7 @@ sudo mysql_secure_installation
 ESX is mature, stable, and has extensive community resources.
 
 **Installation:**
+
 1. Download ESX Legacy from GitHub
 2. Import database schema
 3. Configure in server.cfg:
@@ -331,11 +348,13 @@ ESX is mature, stable, and has extensive community resources.
    ```
 
 **Pros:**
+
 - Large community and resource library
 - Stable and well-documented
 - Professional roleplay features
 
 **Cons:**
+
 - Can be complex for beginners
 - Performance overhead
 - Less flexible than newer frameworks
@@ -345,6 +364,7 @@ ESX is mature, stable, and has extensive community resources.
 QBCore is modern, flexible, and gaining popularity.
 
 **Installation:**
+
 1. Download QBCore from GitHub
 2. Follow their setup guide
 3. Configure in server.cfg:
@@ -355,11 +375,13 @@ QBCore is modern, flexible, and gaining popularity.
    ```
 
 **Pros:**
+
 - Modern codebase
 - Better performance
 - More flexible architecture
 
 **Cons:**
+
 - Smaller resource library
 - Less documentation
 - Newer, potentially less stable
@@ -369,12 +391,14 @@ QBCore is modern, flexible, and gaining popularity.
 For simpler servers or learning purposes, you can start without a framework.
 
 **Benefits:**
+
 - Complete control
 - Better performance
 - Learning experience
 - No unnecessary features
 
 **Drawbacks:**
+
 - More development required
 - Fewer ready-made resources
 - Need to build everything from scratch
@@ -439,6 +463,7 @@ For simpler servers or learning purposes, you can start without a framework.
 Before going live, thoroughly test your server:
 
 1. **Start the Server**
+
    ```bash
    # Windows
    FXServer.exe +exec server.cfg
@@ -462,10 +487,11 @@ Before going live, thoroughly test your server:
 ### Performance Optimization
 
 1. **Resource Management**
+
    ```bash
    # Monitor resource usage
    resmon
-   
+
    # Profile specific resources
    profiler record 500
    profiler view
@@ -590,12 +616,14 @@ Before going live, thoroughly test your server:
 ### Monetization (Optional)
 
 **Acceptable Practices:**
+
 - Cosmetic items and customization
 - Premium character slots
 - Queue priority
 - Exclusive areas or content
 
 **Avoid:**
+
 - Pay-to-win mechanics
 - Essential gameplay features behind paywall
 - Excessive monetization
@@ -606,18 +634,21 @@ Before going live, thoroughly test your server:
 ### Regular Maintenance Tasks
 
 **Daily:**
+
 - Monitor server performance
 - Check for errors and issues
 - Moderate community interactions
 - Respond to player reports
 
 **Weekly:**
+
 - Update resources and security patches
 - Review server analytics
 - Plan community events
 - Backup server data
 
 **Monthly:**
+
 - Evaluate server performance metrics
 - Review and update rules/policies
 - Plan major updates or changes
@@ -687,4 +718,4 @@ Remember that success doesn't happen overnight. The most successful FiveM server
 
 ---
 
-*Need help with your FiveM server? Join our [Discord community](/discord) where experienced developers and server owners share knowledge and provide support.*
+_Need help with your FiveM server? Join our [Discord community](/discord) where experienced developers and server owners share knowledge and provide support._

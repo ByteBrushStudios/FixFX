@@ -4,7 +4,23 @@ description: Common errors related to FiveM frameworks like ESX and QBCore.
 icon: "Package"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 This guide covers common errors related to FiveM frameworks like ESX and QBCore, and how to resolve them.
 
@@ -16,42 +32,48 @@ This guide covers common errors related to FiveM frameworks like ESX and QBCore,
     "Error: ESX object is nil",
     "Cannot access ESX functions",
     "Resource fails to load",
-    "ESX exports not available"
+    "ESX exports not available",
   ]}
   causes={[
     "ESX resource not installed or not started",
     "Incorrect resource loading order",
     "Missing ESX export declaration",
-    "Version incompatibility"
+    "Version incompatibility",
   ]}
   solutions={[
     "Ensure es_extended is installed and enabled",
     "Place ESX before dependent resources in server.cfg",
     "Use correct export syntax to get ESX object",
-    "Update to compatible ESX version"
+    "Update to compatible ESX version",
   ]}
 />
 
 ### 1. ESX Not Found
+
 ```lua
 -- Error: ESX object not found
 ```
 
 **Solutions:**
+
 1. Ensure ESX is properly installed
 2. Check resource loading order
 3. Verify ESX initialization:
+
 ```lua
 ESX = exports['es_extended']:getSharedObject()
 ```
 
 ### 2. Player Data Issues
+
 ```lua
 -- Error: Player data not loaded
 ```
 
 **Solutions:**
+
 1. Wait for player data to load:
+
 ```lua
 ESX.RegisterServerCallback('resource:callback', function(source, cb)
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -64,6 +86,7 @@ end)
 ```
 
 2. Check player job and inventory:
+
 ```lua
 local xPlayer = ESX.GetPlayerFromId(source)
 if xPlayer.job.name ~= 'police' then
@@ -79,42 +102,48 @@ end
     "Error: QBCore is nil",
     "Cannot call QBCore functions",
     "exports not available",
-    "Undefined variable QBCore"
+    "Undefined variable QBCore",
   ]}
   causes={[
     "qb-core resource not running",
     "qb-core not listed in server resources",
     "Incorrect player callbacks implementation",
-    "Loading order conflicts"
+    "Loading order conflicts",
   ]}
   solutions={[
     "Verify qb-core is in server.cfg and started",
     "Ensure qb-core loads before dependent resources",
     "Check QBCore exports are properly called",
-    "Review server startup logs for errors"
+    "Review server startup logs for errors",
   ]}
 />
 
 ### 1. QBCore Not Found
+
 ```lua
 -- Error: QBCore object not found
 ```
 
 **Solutions:**
+
 1. Ensure QBCore is properly installed
 2. Check resource loading order
 3. Verify QBCore initialization:
+
 ```lua
 QBCore = exports['qb-core']:GetCoreObject()
 ```
 
 ### 2. Player Data Issues
+
 ```lua
 -- Error: Player data not loaded
 ```
 
 **Solutions:**
+
 1. Wait for player data to load:
+
 ```lua
 QBCore.Functions.CreateCallback('resource:callback', function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
@@ -127,6 +156,7 @@ end)
 ```
 
 2. Check player job and inventory:
+
 ```lua
 local Player = QBCore.Functions.GetPlayer(source)
 if Player.PlayerData.job.name ~= 'police' then
@@ -137,12 +167,15 @@ end
 ## Common Framework Issues
 
 ### 1. Resource Dependencies
+
 ```lua
 -- Error: Framework resource not found
 ```
 
 **Solutions:**
+
 1. Add proper dependencies:
+
 ```lua
 dependencies {
     'es_extended', -- For ESX
@@ -153,12 +186,15 @@ dependencies {
 2. Check resource loading order in `server.cfg`
 
 ### 2. Database Integration
+
 ```lua
 -- Error: Failed to save player data
 ```
 
 **Solutions:**
+
 1. Use framework-specific functions:
+
 ```lua
 -- ESX
 xPlayer.setMoney(amount)
@@ -168,6 +204,7 @@ Player.Functions.SetMoney('cash', amount)
 ```
 
 2. Implement proper error handling:
+
 ```lua
 local success, error = pcall(function()
     -- Database operation
@@ -177,6 +214,7 @@ end)
 ## Best Practices
 
 ### 1. Framework Detection
+
 ```lua
 local framework = 'none'
 if GetResourceState('es_extended') == 'started' then
@@ -187,6 +225,7 @@ end
 ```
 
 ### 2. Error Handling
+
 ```lua
 local function GetPlayer(source)
     if framework == 'esx' then
@@ -199,6 +238,7 @@ end
 ```
 
 ### 3. Resource Structure
+
 ```
 resource_name/
 ├── fxmanifest.lua
@@ -218,19 +258,22 @@ resource_name/
 ### ESX Specific Issues
 
 #### 1. ESX Identity Issues
+
 ```lua
 -- Error: Failed to load player identity
 ```
 
 **Solutions:**
+
 1. Ensure esx_identity is properly configured
 2. Check database table structure
 3. Use the correct event handling:
+
 ```lua
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
     local identifier = xPlayer.identifier
-    
+
     MySQL.Async.fetchAll('SELECT * FROM users WHERE identifier = @identifier', {
         ['@identifier'] = identifier
     }, function(result)
@@ -244,13 +287,16 @@ end)
 ```
 
 #### 2. ESX Job Integration
+
 ```lua
 -- Error: Invalid job grade
 ```
 
 **Solutions:**
+
 1. Ensure job grades are properly defined in the database
 2. Check job assignment logic:
+
 ```lua
 -- Check if job grade exists
 local function isValidJobGrade(job, grade)
@@ -272,12 +318,15 @@ end
 ### QBCore Specific Issues
 
 #### 1. QBCore Player Loading
+
 ```lua
 -- Error: Player not loaded
 ```
 
 **Solutions:**
+
 1. Wait for the correct event:
+
 ```lua
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
@@ -287,6 +336,7 @@ end)
 ```
 
 2. Handle player unloading:
+
 ```lua
 RegisterNetEvent('QBCore:Client:OnPlayerUnload')
 AddEventHandler('QBCore:Client:OnPlayerUnload', function()
@@ -295,26 +345,30 @@ end)
 ```
 
 #### 2. QBCore Item Issues
+
 ```lua
 -- Error: Item not found
 ```
 
 **Solutions:**
+
 1. Check item registration:
+
 ```lua
 -- Server-side
 local function hasItem(source, item, amount)
     local Player = QBCore.Functions.GetPlayer(source)
     if not Player then return false end
-    
+
     local playerItem = Player.Functions.GetItemByName(item)
     if not playerItem then return false end
-    
+
     return playerItem.amount >= amount
 end
 ```
 
 2. Verify shared items configuration:
+
 ```lua
 -- Check QBShared items
 if QBCore.Shared.Items[itemName] then
@@ -327,6 +381,7 @@ end
 ## Cross-Framework Compatibility
 
 ### 1. Framework Wrapper
+
 ```lua
 -- Create a framework wrapper for compatibility
 local Framework = {}
@@ -378,6 +433,7 @@ end
 ```
 
 ### 2. Framework Detection in Resources
+
 ```lua
 -- Auto-detect framework in fxmanifest.lua
 fx_version 'cerulean'
@@ -412,9 +468,11 @@ dependencies {
 - [Multi-Framework Resource Development](/docs/frameworks/multi-framework-development)
 
 <Callout type="warning">
-  Always test your resource with the specific framework version you're targeting. Framework APIs can change between versions.
+  Always test your resource with the specific framework version you're
+  targeting. Framework APIs can change between versions.
 </Callout>
 
 <Callout type="info">
-  For more information about resource loading, check out our [Resource Loading Guide](/docs/cfx/common-errors/resource-loading).
+  For more information about resource loading, check out our [Resource Loading
+  Guide](/docs/cfx/common-errors/resource-loading).
 </Callout>

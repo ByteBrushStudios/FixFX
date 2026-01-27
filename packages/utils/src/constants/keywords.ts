@@ -98,5 +98,5 @@ export const keywords: string[] = [
   "native reference",
   "server artifacts download",
   "fivem artifacts download",
-  "redm artifacts download"
+  "redm artifacts download",
 ];

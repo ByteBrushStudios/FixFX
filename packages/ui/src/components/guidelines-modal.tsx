@@ -186,22 +186,19 @@ function formatMarkdownText(text: string): React.ReactNode {
           className="text-fd-primary hover:underline"
         >
           {match[1]}
-        </a>
+        </a>,
       );
     } else if (match[3]) {
       parts.push(
         <strong key={match.index} className="font-semibold text-fd-foreground">
           {match[3]}
-        </strong>
+        </strong>,
       );
     } else if (match[4]) {
       parts.push(
-        <em
-          key={match.index}
-          className="italic text-fd-foreground"
-        >
+        <em key={match.index} className="italic text-fd-foreground">
           {match[4]}
-        </em>
+        </em>,
       );
     } else if (match[5]) {
       parts.push(
@@ -210,7 +207,7 @@ function formatMarkdownText(text: string): React.ReactNode {
           className="rounded bg-fd-muted px-1.5 py-0.5 font-mono text-xs text-fd-foreground"
         >
           {match[5]}
-        </code>
+        </code>,
       );
     }
 

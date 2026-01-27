@@ -4,11 +4,31 @@ description: Complete guide to securing your FiveM server and managing player pe
 icon: "Shield"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Security is paramount for any FiveM server. This guide covers comprehensive security measures, permission systems, and protection against common threats.
 
-<PropertyCard type="error" name="Critical Security" description="Never share your server license key, database passwords, or administrator credentials. Always use strong, unique passwords and enable two-factor authentication where available." />
+<PropertyCard
+  type="error"
+  name="Critical Security"
+  description="Never share your server license key, database passwords, or administrator credentials. Always use strong, unique passwords and enable two-factor authentication where available."
+/>
 
 ## Server Security Fundamentals
 
@@ -18,11 +38,29 @@ Security is paramount for any FiveM server. This guide covers comprehensive secu
 
 <StepList
   steps={[
-    { title: "Set Default Firewall Policies", description: "Deny all incoming traffic by default, whitelist only necessary ports" },
-    { title: "Open FiveM Port", description: "Allow port 30120 (TCP and UDP) for FiveM server connections" },
-    { title: "Secure SSH Access", description: "Change SSH from default port 22 and disable root login" },
-    { title: "Restrict Database Access", description: "Allow MySQL/MariaDB only from 127.0.0.1 (local connections)" },
-    { title: "Enable Firewall", description: "Activate firewall rules with: sudo ufw enable" }
+    {
+      title: "Set Default Firewall Policies",
+      description:
+        "Deny all incoming traffic by default, whitelist only necessary ports",
+    },
+    {
+      title: "Open FiveM Port",
+      description:
+        "Allow port 30120 (TCP and UDP) for FiveM server connections",
+    },
+    {
+      title: "Secure SSH Access",
+      description: "Change SSH from default port 22 and disable root login",
+    },
+    {
+      title: "Restrict Database Access",
+      description:
+        "Allow MySQL/MariaDB only from 127.0.0.1 (local connections)",
+    },
+    {
+      title: "Enable Firewall",
+      description: "Activate firewall rules with: sudo ufw enable",
+    },
   ]}
   title="Network Hardening Steps"
 />
@@ -112,16 +150,22 @@ set sv_logLevel "info"
 
 ## FiveM ACE Permission System
 
-<PropertyCard type="info" name="ACE Basics" description="ACE (Access Control Entry) is FiveM's permission system that controls who can execute what commands and access what resources. It's configured in server.cfg using a principal-based hierarchy." />
+<PropertyCard
+  type="info"
+  name="ACE Basics"
+  description="ACE (Access Control Entry) is FiveM's permission system that controls who can execute what commands and access what resources. It's configured in server.cfg using a principal-based hierarchy."
+/>
 
 ### Understanding ACE & Principals
 
 **ACE (Access Control Entry)**
+
 - Grants or denies specific permissions
 - Format: `add_ace <principal> <object> <allow|deny>`
 - Can be wildcarded with `*`
 
 **Principal**
+
 - An entity that can have ACEs assigned
 - Types: identifier, group, builtin
 - Format: `add_principal <child_principal> <parent_principal>`
@@ -130,13 +174,41 @@ set sv_logLevel "info"
 
 <PermissionTable
   permissions={[
-    { principal: "identifier.steam:110000112345678", type: "Player", description: "Steam ID based player identifier (most specific)" },
-    { principal: "identifier.license:abc123def456", type: "Player", description: "Rockstar license based identifier" },
-    { principal: "identifier.discord:123456789012", type: "Player", description: "Discord ID based identifier" },
-    { principal: "group.admin", type: "Group", description: "Admin group - highest privilege level" },
-    { principal: "group.moderator", type: "Group", description: "Moderator group - moderation permissions" },
-    { principal: "builtin.everyone", type: "Built-in", description: "All connected players" },
-    { principal: "builtin.console", type: "Built-in", description: "Server console/RCON access" }
+    {
+      principal: "identifier.steam:110000112345678",
+      type: "Player",
+      description: "Steam ID based player identifier (most specific)",
+    },
+    {
+      principal: "identifier.license:abc123def456",
+      type: "Player",
+      description: "Rockstar license based identifier",
+    },
+    {
+      principal: "identifier.discord:123456789012",
+      type: "Player",
+      description: "Discord ID based identifier",
+    },
+    {
+      principal: "group.admin",
+      type: "Group",
+      description: "Admin group - highest privilege level",
+    },
+    {
+      principal: "group.moderator",
+      type: "Group",
+      description: "Moderator group - moderation permissions",
+    },
+    {
+      principal: "builtin.everyone",
+      type: "Built-in",
+      description: "All connected players",
+    },
+    {
+      principal: "builtin.console",
+      type: "Built-in",
+      description: "Server console/RCON access",
+    },
   ]}
   title="FiveM Principal Types and Examples"
 />
@@ -161,7 +233,11 @@ builtin.console                     # Console/RCON
 
 ### Basic Permission Setup
 
-<PropertyCard type="warn" name="Permission Hierarchy" description="Always define deny rules after allow rules. Place more specific permissions before wildcards. Test permission changes in a development environment first." />
+<PropertyCard
+  type="warn"
+  name="Permission Hierarchy"
+  description="Always define deny rules after allow rules. Place more specific permissions before wildcards. Test permission changes in a development environment first."
+/>
 
 ```cfg
 # ========================================
@@ -183,7 +259,7 @@ add_principal identifier.discord:123456789012345678 group.admin
 
 # Define moderator group with limited access
 add_ace group.moderator command.kick allow
-add_ace group.moderator command.ban allow  
+add_ace group.moderator command.ban allow
 add_ace group.moderator command.tempban allow
 add_ace group.moderator command.unban allow
 add_ace group.moderator command.players allow
@@ -295,22 +371,22 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(1000)
-        
+
         for playerId, data in pairs(playerData) do
             if GetPlayerPing(playerId) > 0 then
                 local playerPed = GetPlayerPed(playerId)
                 local coords = GetEntityCoords(playerPed)
-                
+
                 if data.lastPosition then
                     local distance = #(coords - data.lastPosition)
                     local speed = (distance * 3.6) -- Convert to km/h
-                    
+
                     if speed > SecurityConfig.maxSpeed then
                         data.violations = data.violations + 1
                         TriggerEvent('anticheat:violation', playerId, 'speed', speed)
                     end
                 end
-                
+
                 data.lastPosition = coords
             end
         end
@@ -321,22 +397,22 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(1000)
-        
+
         for playerId, data in pairs(playerData) do
             if GetPlayerPing(playerId) > 0 then
                 local playerPed = GetPlayerPed(playerId)
                 local health = GetEntityHealth(playerPed)
                 local armor = GetPedArmour(playerPed)
-                
+
                 -- Check for unusual health/armor gains
                 if health > data.lastHealth + SecurityConfig.maxHealthGain then
                     TriggerEvent('anticheat:violation', playerId, 'health', health - data.lastHealth)
                 end
-                
+
                 if armor > data.lastArmor + SecurityConfig.maxArmorGain then
                     TriggerEvent('anticheat:violation', playerId, 'armor', armor - data.lastArmor)
                 end
-                
+
                 data.lastHealth = health
                 data.lastArmor = armor
             end
@@ -348,7 +424,7 @@ end)
 AddEventHandler('weaponDamageEvent', function(sender, data)
     local weaponHash = data.weaponType
     local playerId = sender
-    
+
     -- Check if weapon is allowed
     local isAllowed = false
     for _, allowedWeapon in ipairs(SecurityConfig.weaponWhitelist) do
@@ -357,7 +433,7 @@ AddEventHandler('weaponDamageEvent', function(sender, data)
             break
         end
     end
-    
+
     if not isAllowed then
         TriggerEvent('anticheat:violation', playerId, 'weapon', weaponHash)
     end
@@ -367,7 +443,7 @@ end)
 AddEventHandler('chatMessage', function(source, name, message)
     local playerId = source
     local lowerMessage = string.lower(message)
-    
+
     for _, bannedWord in ipairs(SecurityConfig.bannedWords) do
         if string.find(lowerMessage, string.lower(bannedWord)) then
             TriggerEvent('anticheat:violation', playerId, 'chat', bannedWord)
@@ -381,15 +457,15 @@ end)
 AddEventHandler('anticheat:violation', function(playerId, violationType, value)
     local playerName = GetPlayerName(playerId)
     local identifier = GetPlayerIdentifier(playerId, 0)
-    
+
     -- Log violation
-    print(string.format('[ANTICHEAT] %s (%s) - %s violation: %s', 
+    print(string.format('[ANTICHEAT] %s (%s) - %s violation: %s',
           playerName, identifier, violationType, tostring(value)))
-    
+
     -- Increment violations
     if playerData[playerId] then
         playerData[playerId].violations = playerData[playerId].violations + 1
-        
+
         -- Take action based on violation count
         if playerData[playerId].violations >= 3 then
             -- Ban player
@@ -429,20 +505,20 @@ local ConnectionLimiter = {
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
     local source = source
     local ip = GetPlayerEndpoint(source):match("([^:]+)")
-    
+
     if not ip then
         setKickReason("Unable to verify connection")
         CancelEvent()
         return
     end
-    
+
     -- Check if IP is banned
     if ConnectionLimiter.bannedIPs[ip] then
         setKickReason("Your IP address has been temporarily banned")
         CancelEvent()
         return
     end
-    
+
     -- Initialize IP tracking
     if not ConnectionLimiter.connections[ip] then
         ConnectionLimiter.connections[ip] = {
@@ -450,26 +526,26 @@ AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)
             lastConnection = 0
         }
     end
-    
+
     local currentTime = GetGameTimer()
     local ipData = ConnectionLimiter.connections[ip]
-    
+
     -- Reset count if timeout exceeded
     if currentTime - ipData.lastConnection > ConnectionLimiter.connectionTimeout then
         ipData.count = 0
     end
-    
+
     -- Check connection limit
     if ipData.count >= ConnectionLimiter.maxConnectionsPerIP then
         setKickReason("Too many connections from your IP address")
-        
+
         -- Temporarily ban IP
         ConnectionLimiter.bannedIPs[ip] = currentTime
-        
+
         CancelEvent()
         return
     end
-    
+
     -- Update connection data
     ipData.count = ipData.count + 1
     ipData.lastConnection = currentTime
@@ -479,7 +555,7 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(60000) -- Check every minute
-        
+
         local currentTime = GetGameTimer()
         for ip, banTime in pairs(ConnectionLimiter.bannedIPs) do
             if currentTime - banTime > 3600000 then -- 1 hour
@@ -543,7 +619,7 @@ local PermissionManager = {
 -- Load permissions from database
 function LoadPermissions()
     local query = [[
-        SELECT 
+        SELECT
             users.identifier,
             groups.name as group_name,
             permissions.permission
@@ -552,24 +628,24 @@ function LoadPermissions()
         LEFT JOIN group_permissions gp ON groups.id = gp.group_id
         LEFT JOIN permissions ON gp.permission_id = permissions.id
     ]]
-    
+
     exports.oxmysql:execute(query, {}, function(results)
         for _, row in ipairs(results) do
             if not PermissionManager.userGroups[row.identifier] then
                 PermissionManager.userGroups[row.identifier] = {}
             end
-            
+
             table.insert(PermissionManager.userGroups[row.identifier], row.group_name)
-            
+
             if not PermissionManager.groupPermissions[row.group_name] then
                 PermissionManager.groupPermissions[row.group_name] = {}
             end
-            
+
             if row.permission then
                 table.insert(PermissionManager.groupPermissions[row.group_name], row.permission)
             end
         end
-        
+
         print("[PERMISSIONS] Loaded permissions for " .. #results .. " users")
     end)
 end
@@ -577,17 +653,17 @@ end
 -- Check if user has permission
 function HasPermission(identifier, permission)
     local userGroups = PermissionManager.userGroups[identifier] or {}
-    
+
     for _, group in ipairs(userGroups) do
         local groupPerms = PermissionManager.groupPermissions[group] or {}
-        
+
         for _, perm in ipairs(groupPerms) do
             if perm == permission or perm == "*" then
                 return true
             end
         end
     end
-    
+
     return false
 end
 
@@ -598,18 +674,18 @@ function AddUserToGroup(identifier, groupName)
         SELECT ?, id FROM groups WHERE name = ?
         ON DUPLICATE KEY UPDATE group_id = VALUES(group_id)
     ]]
-    
+
     exports.oxmysql:execute(query, {identifier, groupName}, function(result)
         if result.affectedRows > 0 then
             -- Update in-memory data
             if not PermissionManager.userGroups[identifier] then
                 PermissionManager.userGroups[identifier] = {}
             end
-            
+
             if not table.contains(PermissionManager.userGroups[identifier], groupName) then
                 table.insert(PermissionManager.userGroups[identifier], groupName)
             end
-            
+
             return true
         end
         return false
@@ -623,7 +699,7 @@ function RemoveUserFromGroup(identifier, groupName)
         INNER JOIN groups g ON ug.group_id = g.id
         WHERE ug.identifier = ? AND g.name = ?
     ]]
-    
+
     exports.oxmysql:execute(query, {identifier, groupName}, function(result)
         if result.affectedRows > 0 then
             -- Update in-memory data
@@ -634,7 +710,7 @@ function RemoveUserFromGroup(identifier, groupName)
                     break
                 end
             end
-            
+
             return true
         end
         return false
@@ -649,7 +725,7 @@ exports('removeUserFromGroup', RemoveUserFromGroup)
 -- Commands
 RegisterCommand('addperm', function(source, args, rawCommand)
     local identifier = GetPlayerIdentifier(source, 0)
-    
+
     if not HasPermission(identifier, 'admin.permissions') then
         TriggerClientEvent('chat:addMessage', source, {
             color = {255, 0, 0},
@@ -657,7 +733,7 @@ RegisterCommand('addperm', function(source, args, rawCommand)
         })
         return
     end
-    
+
     if #args < 2 then
         TriggerClientEvent('chat:addMessage', source, {
             color = {255, 255, 0},
@@ -665,11 +741,11 @@ RegisterCommand('addperm', function(source, args, rawCommand)
         })
         return
     end
-    
+
     local targetId = tonumber(args[1])
     local groupName = args[2]
     local targetIdentifier = GetPlayerIdentifier(targetId, 0)
-    
+
     if targetIdentifier then
         AddUserToGroup(targetIdentifier, groupName)
         TriggerClientEvent('chat:addMessage', source, {
@@ -759,16 +835,16 @@ INSERT IGNORE INTO `permissions` (`permission`, `description`) VALUES
 ('user.basic', 'Basic user permissions');
 
 -- Default group permissions
-INSERT IGNORE INTO `group_permissions` (`group_id`, `permission_id`) 
-SELECT g.id, p.id FROM `groups` g, `permissions` p 
+INSERT IGNORE INTO `group_permissions` (`group_id`, `permission_id`)
+SELECT g.id, p.id FROM `groups` g, `permissions` p
 WHERE g.name = 'superadmin' AND p.permission = '*';
 
-INSERT IGNORE INTO `group_permissions` (`group_id`, `permission_id`) 
-SELECT g.id, p.id FROM `groups` g, `permissions` p 
+INSERT IGNORE INTO `group_permissions` (`group_id`, `permission_id`)
+SELECT g.id, p.id FROM `groups` g, `permissions` p
 WHERE g.name = 'admin' AND p.permission = 'admin.*';
 
-INSERT IGNORE INTO `group_permissions` (`group_id`, `permission_id`) 
-SELECT g.id, p.id FROM `groups` g, `permissions` p 
+INSERT IGNORE INTO `group_permissions` (`group_id`, `permission_id`)
+SELECT g.id, p.id FROM `groups` g, `permissions` p
 WHERE g.name = 'moderator' AND p.permission IN ('moderator.kick', 'moderator.ban', 'moderator.unban');
 ```
 
@@ -798,13 +874,13 @@ local SecurityLogger = {
 function InitializeLogger()
     -- Create logs directory if it doesn't exist
     os.execute("mkdir -p logs")
-    
+
     -- Rotate log file if too large
     local file = io.open(SecurityLogger.logFile, "r")
     if file then
         local size = file:seek("end")
         file:close()
-        
+
         if size > SecurityLogger.maxLogSize then
             os.rename(SecurityLogger.logFile, SecurityLogger.logFile .. ".old")
         end
@@ -817,25 +893,25 @@ function LogSecurityEvent(eventType, playerId, data)
     local playerName = playerId and GetPlayerName(playerId) or "SYSTEM"
     local identifier = playerId and GetPlayerIdentifier(playerId, 0) or "N/A"
     local ip = playerId and GetPlayerEndpoint(playerId):match("([^:]+)") or "N/A"
-    
+
     local logEntry = string.format(
         "[%s] [%s] Player: %s (%s) IP: %s Data: %s\n",
         timestamp, eventType, playerName, identifier, ip, json.encode(data)
     )
-    
+
     -- Write to file
     local file = io.open(SecurityLogger.logFile, "a")
     if file then
         file:write(logEntry)
         file:close()
     end
-    
+
     -- Print to console
     print("[SECURITY] " .. logEntry:gsub("\n", ""))
-    
+
     -- Update statistics
     UpdateSecurityStats(eventType, ip, identifier)
-    
+
     -- Check for alerts
     CheckSecurityAlerts(eventType, ip, identifier)
 end
@@ -845,19 +921,19 @@ function UpdateSecurityStats(eventType, ip, identifier)
     local currentTime = os.time()
     local currentHour = math.floor(currentTime / 3600)
     local currentMinute = math.floor(currentTime / 60)
-    
+
     if eventType == "CONNECTION" then
         if not SecurityLogger.stats.connections[currentMinute] then
             SecurityLogger.stats.connections[currentMinute] = {}
         end
         SecurityLogger.stats.connections[currentMinute][ip] = (SecurityLogger.stats.connections[currentMinute][ip] or 0) + 1
-        
+
     elseif eventType == "VIOLATION" then
         if not SecurityLogger.stats.violations[currentHour] then
             SecurityLogger.stats.violations[currentHour] = {}
         end
         SecurityLogger.stats.violations[currentHour][identifier] = (SecurityLogger.stats.violations[currentHour][identifier] or 0) + 1
-        
+
     elseif eventType == "FAILED_LOGIN" then
         if not SecurityLogger.stats.failedLogins[currentHour] then
             SecurityLogger.stats.failedLogins[currentHour] = {}
@@ -871,11 +947,11 @@ function CheckSecurityAlerts(eventType, ip, identifier)
     local currentTime = os.time()
     local currentHour = math.floor(currentTime / 3600)
     local currentMinute = math.floor(currentTime / 60)
-    
+
     if eventType == "CONNECTION" then
-        local connectionsThisMinute = SecurityLogger.stats.connections[currentMinute] and 
+        local connectionsThisMinute = SecurityLogger.stats.connections[currentMinute] and
                                     SecurityLogger.stats.connections[currentMinute][ip] or 0
-        
+
         if connectionsThisMinute >= SecurityLogger.alertThresholds.connectionsPerMinute then
             TriggerEvent('security:alert', 'HIGH_CONNECTION_RATE', {
                 ip = ip,
@@ -883,11 +959,11 @@ function CheckSecurityAlerts(eventType, ip, identifier)
                 timeframe = "1 minute"
             })
         end
-        
+
     elseif eventType == "VIOLATION" then
-        local violationsThisHour = SecurityLogger.stats.violations[currentHour] and 
+        local violationsThisHour = SecurityLogger.stats.violations[currentHour] and
                                   SecurityLogger.stats.violations[currentHour][identifier] or 0
-        
+
         if violationsThisHour >= SecurityLogger.alertThresholds.violationsPerHour then
             TriggerEvent('security:alert', 'HIGH_VIOLATION_RATE', {
                 identifier = identifier,
@@ -918,7 +994,7 @@ AddEventHandler('security:alert', function(alertType, data)
         type = alertType,
         data = data
     })
-    
+
     -- Send Discord notification
     TriggerEvent('discord:sendAlert', alertType, data)
 end)
@@ -926,28 +1002,28 @@ end)
 -- Command to view security stats
 RegisterCommand('secstats', function(source, args, rawCommand)
     local identifier = GetPlayerIdentifier(source, 0)
-    
+
     if not exports['permission-manager']:hasPermission(identifier, 'admin.security') then
         return
     end
-    
+
     local currentTime = os.time()
     local currentHour = math.floor(currentTime / 3600)
     local currentMinute = math.floor(currentTime / 60)
-    
+
     local stats = {
         connectionsThisMinute = 0,
         violationsThisHour = 0,
         failedLoginsThisHour = 0
     }
-    
+
     -- Count current stats
     if SecurityLogger.stats.connections[currentMinute] then
         for ip, count in pairs(SecurityLogger.stats.connections[currentMinute]) do
             stats.connectionsThisMinute = stats.connectionsThisMinute + count
         end
     end
-    
+
     TriggerClientEvent('chat:addMessage', source, {
         color = {0, 255, 255},
         multiline = true,
@@ -992,10 +1068,10 @@ function SendDiscordAlert(alertType, data)
     if DiscordConfig.webhook == "" then
         return
     end
-    
+
     local severity = GetAlertSeverity(alertType)
     local embed = CreateAlertEmbed(alertType, data, severity)
-    
+
     PerformHttpRequest(DiscordConfig.webhook, function(err, text, headers) end, 'POST', json.encode({
         username = DiscordConfig.botName,
         embeds = {embed}
@@ -1011,27 +1087,27 @@ function GetAlertSeverity(alertType)
         CHEAT_DETECTED = "MEDIUM",
         SUSPICIOUS_ACTIVITY = "MEDIUM"
     }
-    
+
     return severityMap[alertType] or "LOW"
 end
 
 function CreateAlertEmbed(alertType, data, severity)
     local timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
-    
+
     local embed = {
         title = "🚨 Security Alert: " .. alertType,
         color = DiscordConfig.embedColor[severity],
         timestamp = timestamp,
         fields = {}
     }
-    
+
     -- Add severity field
     table.insert(embed.fields, {
         name = "Severity",
         value = severity,
         inline = true
     })
-    
+
     -- Add alert-specific fields
     if alertType == "HIGH_CONNECTION_RATE" then
         table.insert(embed.fields, {
@@ -1044,7 +1120,7 @@ function CreateAlertEmbed(alertType, data, severity)
             value = tostring(data.connections) .. " in " .. data.timeframe,
             inline = true
         })
-        
+
     elseif alertType == "HIGH_VIOLATION_RATE" then
         table.insert(embed.fields, {
             name = "Player",
@@ -1057,14 +1133,14 @@ function CreateAlertEmbed(alertType, data, severity)
             inline = true
         })
     end
-    
+
     -- Add server info
     table.insert(embed.fields, {
         name = "Server",
         value = GetConvar("sv_hostname", "FiveM Server"),
         inline = false
     })
-    
+
     return embed
 end
 

@@ -4,7 +4,23 @@ description: Comprehensive guides for FiveM server setup, management, security, 
 icon: "BookOpen"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 This section provides comprehensive, step-by-step guides for all aspects of FiveM server management. From initial setup to advanced security and maintenance, these guides will help you build and maintain a professional FiveM server.
 
@@ -17,28 +33,28 @@ If you're new to FiveM server management, follow this recommended path:
     {
       title: "Database Setup",
       description: "Set up your MySQL/MariaDB database",
-      code: "Check the database setup guide for installation on Windows, Linux, or Docker"
+      code: "Check the database setup guide for installation on Windows, Linux, or Docker",
     },
     {
       title: "Server Configuration",
       description: "Configure your FiveM server",
-      code: "Review comprehensive server.cfg setup and optimization options"
+      code: "Review comprehensive server.cfg setup and optimization options",
     },
     {
       title: "Resource Installation",
       description: "Install and manage resources",
-      code: "Follow best practices for resource installation and configuration"
+      code: "Follow best practices for resource installation and configuration",
     },
     {
       title: "Security & Permissions",
       description: "Secure your server",
-      code: "Implement security hardening and permission systems"
+      code: "Implement security hardening and permission systems",
     },
     {
       title: "Backup & Recovery",
       description: "Implement backup strategies",
-      code: "Set up automated backups and disaster recovery procedures"
-    }
+      code: "Set up automated backups and disaster recovery procedures",
+    },
   ]}
 />
 
@@ -47,18 +63,18 @@ If you're new to FiveM server management, follow this recommended path:
 ### Server Setup & Configuration
 
 <Cards>
-  <Card 
-    title="Database Setup" 
+  <Card
+    title="Database Setup"
     href="/docs/guides/database-setup"
     description="Complete guide to installing and configuring MySQL/MariaDB for your FiveM server. Includes Windows, Linux, and Docker installations."
   />
-  <Card 
-    title="Server Configuration" 
+  <Card
+    title="Server Configuration"
     href="./server-configuration"
     description="Comprehensive server.cfg setup, performance optimization, and advanced configuration options for production servers."
   />
-  <Card 
-    title="Server Artifacts" 
+  <Card
+    title="Server Artifacts"
     href="/docs/guides/server-artifacts"
     description="How to update FiveM server artifacts manually and automatically. Includes update scripts and rollback procedures."
   />
@@ -67,13 +83,13 @@ If you're new to FiveM server management, follow this recommended path:
 ### Resource Management
 
 <Cards>
-  <Card 
-    title="Resource Installation" 
+  <Card
+    title="Resource Installation"
     href="/docs/guides/resource-installation"
     description="Step-by-step guide to installing, configuring, and managing FiveM resources. Covers dependencies and troubleshooting."
   />
-  <Card 
-    title="Database Tools" 
+  <Card
+    title="Database Tools"
     href="/docs/guides/database-tools"
     description="Essential database management tools and utilities for maintaining your FiveM server's data integrity."
   />
@@ -82,13 +98,13 @@ If you're new to FiveM server management, follow this recommended path:
 ### Security & Maintenance
 
 <Cards>
-  <Card 
-    title="Security & Permissions" 
+  <Card
+    title="Security & Permissions"
     href="/docs/guides/security-permissions"
     description="Complete security hardening guide including anti-cheat, DDoS protection, and advanced permission systems."
   />
-  <Card 
-    title="Backup & Recovery" 
+  <Card
+    title="Backup & Recovery"
     href="/docs/guides/backup-recovery"
     description="Comprehensive backup strategies, automated solutions, and disaster recovery procedures for your server data."
   />
@@ -100,20 +116,24 @@ If you're new to FiveM server management, follow this recommended path:
   features={[
     {
       title: "Database Management",
-      description: "MySQL/MariaDB installation, optimization, connection pooling, and backup strategies"
+      description:
+        "MySQL/MariaDB installation, optimization, connection pooling, and backup strategies",
     },
     {
       title: "Server Administration",
-      description: "Complete configuration, performance optimization, security hardening, and automated updates"
+      description:
+        "Complete configuration, performance optimization, security hardening, and automated updates",
     },
     {
       title: "Resource Management",
-      description: "Proper resource installation, dependency management, and configuration best practices"
+      description:
+        "Proper resource installation, dependency management, and configuration best practices",
     },
     {
       title: "Security & Protection",
-      description: "Anti-cheat implementation, DDoS protection, permission systems, and security monitoring"
-    }
+      description:
+        "Anti-cheat implementation, DDoS protection, permission systems, and security monitoring",
+    },
   ]}
   columns={2}
 />
@@ -127,7 +147,7 @@ Before diving into these guides, ensure you have:
     "Basic Command Line Knowledge - Comfort with terminal/command prompt",
     "Server Access - Root/administrator access to your server",
     "FiveM License - Valid FiveM server license key",
-    "Domain/IP - Server hostname or IP address"
+    "Domain/IP - Server hostname or IP address",
   ]}
   variant="check"
 />
@@ -142,7 +162,7 @@ Most guides will reference these commonly used tools:
     "Web Server: Nginx or Apache (for web interfaces)",
     "Process Manager: systemd (Linux) or Windows Services",
     "Backup Tools: mysqldump, rsync, automated scripts",
-    "Monitoring: Custom monitoring scripts and Discord webhooks"
+    "Monitoring: Custom monitoring scripts and Discord webhooks",
   ]}
   variant="bullet"
 />
@@ -154,13 +174,14 @@ Most guides will reference these commonly used tools:
     "Start Simple - Begin with basic configurations and gradually add complexity",
     "Test Everything - Always test in development before applying to production",
     "Keep Backups - Implement backup strategies early",
-    "Monitor Performance - Regular monitoring helps identify issues early"
+    "Monitor Performance - Regular monitoring helps identify issues early",
   ]}
   variant="check"
   columns={2}
 />
 
 ### Stay Updated
+
 Keep your server artifacts, resources, and security measures up to date.
 
 ## 🆘 Getting Help

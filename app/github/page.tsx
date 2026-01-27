@@ -37,7 +37,8 @@ export default function DiscordPage() {
             Follow us on GitHub
           </h2>
           <p className="text-muted-foreground">
-            You should be redirected to our GitHub automatically. If not, click the button below!
+            You should be redirected to our GitHub automatically. If not, click
+            the button below!
           </p>
         </div>
 

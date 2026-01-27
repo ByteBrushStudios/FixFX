@@ -4,13 +4,33 @@ description: Complete guide for installing and setting up vMenu on your FiveM se
 icon: "Settings"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 ## Overview
 
 This guide will walk you through the complete process of installing and configuring vMenu on your FiveM server. vMenu is straightforward to install, but proper configuration is essential for security and optimal performance.
 
-<PropertyCard type="warning" name="Security Warning" description="Always configure permissions before making your server public. Default settings may grant excessive permissions to all players." />
+<PropertyCard
+  type="warning"
+  name="Security Warning"
+  description="Always configure permissions before making your server public. Default settings may grant excessive permissions to all players."
+/>
 
 ## Prerequisites
 
@@ -23,24 +43,47 @@ Before installing vMenu, ensure you have:
 
 ### Compatibility
 
-| Component | Requirement |
-|-----------|--------------|
+| Component    | Requirement                  |
+| ------------ | ---------------------------- |
 | FiveM Server | Latest recommended artifacts |
-| OneSync | Optional (but recommended) |
-| Framework | None required (standalone) |
-| Database | Not required |
+| OneSync      | Optional (but recommended)   |
+| Framework    | None required (standalone)   |
+| Database     | Not required                 |
 
-<PropertyCard type="info" name="vMenu Compatibility" description="vMenu works as a standalone resource and doesn't require ESX, QBCore, or any other framework. It uses FiveM's native ACE permission system." />
+<PropertyCard
+  type="info"
+  name="vMenu Compatibility"
+  description="vMenu works as a standalone resource and doesn't require ESX, QBCore, or any other framework. It uses FiveM's native ACE permission system."
+/>
 
 ## Installation Methods
 
 <StepList
   steps={[
-    { title: "Download vMenu", description: "Visit the official GitHub releases page at https://github.com/TomGrobbe/vMenu/releases/latest" },
-    { title: "Extract Files", description: "Download and extract the latest vMenu.zip file to your resources/ folder" },
-    { title: "Verify Structure", description: "Ensure folder is named 'vMenu' (case-sensitive on Linux) with fxmanifest.lua at root level" },
-    { title: "Add to server.cfg", description: "Add 'ensure vMenu' to your server configuration file" },
-    { title: "Configure Permissions", description: "Edit resources/vMenu/config/permissions.cfg with appropriate access levels" }
+    {
+      title: "Download vMenu",
+      description:
+        "Visit the official GitHub releases page at https://github.com/TomGrobbe/vMenu/releases/latest",
+    },
+    {
+      title: "Extract Files",
+      description:
+        "Download and extract the latest vMenu.zip file to your resources/ folder",
+    },
+    {
+      title: "Verify Structure",
+      description:
+        "Ensure folder is named 'vMenu' (case-sensitive on Linux) with fxmanifest.lua at root level",
+    },
+    {
+      title: "Add to server.cfg",
+      description: "Add 'ensure vMenu' to your server configuration file",
+    },
+    {
+      title: "Configure Permissions",
+      description:
+        "Edit resources/vMenu/config/permissions.cfg with appropriate access levels",
+    },
   ]}
   title="Installation Quick Steps"
 />
@@ -50,12 +93,12 @@ Before installing vMenu, ensure you have:
 1. **Download vMenu**
 
    Visit the official vMenu GitHub releases page:
+
    ```
    https://github.com/TomGrobbe/vMenu/releases/latest
    ```
 
 2. **Extract the Resource**
-
    - Download the latest `vMenu.zip` file
    - Extract to your server's `resources` folder
    - Ensure the folder is named `vMenu` (not `vMenu-master` or similar)
@@ -63,6 +106,7 @@ Before installing vMenu, ensure you have:
 3. **Verify File Structure**
 
    Your resources folder should look like this:
+
    ```
    resources/
    └── vMenu/
@@ -85,6 +129,7 @@ git clone https://github.com/TomGrobbe/vMenu.git
 ```
 
 **Updating with Git:**
+
 ```bash
 cd vMenu
 git pull origin master
@@ -111,6 +156,7 @@ ensure vMenu
 ```
 
 **Important placement:**
+
 ```cfg
 # Load core resources first
 ensure mapmanager
@@ -134,15 +180,44 @@ vMenu uses a `permissions.cfg` file located in `resources/vMenu/config/permissio
 <ConfigBlock
   title="Basic Permission Structure"
   options={[
-    { key: "add_ace group.admin", value: "vMenu.Everything allow", description: "Grant all permissions to admin group", required: true },
-    { key: "add_ace group.moderator", value: "vMenu.OnlinePlayers allow", description: "Allow moderators to manage players", required: false },
-    { key: "add_ace group.moderator", value: "vMenu.Report allow", description: "Allow moderators to receive reports", required: false },
-    { key: "add_ace group.vip", value: "vMenu.PersonalVehicle allow", description: "Grant VIP personal vehicle access", required: false },
-    { key: "add_ace builtin.everyone", value: "vMenu.NoClip deny", description: "Deny NoClip to all players by default", required: true }
+    {
+      key: "add_ace group.admin",
+      value: "vMenu.Everything allow",
+      description: "Grant all permissions to admin group",
+      required: true,
+    },
+    {
+      key: "add_ace group.moderator",
+      value: "vMenu.OnlinePlayers allow",
+      description: "Allow moderators to manage players",
+      required: false,
+    },
+    {
+      key: "add_ace group.moderator",
+      value: "vMenu.Report allow",
+      description: "Allow moderators to receive reports",
+      required: false,
+    },
+    {
+      key: "add_ace group.vip",
+      value: "vMenu.PersonalVehicle allow",
+      description: "Grant VIP personal vehicle access",
+      required: false,
+    },
+    {
+      key: "add_ace builtin.everyone",
+      value: "vMenu.NoClip deny",
+      description: "Deny NoClip to all players by default",
+      required: true,
+    },
   ]}
 />
 
-<PropertyCard type="error" name="Critical Security Notice" description="By default, vMenu may grant all permissions to everyone. Always configure permissions before going live! Refer to our Permissions Guide for detailed configuration options." />
+<PropertyCard
+  type="error"
+  name="Critical Security Notice"
+  description="By default, vMenu may grant all permissions to everyone. Always configure permissions before going live! Refer to our Permissions Guide for detailed configuration options."
+/>
 
 See our [Permissions Guide](/docs/vmenu/permissions) for detailed permission configuration.
 
@@ -184,11 +259,13 @@ If using txAdmin:
 ### Finding Player Identifiers
 
 **In-game method:**
+
 1. Have player join server
 2. Check server console
 3. Look for connection message showing identifiers
 
 **Console command:**
+
 ```
 status
 ```
@@ -201,15 +278,16 @@ vMenu uses keybinds that can be customized by players in FiveM settings.
 
 ### Default Keybinds
 
-| Action | Default Key | Description |
-|--------|-------------|-------------|
-| Open Menu | M | Opens main vMenu interface |
-| NoClip | F2 | Toggle noclip (admin only) |
-| Change Appearance | F11 | Quick appearance menu |
+| Action            | Default Key | Description                |
+| ----------------- | ----------- | -------------------------- |
+| Open Menu         | M           | Opens main vMenu interface |
+| NoClip            | F2          | Toggle noclip (admin only) |
+| Change Appearance | F11         | Quick appearance menu      |
 
 ### Custom Keybind Setup
 
 Players can change keybinds via:
+
 1. Press **ESC** → **Settings**
 2. Navigate to **Key Bindings**
 3. Scroll to **FiveM** section
@@ -243,6 +321,7 @@ Start the server and watch for vMenu initialization:
 ### 4. Check for Errors
 
 Monitor server console for errors:
+
 ```
 # Look for these messages
 [ERROR] [vMenu] ...
@@ -256,6 +335,7 @@ Monitor server console for errors:
 **Symptoms**: Pressing M does nothing
 
 **Solutions**:
+
 1. Check server console for errors
 2. Verify resource is started: `ensure vMenu`
 3. Check keybind settings in FiveM
@@ -267,6 +347,7 @@ Monitor server console for errors:
 **Symptoms**: "You don't have permission to access this" errors
 
 **Solutions**:
+
 1. Verify your identifier is added correctly
 2. Check `permissions.cfg` syntax
 3. Ensure principal groups are assigned
@@ -278,6 +359,7 @@ Monitor server console for errors:
 **Symptoms**: vMenu fails to start, console shows errors
 
 **Solutions**:
+
 1. Verify file structure is correct
 2. Check folder name is exactly `vMenu`
 3. Ensure `fxmanifest.lua` exists
@@ -289,6 +371,7 @@ Monitor server console for errors:
 **Symptoms**: Missing features, crashes, bugs
 
 **Solutions**:
+
 1. Download latest release from GitHub
 2. Backup current configuration
 3. Replace old files with new version
@@ -306,12 +389,13 @@ If running multiple servers with vMenu:
 # Server 1 permissions
 exec resources/vMenu/config/permissions-server1.cfg
 
-# Server 2 permissions  
+# Server 2 permissions
 exec resources/vMenu/config/permissions-server2.cfg
 ```
 
 <Callout type="info">
-  For server-specific convars, check the [official vMenu documentation](https://docs.vespura.com/vmenu/configuration).
+  For server-specific convars, check the [official vMenu
+  documentation](https://docs.vespura.com/vmenu/configuration).
 </Callout>
 
 ### Custom Resource Name
@@ -323,7 +407,8 @@ To rename vMenu (not recommended):
 3. Update any scripts that reference vMenu
 
 <Callout type="warn">
-  Renaming vMenu may cause compatibility issues with some resources. Only do this if absolutely necessary.
+  Renaming vMenu may cause compatibility issues with some resources. Only do
+  this if absolutely necessary.
 </Callout>
 
 ### Behind a Reverse Proxy
@@ -356,6 +441,7 @@ After successful installation:
 ### Manual Update
 
 1. **Backup Current Installation**
+
    ```bash
    # Create backup
    cp -r resources/vMenu resources/vMenu_backup
@@ -366,6 +452,7 @@ After successful installation:
    - Download latest version
 
 3. **Backup Configuration**
+
    ```bash
    # Backup permissions
    cp resources/vMenu/config/permissions.cfg ~/vmenu_permissions_backup.cfg
@@ -395,12 +482,14 @@ git stash pop # Restore local changes
 To completely remove vMenu:
 
 1. **Remove from server.cfg**
+
    ```cfg
    # Comment out or delete
    # ensure vMenu
    ```
 
 2. **Delete Files**
+
    ```bash
    rm -rf resources/vMenu
    ```
@@ -425,10 +514,11 @@ If you encounter issues during installation:
 Now that vMenu is installed:
 
 - [Configure Permissions](/docs/vmenu/permissions) - Set up proper access control
-- [Customize Settings](/docs/vmenu/configuration) - Adjust features and preferences  
+- [Customize Settings](/docs/vmenu/configuration) - Adjust features and preferences
 - [Explore Features](/docs/vmenu/features) - Learn about all available options
 - [Admin Training](/docs/vmenu/features) - Understand moderation tools
 
 <Callout type="success">
-  **Installation Complete!** You've successfully installed vMenu. Don't forget to configure permissions before making your server public.
+  **Installation Complete!** You've successfully installed vMenu. Don't forget
+  to configure permissions before making your server public.
 </Callout>

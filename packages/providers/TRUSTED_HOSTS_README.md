@@ -24,6 +24,7 @@ The system automatically updates the trusted hosts list every Monday at 00:00 UT
 ### Manual Triggers
 
 You can manually trigger the update workflow:
+
 - Navigate to **Actions** → **Update Trusted Hosting Providers** → **Run workflow**
 
 ### Data Structure
@@ -53,7 +54,7 @@ Each trusted host entry contains:
 ### Get all trusted hosts
 
 ```typescript
-import { getTrustedHosts } from '@/lib/trusted-hosts';
+import { getTrustedHosts } from "@/lib/trusted-hosts";
 
 const hosts = await getTrustedHosts();
 // Returns sorted array: verified hosts first, then by name
@@ -62,7 +63,7 @@ const hosts = await getTrustedHosts();
 ### Get trusted host metadata
 
 ```typescript
-import { getTrustedHostsMetadata } from '@/lib/trusted-hosts';
+import { getTrustedHostsMetadata } from "@/lib/trusted-hosts";
 
 const metadata = await getTrustedHostsMetadata();
 // Returns: { lastUpdated, source }
@@ -71,17 +72,17 @@ const metadata = await getTrustedHostsMetadata();
 ### Get a specific host
 
 ```typescript
-import { getTrustedHostById } from '@/lib/trusted-hosts';
+import { getTrustedHostById } from "@/lib/trusted-hosts";
 
-const zapHosting = await getTrustedHostById('zap-hosting');
+const zapHosting = await getTrustedHostById("zap-hosting");
 ```
 
 ### Check if a provider is trusted
 
 ```typescript
-import { isTrustedProvider } from '@/lib/trusted-hosts';
+import { isTrustedProvider } from "@/lib/trusted-hosts";
 
-const isTrusted = await isTrustedProvider('https://zap-hosting.com');
+const isTrusted = await isTrustedProvider("https://zap-hosting.com");
 ```
 
 ## Validation
@@ -117,11 +118,13 @@ When a provider is removed from the FiveM registry:
 ### Scraper not finding providers
 
 The scraper uses multiple strategies:
+
 1. HTML parsing to find provider links
 2. Fallback to known provider list
 3. Validation against provider websites
 
 If a provider is missing:
+
 - Check if it still exists on [fivem.net/server-hosting](https://fivem.net/server-hosting)
 - Run the update workflow manually
 - Manually add the provider to `trusted-hosts.json`
@@ -129,11 +132,13 @@ If a provider is missing:
 ### Validation errors
 
 Run the validator to check for issues:
+
 ```bash
 node .github/scripts/validate-trusted-hosts.js
 ```
 
 Common issues:
+
 - Duplicate IDs (each provider must have unique ID)
 - Invalid URL format (must be valid http/https URL)
 - ID format (must match `/^[a-z0-9-]+$/`)
@@ -141,6 +146,7 @@ Common issues:
 ## Future Enhancements
 
 Planned improvements:
+
 - [ ] Provider rating/review system
 - [ ] Regional availability tracking
 - [ ] Feature matrix (DDoS protection, auto-backup, etc.)

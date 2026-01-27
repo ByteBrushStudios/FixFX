@@ -7,9 +7,5 @@ export default function BlogLayout({
 }: Readonly<{
   children: ReactNode;
 }>): React.ReactElement {
-  return (
-    <HomeLayout {...baseOptions}>
-      {children}
-    </HomeLayout>
-  );
+  return <HomeLayout {...baseOptions}>{children}</HomeLayout>;
 }

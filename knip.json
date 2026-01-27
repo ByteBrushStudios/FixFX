@@ -7,9 +7,7 @@
     "tailwind.config.ts",
     "postcss.config.js"
   ],
-  "project": [
-    "**/*.{ts,tsx,js,mjs}"
-  ],
+  "project": ["**/*.{ts,tsx,js,mjs}"],
   "paths": {
     "@/*": ["./"],
     "@ui/*": ["./packages/ui/src/*"],
@@ -17,16 +15,16 @@
     "@core/*": ["./packages/core/src/*"]
   },
   "ignoreDependencies": [
+    "@knip/*",
     "@types/*",
     "@radix-ui/react-select",
     "@radix-ui/react-radio-group",
     "cheerio",
     "gray-matter",
-    "shiki"
+    "shiki",
+    "fumadocs-mdx"
   ],
-  "ignoreBinaries": [
-    "ajv"
-  ],
+  "ignoreBinaries": ["ajv"],
   "rules": {
     "classMembers": "warn",
     "enumMembers": "warn",
@@ -52,10 +50,7 @@
   ],
   "workspaces": {
     ".": {
-      "entry": [
-        "app/**/*.{ts,tsx}",
-        "lib/**/*.{ts,tsx}"
-      ]
+      "entry": ["app/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}"]
     },
     "packages/ui": {
       "entry": ["src/index.ts", "src/**/*.{ts,tsx}"],

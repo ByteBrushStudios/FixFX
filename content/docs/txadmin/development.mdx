@@ -46,19 +46,22 @@ If you are interested in development of txAdmin, this guide will help set up you
   steps={[
     {
       title: "Clone txAdmin Repository",
-      description: "Clone the txAdmin repository into a folder outside the fxserver directory.",
-      code: "git clone https://github.com/citizenfx/txAdmin"
+      description:
+        "Clone the txAdmin repository into a folder outside the fxserver directory.",
+      code: "git clone https://github.com/citizenfx/txAdmin",
     },
     {
       title: "Install Dependencies",
-      description: "In your root folder, install dependencies and prepare commit hook.",
-      code: "npm install\nnpm run prepare"
+      description:
+        "In your root folder, install dependencies and prepare commit hook.",
+      code: "npm install\nnpm run prepare",
     },
     {
       title: "Create .env File",
-      description: "At the root of the project, create a `.env` file with TXDEV_FXSERVER_PATH.",
-      code: 'TXDEV_FXSERVER_PATH=\'E:/FiveM/10309/\''
-    }
+      description:
+        "At the root of the project, create a `.env` file with TXDEV_FXSERVER_PATH.",
+      code: "TXDEV_FXSERVER_PATH='E:/FiveM/10309/'",
+    },
   ]}
 />
 
@@ -67,6 +70,7 @@ If you are interested in development of txAdmin, this guide will help set up you
 ### Core/Panel/Resource
 
 This workflow is controlled by `scripts/build/*`, which is responsible for:
+
 - Watching and copying static files (resource, docs, license, entry file, etc) to the deploy path
 - Watching and re-transpiling the core files, bundling and deploying it
 - Running FXServer in the same terminal, restarting when core is modified (like `nodemon`, but enhanced)
@@ -137,7 +141,11 @@ The output will be in the `dist/` folder.
   <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
   <div>
     <p className="font-semibold text-amber-500 mb-1">Legacy Warning</p>
-    <p className="text-sm text-amber-500/90">The `/web/` UI is considered legacy and will be migrated to `/panel/`. **DO NOT** modify `css/coreui.css`. Either do a patch in `custom.css` or modify the SCSS variables.</p>
+    <p className="text-sm text-amber-500/90">
+      The `/web/` UI is considered legacy and will be migrated to `/panel/`.
+      **DO NOT** modify `css/coreui.css`. Either do a patch in `custom.css` or
+      modify the SCSS variables.
+    </p>
   </div>
 </div>
 

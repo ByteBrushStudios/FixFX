@@ -3,7 +3,23 @@ title: Manifest Files (fxmanifest.lua)
 description: Complete guide to creating and configuring FiveM resource manifest files.
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 The `fxmanifest.lua` file is the heart of every FiveM resource. It defines metadata, dependencies, scripts, and assets that your resource uses.
 
@@ -13,28 +29,28 @@ The `fxmanifest.lua` file is the heart of every FiveM resource. It defines metad
     {
       title: "Define Runtime and Game",
       description: "Set fx_version to 'cerulean' and game to 'gta5' or 'rdr3'",
-      code: "fx_version 'cerulean'\ngame 'gta5'"
+      code: "fx_version 'cerulean'\ngame 'gta5'",
     },
     {
       title: "Add Metadata",
       description: "Include author, description, and version information",
-      code: "author 'Your Name'\ndescription 'Resource description'\nversion '1.0.0'"
+      code: "author 'Your Name'\ndescription 'Resource description'\nversion '1.0.0'",
     },
     {
       title: "Declare Scripts",
       description: "List all client, server, and shared scripts",
-      code: "client_script 'client.lua'\nserver_script 'server.lua'"
+      code: "client_script 'client.lua'\nserver_script 'server.lua'",
     },
     {
       title: "Add Dependencies",
       description: "Specify required resources that must load first",
-      code: "dependencies {\n  'es_extended',\n  'mysql-async'\n}"
+      code: "dependencies {\n  'es_extended',\n  'mysql-async'\n}",
     },
     {
       title: "Define Assets",
       description: "List HTML, CSS, and other static files",
-      code: "files {\n  'html/index.html',\n  'html/style.css'\n}"
-    }
+      code: "files {\n  'html/index.html',\n  'html/style.css'\n}",
+    },
   ]}
 />
 

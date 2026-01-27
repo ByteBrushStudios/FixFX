@@ -4,7 +4,23 @@ description: Complete guide to installing, managing, and configuring FiveM resou
 icon: "Package"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Proper resource installation and management is crucial for a stable and feature-rich FiveM server. This guide covers everything from basic installation to advanced dependency management.
 
@@ -13,21 +29,25 @@ Proper resource installation and management is crucial for a stable and feature-
 ### Resource Types
 
 **Core Resources**
+
 - Essential for server operation
 - Include: mapmanager, chat, spawnmanager, sessionmanager
 - Usually not modified or replaced
 
 **Framework Resources**
+
 - Provide foundation for other resources
 - Examples: ESX, QBCore, vRP
 - Define player systems, jobs, economy
 
 **Feature Resources**
+
 - Add specific functionality
 - Examples: banking, vehicles, jobs, housing
 - Build upon framework resources
 
 **Utility Resources**
+
 - Provide tools and libraries
 - Examples: ox_lib, mysql-async, screenshot-basic
 - Used by other resources
@@ -128,7 +148,7 @@ Before installing any resource, assess compatibility:
     "Verify dependency requirements",
     "Check for resource conflicts",
     "Review database table names",
-    "Test on development server first"
+    "Test on development server first",
   ]}
 />
 
@@ -177,13 +197,40 @@ database_tables:
 
 <StepList
   steps={[
-    { title: "Download Resource", description: "Download the resource from its official source (GitHub, GitLab, or official repository)" },
-    { title: "Extract Files", description: "Extract the ZIP file to your resources folder and rename if necessary to remove version numbers" },
-    { title: "Verify Structure", description: "Ensure fxmanifest.lua exists at the root of the resource directory" },
-    { title: "Configure Resource", description: "Edit config files and set appropriate options for your server" },
-    { title: "Import Database", description: "If applicable, import SQL files to your database using MySQL commands" },
-    { title: "Add to server.cfg", description: "Add 'ensure resource_name' to your server.cfg file" },
-    { title: "Test & Restart", description: "Restart your server and verify the resource loads without errors" }
+    {
+      title: "Download Resource",
+      description:
+        "Download the resource from its official source (GitHub, GitLab, or official repository)",
+    },
+    {
+      title: "Extract Files",
+      description:
+        "Extract the ZIP file to your resources folder and rename if necessary to remove version numbers",
+    },
+    {
+      title: "Verify Structure",
+      description:
+        "Ensure fxmanifest.lua exists at the root of the resource directory",
+    },
+    {
+      title: "Configure Resource",
+      description:
+        "Edit config files and set appropriate options for your server",
+    },
+    {
+      title: "Import Database",
+      description:
+        "If applicable, import SQL files to your database using MySQL commands",
+    },
+    {
+      title: "Add to server.cfg",
+      description: "Add 'ensure resource_name' to your server.cfg file",
+    },
+    {
+      title: "Test & Restart",
+      description:
+        "Restart your server and verify the resource loads without errors",
+    },
   ]}
   title="Manual Installation Steps"
 />
@@ -339,12 +386,12 @@ mysql -u fivem_user -p fivem < resource_name/sql/install.sql
 -- auto_install.lua (server-side)
 local function installDatabase()
     local sqlFile = LoadResourceFile(GetCurrentResourceName(), 'sql/install.sql')
-    
+
     if not sqlFile then
         print('No SQL file found for ' .. GetCurrentResourceName())
         return
     end
-    
+
     -- Split queries by semicolon
     local queries = {}
     for query in sqlFile:gmatch("[^;]+") do
@@ -353,7 +400,7 @@ local function installDatabase()
             table.insert(queries, query)
         end
     end
-    
+
     -- Execute queries
     for i, query in ipairs(queries) do
         exports.oxmysql:execute(query, {}, function(result)
@@ -369,7 +416,7 @@ end
 -- Auto-install on first start
 CreateThread(function()
     Wait(5000)  -- Wait for database connection
-    
+
     -- Check if already installed
     exports.oxmysql:query('SHOW TABLES LIKE "resource_table"', {}, function(result)
         if not result or #result == 0 then
@@ -518,7 +565,7 @@ local function checkResourceDependencies()
         'oxmysql',
         'ox_lib'
     }
-    
+
     for _, resource in ipairs(dependencies) do
         local state = GetResourceState(resource)
         if state ~= 'started' then
@@ -526,7 +573,7 @@ local function checkResourceDependencies()
             return false
         end
     end
-    
+
     return true
 end
 
@@ -535,7 +582,7 @@ CreateThread(function()
     while not checkResourceDependencies() do
         Wait(1000)
     end
-    
+
     print('All dependencies loaded, starting resource...')
     -- Initialize resource here
 end)
@@ -609,16 +656,16 @@ echo "Syncing resource: $RESOURCE_NAME"
 
 for server in "${SERVERS[@]}"; do
     echo "Syncing to: $server"
-    
+
     # Stop resource on target server
     # This would require connecting to each server's console
-    
+
     # Sync files
     rsync -av --delete "$MASTER_SERVER/$RESOURCE_NAME/" "$server/$RESOURCE_NAME/"
-    
+
     # Set permissions
     chown -R fivem:fivem "$server/$RESOURCE_NAME"
-    
+
     # Restart resource on target server
     # This would require connecting to each server's console
 done
@@ -632,41 +679,41 @@ echo "Resource sync completed"
 -- validate_resource.lua
 local function validateResource(resourceName)
     local issues = {}
-    
+
     -- Check manifest
     local manifest = LoadResourceFile(resourceName, 'fxmanifest.lua')
     if not manifest then
         table.insert(issues, 'Missing fxmanifest.lua')
         return issues
     end
-    
+
     -- Check for common issues
     if not manifest:find('fx_version') then
         table.insert(issues, 'Missing fx_version in manifest')
     end
-    
+
     if not manifest:find('game') then
         table.insert(issues, 'Missing game specification in manifest')
     end
-    
+
     -- Check dependencies
     local dependencies = {}
     for dep in manifest:gmatch('dependency%s+[\'"]([^\'"]+)[\'"]') do
         table.insert(dependencies, dep)
     end
-    
+
     for dep in manifest:gmatch('dependencies%s+{([^}]+)}') do
         for subdep in dep:gmatch('[\'"]([^\'"]+)[\'"]') do
             table.insert(dependencies, subdep)
         end
     end
-    
+
     for _, dep in ipairs(dependencies) do
         if GetResourceState(dep) ~= 'started' then
             table.insert(issues, string.format('Dependency not started: %s', dep))
         end
     end
-    
+
     -- Check file existence
     local files = {}
     for file in manifest:gmatch('client_script%s+[\'"]([^\'"]+)[\'"]') do
@@ -678,24 +725,24 @@ local function validateResource(resourceName)
     for file in manifest:gmatch('shared_script%s+[\'"]([^\'"]+)[\'"]') do
         table.insert(files, file)
     end
-    
+
     for _, file in ipairs(files) do
         if not LoadResourceFile(resourceName, file) then
             table.insert(issues, string.format('Missing file: %s', file))
         end
     end
-    
+
     return issues
 end
 
 -- Validate all resources
 RegisterCommand('validate_resources', function()
     print('Validating all resources...')
-    
+
     for i = 0, GetNumResources() - 1 do
         local resourceName = GetResourceByFindIndex(i)
         local issues = validateResource(resourceName)
-        
+
         if #issues > 0 then
             print(string.format('Issues found in %s:', resourceName))
             for _, issue in ipairs(issues) do
@@ -713,6 +760,7 @@ end, true)
 ### Common Issues
 
 **Resource Not Starting**
+
 ```bash
 # Check console output
 tail -f server-console.log
@@ -726,6 +774,7 @@ restart resource_name
 ```
 
 **Database Connection Issues**
+
 ```lua
 -- Test database connection
 exports.oxmysql:query('SELECT 1 as test', {}, function(result)
@@ -738,6 +787,7 @@ end)
 ```
 
 **File Permission Issues**
+
 ```bash
 # Fix permissions (Linux)
 sudo chown -R fivem:fivem /opt/fivem/resources/
@@ -807,18 +857,18 @@ echo "  4. Restart the server or start the resource"
 -- health_check.lua (run as admin command)
 RegisterCommand('health_check', function(source)
     if source ~= 0 then return end  -- Console only
-    
+
     print('=== Resource Health Check ===')
-    
+
     local totalResources = GetNumResources()
     local startedResources = 0
     local stoppedResources = 0
     local errorResources = {}
-    
+
     for i = 0, totalResources - 1 do
         local resourceName = GetResourceByFindIndex(i)
         local state = GetResourceState(resourceName)
-        
+
         if state == 'started' then
             startedResources = startedResources + 1
         elseif state == 'stopped' then
@@ -827,18 +877,18 @@ RegisterCommand('health_check', function(source)
             table.insert(errorResources, {name = resourceName, state = state})
         end
     end
-    
+
     print(string.format('Total resources: %d', totalResources))
     print(string.format('Started: %d', startedResources))
     print(string.format('Stopped: %d', stoppedResources))
-    
+
     if #errorResources > 0 then
         print('Resources with issues:')
         for _, resource in ipairs(errorResources) do
             print(string.format('  %s: %s', resource.name, resource.state))
         end
     end
-    
+
     print('=== End Health Check ===')
 end, true)
 ```

@@ -4,7 +4,23 @@ description: A comprehensive guide to optimizing CitizenFX server and client per
 icon: "Gauge"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Performance is a critical aspect of any FiveM server. This section provides comprehensive guides for optimizing both server and client performance to ensure a smooth experience for all players.
 
@@ -21,20 +37,35 @@ FiveM performance depends on several key factors:
 ## Available Guides
 
 <Cards>
-  <Card title="Server Optimization" href="/docs/cfx/performance/server-optimization">
-    Learn how to optimize your server configuration, resources, and hardware for maximum performance.
+  <Card
+    title="Server Optimization"
+    href="/docs/cfx/performance/server-optimization"
+  >
+    Learn how to optimize your server configuration, resources, and hardware for
+    maximum performance.
   </Card>
-  
-  <Card title="Client Optimization" href="/docs/cfx/performance/client-optimization">
-    Discover techniques to improve client-side performance for your players.
-  </Card>
-  
-  <Card title="Resource Optimization" href="/docs/cfx/performance/resource-optimization">
-    Best practices for creating and optimizing FiveM resources for better performance.
-  </Card>
-  
-  <Card title="Database Optimization" href="/docs/cfx/performance/database-optimization">
-    Optimize your database queries and structure for improved server performance.
+
+<Card
+  title="Client Optimization"
+  href="/docs/cfx/performance/client-optimization"
+>
+  Discover techniques to improve client-side performance for your players.
+</Card>
+
+<Card
+  title="Resource Optimization"
+  href="/docs/cfx/performance/resource-optimization"
+>
+  Best practices for creating and optimizing FiveM resources for better
+  performance.
+</Card>
+
+  <Card
+    title="Database Optimization"
+    href="/docs/cfx/performance/database-optimization"
+  >
+    Optimize your database queries and structure for improved server
+    performance.
   </Card>
 </Cards>
 
@@ -51,13 +82,15 @@ For more information on these tools, visit the [Common Tools](/docs/cfx/common-t
 
 ## Best Practices
 
-<CheckList items={[
-  "Start with a clean base and add resources incrementally",
-  "Use built-in monitoring tools regularly to identify bottlenecks",
-  "Implement scheduled server restarts and maintenance routines",
-  "Keep only necessary resources running",
-  "Stay updated with latest server artifacts and resource versions"
-]} />
+<CheckList
+  items={[
+    "Start with a clean base and add resources incrementally",
+    "Use built-in monitoring tools regularly to identify bottlenecks",
+    "Implement scheduled server restarts and maintenance routines",
+    "Keep only necessary resources running",
+    "Stay updated with latest server artifacts and resource versions",
+  ]}
+/>
 
 ### General Performance Tips
 
@@ -110,7 +143,9 @@ For advanced users, consider these techniques:
 5. **Resource Dependency Optimization**: Minimize dependencies between resources
 
 <Callout type="warning">
-  Always test performance optimizations in a development environment before applying them to production. Document all changes and their impacts for future reference.
+  Always test performance optimizations in a development environment before
+  applying them to production. Document all changes and their impacts for future
+  reference.
 </Callout>
 
 For specific optimization techniques, refer to the individual guides in this section.

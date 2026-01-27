@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fixfx.wiki"),
-  
+
   /** Canonical & Alternates */
   alternates: {
     canonical: "https://fixfx.wiki",
@@ -36,7 +36,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     creators: ["@CodeMeAPixel"],
     title: "FixFX - FiveM & RedM Documentation Hub",
-    description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem. Your one-stop resource for server development.",
+    description:
+      "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem. Your one-stop resource for server development.",
     images: [
       {
         url: "/opengraph-image.png",
@@ -51,7 +52,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@CodeMeAPixel",
     site: "@FixFXWiki",
-    description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
+    description:
+      "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
     images: ["/twitter-image.png"],
   },
   /** OpenGraph */
@@ -77,7 +79,8 @@ export const metadata: Metadata = {
     default: "FixFX - FiveM & RedM Documentation Hub",
     template: "%s | FixFX",
   },
-  description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem. Your one-stop resource for server development.",
+  description:
+    "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem. Your one-stop resource for server development.",
   creator: "CodeMeAPixel",
   publisher: "FixFX",
   authors: [
@@ -140,7 +143,8 @@ const websiteJsonLd = {
   name: "FixFX",
   alternateName: ["FixFX Wiki", "FixFX Documentation"],
   url: "https://fixfx.wiki",
-  description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
+  description:
+    "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
   inLanguage: "en-US",
   publisher: {
     "@type": "Organization",
@@ -172,7 +176,8 @@ const organizationJsonLd = {
   name: "FixFX",
   url: "https://fixfx.wiki",
   logo: "https://fixfx.wiki/logo.png",
-  description: "Documentation hub for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
+  description:
+    "Documentation hub for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
   foundingDate: "2024",
   sameAs: [
     "https://github.com/CodeMeAPixel/FixFX",
@@ -211,7 +216,11 @@ export default function Layout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* JSON-LD Structured Data */}
         <script
@@ -253,15 +262,17 @@ export default function Layout({
         <link rel="author" href="/humans.txt" />
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         {/* DNS Prefetch for external resources */}
         <link rel="dns-prefetch" href="https://runtime.fivem.net" />
         <link rel="dns-prefetch" href="https://portal.cfx.re" />
       </head>
       <body className="dark:selection:text-fd-foreground antialiased [text-rendering:optimizeLegibility] selection:bg-neutral-800 selection:text-white dark:selection:bg-neutral-800">
-        <RootProvider theme="dark">
-          {children}
-        </RootProvider>
+        <RootProvider theme="dark">{children}</RootProvider>
         <Analytics />
         <Script
           async

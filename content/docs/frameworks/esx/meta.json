@@ -1,9 +1,5 @@
 {
-    "title": "ESX",
-    "defaultOpen": true,
-    "pages": [
-        "setup",
-        "development",
-        "troubleshooting"
-    ]
+  "title": "ESX",
+  "defaultOpen": true,
+  "pages": ["setup", "development", "troubleshooting"]
 }

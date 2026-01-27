@@ -4,7 +4,23 @@ description: Comprehensive guide to using debug tools for troubleshooting and sy
 icon: "Bug"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 FiveM provides a suite of debug tools that help with troubleshooting, system inspection, and real-time monitoring. These tools are essential for identifying and resolving issues in your server environment.
 
@@ -13,46 +29,52 @@ FiveM provides a suite of debug tools that help with troubleshooting, system ins
     {
       title: "Debug Console",
       description: "Real-time server information and debugging capabilities",
-      icon: "terminal"
+      icon: "terminal",
     },
     {
       title: "Resource Debugger",
       description: "Track resource execution and identify performance issues",
-      icon: "bug"
+      icon: "bug",
     },
     {
       title: "State Inspection",
       description: "Examine variable values and resource state in real-time",
-      icon: "database"
+      icon: "database",
     },
     {
       title: "Command Execution",
       description: "Execute debug commands directly in the console",
-      icon: "terminal"
-    }
+      icon: "terminal",
+    },
   ]}
 />
 
 ## Available Debug Tools
 
 ### Debug Console
+
 The Debug Console provides real-time access to server information and debugging capabilities.
 
 #### Enabling Debug Console
+
 Add to your `server.cfg`:
+
 ```yaml
 # Enable debug console
 setr debug_console_enabled 1
-setr debug_console_level 2  # 0: None, 1: Errors, 2: Warnings, 3: Info, 4: Debug
+setr debug_console_level 2 # 0: None, 1: Errors, 2: Warnings, 3: Info, 4: Debug
 ```
 
 #### Accessing Debug Console
+
 In-game command:
+
 ```
 /debug
 ```
 
 #### Features
+
 - Real-time log viewing
 - Resource state inspection
 - Command execution
@@ -60,10 +82,13 @@ In-game command:
 - System information
 
 ### Resource Debugger
+
 Helps track resource execution and identify issues.
 
 #### Enabling Resource Debugger
+
 Add to your `server.cfg`:
+
 ```yaml
 # Enable resource debugging
 setr resource_debug_enabled 1
@@ -71,12 +96,15 @@ setr resource_debug_level 2
 ```
 
 #### Accessing Resource Debugger
+
 In-game command:
+
 ```
 /resdebug
 ```
 
 #### Features
+
 - Resource execution tracing
 - Error tracking
 - Performance metrics
@@ -86,6 +114,7 @@ In-game command:
 ## Debug Features
 
 ### Log Management
+
 - View real-time logs
 - Filter log levels
 - Search log content
@@ -93,6 +122,7 @@ In-game command:
 - Configure log retention
 
 ### System Inspection
+
 - View server status
 - Check resource states
 - Monitor system resources
@@ -100,6 +130,7 @@ In-game command:
 - Inspect network status
 
 ### Command Execution
+
 - Execute server commands
 - Run resource commands
 - Test configurations
@@ -107,6 +138,7 @@ In-game command:
 - Manage resources
 
 ### Variable Inspection
+
 - View global variables
 - Check local variables
 - Monitor state changes
@@ -116,24 +148,28 @@ In-game command:
 ## Debugging Process
 
 ### Initial Setup
+
 1. Enable appropriate debug tools
 2. Configure debug levels
 3. Set up logging
 4. Prepare monitoring
 
 ### Issue Identification
+
 1. Monitor system behavior
 2. Check error logs
 3. Review performance metrics
 4. Track resource states
 
 ### Problem Analysis
+
 1. Identify error patterns
 2. Review system logs
 3. Check resource dependencies
 4. Analyze performance data
 
 ### Solution Implementation
+
 1. Apply fixes
 2. Test changes
 3. Monitor results
@@ -142,24 +178,28 @@ In-game command:
 ## Best Practices
 
 ### Debug Configuration
+
 - Use appropriate debug levels
 - Configure log retention
 - Set up monitoring
 - Enable necessary tools
 
 ### Error Handling
+
 - Implement proper logging
 - Use error tracking
 - Monitor system state
 - Document issues
 
 ### Performance Monitoring
+
 - Track system metrics
 - Monitor resource usage
 - Check network status
 - Review performance data
 
 ### Documentation
+
 - Record debug sessions
 - Document solutions
 - Update procedures
@@ -168,24 +208,28 @@ In-game command:
 ## Common Debug Scenarios
 
 ### Resource Issues
+
 - Check resource states
 - Review dependencies
 - Monitor performance
 - Track errors
 
 ### System Problems
+
 - Monitor system metrics
 - Check resource usage
 - Review error logs
 - Track performance
 
 ### Network Issues
+
 - Check network status
 - Monitor connections
 - Review traffic
 - Track latency
 
 ### Performance Problems
+
 - Monitor system load
 - Check resource usage
 - Review performance
@@ -194,24 +238,28 @@ In-game command:
 ## Troubleshooting Guide
 
 ### Basic Troubleshooting
+
 1. Enable debug tools
 2. Check system logs
 3. Review error messages
 4. Monitor system state
 
 ### Advanced Troubleshooting
+
 1. Use debug console
 2. Enable resource debugger
 3. Monitor system metrics
 4. Track performance
 
 ### Performance Issues
+
 1. Check system load
 2. Monitor resource usage
 3. Review performance
 4. Track metrics
 
 ### Network Problems
+
 1. Check network status
 2. Monitor connections
 3. Review traffic
@@ -224,9 +272,11 @@ In-game command:
 - [FiveM Forums](https://forum.cfx.re/)
 
 <Callout type="info">
-  Regular debugging helps identify and resolve issues before they become critical problems.
+  Regular debugging helps identify and resolve issues before they become
+  critical problems.
 </Callout>
 
 <Callout type="warning">
-  Debug tools can impact server performance. Use appropriate levels and enable only when needed.
-</Callout> 
+  Debug tools can impact server performance. Use appropriate levels and enable
+  only when needed.
+</Callout>

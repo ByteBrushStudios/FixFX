@@ -4,18 +4,36 @@ description: Comprehensive guide to developing high-quality CitizenFX resources.
 icon: "Code"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Developing resources for CitizenFX requires careful consideration of performance, security, and maintainability. This guide covers essential practices for creating robust and efficient resources.
 
 ## Project Structure
 
-<StepList steps={[
-  "Create root resource folder with descriptive name",
-  "Organize code into client/, server/, and shared/ directories",
-  "Create utility modules for reusable functions",
-  "Set up fxmanifest.lua with proper dependencies"
-]} />
+<StepList
+  steps={[
+    "Create root resource folder with descriptive name",
+    "Organize code into client/, server/, and shared/ directories",
+    "Create utility modules for reusable functions",
+    "Set up fxmanifest.lua with proper dependencies",
+  ]}
+/>
 
 ### 1. Directory Organization
 
@@ -104,7 +122,7 @@ return Resource
 local function handlePlayerJoin(source)
     -- Validate source
     if not source then return end
-    
+
     -- Initialize player data
     local success = InitializePlayerData(source)
     if not success then
@@ -129,7 +147,7 @@ local function getCachedData(key)
     if cache[key] then
         return cache[key]
     end
-    
+
     local data = fetchData(key)
     cache[key] = data
     return data
@@ -152,7 +170,7 @@ local activeThreads = {}
 
 local function startThread(name, callback, interval)
     if activeThreads[name] then return end
-    
+
     activeThreads[name] = CreateThread(function()
         while true do
             callback()
@@ -237,7 +255,7 @@ function tests.ValidatePlayerData()
         identifier = 'test123',
         name = 'Test Player'
     }
-    
+
     local isValid = ValidateData(testData)
     assert(isValid, 'Player data validation failed')
 end
@@ -254,9 +272,11 @@ end
 ```
 
 <Callout type="warning">
-  Always test your resources thoroughly in a development environment before deploying to production.
+  Always test your resources thoroughly in a development environment before
+  deploying to production.
 </Callout>
 
 <Callout type="info">
-  For more information about specific aspects of resource development, refer to the relevant sections in the documentation.
-</Callout> 
+  For more information about specific aspects of resource development, refer to
+  the relevant sections in the documentation.
+</Callout>

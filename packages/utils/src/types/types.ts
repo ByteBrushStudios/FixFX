@@ -26,7 +26,7 @@ export interface GitHubTag {
 
 export interface ArtifactDownloadUrls {
   zip: string;
-  '7z': string;
+  "7z": string;
 }
 
 export interface ArtifactEntry {
@@ -37,7 +37,13 @@ export interface ArtifactEntry {
   artifact_url: string;
   published_at: string;
   eol?: boolean;
-  supportStatus?: 'recommended' | 'latest' | 'active' | 'deprecated' | 'eol' | 'unknown';
+  supportStatus?:
+    | "recommended"
+    | "latest"
+    | "active"
+    | "deprecated"
+    | "eol"
+    | "unknown";
   supportEnds?: string;
 }
 

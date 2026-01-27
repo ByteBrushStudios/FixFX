@@ -4,7 +4,23 @@ description: Essential best practices for developing, securing, and managing Fiv
 icon: "CheckCircle"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Following best practices is crucial for creating secure, performant, and maintainable FiveM servers and resources. This comprehensive guide covers everything from development standards to server management and security protocols.
 
@@ -20,23 +36,29 @@ These best practices have been compiled from years of community experience, secu
 
 ## Core Principles
 
-<CheckList items={[
-  "Always assume that client-side code can be manipulated. Validate everything on the server.",
-  "Every millisecond counts in a multiplayer environment. Optimize loops and minimize network traffic.",
-  "Write maintainable, documented code that follows consistent patterns.",
-  "Design systems that are intuitive and responsive for better player experience."
-]} />
+<CheckList
+  items={[
+    "Always assume that client-side code can be manipulated. Validate everything on the server.",
+    "Every millisecond counts in a multiplayer environment. Optimize loops and minimize network traffic.",
+    "Write maintainable, documented code that follows consistent patterns.",
+    "Design systems that are intuitive and responsive for better player experience.",
+  ]}
+/>
 
 ### Security First
+
 Always assume that client-side code can be manipulated. Validate everything on the server, implement proper permissions, and follow the principle of least privilege.
 
 ### Performance Matters
+
 Every millisecond counts in a multiplayer environment. Optimize loops, minimize network traffic, and monitor resource usage regularly.
 
 ### Code Quality
+
 Write maintainable, documented code that follows consistent patterns. Your future self (and your team) will thank you.
 
 ### User Experience
+
 Design systems that are intuitive and responsive. Poor UX leads to frustrated players and empty servers.
 
 ## Essential Best Practices
@@ -52,6 +74,7 @@ Protect your server and players from exploits, abuse, and unauthorized access:
 - **Data Protection**: Secure storage, encryption, and privacy considerations
 
 **Key Topics:**
+
 - Authentication and trust settings
 - Resource security patterns
 - Database security
@@ -69,6 +92,7 @@ Maximize server performance and provide smooth gameplay:
 - **Monitoring Tools**: Performance tracking and bottleneck identification
 
 **Key Topics:**
+
 - Network rate limits and optimization
 - Script performance patterns
 - Database query optimization
@@ -86,6 +110,7 @@ Create high-quality, maintainable resources:
 - **Documentation**: Clear documentation and API references
 
 **Key Topics:**
+
 - Directory organization and file structure
 - Coding standards and conventions
 - Event handling best practices
@@ -103,6 +128,7 @@ Effectively manage and maintain your server:
 - **Community Management**: Player administration and support
 
 **Key Topics:**
+
 - Server configuration and setup
 - Monitoring and alerting systems
 - Backup and recovery procedures
@@ -112,18 +138,21 @@ Effectively manage and maintain your server:
 ## Quick Reference
 
 ### Daily Tasks
+
 - ✅ Monitor server performance and player count
 - ✅ Check error logs for issues
 - ✅ Review player reports and take action
 - ✅ Backup critical data
 
 ### Weekly Tasks
+
 - ✅ Update resources and dependencies
 - ✅ Review security logs
 - ✅ Performance analysis and optimization
 - ✅ Community feedback review
 
 ### Monthly Tasks
+
 - ✅ Full security audit
 - ✅ Performance benchmarking
 - ✅ Resource code review
@@ -132,12 +161,14 @@ Effectively manage and maintain your server:
 ## Development Checklist
 
 ### Before Writing Code
+
 - [ ] Plan the feature requirements and scope
 - [ ] Design the database schema (if needed)
 - [ ] Consider security implications
 - [ ] Identify performance requirements
 
 ### During Development
+
 - [ ] Follow consistent coding standards
 - [ ] Implement proper error handling
 - [ ] Add comprehensive logging
@@ -145,6 +176,7 @@ Effectively manage and maintain your server:
 - [ ] Document public APIs and functions
 
 ### Before Deployment
+
 - [ ] Code review by another developer
 - [ ] Security testing and validation
 - [ ] Performance testing under load
@@ -152,6 +184,7 @@ Effectively manage and maintain your server:
 - [ ] Test rollback procedures
 
 ### After Deployment
+
 - [ ] Monitor for errors and performance issues
 - [ ] Gather user feedback
 - [ ] Document any issues and resolutions
@@ -160,6 +193,7 @@ Effectively manage and maintain your server:
 ## Security Checklist
 
 ### Server Security
+
 - [ ] Enable request filtering and paranoia mode
 - [ ] Set appropriate authentication trust levels
 - [ ] Configure network security settings
@@ -167,6 +201,7 @@ Effectively manage and maintain your server:
 - [ ] Regular security audits
 
 ### Resource Security
+
 - [ ] Validate all client inputs on server
 - [ ] Use parameterized database queries
 - [ ] Implement proper permission checks
@@ -174,6 +209,7 @@ Effectively manage and maintain your server:
 - [ ] Log security-relevant events
 
 ### Data Security
+
 - [ ] Encrypt sensitive data at rest
 - [ ] Use secure communication channels
 - [ ] Implement proper backup encryption
@@ -183,6 +219,7 @@ Effectively manage and maintain your server:
 ## Performance Checklist
 
 ### Server Performance
+
 - [ ] Optimize network settings
 - [ ] Monitor resource usage
 - [ ] Configure appropriate limits
@@ -190,6 +227,7 @@ Effectively manage and maintain your server:
 - [ ] Database query optimization
 
 ### Resource Performance
+
 - [ ] Use appropriate wait times in loops
 - [ ] Implement efficient event handling
 - [ ] Minimize network traffic
@@ -199,6 +237,7 @@ Effectively manage and maintain your server:
 ## Common Pitfalls to Avoid
 
 ### Security Pitfalls
+
 - ❌ Trusting client-side data without validation
 - ❌ Using string concatenation for SQL queries
 - ❌ Storing sensitive data in client-accessible locations
@@ -206,6 +245,7 @@ Effectively manage and maintain your server:
 - ❌ Ignoring input validation for "trusted" sources
 
 ### Performance Pitfalls
+
 - ❌ Using `Citizen.Wait(0)` unnecessarily
 - ❌ Processing all players every frame
 - ❌ Not implementing proper database connection pooling
@@ -213,6 +253,7 @@ Effectively manage and maintain your server:
 - ❌ Not monitoring resource usage regularly
 
 ### Development Pitfalls
+
 - ❌ Not following consistent naming conventions
 - ❌ Writing functions that do too many things
 - ❌ Not implementing proper error handling
@@ -222,6 +263,7 @@ Effectively manage and maintain your server:
 ## Tools and Resources
 
 ### Development Tools
+
 - **VS Code** with Lua extensions for development
 - **Git** for version control and collaboration
 - **MySQL Workbench** for database management
@@ -229,12 +271,14 @@ Effectively manage and maintain your server:
 - **Wireshark** for network analysis
 
 ### Monitoring Tools
+
 - **FiveM built-in profiler** for performance analysis
 - **Resource monitor (resmon)** for real-time metrics
 - **Custom logging systems** for error tracking
 - **Database monitoring tools** for query analysis
 
 ### Testing Tools
+
 - **Unit testing frameworks** for automated testing
 - **Load testing tools** for performance validation
 - **Security scanners** for vulnerability assessment
@@ -243,6 +287,7 @@ Effectively manage and maintain your server:
 ## Community Standards
 
 ### Code Style
+
 - Use consistent indentation (4 spaces recommended)
 - Follow descriptive naming conventions
 - Write clear, concise comments
@@ -250,6 +295,7 @@ Effectively manage and maintain your server:
 - Use meaningful variable and function names
 
 ### Documentation
+
 - Document all public functions and APIs
 - Include usage examples
 - Maintain changelogs for updates
@@ -257,6 +303,7 @@ Effectively manage and maintain your server:
 - Document configuration options
 
 ### Collaboration
+
 - Use descriptive commit messages
 - Create pull requests for code review
 - Follow semantic versioning for releases

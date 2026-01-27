@@ -23,7 +23,8 @@ export function Tracer() {
           Fix Issues, Learn, and Build
         </h2>
         <p className="text-fd-muted-foreground mt-4 max-w-lg mx-auto text-base md:text-lg">
-          From server crashes to framework integration, FixFX guides you every step of the way.
+          From server crashes to framework integration, FixFX guides you every
+          step of the way.
         </p>
       </motion.div>
 
@@ -76,10 +77,22 @@ export function Tracer() {
           </motion.div>
 
           <Step
-            icon={<FixFXIcon className="h-8 w-8 md:h-10 md:w-10" stroke="#3b82f6" />}
+            icon={
+              <FixFXIcon className="h-8 w-8 md:h-10 md:w-10" stroke="#3b82f6" />
+            }
             badge={
-              <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="h-4 w-4 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             }
             badgeColor="bg-blue-500"
@@ -162,6 +175,12 @@ function Step({
 
 function CitizenFXLogo({ className }: { className?: string }) {
   return (
-    <Image src="/cfx.png" alt="CitizenFX Logo" width={48} height={48} className={className} />
+    <Image
+      src="/cfx.png"
+      alt="CitizenFX Logo"
+      width={48}
+      height={48}
+      className={className}
+    />
   );
 }

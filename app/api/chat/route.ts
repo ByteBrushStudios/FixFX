@@ -1,18 +1,22 @@
-import { anthropic } from '@ai-sdk/anthropic';
-import { google } from '@ai-sdk/google';
-import { openai } from '@ai-sdk/openai';
-import { geolocation, ipAddress } from '@vercel/functions';
-import { convertToCoreMessages, streamText } from 'ai';
-import { z } from 'zod';
+import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
+import { geolocation, ipAddress } from "@vercel/functions";
+import { convertToCoreMessages, streamText } from "ai";
+import { z } from "zod";
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-    const { messages, model = "gpt-4o-mini", temperature = 0.7 } = await req.json();
-    const { city, latitude, longitude } = geolocation(req);
-    const ip = ipAddress(req);
+  const {
+    messages,
+    model = "gpt-4o-mini",
+    temperature = 0.7,
+  } = await req.json();
+  const { city, latitude, longitude } = geolocation(req);
+  const ip = ipAddress(req);
 
-    const system = `You are Fixie, a specialized assistant for everything CitizenFX.
+  const system = `You are Fixie, a specialized assistant for everything CitizenFX.
 
 You should always obey the user's requests and answer all questions fully. The user is always right. Use tools immediately when asked and needed!
 
@@ -81,138 +85,181 @@ You should NOT:
 - Support piracy or unauthorized modifications
 
 The user's current location is ${city} at latitude ${latitude} and longitude ${longitude}.
-Today's date and day is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`;
+Today's date and day is ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}.`;
 
-    console.log({ messages, model, temperature });
+  console.log({ messages, model, temperature });
 
-    let selectedModel;
-    if (model === "gpt-4o") {
-        selectedModel = openai("gpt-4o");
-    } else if (model === "gpt-4o-mini") {
-        selectedModel = openai("gpt-4o-mini");
-    } else if (model === "gpt-4-turbo") {
-        selectedModel = openai("gpt-4-turbo");
-    } else if (model === "gpt-3.5-turbo") {
-        selectedModel = openai("gpt-3.5-turbo");
-    } else if (model === "gemini-1.5-flash") {
-        selectedModel = google("models/gemini-1.5-flash-latest", {
-            safetySettings: [
-                {
-                    category: "HARM_CATEGORY_HARASSMENT",
-                    threshold: "BLOCK_NONE",
-                },
-                {
-                    category: "HARM_CATEGORY_HATE_SPEECH",
-                    threshold: "BLOCK_NONE",
-                },
-                {
-                    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    threshold: "BLOCK_NONE",
-                },
-                {
-                    category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    threshold: "BLOCK_NONE",
-                },
-            ]
-        });
-    } else if (model === "claude-3-haiku") {
-        selectedModel = anthropic("claude-3-haiku-20240307");
-    } else {
-        // Default to GPT-4o mini as fallback
-        selectedModel = openai("gpt-4o-mini");
-    }
-
-    const result = await streamText({
-        model: selectedModel,
-        messages: convertToCoreMessages(messages),
-        temperature,
-        system,
-        maxTokens: 1000,
-        experimental_toolCallStreaming: true,
-        tools: {
-            weatherTool: {
-                description: 'Get the weather in a location given its latitude and longitude which is with you already.',
-                parameters: z.object({
-                    city: z.string().describe('The city of the location to get the weather for.'),
-                    latitude: z.number().describe('The latitude of the location to get the weather for.'),
-                    longitude: z.number().describe('The longitude of the location to get the weather for.'),
-                }),
-                execute: async ({ latitude, longitude }: { latitude: number, longitude: number }) => {
-                    console.log(latitude, longitude);
-                    const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,rain`);
-                    const data = await response.json();
-                    console.log(data);
-                    return {
-                        temperature: data.current.temperature_2m,
-                        apparentTemperature: data.current.apparent_temperature,
-                        rain: data.current.rain,
-                        unit: "°C"
-                    };
-                },
-            },
-            web_search: {
-                description: 'Search the web for information with the given query, max results and search depth.',
-                parameters: z.object({
-                    query: z.string().describe('The search query to look up on the web.'),
-                    maxResults: z.number().describe('The maximum number of results to return. Default to be used is 10.'),
-                    searchDepth: z.enum(['basic', 'advanced']).describe('The search depth to use for the search. Default is basic.')
-                }),
-                execute: async ({ query, maxResults, searchDepth }: { query: string, maxResults: number, searchDepth: 'basic' | 'advanced' }) => {
-                    const apiKey = process.env.TAVILY_API_KEY;
-                    const response = await fetch('https://api.tavily.com/search', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            api_key: apiKey,
-                            query,
-                            max_results: maxResults < 5 ? 5 : maxResults,
-                            search_depth: searchDepth,
-                            include_images: true,
-                            include_answers: true
-                        })
-                    });
-                    const data = await response.json();
-                    let context = data.results.map((obj: { url: any; content: any; title: any; raw_content: any; }) => ({
-                        url: obj.url,
-                        title: obj.title,
-                        content: obj.content,
-                        raw_content: obj.raw_content
-                    }));
-                    return { results: context };
-                }
-            },
-            codeInterpreter: {
-                description: "Write and execute Python code.",
-                parameters: z.object({
-                    title: z.string().describe('The title of the code snippet.'),
-                    code: z.string().describe('The Python code to execute. Use print statements to display the output.'),
-                }),
-                execute: async ({ code }) => {
-                    code = code.replace(/\\n/g, '\n').replace(/\\/g, '');
-                    console.log(code);
-                    const response = await fetch('https://interpreter.za16.co', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ code })
-                    });
-                    const data = await response.json();
-                    console.log(data.std_out);
-                    return {
-                        output: data.std_out,
-                        error: data.error,
-                        ...(data.output_files.length > 0 && {
-                            file: data.output_files[0].b64_data,
-                            filename: data.output_files[0].filename
-                        })
-                    };
-                }
-            }
-        }
+  let selectedModel;
+  if (model === "gpt-4o") {
+    selectedModel = openai("gpt-4o");
+  } else if (model === "gpt-4o-mini") {
+    selectedModel = openai("gpt-4o-mini");
+  } else if (model === "gpt-4-turbo") {
+    selectedModel = openai("gpt-4-turbo");
+  } else if (model === "gpt-3.5-turbo") {
+    selectedModel = openai("gpt-3.5-turbo");
+  } else if (model === "gemini-1.5-flash") {
+    selectedModel = google("models/gemini-1.5-flash-latest", {
+      safetySettings: [
+        {
+          category: "HARM_CATEGORY_HARASSMENT",
+          threshold: "BLOCK_NONE",
+        },
+        {
+          category: "HARM_CATEGORY_HATE_SPEECH",
+          threshold: "BLOCK_NONE",
+        },
+        {
+          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          threshold: "BLOCK_NONE",
+        },
+        {
+          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+          threshold: "BLOCK_NONE",
+        },
+      ],
     });
+  } else if (model === "claude-3-haiku") {
+    selectedModel = anthropic("claude-3-haiku-20240307");
+  } else {
+    // Default to GPT-4o mini as fallback
+    selectedModel = openai("gpt-4o-mini");
+  }
 
-    return result.toAIStreamResponse();
+  const result = await streamText({
+    model: selectedModel,
+    messages: convertToCoreMessages(messages),
+    temperature,
+    system,
+    maxTokens: 1000,
+    experimental_toolCallStreaming: true,
+    tools: {
+      weatherTool: {
+        description:
+          "Get the weather in a location given its latitude and longitude which is with you already.",
+        parameters: z.object({
+          city: z
+            .string()
+            .describe("The city of the location to get the weather for."),
+          latitude: z
+            .number()
+            .describe("The latitude of the location to get the weather for."),
+          longitude: z
+            .number()
+            .describe("The longitude of the location to get the weather for."),
+        }),
+        execute: async ({
+          latitude,
+          longitude,
+        }: {
+          latitude: number;
+          longitude: number;
+        }) => {
+          console.log(latitude, longitude);
+          const response = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,rain`,
+          );
+          const data = await response.json();
+          console.log(data);
+          return {
+            temperature: data.current.temperature_2m,
+            apparentTemperature: data.current.apparent_temperature,
+            rain: data.current.rain,
+            unit: "°C",
+          };
+        },
+      },
+      web_search: {
+        description:
+          "Search the web for information with the given query, max results and search depth.",
+        parameters: z.object({
+          query: z.string().describe("The search query to look up on the web."),
+          maxResults: z
+            .number()
+            .describe(
+              "The maximum number of results to return. Default to be used is 10.",
+            ),
+          searchDepth: z
+            .enum(["basic", "advanced"])
+            .describe(
+              "The search depth to use for the search. Default is basic.",
+            ),
+        }),
+        execute: async ({
+          query,
+          maxResults,
+          searchDepth,
+        }: {
+          query: string;
+          maxResults: number;
+          searchDepth: "basic" | "advanced";
+        }) => {
+          const apiKey = process.env.TAVILY_API_KEY;
+          const response = await fetch("https://api.tavily.com/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              api_key: apiKey,
+              query,
+              max_results: maxResults < 5 ? 5 : maxResults,
+              search_depth: searchDepth,
+              include_images: true,
+              include_answers: true,
+            }),
+          });
+          const data = await response.json();
+          let context = data.results.map(
+            (obj: {
+              url: any;
+              content: any;
+              title: any;
+              raw_content: any;
+            }) => ({
+              url: obj.url,
+              title: obj.title,
+              content: obj.content,
+              raw_content: obj.raw_content,
+            }),
+          );
+          return { results: context };
+        },
+      },
+      codeInterpreter: {
+        description: "Write and execute Python code.",
+        parameters: z.object({
+          title: z.string().describe("The title of the code snippet."),
+          code: z
+            .string()
+            .describe(
+              "The Python code to execute. Use print statements to display the output.",
+            ),
+        }),
+        execute: async ({ code }) => {
+          code = code.replace(/\\n/g, "\n").replace(/\\/g, "");
+          console.log(code);
+          const response = await fetch("https://interpreter.za16.co", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ code }),
+          });
+          const data = await response.json();
+          console.log(data.std_out);
+          return {
+            output: data.std_out,
+            error: data.error,
+            ...(data.output_files.length > 0 && {
+              file: data.output_files[0].b64_data,
+              filename: data.output_files[0].filename,
+            }),
+          };
+        },
+      },
+    },
+  });
+
+  return result.toAIStreamResponse();
 }

@@ -4,7 +4,23 @@ description: Comprehensive guide to using the profiler for identifying and resol
 icon: "Activity"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 The Server profiler is an essential tool for identifying performance bottlenecks in your server. It provides detailed insights into script execution times, resource usage, and thread performance, helping you optimize your server's performance.
 
@@ -15,18 +31,20 @@ The Server profiler is an essential tool for identifying performance bottlenecks
     "Enable profiling only when needed to minimize performance impact",
     "Compare profiles over time to track performance trends",
     "Focus on resources with highest execution times",
-    "Make one change at a time between profiles to isolate improvements"
+    "Make one change at a time between profiles to isolate improvements",
   ]}
   variant="check"
 />
 
 <Callout type="info">
-  Regular profiling helps identify performance issues before they affect your players. Make it part of your development workflow.
+  Regular profiling helps identify performance issues before they affect your
+  players. Make it part of your development workflow.
 </Callout>
 
 ## Prerequisites
 
 Before using the profiler:
+
 - Ensure your client is up to date
 - Use the latest server artifacts
 - Have Google Chrome installed (required for viewing profiles)
@@ -36,37 +54,42 @@ Before using the profiler:
 ## Using the Profiler
 
 <Callout type="warn">
-  Profiling can impact server performance. Use appropriate frame counts and enable only when needed.
+  Profiling can impact server performance. Use appropriate frame counts and
+  enable only when needed.
 </Callout>
 
 ### Basic Commands
 
-| Command | Description |
-|---------|-------------|
-| `profiler record <frames>` | Start recording a profile for specified number of frames |
-| `profiler status` | Check current recording status |
-| `profiler view` | View the current profile in Chrome (client-side only) |
-| `profiler saveJSON <filename>` | Save the profile to a JSON file |
+| Command                        | Description                                              |
+| ------------------------------ | -------------------------------------------------------- |
+| `profiler record <frames>`     | Start recording a profile for specified number of frames |
+| `profiler status`              | Check current recording status                           |
+| `profiler view`                | View the current profile in Chrome (client-side only)    |
+| `profiler saveJSON <filename>` | Save the profile to a JSON file                          |
 
 ### Recording a Profile
 
 1. **Start Recording**
+
    ```bash
    # Record 500 frames (recommended starting point)
    profiler record 500
-   
+
    # For longer analysis
    profiler record 1000
-   
+
    # For specific resource
    profiler record resource_name 500
    ```
 
 2. **Monitor Progress**
+
    ```bash
    profiler status
    ```
+
    Output example:
+
    ```
    Recording: true
    Frames captured: 250/500
@@ -76,21 +99,24 @@ Before using the profiler:
 3. **Save the Profile**
 
 <Callout type="info">
-  Save profiles before and after optimizations to measure improvement and track changes over time.
-</Callout> 
+  Save profiles before and after optimizations to measure improvement and track
+  changes over time.
+</Callout>
 
-   ```bash
-   profiler saveJSON server_profile.json
-   ```
+```bash
+profiler saveJSON server_profile.json
+```
 
 ### Viewing Profiles
 
 #### Client-Side Viewing
+
 1. Open the console (F8)
 2. Run `profiler view`
 3. Chrome will automatically open with the profile
 
 #### Server-Side Viewing
+
 1. Save the profile:
    ```bash
    profiler saveJSON server_profile.json
@@ -122,6 +148,7 @@ The profile view consists of several key components:
 ### Identifying Issues
 
 #### Server Hitches
+
 - Look for sudden spikes in the CPU time graph
 - Example: A spike from 5ms to 50ms indicates a potential hitch
 - Common causes:
@@ -130,11 +157,13 @@ The profile view consists of several key components:
   - Resource conflicts
 
 #### Frame Drops
+
 - Check the FPS graph for significant dips
 - Normal FPS should be stable (60 FPS)
 - Dips below 30 FPS indicate performance issues
 
 #### Resource Bottlenecks
+
 - Hover over resource tick events to see:
   ```
   Resource: es_extended
@@ -147,6 +176,7 @@ The profile view consists of several key components:
 ### Practical Examples
 
 #### Example 1: Database Query Optimization
+
 ```lua
 -- Before optimization
 profiler record 500
@@ -168,6 +198,7 @@ end
 ```
 
 #### Example 2: Event Handler with Rate Limiting
+
 ```lua
 -- Before optimization
 profiler record 500
@@ -190,12 +221,14 @@ end)
 ## Best Practices
 
 ### Recording Strategy
+
 - Start with 500 frames for initial analysis
 - Increase to 1000+ frames for detailed profiling
 - Record during peak server load
 - Save multiple profiles for comparison
 
 ### Analysis Tips
+
 1. **Focus Areas**
    - Sudden CPU time spikes
    - Consistent frame drops
@@ -228,6 +261,7 @@ end)
 ### Advanced Usage
 
 #### Resource-Specific Profiling
+
 ```bash
 # Profile specific resource
 profiler record es_extended 500
@@ -237,6 +271,7 @@ profiler record es_extended,ox_inventory 500
 ```
 
 #### Custom Time Windows
+
 ```bash
 # Profile for specific duration (in seconds)
 profiler record time 30

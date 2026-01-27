@@ -2,7 +2,16 @@ import type { HomeLayoutProps } from "fumadocs-ui/layouts/home";
 import { GITHUB_LINK, DISCORD_LINK } from "@/packages/utils/src";
 import { FixFXIcon } from "@ui/icons";
 import { FaDiscord } from "react-icons/fa";
-import { Gamepad, Home, PlugZap, LogsIcon, Bot, X, Server, Palette } from "lucide-react";
+import {
+  Gamepad,
+  Home,
+  PlugZap,
+  LogsIcon,
+  Bot,
+  X,
+  Server,
+  Palette,
+} from "lucide-react";
 
 export const baseOptions: HomeLayoutProps = {
   disableThemeSwitch: true,
@@ -32,7 +41,7 @@ export const baseOptions: HomeLayoutProps = {
       type: "main",
       text: "Home",
       icon: <Home className="size-6" />,
-      url: "/"
+      url: "/",
     },
     {
       type: "menu",
@@ -75,8 +84,7 @@ export const baseOptions: HomeLayoutProps = {
           },
           icon: <FixFXIcon className="size-6" />,
           text: "Core Documentation",
-          description:
-            "Some information about FixFX.",
+          description: "Some information about FixFX.",
           url: "/docs/core",
         },
         {
@@ -109,8 +117,7 @@ export const baseOptions: HomeLayoutProps = {
           },
           icon: <FixFXIcon className="size-6" stroke="#10b981" />,
           text: "txAdmin Documentation",
-          description:
-            "Managing your servers with and setting up txAdmin.",
+          description: "Managing your servers with and setting up txAdmin.",
           url: "/docs/txadmin",
         },
         {
@@ -160,8 +167,7 @@ export const baseOptions: HomeLayoutProps = {
           },
           icon: <FixFXIcon className="size-6" stroke="#79143b" />,
           text: "Common Guides",
-          description:
-            "Step-by-step guides for CitizenFX.",
+          description: "Step-by-step guides for CitizenFX.",
           url: "/docs/guides",
         },
       ],
@@ -175,16 +181,15 @@ export const baseOptions: HomeLayoutProps = {
             banner: (
               <div className="flex h-20 w-full items-center justify-center gap-x-1">
                 <FixFXIcon className="size-6" stroke="#2365eb" />
-                <h1 className="text-fd-foreground text-2xl font-bold">
-                  Fixie
-                </h1>
+                <h1 className="text-fd-foreground text-2xl font-bold">Fixie</h1>
               </div>
-            )
+            ),
           },
           icon: <Bot className="size-6" stroke="#2365eb" />,
           text: "Chat with Fixie",
-          description: "Fixie is a powerful AI assistant that can help you with all your CFX needs.",
-          url: "/chat"
+          description:
+            "Fixie is a powerful AI assistant that can help you with all your CFX needs.",
+          url: "/chat",
         },
         {
           menu: {
@@ -195,12 +200,13 @@ export const baseOptions: HomeLayoutProps = {
                   Natives
                 </h1>
               </div>
-            )
+            ),
           },
           icon: <Gamepad className="size-6" stroke="#94865b" />,
           text: "Game Natives",
-          description: "Explore the natives for CFX, GTAV and RDR2 and their use cases.",
-          url: "/natives"
+          description:
+            "Explore the natives for CFX, GTAV and RDR2 and their use cases.",
+          url: "/natives",
         },
         {
           menu: {
@@ -211,12 +217,12 @@ export const baseOptions: HomeLayoutProps = {
                   Artifacts
                 </h1>
               </div>
-            )
+            ),
           },
           icon: <PlugZap className="size-6" stroke="#79143b" />,
           text: "Server Artifacts",
           description: "Explore the latest server artifacts for CFX.",
-          url: "/artifacts"
+          url: "/artifacts",
         },
         {
           menu: {
@@ -227,12 +233,13 @@ export const baseOptions: HomeLayoutProps = {
                   Hosting Partners
                 </h1>
               </div>
-            )
+            ),
           },
           icon: <Server className="size-6" stroke="#22c55e" />,
           text: "Hosting Partners",
-          description: "Discover trusted hosting providers with exclusive discounts for FixFX users.",
-          url: "/hosting"
+          description:
+            "Discover trusted hosting providers with exclusive discounts for FixFX users.",
+          url: "/hosting",
         },
         {
           menu: {
@@ -243,14 +250,15 @@ export const baseOptions: HomeLayoutProps = {
                   Brand Assets
                 </h1>
               </div>
-            )
+            ),
           },
           icon: <Palette className="size-6" stroke="#ec4899" />,
           text: "Brand Assets",
-          description: "Download official FixFX logos, icons, and brand guidelines.",
-          url: "/brand"
+          description:
+            "Download official FixFX logos, icons, and brand guidelines.",
+          url: "/brand",
         },
-      ]
-    }
+      ],
+    },
   ],
 };

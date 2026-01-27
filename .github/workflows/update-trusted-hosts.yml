@@ -3,8 +3,8 @@ name: Update Trusted Hosting Providers
 on:
   schedule:
     # Run every Monday at 00:00 UTC to check for updates
-    - cron: '0 0 * * 1'
-  
+    - cron: "0 0 * * 1"
+
   # Allow manual triggering
   workflow_dispatch:
 
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm install ajv
@@ -51,28 +51,28 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |
             chore: update trusted hosting providers list
-            
+
             Automatically updated from https://fivem.net/server-hosting
           branch: chore/update-trusted-hosts
           delete-branch: true
-          title: 'chore: update trusted hosting providers list'
+          title: "chore: update trusted hosting providers list"
           body: |
             ## 🤖 Automated Update
-            
+
             This PR automatically updates the trusted hosting providers list from the official FiveM registry.
-            
+
             **Changes:**
             - Updated `packages/providers/trusted-hosts.json`
             - Validated against schema
             - Last updated: ${{ github.event.head_commit.timestamp || 'Manual trigger' }}
-            
+
             The list is scraped from: https://fivem.net/server-hosting
-            
+
             ### Verification Checklist
             - [x] Schema validation passed
             - [x] No duplicate provider IDs
             - [x] All provider URLs are valid
-            
+
             ✅ Ready to merge
           labels: |
             automated

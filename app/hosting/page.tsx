@@ -49,7 +49,7 @@ export default function HostingPage() {
         if (data.success) {
           const providersData = data.providers as Provider[];
           setProviders(providersData);
-          
+
           // Fetch trusted hosts
           const trustedResponse = await fetch("/api/trusted-hosts");
           const trustedData = await trustedResponse.json();
@@ -57,12 +57,16 @@ export default function HostingPage() {
             const trustedHosts = trustedData.hosts;
             const withTrust = providersData.map((provider) => ({
               ...provider,
-              isTrusted: provider.website 
+              isTrusted: provider.website
                 ? trustedHosts.some((host: any) => {
                     try {
-                      const providerUrl = new URL(provider.website).hostname.toLowerCase();
+                      const providerUrl = new URL(
+                        provider.website,
+                      ).hostname.toLowerCase();
                       const hostUrl = new URL(host.url).hostname.toLowerCase();
-                      return providerUrl === hostUrl || providerUrl.includes(hostUrl);
+                      return (
+                        providerUrl === hostUrl || providerUrl.includes(hostUrl)
+                      );
                     } catch {
                       return false;
                     }
@@ -82,17 +86,21 @@ export default function HostingPage() {
     fetchProviders();
   }, []);
 
-  const maxDiscount = providersWithTrust.length > 0 
-    ? Math.max(...providersWithTrust.map(p => p.discount.percentage))
-    : 20;
-  
+  const maxDiscount =
+    providersWithTrust.length > 0
+      ? Math.max(...providersWithTrust.map((p) => p.discount.percentage))
+      : 20;
+
   // Get first provider's links for CTA (fallback to ZAP-Hosting)
   const firstProvider = providersWithTrust[0];
-  const fivemLink = firstProvider?.links.find(l => l.label.toLowerCase().includes("fivem"))?.url 
-    || "https://zap-hosting.com/FixFXFiveM";
-  const redmLink = firstProvider?.links.find(l => l.label.toLowerCase().includes("redm"))?.url
-    || "https://zap-hosting.com/FixFXRedM";
-  const vpsLink = "https://zap-hosting.com/a/8d785f5b626ef6617320d4bca50a4e344c464437?voucher=FixFX-a-8909";
+  const fivemLink =
+    firstProvider?.links.find((l) => l.label.toLowerCase().includes("fivem"))
+      ?.url || "https://zap-hosting.com/FixFXFiveM";
+  const redmLink =
+    firstProvider?.links.find((l) => l.label.toLowerCase().includes("redm"))
+      ?.url || "https://zap-hosting.com/FixFXRedM";
+  const vpsLink =
+    "https://zap-hosting.com/a/8d785f5b626ef6617320d4bca50a4e344c464437?voucher=FixFX-a-8909";
   return (
     <main className="flex min-h-screen flex-col">
       {/* Hero Section */}
@@ -130,8 +138,9 @@ export default function HostingPage() {
 
             {/* Description */}
             <p className="mx-auto max-w-2xl text-lg text-fd-muted-foreground sm:text-xl">
-              We&apos;ve partnered with the best game server hosting providers to bring you exclusive
-              discounts. Get your FiveM or RedM server up and running with trusted, high-performance hosting.
+              We&apos;ve partnered with the best game server hosting providers
+              to bring you exclusive discounts. Get your FiveM or RedM server up
+              and running with trusted, high-performance hosting.
             </p>
 
             {/* Stats */}
@@ -140,23 +149,33 @@ export default function HostingPage() {
                 {loading ? (
                   <div className="h-9 w-16 mx-auto rounded bg-fd-muted animate-pulse" />
                 ) : (
-                  <p className="text-3xl font-bold text-fd-foreground">{maxDiscount}%+</p>
+                  <p className="text-3xl font-bold text-fd-foreground">
+                    {maxDiscount}%+
+                  </p>
                 )}
-                <p className="text-sm text-fd-muted-foreground">Exclusive Discounts</p>
+                <p className="text-sm text-fd-muted-foreground">
+                  Exclusive Discounts
+                </p>
               </div>
               <div className="hidden h-8 w-px bg-fd-border sm:block" />
               <div className="text-center">
                 <p className="text-3xl font-bold text-fd-foreground">24/7</p>
-                <p className="text-sm text-fd-muted-foreground">Support Available</p>
+                <p className="text-sm text-fd-muted-foreground">
+                  Support Available
+                </p>
               </div>
               <div className="hidden h-8 w-px bg-fd-border sm:block" />
               <div className="text-center">
                 {loading ? (
                   <div className="h-9 w-8 mx-auto rounded bg-fd-muted animate-pulse" />
                 ) : (
-                  <p className="text-3xl font-bold text-fd-foreground">{providers.length}</p>
+                  <p className="text-3xl font-bold text-fd-foreground">
+                    {providers.length}
+                  </p>
                 )}
-                <p className="text-sm text-fd-muted-foreground">Trusted Partners</p>
+                <p className="text-sm text-fd-muted-foreground">
+                  Trusted Partners
+                </p>
               </div>
             </div>
           </div>
@@ -168,7 +187,10 @@ export default function HostingPage() {
         {loading ? (
           <div className="space-y-8">
             {[1, 2].map((i) => (
-              <div key={i} className="rounded-2xl border border-fd-border bg-fd-card p-6 sm:p-8">
+              <div
+                key={i}
+                className="rounded-2xl border border-fd-border bg-fd-card p-6 sm:p-8"
+              >
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
                   <div className="h-16 w-16 rounded-xl bg-fd-muted animate-pulse" />
                   <div className="flex-1 space-y-4">
@@ -195,10 +217,15 @@ export default function HostingPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-fd-muted">
               <Handshake className="h-8 w-8 text-fd-muted-foreground" />
             </div>
-            <h3 className="text-xl font-semibold text-fd-foreground mb-2">No Partners Yet</h3>
+            <h3 className="text-xl font-semibold text-fd-foreground mb-2">
+              No Partners Yet
+            </h3>
             <p className="text-fd-muted-foreground max-w-md mx-auto">
               We&apos;re actively looking for hosting partners.{" "}
-              <Link href="https://github.com/CodeMeAPixel/FixFX/tree/develop/packages/providers" className="text-fd-primary hover:underline">
+              <Link
+                href="https://github.com/CodeMeAPixel/FixFX/tree/develop/packages/providers"
+                className="text-fd-primary hover:underline"
+              >
                 Learn how to become a partner
               </Link>
             </p>
@@ -217,30 +244,38 @@ export default function HostingPage() {
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-green-500/10">
                 <Percent className="h-6 w-6 text-green-500" />
               </div>
-              <h3 className="mb-2 font-semibold text-fd-foreground">Exclusive Discounts</h3>
+              <h3 className="mb-2 font-semibold text-fd-foreground">
+                Exclusive Discounts
+              </h3>
               <p className="text-sm text-fd-muted-foreground">
-                Get special pricing not available anywhere else. Our partner codes provide ongoing savings
-                for as long as you own your server.
+                Get special pricing not available anywhere else. Our partner
+                codes provide ongoing savings for as long as you own your
+                server.
               </p>
             </div>
             <div className="rounded-xl border border-fd-border bg-fd-card p-6">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500/10">
                 <Shield className="h-6 w-6 text-blue-500" />
               </div>
-              <h3 className="mb-2 font-semibold text-fd-foreground">Vetted Providers</h3>
+              <h3 className="mb-2 font-semibold text-fd-foreground">
+                Vetted Providers
+              </h3>
               <p className="text-sm text-fd-muted-foreground">
-                We only partner with hosting providers we trust and have personally tested. Quality and
-                reliability are our top priorities.
+                We only partner with hosting providers we trust and have
+                personally tested. Quality and reliability are our top
+                priorities.
               </p>
             </div>
             <div className="rounded-xl border border-fd-border bg-fd-card p-6">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/10">
                 <Headphones className="h-6 w-6 text-purple-500" />
               </div>
-              <h3 className="mb-2 font-semibold text-fd-foreground">Support FixFX</h3>
+              <h3 className="mb-2 font-semibold text-fd-foreground">
+                Support FixFX
+              </h3>
               <p className="text-sm text-fd-muted-foreground">
-                Using our partner links helps support the continued development of FixFX and keeps our
-                documentation free for everyone.
+                Using our partner links helps support the continued development
+                of FixFX and keeps our documentation free for everyone.
               </p>
             </div>
           </div>
@@ -253,7 +288,8 @@ export default function HostingPage() {
           {/* Bottom Text */}
           <div className="text-center">
             <p className="text-sm text-fd-muted-foreground">
-              By using our partner links, you support FixFX while getting exclusive discounts. Thank you for your support!
+              By using our partner links, you support FixFX while getting
+              exclusive discounts. Thank you for your support!
             </p>
           </div>
         </div>
@@ -274,7 +310,8 @@ export default function HostingPage() {
                   Want to Partner with FixFX?
                 </h2>
                 <p className="text-lg text-fd-muted-foreground">
-                  We&apos;re always looking for quality hosting providers who want to offer exclusive benefits to our community.
+                  We&apos;re always looking for quality hosting providers who
+                  want to offer exclusive benefits to our community.
                 </p>
               </div>
 
@@ -284,7 +321,9 @@ export default function HostingPage() {
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-green-500/10">
                     <Zap className="h-5 w-5 text-green-500" />
                   </div>
-                  <h3 className="mb-2 font-semibold text-fd-foreground">Reach Active Community</h3>
+                  <h3 className="mb-2 font-semibold text-fd-foreground">
+                    Reach Active Community
+                  </h3>
                   <p className="text-sm text-fd-muted-foreground">
                     Connect with thousands of FiveM and RedM server owners
                   </p>
@@ -293,7 +332,9 @@ export default function HostingPage() {
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10">
                     <Shield className="h-5 w-5 text-blue-500" />
                   </div>
-                  <h3 className="mb-2 font-semibold text-fd-foreground">Build Trust</h3>
+                  <h3 className="mb-2 font-semibold text-fd-foreground">
+                    Build Trust
+                  </h3>
                   <p className="text-sm text-fd-muted-foreground">
                     Showcase your reliability and commitment to quality
                   </p>
@@ -302,7 +343,9 @@ export default function HostingPage() {
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-purple-500/10">
                     <Percent className="h-5 w-5 text-purple-500" />
                   </div>
-                  <h3 className="mb-2 font-semibold text-fd-foreground">Tracked Attribution</h3>
+                  <h3 className="mb-2 font-semibold text-fd-foreground">
+                    Tracked Attribution
+                  </h3>
                   <p className="text-sm text-fd-muted-foreground">
                     Use affiliate links to track conversions and ROI
                   </p>
@@ -311,7 +354,9 @@ export default function HostingPage() {
 
               {/* Guidelines Preview */}
               <div className="mb-10 rounded-lg border border-fd-border/30 bg-fd-background/30 p-6">
-                <h3 className="mb-4 font-semibold text-fd-foreground">Partnership Requirements</h3>
+                <h3 className="mb-4 font-semibold text-fd-foreground">
+                  Partnership Requirements
+                </h3>
                 <div className="space-y-2 text-sm text-fd-muted-foreground">
                   <p className="flex items-start gap-2">
                     <span className="text-green-500 font-bold mt-0.5">✓</span>
@@ -355,8 +400,9 @@ export default function HostingPage() {
 
               {/* Footer Note */}
               <p className="mt-8 text-center text-xs text-fd-muted-foreground">
-                We review all partnership applications within 3-5 business days. 
-                FixFX reserves the right to accept or decline requests at our discretion.
+                We review all partnership applications within 3-5 business days.
+                FixFX reserves the right to accept or decline requests at our
+                discretion.
               </p>
             </div>
           </div>

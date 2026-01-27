@@ -1,6 +1,6 @@
-import { cn } from '@utils/functions/cn';
-import { Star, GitFork, GitCommit, Tag } from 'lucide-react';
-import { type AnchorHTMLAttributes } from 'react';
+import { cn } from "@utils/functions/cn";
+import { Star, GitFork, GitCommit, Tag } from "lucide-react";
+import { type AnchorHTMLAttributes } from "react";
 
 async function getRepoStats(
   owner: string,
@@ -16,10 +16,10 @@ async function getRepoStats(
 }> {
   const endpoint = `https://api.github.com/repos/${owner}/${repo}`;
   const headers = new Headers({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   });
 
-  if (token) headers.set('Authorization', `Bearer ${token}`);
+  if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const response = await fetch(endpoint, { headers });
 
@@ -32,7 +32,9 @@ async function getRepoStats(
   return {
     stars: data.stargazers_count,
     forks: data.forks_count,
-    commits: data.default_branch ? await getCommitCount(owner, repo, data.default_branch, token) : 0,
+    commits: data.default_branch
+      ? await getCommitCount(owner, repo, data.default_branch, token)
+      : 0,
     releases: data.releases_count || 0,
     openIssues: data.open_issues_count,
     watchers: data.watchers_count,
@@ -47,10 +49,10 @@ async function getCommitCount(
 ): Promise<number> {
   const endpoint = `https://api.github.com/repos/${owner}/${repo}/commits?sha=${branch}&per_page=1`;
   const headers = new Headers({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   });
 
-  if (token) headers.set('Authorization', `Bearer ${token}`);
+  if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const response = await fetch(endpoint, { headers });
 
@@ -58,7 +60,7 @@ async function getCommitCount(
     return 0;
   }
 
-  const linkHeader = response.headers.get('link');
+  const linkHeader = response.headers.get("link");
   if (!linkHeader) {
     return 1;
   }
@@ -81,11 +83,8 @@ export async function GithubInfo({
   repo: string;
   token?: string;
 }) {
-  const { stars, forks, commits, releases, openIssues, watchers } = await getRepoStats(
-    owner,
-    repo,
-    token,
-  );
+  const { stars, forks, commits, releases, openIssues, watchers } =
+    await getRepoStats(owner, repo, token);
 
   return (
     <a
@@ -94,7 +93,7 @@ export async function GithubInfo({
       target="_blank"
       {...props}
       className={cn(
-        'flex flex-col gap-1.5 p-2 rounded-lg text-sm text-fd-foreground/80 transition-colors lg:flex-row lg:items-center hover:text-fd-accent-foreground hover:bg-fd-accent',
+        "flex flex-col gap-1.5 p-2 rounded-lg text-sm text-fd-foreground/80 transition-colors lg:flex-row lg:items-center hover:text-fd-accent-foreground hover:bg-fd-accent",
         props.className,
       )}
     >
@@ -152,7 +151,7 @@ function humanizeNumber(num: number): string {
     // For numbers between 1,000 and 99,999, show with one decimal (e.g., 1.5K)
     const value = (num / 1000).toFixed(1);
     // Remove trailing .0 if present
-    const formattedValue = value.endsWith('.0') ? value.slice(0, -2) : value;
+    const formattedValue = value.endsWith(".0") ? value.slice(0, -2) : value;
 
     return `${formattedValue}K`;
   }

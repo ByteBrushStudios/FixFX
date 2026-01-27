@@ -3,58 +3,98 @@ title: Windows Guides
 description: Complete guide to installing and setting up txAdmin on Windows.
 ---
 
-import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { FeatureList, CheckList, QuickLinks, DefinitionList, PropertyCard, InfoBanner, CategoryGrid } from '@ui/components/mdx-components';
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  PropertyCard,
+  InfoBanner,
+  CategoryGrid,
+} from "@ui/components/mdx-components";
 
 This section covers everything you need to know about installing and configuring txAdmin on Windows systems. Whether you're starting a new server or migrating an existing one, we'll walk you through each step.
 
 ## System Requirements
 
 <InfoBanner type="info" title="Prerequisites Check">
-Before you begin, ensure your Windows system meets these requirements for optimal txAdmin performance.
+  Before you begin, ensure your Windows system meets these requirements for
+  optimal txAdmin performance.
 </InfoBanner>
 
 ### Hardware Requirements
 
-<FeatureList 
+<FeatureList
   features={[
-    { title: "Processor", description: "Intel Core i5 3470 @ 3.2GHz / AMD X8 FX-8350 @ 4GHz or better (for 32+ players)", icon: "zap" },
-    { title: "RAM", description: "Minimum 8GB (16GB+ recommended for larger servers)", icon: "database" },
-    { title: "Storage", description: "SSD with at least 8GB free space for server files + resources", icon: "folder" },
-    { title: "Network", description: "Stable internet connection with low latency and required ports open", icon: "globe" }
+    {
+      title: "Processor",
+      description:
+        "Intel Core i5 3470 @ 3.2GHz / AMD X8 FX-8350 @ 4GHz or better (for 32+ players)",
+      icon: "zap",
+    },
+    {
+      title: "RAM",
+      description: "Minimum 8GB (16GB+ recommended for larger servers)",
+      icon: "database",
+    },
+    {
+      title: "Storage",
+      description:
+        "SSD with at least 8GB free space for server files + resources",
+      icon: "folder",
+    },
+    {
+      title: "Network",
+      description:
+        "Stable internet connection with low latency and required ports open",
+      icon: "globe",
+    },
   ]}
 />
 
 ### Network Ports
 
-<DefinitionList 
+<DefinitionList
   variant="bordered"
   items={[
-    { term: "30120 (TCP/UDP)", description: "Game server port - must be accessible to players" },
-    { term: "40120 (TCP)", description: "txAdmin web interface - for administrative access" }
+    {
+      term: "30120 (TCP/UDP)",
+      description: "Game server port - must be accessible to players",
+    },
+    {
+      term: "40120 (TCP)",
+      description: "txAdmin web interface - for administrative access",
+    },
   ]}
 />
 
 ### Software Requirements
 
-<CheckList items={[
-  "Windows 8.1, Windows 10, Windows 11, or Windows Server 2019+ (fully updated)",
-  "Visual C++ Redistributable 2019 or newer",
-  "Modern web browser (Chrome, Firefox, Edge)",
-  "7-Zip or WinRAR for extracting server artifacts"
-]} />
+<CheckList
+  items={[
+    "Windows 8.1, Windows 10, Windows 11, or Windows Server 2019+ (fully updated)",
+    "Visual C++ Redistributable 2019 or newer",
+    "Modern web browser (Chrome, Firefox, Edge)",
+    "7-Zip or WinRAR for extracting server artifacts",
+  ]}
+/>
 
 <InfoBanner type="warning" title="Important">
-FiveM requires a **fully updated** version of Windows. An outdated operating system may not work correctly. Windows 10 or newer is recommended for the best experience.
+  FiveM requires a **fully updated** version of Windows. An outdated operating
+  system may not work correctly. Windows 10 or newer is recommended for the best
+  experience.
 </InfoBanner>
 
 ## Installation Options
 
-<QuickLinks links={[
-  {
-    title: "Fresh Installation",
-    href: "/docs/txadmin/windows/install",
-    icon: "download",
-    description: "Setting up txAdmin from scratch on a new Windows machine"
-  }
-]} />
+<QuickLinks
+  links={[
+    {
+      title: "Fresh Installation",
+      href: "/docs/txadmin/windows/install",
+      icon: "download",
+      description: "Setting up txAdmin from scratch on a new Windows machine",
+    },
+  ]}
+/>

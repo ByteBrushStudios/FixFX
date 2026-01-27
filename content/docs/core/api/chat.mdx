@@ -4,11 +4,29 @@ description: AI-powered chat assistance for FiveM and RedM development.
 icon: "MessageCircle"
 ---
 
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 <Callout type="info">
-  The Chat API provides AI-powered assistance for FiveM and RedM development questions. Powered by advanced language models, it offers contextual help, code examples, and troubleshooting guidance.
+  The Chat API provides AI-powered assistance for FiveM and RedM development
+  questions. Powered by advanced language models, it offers contextual help,
+  code examples, and troubleshooting guidance.
 </Callout>
 
 ## Overview
@@ -22,6 +40,7 @@ The Chat API is an intelligent assistant specifically trained for CitizenFX deve
 - **Framework Support** - Covers ESX, QBCore, and other popular frameworks
 
 The AI assistant can help with:
+
 - Resource development and structure
 - Native function usage and examples
 - Database integration and optimization
@@ -68,15 +87,15 @@ Sends a chat message to the AI assistant and receives a contextual response.
 
 #### Parameters
 
-| Parameter | Type | Description | Default |
-|-----------|------|-------------|---------|
-| `messages` | array | Chat message history | Required |
-| `model` | string | AI model to use (`gpt-4o-mini`, `claude-3-sonnet`) | `gpt-4o-mini` |
-| `temperature` | number | Response creativity (0.0-1.0) | 0.7 |
-| `stream` | boolean | Enable streaming response | false |
-| `context.framework` | string | Target framework (`esx`, `qbcore`, `standalone`) | null |
-| `context.environment` | string | Environment (`client`, `server`, `shared`) | null |
-| `context.topic` | string | Topic area (`development`, `troubleshooting`, `optimization`) | null |
+| Parameter             | Type    | Description                                                   | Default       |
+| --------------------- | ------- | ------------------------------------------------------------- | ------------- |
+| `messages`            | array   | Chat message history                                          | Required      |
+| `model`               | string  | AI model to use (`gpt-4o-mini`, `claude-3-sonnet`)            | `gpt-4o-mini` |
+| `temperature`         | number  | Response creativity (0.0-1.0)                                 | 0.7           |
+| `stream`              | boolean | Enable streaming response                                     | false         |
+| `context.framework`   | string  | Target framework (`esx`, `qbcore`, `standalone`)              | null          |
+| `context.environment` | string  | Environment (`client`, `server`, `shared`)                    | null          |
+| `context.topic`       | string  | Topic area (`development`, `troubleshooting`, `optimization`) | null          |
 
 #### Response Format
 
@@ -111,54 +130,54 @@ Sends a chat message to the AI assistant and receives a contextual response.
 <Tabs items={['JavaScript', 'Lua', 'C#']}>
 <Tab value="JavaScript">
 
-```javascript
+````javascript
 // Basic chat interaction
 async function askFixie(question, framework = null) {
-  const response = await fetch('https://fixfx.wiki/api/chat', {
-    method: 'POST',
+  const response = await fetch("https://fixfx.wiki/api/chat", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       messages: [
         {
-          role: 'user',
-          content: question
-        }
+          role: "user",
+          content: question,
+        },
       ],
-      model: 'gpt-4o-mini',
+      model: "gpt-4o-mini",
       temperature: 0.7,
       context: {
         framework: framework,
-        environment: 'server',
-        topic: 'development'
-      }
-    })
+        environment: "server",
+        topic: "development",
+      },
+    }),
   });
-  
+
   const data = await response.json();
-  
-  console.log('Fixie:', data.response);
-  
+
+  console.log("Fixie:", data.response);
+
   // Show code examples if provided
   if (data.code_examples && data.code_examples.length > 0) {
-    console.log('\nCode Examples:');
+    console.log("\nCode Examples:");
     data.code_examples.forEach((example, index) => {
       console.log(`${index + 1}. ${example.description} (${example.language})`);
-      console.log('```' + example.language);
+      console.log("```" + example.language);
       console.log(example.code);
-      console.log('```');
+      console.log("```");
     });
   }
-  
+
   // Show suggestions
   if (data.suggestions && data.suggestions.length > 0) {
-    console.log('\nSuggested follow-up questions:');
+    console.log("\nSuggested follow-up questions:");
     data.suggestions.forEach((suggestion, index) => {
       console.log(`${index + 1}. ${suggestion}`);
     });
   }
-  
+
   return data;
 }
 
@@ -166,12 +185,12 @@ async function askFixie(question, framework = null) {
 await askFixie("How do I create a vehicle spawning command in ESX?", "esx");
 await askFixie("What's the best way to handle player data persistence?");
 await askFixie("How can I optimize database queries in FiveM?");
-```
+````
 
 </Tab>
 <Tab value="Lua">
 
-```lua
+````lua
 -- Chat with Fixie from within FiveM
 local function askFixie(question, framework, callback)
     local requestData = {
@@ -189,17 +208,17 @@ local function askFixie(question, framework, callback)
             topic = "development"
         }
     }
-    
+
     PerformHttpRequest("https://fixfx.wiki/api/chat", function(errorCode, resultData, resultHeaders)
         if errorCode ~= 200 then
             print("Chat API error:", errorCode)
             return
         end
-        
+
         local data = json.decode(resultData)
-        
+
         print("Fixie: " .. data.response)
-        
+
         -- Show code examples
         if data.code_examples and #data.code_examples > 0 then
             print("\nCode Examples:")
@@ -210,7 +229,7 @@ local function askFixie(question, framework, callback)
                 print("```")
             end
         end
-        
+
         -- Show suggestions
         if data.suggestions and #data.suggestions > 0 then
             print("\nSuggested follow-up questions:")
@@ -218,7 +237,7 @@ local function askFixie(question, framework, callback)
                 print(i .. ". " .. suggestion)
             end
         end
-        
+
         if callback then
             callback(data)
         end
@@ -231,12 +250,12 @@ end
 askFixie("How do I create a custom inventory item in QBCore?", "qbcore")
 askFixie("What's causing high CPU usage in my resource?")
 askFixie("How do I properly handle player disconnections?", "esx")
-```
+````
 
 </Tab>
 <Tab value="C#">
 
-```csharp
+````csharp
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -244,12 +263,12 @@ using System.Text.Json;
 public class FixieChatClient
 {
     private readonly HttpClient _client;
-    
+
     public FixieChatClient()
     {
         _client = new HttpClient();
     }
-    
+
     public async Task<ChatResponse> AskFixie(string question, string framework = null, string environment = "server")
     {
         var request = new ChatRequest
@@ -271,13 +290,13 @@ public class FixieChatClient
                 Topic = "development"
             }
         };
-        
+
         var json = JsonSerializer.Serialize(request);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        
+
         var response = await _client.PostAsync("https://fixfx.wiki/api/chat", content);
         response.EnsureSuccessStatusCode();
-        
+
         var responseContent = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<ChatResponse>(responseContent);
     }
@@ -287,8 +306,8 @@ public class FixieChatClient
 var client = new FixieChatClient();
 
 var response = await client.AskFixie(
-    "How do I create a vehicle spawning command in ESX?", 
-    "esx", 
+    "How do I create a vehicle spawning command in ESX?",
+    "esx",
     "server"
 );
 
@@ -316,7 +335,7 @@ if (response.Suggestions?.Any() == true)
         Console.WriteLine($"{index + 1}. {suggestion}");
     }
 }
-```
+````
 
 </Tab>
 </Tabs>
@@ -331,46 +350,46 @@ For real-time interaction, enable streaming responses:
 ```javascript
 // Streaming chat interface
 async function streamChat(question, onChunk, onComplete) {
-  const response = await fetch('https://fixfx.wiki/api/chat', {
-    method: 'POST',
+  const response = await fetch("https://fixfx.wiki/api/chat", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      messages: [{ role: 'user', content: question }],
+      messages: [{ role: "user", content: question }],
       stream: true,
-      model: 'gpt-4o-mini'
-    })
+      model: "gpt-4o-mini",
+    }),
   });
-  
+
   if (!response.body) {
-    throw new Error('Streaming not supported');
+    throw new Error("Streaming not supported");
   }
-  
+
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
-  let buffer = '';
-  let fullResponse = '';
-  
+  let buffer = "";
+  let fullResponse = "";
+
   try {
     while (true) {
       const { done, value } = await reader.read();
-      
+
       if (done) break;
-      
+
       buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-      
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
       for (const line of lines) {
-        if (line.startsWith('data: ')) {
+        if (line.startsWith("data: ")) {
           const data = line.slice(6);
-          
-          if (data === '[DONE]') {
+
+          if (data === "[DONE]") {
             onComplete(fullResponse);
             return;
           }
-          
+
           try {
             const parsed = JSON.parse(data);
             if (parsed.choices?.[0]?.delta?.content) {
@@ -390,7 +409,7 @@ async function streamChat(question, onChunk, onComplete) {
 }
 
 // Usage example
-const chatOutput = document.getElementById('chat-output');
+const chatOutput = document.getElementById("chat-output");
 
 streamChat(
   "How do I implement a player teleport system?",
@@ -400,8 +419,8 @@ streamChat(
   },
   (finalResponse) => {
     // Handle completion
-    console.log('Chat completed:', finalResponse);
-  }
+    console.log("Chat completed:", finalResponse);
+  },
 );
 ```
 
@@ -423,69 +442,66 @@ class FixieDevelopmentAssistant {
     this.currentContext = {
       framework: null,
       project: null,
-      currentFile: null
+      currentFile: null,
     };
   }
-  
+
   async askQuestion(question, additionalContext = {}) {
     const context = { ...this.currentContext, ...additionalContext };
-    
-    const response = await fetch('https://fixfx.wiki/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
+    const response = await fetch("https://fixfx.wiki/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        messages: [
-          ...this.chatHistory,
-          { role: 'user', content: question }
-        ],
+        messages: [...this.chatHistory, { role: "user", content: question }],
         context,
-        model: 'gpt-4o-mini'
-      })
+        model: "gpt-4o-mini",
+      }),
     });
-    
+
     const data = await response.json();
-    
+
     // Update chat history
     this.chatHistory.push(
-      { role: 'user', content: question },
-      { role: 'assistant', content: data.response }
+      { role: "user", content: question },
+      { role: "assistant", content: data.response },
     );
-    
+
     // Limit history size
     if (this.chatHistory.length > 20) {
       this.chatHistory = this.chatHistory.slice(-16);
     }
-    
+
     return data;
   }
-  
+
   async getCodeReview(code, language) {
     const question = `Please review this ${language} code and suggest improvements:\n\n\`\`\`${language}\n${code}\n\`\`\``;
-    return this.askQuestion(question, { topic: 'code-review' });
+    return this.askQuestion(question, { topic: "code-review" });
   }
-  
+
   async debugError(errorMessage, code) {
     const question = `I'm getting this error: "${errorMessage}"\n\nIn this code:\n\`\`\`lua\n${code}\n\`\`\`\n\nWhat's wrong and how can I fix it?`;
-    return this.askQuestion(question, { topic: 'debugging' });
+    return this.askQuestion(question, { topic: "debugging" });
   }
-  
+
   async generateCode(description, framework) {
     const question = `Generate ${framework} code for: ${description}`;
-    return this.askQuestion(question, { 
-      framework, 
-      topic: 'code-generation' 
+    return this.askQuestion(question, {
+      framework,
+      topic: "code-generation",
     });
   }
-  
+
   async optimizePerformance(code, language) {
     const question = `How can I optimize this ${language} code for better performance?\n\n\`\`\`${language}\n${code}\n\`\`\``;
-    return this.askQuestion(question, { topic: 'optimization' });
+    return this.askQuestion(question, { topic: "optimization" });
   }
-  
+
   setContext(context) {
     this.currentContext = { ...this.currentContext, ...context };
   }
-  
+
   clearHistory() {
     this.chatHistory = [];
   }
@@ -496,18 +512,19 @@ const assistant = new FixieDevelopmentAssistant();
 
 // Set project context
 assistant.setContext({
-  framework: 'esx',
-  project: 'roleplay-server',
-  environment: 'server'
+  framework: "esx",
+  project: "roleplay-server",
+  environment: "server",
 });
 
 // Ask general questions
 const response1 = await assistant.askQuestion(
-  "How do I create a custom job in ESX?"
+  "How do I create a custom job in ESX?",
 );
 
 // Get code review
-const codeReview = await assistant.getCodeReview(`
+const codeReview = await assistant.getCodeReview(
+  `
 RegisterCommand('heal', function(source, args)
     local xPlayer = ESX.GetPlayerFromId(source)
     if xPlayer.job.name == 'ambulance' then
@@ -515,18 +532,20 @@ RegisterCommand('heal', function(source, args)
         SetEntityHealth(ped, 200)
     end
 end)
-`, 'lua');
+`,
+  "lua",
+);
 
 // Debug an error
 const debugHelp = await assistant.debugError(
   "attempt to index a nil value (global 'ESX')",
-  "ESX.TriggerServerCallback('bank:withdraw', function(success) end)"
+  "ESX.TriggerServerCallback('bank:withdraw', function(success) end)",
 );
 
 // Generate new code
 const generatedCode = await assistant.generateCode(
   "a vehicle shop system with categories and test drives",
-  "qbcore"
+  "qbcore",
 );
 ```
 
@@ -547,20 +566,20 @@ class InteractiveTutorial {
     this.steps = [];
     this.currentStep = 0;
     this.assistant = new FixieDevelopmentAssistant();
-    this.assistant.setContext({ framework, topic: 'tutorial' });
+    this.assistant.setContext({ framework, topic: "tutorial" });
   }
-  
+
   async startTutorial() {
     const response = await this.assistant.askQuestion(
       `Create a step-by-step tutorial for ${this.topic} in ${this.framework}. 
-       Include code examples and explanations for each step.`
+       Include code examples and explanations for each step.`,
     );
-    
+
     // Parse the response to extract steps
     this.parseSteps(response.response);
     return this.getCurrentStep();
   }
-  
+
   parseSteps(tutorialText) {
     // Simple parsing - in practice, you'd want more sophisticated parsing
     const sections = tutorialText.split(/Step \d+:/);
@@ -568,14 +587,14 @@ class InteractiveTutorial {
       id: index + 1,
       title: `Step ${index + 1}`,
       content: step.trim(),
-      completed: false
+      completed: false,
     }));
   }
-  
+
   getCurrentStep() {
     return this.steps[this.currentStep] || null;
   }
-  
+
   async nextStep() {
     if (this.currentStep < this.steps.length - 1) {
       this.steps[this.currentStep].completed = true;
@@ -584,24 +603,24 @@ class InteractiveTutorial {
     }
     return null;
   }
-  
+
   async askStepQuestion(question) {
     const currentStep = this.getCurrentStep();
     if (!currentStep) return null;
-    
+
     const contextualQuestion = `
       I'm on step ${currentStep.id} of the ${this.topic} tutorial: "${currentStep.title}"
       
       My question: ${question}
     `;
-    
+
     return this.assistant.askQuestion(contextualQuestion);
   }
-  
+
   async validateCode(code) {
     const currentStep = this.getCurrentStep();
     if (!currentStep) return null;
-    
+
     const validationRequest = `
       Please validate this code for step ${currentStep.id} of the ${this.topic} tutorial:
       
@@ -611,16 +630,16 @@ class InteractiveTutorial {
       
       Is this correct? What improvements can be made?
     `;
-    
+
     return this.assistant.askQuestion(validationRequest);
   }
-  
+
   getProgress() {
-    const completed = this.steps.filter(step => step.completed).length;
+    const completed = this.steps.filter((step) => step.completed).length;
     return {
       completed,
       total: this.steps.length,
-      percentage: (completed / this.steps.length * 100).toFixed(1)
+      percentage: ((completed / this.steps.length) * 100).toFixed(1),
     };
   }
 }
@@ -630,11 +649,11 @@ const tutorial = new InteractiveTutorial("vehicle spawning system", "esx");
 
 // Start the tutorial
 const firstStep = await tutorial.startTutorial();
-console.log('First step:', firstStep);
+console.log("First step:", firstStep);
 
 // Ask questions during the tutorial
 const clarification = await tutorial.askStepQuestion(
-  "Where exactly do I put this code in my resource?"
+  "Where exactly do I put this code in my resource?",
 );
 
 // Validate user's code
@@ -650,7 +669,7 @@ const validation = await tutorial.validateCode(`
 
 // Move to next step
 const nextStep = await tutorial.nextStep();
-console.log('Progress:', tutorial.getProgress());
+console.log("Progress:", tutorial.getProgress());
 ```
 
 </Tab>
@@ -669,22 +688,22 @@ class AICodeAssistant {
     this.selectedCode = null;
     this.assistant = new FixieDevelopmentAssistant();
   }
-  
+
   setActiveFile(filePath, content, framework) {
     this.activeFile = { filePath, content, framework };
-    this.assistant.setContext({ 
-      framework, 
-      currentFile: filePath 
+    this.assistant.setContext({
+      framework,
+      currentFile: filePath,
     });
   }
-  
+
   setSelectedCode(code, lineStart, lineEnd) {
     this.selectedCode = { code, lineStart, lineEnd };
   }
-  
+
   async explainCode() {
     if (!this.selectedCode) return null;
-    
+
     const question = `
       Explain what this code does:
       
@@ -694,13 +713,13 @@ class AICodeAssistant {
       
       Please explain it line by line if it's complex.
     `;
-    
+
     return this.assistant.askQuestion(question);
   }
-  
+
   async optimizeSelection() {
     if (!this.selectedCode) return null;
-    
+
     const question = `
       Optimize this code for better performance and readability:
       
@@ -710,13 +729,13 @@ class AICodeAssistant {
       
       Provide the optimized version with explanations.
     `;
-    
+
     return this.assistant.askQuestion(question);
   }
-  
+
   async findBugs() {
     if (!this.selectedCode) return null;
-    
+
     const question = `
       Check this code for potential bugs and issues:
       
@@ -726,13 +745,13 @@ class AICodeAssistant {
       
       List any problems and how to fix them.
     `;
-    
+
     return this.assistant.askQuestion(question);
   }
-  
+
   async generateDocumentation() {
     if (!this.selectedCode) return null;
-    
+
     const question = `
       Generate documentation comments for this code:
       
@@ -742,13 +761,13 @@ class AICodeAssistant {
       
       Include parameter descriptions and usage examples.
     `;
-    
+
     return this.assistant.askQuestion(question);
   }
-  
+
   async suggestImprovements() {
     if (!this.activeFile) return null;
-    
+
     const question = `
       Analyze this ${this.activeFile.framework} resource file and suggest improvements:
       
@@ -760,19 +779,19 @@ class AICodeAssistant {
       
       Focus on structure, performance, and best practices.
     `;
-    
+
     return this.assistant.askQuestion(question);
   }
-  
+
   async autocomplete(currentLine, cursorPosition) {
     const question = `
-      Complete this line of ${this.activeFile?.framework || 'Lua'} code:
+      Complete this line of ${this.activeFile?.framework || "Lua"} code:
       
       "${currentLine}"
       
       Cursor is at position ${cursorPosition}. Suggest completions.
     `;
-    
+
     return this.assistant.askQuestion(question);
   }
 }
@@ -782,17 +801,13 @@ const codeAssistant = new AICodeAssistant();
 
 // Set current file context
 codeAssistant.setActiveFile(
-  'server/main.lua',
+  "server/main.lua",
   'RegisterCommand("givemoney", function(source, args)\n  local amount = tonumber(args[1])\nend)',
-  'esx'
+  "esx",
 );
 
 // Select code and get help
-codeAssistant.setSelectedCode(
-  'local amount = tonumber(args[1])',
-  2,
-  2
-);
+codeAssistant.setSelectedCode("local amount = tonumber(args[1])", 2, 2);
 
 const explanation = await codeAssistant.explainCode();
 const optimization = await codeAssistant.optimizeSelection();
@@ -807,18 +822,18 @@ const docs = await codeAssistant.generateDocumentation();
 
 ### Available Models
 
-| Model | Strengths | Use Cases |
-|-------|-----------|-----------|
-| `gpt-4o-mini` | Fast, cost-effective, good for general questions | Quick help, code completion, basic debugging |
-| `claude-3-sonnet` | Advanced reasoning, detailed explanations | Complex problem solving, code review, architecture |
-| `gpt-4-turbo` | Balanced performance and capability | Most development tasks, tutorials, optimization |
+| Model             | Strengths                                        | Use Cases                                          |
+| ----------------- | ------------------------------------------------ | -------------------------------------------------- |
+| `gpt-4o-mini`     | Fast, cost-effective, good for general questions | Quick help, code completion, basic debugging       |
+| `claude-3-sonnet` | Advanced reasoning, detailed explanations        | Complex problem solving, code review, architecture |
+| `gpt-4-turbo`     | Balanced performance and capability              | Most development tasks, tutorials, optimization    |
 
 ### Specialized Knowledge
 
 The AI assistant has specialized knowledge in:
 
 - **FiveM/RedM Development** - Resource structure, manifests, natives
-- **Framework Expertise** - ESX, QBCore, vRP, and custom frameworks  
+- **Framework Expertise** - ESX, QBCore, vRP, and custom frameworks
 - **Database Integration** - MySQL, oxmysql, async patterns
 - **Performance Optimization** - Profiling, caching, efficient code patterns
 - **Security Best Practices** - Input validation, injection prevention
@@ -843,6 +858,7 @@ Standard HTTP status codes:
 - `500`: Server Error - AI service error
 
 Example error response:
+
 ```json
 {
   "error": "Rate limit exceeded",
@@ -884,9 +900,11 @@ For questions about the Chat API, please [join our Discord](/discord). We can he
 - Feature requests
 
 <Callout type="info">
-  The Chat API is continuously improved with better FiveM/RedM specific knowledge and capabilities.
+  The Chat API is continuously improved with better FiveM/RedM specific
+  knowledge and capabilities.
 </Callout>
 
 <Callout type="warning">
-  Always review and test AI-generated code before using it in production environments.
+  Always review and test AI-generated code before using it in production
+  environments.
 </Callout>

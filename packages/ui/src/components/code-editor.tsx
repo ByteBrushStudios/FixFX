@@ -10,7 +10,11 @@ interface CodeEditorProps {
   language?: string;
 }
 
-export function CodeEditor({ children, className, language = "typescript" }: CodeEditorProps) {
+export function CodeEditor({
+  children,
+  className,
+  language = "typescript",
+}: CodeEditorProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -18,7 +22,7 @@ export function CodeEditor({ children, className, language = "typescript" }: Cod
       transition={{ duration: 0.3 }}
       className={cn(
         "relative rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900",
-        className
+        className,
       )}
     >
       <div className="overflow-x-auto">
@@ -41,4 +45,4 @@ export function CodeEditor({ children, className, language = "typescript" }: Cod
       </div>
     </motion.div>
   );
-} 
+}

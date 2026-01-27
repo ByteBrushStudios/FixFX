@@ -1,6 +1,4 @@
 {
-    "defaultOpen": true,
-    "pages": [
-        "install"
-    ]
+  "defaultOpen": true,
+  "pages": ["install"]
 }

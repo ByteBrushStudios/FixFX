@@ -4,15 +4,37 @@ description: Guide to using and optimizing database operations in CitizenFX.
 icon: "Database"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Proper database management is crucial for any FiveM server. This guide covers the most popular database libraries, optimization techniques, and best practices.
 
 ## Overview of Database Libraries
 
-<PropertyCard title="OxMySQL (Recommended)" content="Modern async library with superior performance and error handling. Active development and community support. Use for all new projects." />
+<PropertyCard
+  title="OxMySQL (Recommended)"
+  content="Modern async library with superior performance and error handling. Active development and community support. Use for all new projects."
+/>
 
-<PropertyCard title="MySQL-Async (Legacy)" content="Previously standard library, still functional but deprecated. Not recommended for new projects. Consider migrating to OxMySQL." />
+<PropertyCard
+  title="MySQL-Async (Legacy)"
+  content="Previously standard library, still functional but deprecated. Not recommended for new projects. Consider migrating to OxMySQL."
+/>
 
 ### OxMySQL (Recommended)
 
@@ -76,6 +98,7 @@ For MySQL-Async, configure in `config.json`:
 ### Database Structure Best Practices
 
 1. **Use Proper Indexes**:
+
    ```sql
    CREATE TABLE players (
        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -87,6 +110,7 @@ For MySQL-Async, configure in `config.json`:
    ```
 
 2. **Use Appropriate Data Types**:
+
    ```sql
    CREATE TABLE vehicles (
        id INT AUTO_INCREMENT PRIMARY KEY,
@@ -273,29 +297,32 @@ end)
 ### Query Optimization
 
 1. **Use Prepared Statements**:
+
    ```lua
    -- Bad (String concatenation)
    local query = 'SELECT * FROM players WHERE identifier = "' .. identifier .. '"'
-   
+
    -- Good (Prepared statement)
    local query = 'SELECT * FROM players WHERE identifier = ?'
    local params = {identifier}
    ```
 
 2. **Select Only Needed Columns**:
+
    ```lua
    -- Bad (Selecting everything)
    exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {identifier})
-   
+
    -- Good (Selecting only needed columns)
    exports.oxmysql:execute('SELECT id, name, money FROM players WHERE identifier = ?', {identifier})
    ```
 
 3. **Use Proper WHERE Clauses**:
+
    ```lua
    -- Bad (Full table scan)
    exports.oxmysql:execute('SELECT * FROM players WHERE LOWER(name) = LOWER(?)', {playerName})
-   
+
    -- Good (Using indexed column)
    exports.oxmysql:execute('SELECT * FROM players WHERE identifier = ?', {identifier})
    ```
@@ -350,17 +377,17 @@ local function getPlayerData(identifier)
     if playerCache[identifier] and playerCache[identifier].timestamp > os.time() - 60 then
         return playerCache[identifier].data
     end
-    
+
     -- Fetch from database if not in cache
     local result = exports.oxmysql:executeSync('SELECT * FROM players WHERE identifier = ?', {identifier})
     local player = result[1]
-    
+
     -- Update cache
     playerCache[identifier] = {
         data = player,
         timestamp = os.time()
     }
-    
+
     return player
 end
 
@@ -426,7 +453,7 @@ function PlayerModel.new(data)
     self.identifier = self.identifier or nil
     self.name = self.name or ''
     self.money = self.money or 0
-    
+
     function self:save()
         if self.id then
             -- Update existing
@@ -443,12 +470,12 @@ function PlayerModel.new(data)
         end
         return self
     end
-    
+
     function self:addMoney(amount)
         self.money = self.money + amount
         return self:save()
     end
-    
+
     return self
 end
 
@@ -483,10 +510,11 @@ end
 ### Common Database Errors
 
 1. **Connection Issues**:
+
    ```
    Error: Connection to database failed
    ```
-   
+
    **Solutions**:
    - Check if MySQL server is running
    - Verify connection credentials
@@ -495,10 +523,11 @@ end
    - Verify port configuration
 
 2. **Query Errors**:
+
    ```
    Error: ER_BAD_FIELD_ERROR: Unknown column 'nonexistent' in 'field list'
    ```
-   
+
    **Solutions**:
    - Verify table schema
    - Check query syntax
@@ -506,10 +535,11 @@ end
    - Update queries after schema changes
 
 3. **Performance Issues**:
+
    ```
    Warning: Slow query detected (took 5000ms)
    ```
-   
+
    **Solutions**:
    - Add proper indexes
    - Optimize queries
@@ -559,18 +589,19 @@ end)
 
 Comprehensive migration table:
 
-| MySQL-Async | OxMySQL |
-|-------------|---------|
-| `MySQL.Async.fetchAll` | `exports.oxmysql:execute` |
-| `MySQL.Async.fetchScalar` | `exports.oxmysql:scalar` |
-| `MySQL.Async.execute` | `exports.oxmysql:execute` |
-| `MySQL.Async.insert` | `exports.oxmysql:insert` |
-| `MySQL.Sync.fetchAll` | `exports.oxmysql:executeSync` |
-| `MySQL.Sync.fetchScalar` | `exports.oxmysql:scalarSync` |
-| `MySQL.Sync.execute` | `exports.oxmysql:executeSync` |
-| `MySQL.Sync.insert` | `exports.oxmysql:insertSync` |
+| MySQL-Async               | OxMySQL                       |
+| ------------------------- | ----------------------------- |
+| `MySQL.Async.fetchAll`    | `exports.oxmysql:execute`     |
+| `MySQL.Async.fetchScalar` | `exports.oxmysql:scalar`      |
+| `MySQL.Async.execute`     | `exports.oxmysql:execute`     |
+| `MySQL.Async.insert`      | `exports.oxmysql:insert`      |
+| `MySQL.Sync.fetchAll`     | `exports.oxmysql:executeSync` |
+| `MySQL.Sync.fetchScalar`  | `exports.oxmysql:scalarSync`  |
+| `MySQL.Sync.execute`      | `exports.oxmysql:executeSync` |
+| `MySQL.Sync.insert`       | `exports.oxmysql:insertSync`  |
 
 For parameter styles:
+
 - MySQL-Async: `@identifier`
 - OxMySQL: `?` (positional parameters)
 
@@ -588,6 +619,7 @@ Managing your database efficiently requires the right tools. Here are the best a
 ### HeidiSQL (Windows - Highly Recommended)
 
 **Why HeidiSQL?**
+
 - **Free and Open Source**: No licensing costs
 - **Lightweight**: Fast and responsive interface
 - **Portable**: Can run without installation
@@ -595,6 +627,7 @@ Managing your database efficiently requires the right tools. Here are the best a
 - **User-Friendly**: Intuitive interface for beginners and experts
 
 **Key Features:**
+
 - **Visual Table Designer**: Create and modify tables with drag-and-drop
 - **SQL Editor**: Syntax highlighting, auto-completion, query formatting
 - **Data Export/Import**: Support for SQL, CSV, HTML, XML, LaTeX, Wiki markup
@@ -607,6 +640,7 @@ Managing your database efficiently requires the right tools. Here are the best a
 **Getting Started with HeidiSQL:**
 
 1. **Download and Install**
+
    ```
    Visit: https://www.heidisql.com/download.php
    Choose: Installer or Portable version
@@ -652,6 +686,7 @@ Managing your database efficiently requires the right tools. Here are the best a
    - View results with context
 
 **Pro Tips:**
+
 ```sql
 -- Use SQL snippets for common queries
 -- Tools → Preferences → SQL → Snippets
@@ -666,6 +701,7 @@ Managing your database efficiently requires the right tools. Here are the best a
 ### DBeaver (Cross-Platform Universal Tool)
 
 **Why DBeaver?**
+
 - **Cross-Platform**: Works on Windows, Linux, macOS
 - **Universal**: Supports 100+ different databases
 - **Free Community Edition**: Full-featured and open source
@@ -675,6 +711,7 @@ Managing your database efficiently requires the right tools. Here are the best a
 **Installation:**
 
 **Windows:**
+
 ```
 Download from: https://dbeaver.io/download/
 Choose: Community Edition (free) or Enterprise Edition
@@ -682,6 +719,7 @@ Run installer and follow prompts
 ```
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 # Method 1: Using snap
 sudo snap install dbeaver-ce
@@ -696,6 +734,7 @@ dbeaver
 ```
 
 **Linux (Fedora/RHEL/CentOS):**
+
 ```bash
 # Download RPM package
 wget https://dbeaver.io/files/dbeaver-ce-latest-stable.x86_64.rpm
@@ -708,6 +747,7 @@ dbeaver
 ```
 
 **Key Features:**
+
 - **SQL Editor**: Advanced editor with auto-complete and syntax validation
 - **Data Viewer**: Inline editing, filtering, sorting
 - **ER Diagrams**: Visual database structure diagrams
@@ -725,6 +765,7 @@ dbeaver
    - Click "Next"
 
 2. **Configure Connection**
+
    ```
    Connect by: Host
    Server Host: localhost (or server IP)
@@ -743,6 +784,7 @@ dbeaver
 **Advanced Features:**
 
 **Creating ER Diagrams:**
+
 ```
 1. Right-click database → Generate ER Diagram
 2. Select tables to include
@@ -751,6 +793,7 @@ dbeaver
 ```
 
 **Mock Data Generation:**
+
 ```
 1. Right-click table → Generate SQL → Generate Mock Data
 2. Configure columns and data types
@@ -759,6 +802,7 @@ dbeaver
 ```
 
 **Database Export:**
+
 ```
 1. Right-click database → Tools → Export Data
 2. Select tables and format (SQL, CSV, XML, JSON)
@@ -769,6 +813,7 @@ dbeaver
 ### MySQL Workbench (Official MySQL Tool)
 
 **Why MySQL Workbench?**
+
 - **Official Tool**: Made by MySQL developers
 - **Complete Solution**: Design, development, and administration
 - **Database Design**: Visual data modeling with EER diagrams
@@ -778,6 +823,7 @@ dbeaver
 **Installation:**
 
 **Windows:**
+
 ```
 Visit: https://dev.mysql.com/downloads/workbench/
 Download Windows MSI Installer
@@ -785,6 +831,7 @@ Run installer and follow prompts
 ```
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 # Using apt
 sudo apt update
@@ -795,6 +842,7 @@ sudo snap install mysql-workbench-community
 ```
 
 **Key Features:**
+
 - **Database Design**: Visual ER diagrams and forward/reverse engineering
 - **SQL Development**: Advanced query editor with debugging
 - **Server Administration**: User management, server configuration
@@ -805,6 +853,7 @@ sudo snap install mysql-workbench-community
 **Common Tasks:**
 
 **Database Modeling:**
+
 ```
 1. Database → Reverse Engineer
 2. Connect to your database
@@ -814,6 +863,7 @@ sudo snap install mysql-workbench-community
 ```
 
 **Server Performance Monitoring:**
+
 ```
 1. Connect to server
 2. Server → Performance Dashboard
@@ -827,6 +877,7 @@ sudo snap install mysql-workbench-community
 ### phpMyAdmin (Web-Based Interface)
 
 **Why phpMyAdmin?**
+
 - **Web-Based**: Access from any browser, anywhere
 - **No Installation**: Runs on web server
 - **Multi-User**: Multiple administrators can work simultaneously
@@ -855,6 +906,7 @@ sudo systemctl restart nginx
 ```
 
 **Nginx Configuration (if using Nginx):**
+
 ```nginx
 # /etc/nginx/sites-available/phpmyadmin
 server {
@@ -910,6 +962,7 @@ sudo ln -s /usr/share/phpmyadmin /var/www/html/mydbadmin
 ### Adminer (Lightweight Alternative)
 
 **Why Adminer?**
+
 - **Single File**: Just one PHP file, easy deployment
 - **Fast**: Much lighter than phpMyAdmin
 - **Feature Rich**: Supports multiple databases (MySQL, PostgreSQL, SQLite, etc.)
@@ -934,6 +987,7 @@ sudo chmod 644 /var/www/html/adminer/index.php
 ```
 
 **Custom Theme:**
+
 ```bash
 # Download theme
 cd /var/www/html/adminer
@@ -960,6 +1014,7 @@ brew install mycli
 ```
 
 **Features:**
+
 - Auto-completion of SQL keywords and table/column names
 - Syntax highlighting
 - Query history with search
@@ -969,6 +1024,7 @@ brew install mycli
 - Pretty formatted output
 
 **Usage:**
+
 ```bash
 # Connect to database
 mycli -u fivem_user -p fivem
@@ -985,6 +1041,7 @@ mycli mysql://fivem_user:password@localhost/fivem
 ```
 
 **Configuration:**
+
 ```bash
 # Edit config file
 nano ~/.myclirc
@@ -1003,6 +1060,7 @@ key_bindings = emacs
 #### SSH Tunneling for Secure Remote Access
 
 **Linux/macOS:**
+
 ```bash
 # Create SSH tunnel
 ssh -L 3306:localhost:3306 username@your-server-ip
@@ -1015,6 +1073,7 @@ ssh -f -N -L 3306:localhost:3306 username@your-server-ip
 ```
 
 **Windows (using PuTTY):**
+
 ```
 1. Open PuTTY
 2. Enter server hostname
@@ -1029,6 +1088,7 @@ ssh -f -N -L 3306:localhost:3306 username@your-server-ip
 ```
 
 **HeidiSQL with SSH Tunnel:**
+
 ```
 1. Create new session
 2. Go to "SSH tunnel" tab
@@ -1137,13 +1197,17 @@ echo "Database health check passed"
 ```
 
 <Callout type="info">
-**Tool Recommendation**: For Windows users, HeidiSQL is the best choice. For Linux users, DBeaver offers excellent cross-platform compatibility and advanced features.
+  **Tool Recommendation**: For Windows users, HeidiSQL is the best choice. For
+  Linux users, DBeaver offers excellent cross-platform compatibility and
+  advanced features.
 </Callout>
 
 <Callout type="warning">
-  Avoid using synchronous database operations in production environments, as they can block the main thread and cause performance issues.
+  Avoid using synchronous database operations in production environments, as
+  they can block the main thread and cause performance issues.
 </Callout>
 
 <Callout type="info">
-  For more information about server performance, see our [Server Optimization](/docs/cfx/performance/server-optimization) guide.
+  For more information about server performance, see our [Server
+  Optimization](/docs/cfx/performance/server-optimization) guide.
 </Callout>

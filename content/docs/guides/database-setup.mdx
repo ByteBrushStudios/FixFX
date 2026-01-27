@@ -4,7 +4,23 @@ description: Complete guide to setting up and configuring databases for FiveM se
 icon: "Database"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 A properly configured database is essential for any FiveM server. This guide covers everything from initial setup to advanced optimization techniques for MySQL/MariaDB databases.
 
@@ -13,12 +29,14 @@ A properly configured database is essential for any FiveM server. This guide cov
 ### MySQL vs MariaDB
 
 **MySQL**
+
 - Industry standard, widely supported
 - Excellent performance and reliability
 - Extensive documentation and community
 - Commercial support available
 
 **MariaDB (Recommended)**
+
 - Fork of MySQL with enhanced features
 - Better performance in many scenarios
 - Fully open-source with no licensing concerns
@@ -28,13 +46,34 @@ A properly configured database is essential for any FiveM server. This guide cov
 
 <StepList
   steps={[
-    { title: "Download Database Software", description: "Choose and download MariaDB or MySQL from official sources" },
-    { title: "Run Installer", description: "Execute the installer with appropriate options for your OS" },
-    { title: "Configure Settings", description: "Set character set to UTF8MB4 and configure resource limits" },
-    { title: "Secure Installation", description: "Set root password and remove anonymous/test accounts" },
-    { title: "Create Databases", description: "Create databases and users for your FiveM resources" },
-    { title: "Verify Connection", description: "Test connections from your FiveM server" },
-    { title: "Enable Backups", description: "Configure automatic backups for data protection" }
+    {
+      title: "Download Database Software",
+      description: "Choose and download MariaDB or MySQL from official sources",
+    },
+    {
+      title: "Run Installer",
+      description: "Execute the installer with appropriate options for your OS",
+    },
+    {
+      title: "Configure Settings",
+      description: "Set character set to UTF8MB4 and configure resource limits",
+    },
+    {
+      title: "Secure Installation",
+      description: "Set root password and remove anonymous/test accounts",
+    },
+    {
+      title: "Create Databases",
+      description: "Create databases and users for your FiveM resources",
+    },
+    {
+      title: "Verify Connection",
+      description: "Test connections from your FiveM server",
+    },
+    {
+      title: "Enable Backups",
+      description: "Configure automatic backups for data protection",
+    },
   ]}
   title="Database Installation Steps"
 />
@@ -47,14 +86,31 @@ A properly configured database is essential for any FiveM server. This guide cov
   title="MariaDB Configuration"
   description="Key configuration settings for MariaDB including character set, connection limits, and performance tuning"
   config={[
-    { key: "character-set-server", value: "utf8mb4", description: "Unicode support for international characters" },
-    { key: "collation-server", value: "utf8mb4_unicode_ci", description: "Proper collation for Unicode" },
-    { key: "max_connections", value: "500", description: "Maximum concurrent database connections" },
-    { key: "innodb_buffer_pool_size", value: "1G", description: "Cache size for frequently accessed data" }
+    {
+      key: "character-set-server",
+      value: "utf8mb4",
+      description: "Unicode support for international characters",
+    },
+    {
+      key: "collation-server",
+      value: "utf8mb4_unicode_ci",
+      description: "Proper collation for Unicode",
+    },
+    {
+      key: "max_connections",
+      value: "500",
+      description: "Maximum concurrent database connections",
+    },
+    {
+      key: "innodb_buffer_pool_size",
+      value: "1G",
+      description: "Cache size for frequently accessed data",
+    },
   ]}
 />
 
 1. **Download MariaDB**
+
    ```
    Visit: https://mariadb.org/download/
    Select: Windows x64 MSI Package
@@ -80,6 +136,7 @@ A properly configured database is essential for any FiveM server. This guide cov
 #### Installing MySQL on Windows
 
 1. **Download MySQL Installer**
+
    ```
    Visit: https://dev.mysql.com/downloads/installer/
    Download: MySQL Installer for Windows
@@ -100,13 +157,14 @@ A properly configured database is essential for any FiveM server. This guide cov
     "Run security configuration",
     "Configure character set",
     "Enable firewall rules",
-    "Verify service running"
+    "Verify service running",
   ]}
 />
 
 #### MariaDB Installation (Recommended)
 
 **Step 1: Update System Packages**
+
 ```bash
 # Update package repositories
 sudo apt update && sudo apt upgrade -y
@@ -116,6 +174,7 @@ sudo apt install software-properties-common apt-transport-https wget -y
 ```
 
 **Step 2: Install MariaDB Server**
+
 ```bash
 # Install MariaDB server and client
 sudo apt install mariadb-server mariadb-client -y
@@ -125,6 +184,7 @@ mysql --version
 ```
 
 **Step 3: Secure MariaDB Installation**
+
 ```bash
 # Run security script
 sudo mysql_secure_installation
@@ -138,6 +198,7 @@ sudo mysql_secure_installation
 ```
 
 **Step 4: Configure MariaDB**
+
 ```bash
 # Edit MariaDB configuration
 sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
@@ -152,6 +213,7 @@ innodb_log_file_size=256M
 ```
 
 **Step 5: Restart and Enable Service**
+
 ```bash
 # Restart MariaDB to apply changes
 sudo systemctl restart mariadb
@@ -164,6 +226,7 @@ sudo systemctl status mariadb
 ```
 
 **Step 6: Configure Firewall (if needed)**
+
 ```bash
 # Allow MySQL port through firewall
 sudo ufw allow 3306/tcp
@@ -303,11 +366,13 @@ Now that your database is installed, you'll need tools to manage it effectively.
 #### HeidiSQL (Windows - Recommended)
 
 **Installation:**
+
 1. Download from [https://www.heidisql.com/download.php](https://www.heidisql.com/download.php)
 2. Run the installer (portable version also available)
 3. Launch HeidiSQL
 
 **Connecting to Your Database:**
+
 1. Click **"New"** at the bottom left
 2. Configure connection:
    ```
@@ -321,6 +386,7 @@ Now that your database is installed, you'll need tools to manage it effectively.
 3. Click **"Open"**
 
 **Key Features:**
+
 - Visual table editor with drag-and-drop
 - Query builder and SQL editor with syntax highlighting
 - Import/export data (SQL, CSV, XML, etc.)
@@ -329,6 +395,7 @@ Now that your database is installed, you'll need tools to manage it effectively.
 - Table designer with visual foreign key relationships
 
 **Common Tasks:**
+
 ```sql
 -- Create new table
 -- Use the visual table designer or SQL tab
@@ -348,6 +415,7 @@ Now that your database is installed, you'll need tools to manage it effectively.
 **Installation:**
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 # Download and install
 wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
@@ -359,12 +427,14 @@ dbeaver
 ```
 
 **Windows:**
+
 ```
 Download from: https://dbeaver.io/download/
 Run the installer
 ```
 
 **Connecting to Database:**
+
 1. Click **"New Database Connection"** or Ctrl+Shift+N
 2. Select **MariaDB** or **MySQL**
 3. Enter connection details:
@@ -378,6 +448,7 @@ Run the installer
 4. Test connection and click **"Finish"**
 
 **Key Features:**
+
 - Universal database tool (supports 100+ databases)
 - Advanced SQL editor with autocomplete
 - ER diagrams and visual query builder
@@ -389,6 +460,7 @@ Run the installer
 #### phpMyAdmin (Web-Based)
 
 **Installation on Linux:**
+
 ```bash
 # Ubuntu/Debian
 sudo apt update
@@ -407,6 +479,7 @@ sudo systemctl restart nginx
 ```
 
 **Access phpMyAdmin:**
+
 ```
 Navigate to: http://localhost/phpmyadmin
 or http://your-server-ip/phpmyadmin
@@ -415,6 +488,7 @@ Login with database credentials
 ```
 
 **Security Configuration:**
+
 ```bash
 # Create .htaccess for additional security
 sudo nano /usr/share/phpmyadmin/.htaccess
@@ -437,6 +511,7 @@ sudo chmod 640 /etc/phpmyadmin/.htpasswd
 **Installation:**
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 # Download from MySQL website or use snap
 sudo snap install mysql-workbench-community
@@ -447,12 +522,14 @@ sudo apt install mysql-workbench
 ```
 
 **Windows:**
+
 ```
 Download from: https://dev.mysql.com/downloads/workbench/
 Run the installer
 ```
 
 **Key Features:**
+
 - Database design and modeling
 - Visual ER diagram editor
 - SQL development and administration
@@ -461,6 +538,7 @@ Run the installer
 - Server administration
 
 **Creating a Connection:**
+
 1. Click **"+"** next to MySQL Connections
 2. Enter connection details:
    ```
@@ -475,6 +553,7 @@ Run the installer
 #### Command Line Tools
 
 **MySQL/MariaDB Command Line Client:**
+
 ```bash
 # Connect to database
 mysql -u fivem_user -p fivem
@@ -488,6 +567,7 @@ SELECT * FROM users LIMIT 10;     # Query data
 ```
 
 **mycli (Enhanced CLI with Auto-completion):**
+
 ```bash
 # Install mycli
 pip install mycli
@@ -506,6 +586,7 @@ mycli -u fivem_user -p fivem
 ```
 
 **Adminer (Lightweight phpMyAdmin Alternative):**
+
 ```bash
 # Download single PHP file
 sudo mkdir -p /var/www/html/adminer
@@ -521,6 +602,7 @@ sudo chown -R www-data:www-data /var/www/html/adminer
 #### Remote Database Management
 
 **SSH Tunnel for Secure Remote Access:**
+
 ```bash
 # Create SSH tunnel from local machine to remote database
 ssh -L 3306:localhost:3306 user@your-server-ip
@@ -530,6 +612,7 @@ ssh -L 3306:localhost:3306 user@your-server-ip
 ```
 
 **Using HeidiSQL with SSH Tunnel:**
+
 1. In HeidiSQL, click **"New"**
 2. Go to **"SSH tunnel"** tab
 3. Enable **"Use SSH tunnel"**
@@ -548,6 +631,7 @@ ssh -L 3306:localhost:3306 user@your-server-ip
 ### Automated Management Scripts
 
 **Database Health Check Script (Linux):**
+
 ```bash
 #!/bin/bash
 # db-health-check.sh
@@ -588,7 +672,7 @@ echo "✓ Health check completed successfully"
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 services:
   mariadb:
     image: mariadb:10.11
@@ -703,40 +787,43 @@ SELECT User, Host FROM mysql.user WHERE User = 'fivem_user';
 ### OxMySQL Setup (Recommended)
 
 1. **Download and Install**
+
    ```bash
    # Download latest release from GitHub
    # https://github.com/overextended/oxmysql/releases
-   
+
    # Extract to resources folder
    # Ensure it's named exactly 'oxmysql'
    ```
 
 2. **Configuration**
+
    ```lua
    -- Add to server.cfg
    ensure oxmysql
-   
+
    -- Database connection string
    set mysql_connection_string "mysql://fivem_user:password@localhost/fivem?charset=utf8mb4"
-   
+
    -- Alternative format
    set mysql_connection_string "server=localhost;database=fivem;userid=fivem_user;password=password;charset=utf8mb4"
    ```
 
 3. **Basic Usage**
+
    ```lua
    -- Single query
    exports.oxmysql:execute('INSERT INTO users (name, money) VALUES (?, ?)', {
-       playerName, 
+       playerName,
        5000
    })
-   
+
    -- Fetch single result
    local result = exports.oxmysql:single_sync('SELECT * FROM users WHERE id = ?', {userId})
-   
+
    -- Fetch multiple results
    local users = exports.oxmysql:query_sync('SELECT * FROM users WHERE money > ?', {1000})
-   
+
    -- Prepared statements
    local insertId = exports.oxmysql:insert_sync('INSERT INTO transactions (user_id, amount, type) VALUES (?, ?, ?)', {
        userId, amount, 'deposit'
@@ -968,18 +1055,18 @@ gunzip -c /backups/database/fivem_backup_20240724_120000.sql.gz | mysql -u fivem
 
 ```sql
 -- Check database size
-SELECT 
+SELECT
     table_schema AS 'Database',
     ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'Size (MB)'
-FROM information_schema.tables 
+FROM information_schema.tables
 WHERE table_schema = 'fivem'
 GROUP BY table_schema;
 
 -- Check table sizes
-SELECT 
+SELECT
     table_name AS 'Table',
     ROUND(((data_length + index_length) / 1024 / 1024), 2) AS 'Size (MB)'
-FROM information_schema.TABLES 
+FROM information_schema.TABLES
 WHERE table_schema = 'fivem'
 ORDER BY (data_length + index_length) DESC;
 
@@ -1037,6 +1124,7 @@ set mysql_connection_string "server=host;database=db;userid=user;password=pass;s
 ### Common Issues
 
 **Connection Refused**
+
 ```bash
 # Check if MySQL/MariaDB is running
 sudo systemctl status mariadb
@@ -1047,6 +1135,7 @@ netstat -tlnp | grep :3306
 ```
 
 **Access Denied**
+
 ```sql
 -- Reset user password
 ALTER USER 'fivem_user'@'localhost' IDENTIFIED BY 'new_password';
@@ -1054,6 +1143,7 @@ FLUSH PRIVILEGES;
 ```
 
 **Character Set Issues**
+
 ```sql
 -- Check current charset
 SHOW VARIABLES LIKE 'character_set%';
@@ -1063,6 +1153,7 @@ ALTER TABLE users CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 **Performance Issues**
+
 ```sql
 -- Check running processes
 SHOW PROCESSLIST;

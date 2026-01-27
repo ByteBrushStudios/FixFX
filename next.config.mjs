@@ -11,24 +11,24 @@ const config = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "embrly.ca"
+        hostname: "embrly.ca",
       },
       {
         protocol: "https",
-        hostname: "emberly.site"
+        hostname: "emberly.site",
       },
       {
         protocol: "https",
-        hostname: "avatars.githubusercontent.com"
+        hostname: "avatars.githubusercontent.com",
       },
       {
         protocol: "https",
-        hostname: "github.com"
+        hostname: "github.com",
       },
       {
         protocol: "https",
-        hostname: "zap-hosting.com"
-      }
+        hostname: "zap-hosting.com",
+      },
     ],
   },
 };

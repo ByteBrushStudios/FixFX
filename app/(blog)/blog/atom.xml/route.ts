@@ -3,7 +3,7 @@ import { DOCS_URL } from "@utils/index";
 
 export async function GET() {
   const posts = blogPosts.getPages();
-  
+
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>FixFX Blog</title>
@@ -20,7 +20,10 @@ export async function GET() {
   <logo>${DOCS_URL}/logo.png</logo>
   <rights>© ${new Date().getFullYear()} FixFX. All rights reserved.</rights>
   ${posts
-    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+    )
     .map(
       (post) => `
   <entry>
@@ -33,7 +36,7 @@ export async function GET() {
       <name>${post.data.author}</name>
     </author>
     <summary type="html"><![CDATA[${post.data.description || ""}]]></summary>
-  </entry>`
+  </entry>`,
     )
     .join("")}
 </feed>`;

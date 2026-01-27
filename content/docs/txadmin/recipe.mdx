@@ -20,14 +20,14 @@ On the setup page you will be able to import a recipe via its URL or by selectin
 
 The recipe accepts the following default meta data:
 
-### Engine Specific Metadata *(optional)*
+### Engine Specific Metadata _(optional)_
 
 - `$engine` - The recipe's target engine version
 - `$minFxVersion` - The minimum required FXserver version for this recipe
 - `$onesync` - The required onesync value to be set after deployment. Supports only `off`, `legacy`, `on`
 - `$steamRequired` - Boolean declaring that the `steam_webApiKey` context variable MUST be set
 
-### General Tags *(strongly-recommended)*
+### General Tags _(strongly-recommended)_
 
 - `name` - The short name for your recipe. Recommended to be under 24 characters
 - `version` - The version of your recipe
@@ -53,9 +53,9 @@ The deployer has a shared context between tasks, initially populated by the `var
 You can set custom variables in the recipe:
 
 ```yaml
-variables: 
-    aaa: bbbb
-    ccc: dddd
+variables:
+  aaa: bbbb
+  ccc: dddd
 ```
 
 ## Tasks
@@ -71,8 +71,8 @@ Every task can contain a `timeoutSeconds` option to increase its default value.
 Downloads a GitHub repository with an optional reference (branch, tag, commit hash) or subpath. If the directory structure does not exist, it is created.
 
 - `src` - The repository to be downloaded. Can be a URL or `repo_owner/repo_name`
-- `ref` *(optional)* - Git reference (branch, tag, or commit hash). If none is set, queries GitHub API for default branch
-- `subpath` *(optional)* - When specified, copies a subpath of the repository
+- `ref` _(optional)_ - Git reference (branch, tag, or commit hash). If none is set, queries GitHub API for default branch
+- `subpath` _(optional)_ - When specified, copies a subpath of the repository
 - `dest` - The destination path for the downloaded file
 
 > **Note:** If you have more than 30 of this action, it is recommended to set the ref to avoid download errors.
@@ -125,7 +125,7 @@ Moves a file or directory. The directory can have contents. This is an implement
 
 - `src` - The source path (can be file or folder, cannot be root `./`)
 - `dest` - The destination path (cannot be root `./`)
-- `overwrite` *(optional, boolean)* - When true, replaces destination if it exists
+- `overwrite` _(optional, boolean)_ - When true, replaces destination if it exists
 
 ```yaml
 - action: move_path
@@ -140,8 +140,8 @@ Copy a file or directory. The directory can have contents. This is an implementa
 
 - `src` - The source path. If `src` is a directory, copies everything inside, not the directory itself
 - `dest` - The destination path. If `src` is a file, `dest` cannot be a directory
-- `overwrite` *(optional, boolean)* - When true, overwrite existing file or directory. Default is `true`
-- `errorOnExist` *(optional, boolean)* - When overwrite is `false` and destination exists, throw an error. Default is `false`
+- `overwrite` _(optional, boolean)_ - When true, overwrite existing file or directory. Default is `true`
+- `errorOnExist` _(optional, boolean)_ - When overwrite is `false` and destination exists, throw an error. Default is `false`
 
 ```yaml
 - action: copy_path
@@ -176,7 +176,7 @@ Ensures that the directory exists. If the directory structure does not exist, it
 Writes or appends data to a file. If not in append mode, the file will be overwritten and the directory structure will be created if it doesn't exist. This is an implementation of [fs-extra.outputFile()](https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/outputFile.md) and Node's default `fs.appendFile()`.
 
 - `file` - The path of the file to be written to
-- `append` *(optional, boolean)* - When true, appends to the end of the file instead of overwriting
+- `append` _(optional, boolean)_ - When true, appends to the end of the file instead of overwriting
 - `data` - The data to be written to the target path
 
 ```yaml
@@ -203,8 +203,8 @@ Writes or appends data to a file. If not in append mode, the file will be overwr
 Replaces a string in the target file or files array based on a search string and/or context variables.
 
 - `file` - String or array containing the file(s) to be checked
-- `mode` *(optional)* - Specify the behavior of the replacer
-  - `template` *(default)* - The `replace` string option processed for context variables in the `{{varName}}` format
+- `mode` _(optional)_ - Specify the behavior of the replacer
+  - `template` _(default)_ - The `replace` string option processed for context variables in the `{{varName}}` format
   - `all_vars` - All variables (`{{varName}}`) will be replaced in the target file
   - `literal` - Normal string search/replace without any vars
 - `search` - The string to be searched for
@@ -214,21 +214,21 @@ Replaces a string in the target file or files array based on a search string and
 # Single file - template mode is implicit
 - action: replace_string
   file: ./server.cfg
-  search: 'FXServer, but unconfigured'
-  replace: '{{serverName}} built with {{recipeName}} by {{recipeAuthor}}!'
+  search: "FXServer, but unconfigured"
+  replace: "{{serverName}} built with {{recipeName}} by {{recipeAuthor}}!"
 
 # Multiple files
 - action: replace_string
   mode: all_vars
-  file: 
+  file:
     - ./resources/blah.cfg
     - ./something/config.json
 
 # Replace all variables
 - action: replace_string
   file: ./configs.cfg
-  search: 'omg_replace_this'
-  replace: 'got_it!'
+  search: "omg_replace_this"
+  replace: "got_it!"
 ```
 
 ### connect_database

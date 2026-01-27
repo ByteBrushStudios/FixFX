@@ -1,10 +1,10 @@
 {
-    "root": true,
-    "pages": [
-        "setup",
-        "configuration",
-        "permissions",
-        "features",
-        "troubleshooting"
-    ]
+  "root": true,
+  "pages": [
+    "setup",
+    "configuration",
+    "permissions",
+    "features",
+    "troubleshooting"
+  ]
 }

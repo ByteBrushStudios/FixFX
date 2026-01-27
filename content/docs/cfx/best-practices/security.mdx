@@ -4,19 +4,37 @@ description: Comprehensive guide to securing your FiveM server and resources.
 icon: "Shield"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 This guide covers essential security measures for FiveM servers and resources to prevent abuse, exploits, and unauthorized access.
 
 ## Server Configuration
 
-<CheckList items={[
-  "Configure authentication and trust settings for strict validation",
-  "Enable request filtering and paranoia mode for client requests",
-  "Set appropriate file integrity check levels",
-  "Implement network-level security measures",
-  "Monitor and log all suspicious activities"
-]} />
+<CheckList
+  items={[
+    "Configure authentication and trust settings for strict validation",
+    "Enable request filtering and paranoia mode for client requests",
+    "Set appropriate file integrity check levels",
+    "Implement network-level security measures",
+    "Monitor and log all suspicious activities",
+  ]}
+/>
 
 ### 1. Authentication and Trust Settings
 
@@ -121,24 +139,24 @@ Always implement server-side checks for networked events:
 RegisterNetEvent("secureEvent", function(data)
     local source = source
     if not source then return end
-    
+
     -- Check event permissions using ACE
     if not IsPlayerAceAllowed(source, 'resource.myresource.event.secureEvent') then
         return
     end
-    
+
     -- Validate player state
     local player = FX.GetPlayerFromSource(source)
     if not player then return end
-    
+
     -- Check player money
     if player.getMoney() < data.cost then return end
-    
+
     -- Check player position
     local ped = GetPlayerPed(source)
     local pos = GetEntityCoords(ped)
     if #(pos - data.targetPos) > 10.0 then return end
-    
+
     -- Process event
 end)
 ```
@@ -164,19 +182,19 @@ add_ace resource.chat event.chat.* allow  # Allow all chat events
 RegisterNetEvent("myresource:secureEvent", function(data)
     local source = source
     if not source then return end
-    
+
     -- Check event-specific ACE permission
     if not IsPlayerAceAllowed(source, 'resource.myresource.event.secureEvent') then
         print('Unauthorized event access:', GetPlayerName(source))
         return
     end
-    
+
     -- Check resource-specific ACE permission
     if not IsPlayerAceAllowed(source, 'resource.myresource.event.*') then
         print('Unauthorized resource access:', GetPlayerName(source))
         return
     end
-    
+
     -- Process event
 end)
 
@@ -184,25 +202,29 @@ end)
 RegisterNetEvent("myresource:adminEvent", function(data)
     local source = source
     if not source then return end
-    
+
     -- Check admin group permission
     if not IsPlayerAceAllowed(source, 'group.admin') then
         print('Unauthorized admin access:', GetPlayerName(source))
         return
     end
-    
+
     -- Process admin event
 end)
 ```
 
 <Callout type="info">
-  You can use ACE permissions to control access to specific events, groups of events, or all events within a resource. This provides fine-grained control over who can trigger which events.
+  You can use ACE permissions to control access to specific events, groups of
+  events, or all events within a resource. This provides fine-grained control
+  over who can trigger which events.
 </Callout>
 
 ### 2. State Bag Security
 
 <Callout type="warning">
-  State bags are a powerful feature for sharing data between resources, but they can be vulnerable to abuse if not properly secured. Always implement proper validation and access control.
+  State bags are a powerful feature for sharing data between resources, but they
+  can be vulnerable to abuse if not properly secured. Always implement proper
+  validation and access control.
 </Callout>
 
 #### Basic State Bag Security
@@ -212,16 +234,16 @@ end)
 local function secureStateBagUpdate(entity, key, value)
     -- Validate entity exists
     if not DoesEntityExist(entity) then return end
-    
+
     -- Check permissions
     if not IsPlayerAceAllowed(source, 'resource.myresource.state_bag.write') then
         return
     end
-    
+
     -- Validate data size (16KB limit)
     local json = json.encode(value)
     if #json > 16000 then return end
-    
+
     -- Update state bag with replication
     Entity(entity).state:set(key, value, true)
 end
@@ -261,9 +283,9 @@ add_ace resource.myresource state_bag.write allow
 -- Monitor state bag usage
 AddEventHandler('onStateBagChange', function(bagName, key, value, _unused, replicated)
     -- Log state bag changes
-    print(string.format('State bag change: %s.%s = %s (replicated: %s)', 
+    print(string.format('State bag change: %s.%s = %s (replicated: %s)',
         bagName, key, json.encode(value), replicated))
-    
+
     -- Check for suspicious activity
     if replicated and type(value) == 'table' and #json.encode(value) > 16000 then
         print('Warning: Large state bag update detected')
@@ -298,5 +320,7 @@ end)
    - Implement alert systems
 
 <Callout type="info">
-  For more information about state bag security, refer to the [CitizenFX State Bag Documentation](https://docs.fivem.net/docs/scripting-manual/networking/state-bags/).
+  For more information about state bag security, refer to the [CitizenFX State
+  Bag
+  Documentation](https://docs.fivem.net/docs/scripting-manual/networking/state-bags/).
 </Callout>

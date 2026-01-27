@@ -4,32 +4,55 @@ description: Comprehensive guide to optimizing your FiveM server for maximum per
 icon: "Settings"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Optimizing your FiveM server is crucial for providing a smooth experience for your players. This guide covers essential techniques to improve server performance, reduce latency, and prevent common issues.
 
 ## Hardware Considerations
 
-<PropertyCard title="Recommended Hardware Specs" content="Choose CPU with high single-thread performance over core count. Minimum 8GB RAM (16GB+ recommended). SSD storage for better I/O performance. Stable 1 Gbps connection recommended for production servers." />
+<PropertyCard
+  title="Recommended Hardware Specs"
+  content="Choose CPU with high single-thread performance over core count. Minimum 8GB RAM (16GB+ recommended). SSD storage for better I/O performance. Stable 1 Gbps connection recommended for production servers."
+/>
 
 ### Recommended Specifications
 
-| Component | Minimum | Recommended | High Performance |
-|-----------|---------|-------------|------------------|
-| CPU | 4 cores, 3.0+ GHz | 8 cores, 3.5+ GHz | 12+ cores, 4.0+ GHz |
-| RAM | 8GB | 16GB | 32GB+ |
-| Storage | 120GB SSD | 250GB NVMe SSD | 500GB+ NVMe SSD |
-| Network | 100 Mbps | 1 Gbps | 1+ Gbps |
+| Component | Minimum           | Recommended       | High Performance    |
+| --------- | ----------------- | ----------------- | ------------------- |
+| CPU       | 4 cores, 3.0+ GHz | 8 cores, 3.5+ GHz | 12+ cores, 4.0+ GHz |
+| RAM       | 8GB               | 16GB              | 32GB+               |
+| Storage   | 120GB SSD         | 250GB NVMe SSD    | 500GB+ NVMe SSD     |
+| Network   | 100 Mbps          | 1 Gbps            | 1+ Gbps             |
 
-<CheckList items={[
-  "Prioritize single-thread CPU performance over core count",
-  "Use NVMe SSD for faster storage access",
-  "Ensure stable network connection with sufficient bandwidth",
-  "Monitor hardware utilization regularly"
-]} />
+<CheckList
+  items={[
+    "Prioritize single-thread CPU performance over core count",
+    "Use NVMe SSD for faster storage access",
+    "Ensure stable network connection with sufficient bandwidth",
+    "Monitor hardware utilization regularly",
+  ]}
+/>
 
 <Callout type="info">
-  CPU single-thread performance is more important than core count for FiveM servers. Choose a CPU with high single-thread performance for the best results.
+  CPU single-thread performance is more important than core count for FiveM
+  servers. Choose a CPU with high single-thread performance for the best
+  results.
 </Callout>
 
 ## Server Configuration
@@ -61,7 +84,7 @@ sv_attemptHostReverseLookup false       # Disable reverse DNS lookups
 
 # Entity limits (adjust based on server needs)
 setr sv_maxObjects 1500
-setr sv_maxPeds 450 
+setr sv_maxPeds 450
 setr sv_maxVehicles 350
 ```
 
@@ -72,7 +95,7 @@ Proper resource loading order is crucial for performance:
 1. **Database connectors** (mysql-async, oxmysql)
 2. **Core frameworks** (es_extended, qb-core)
 3. **Utility libraries** (ox_lib, meta_libs)
-4. **Framework resources** (esx_*, qb-*)
+4. **Framework resources** (esx\__, qb-_)
 5. **Custom resources**
 
 ## Memory Management
@@ -164,7 +187,7 @@ setr population_max_insects 0.0
 -- Example: Only sync entities within a reasonable distance
 AddEventHandler('entityCreating', function(entity)
     local model = GetEntityModel(entity)
-    
+
     -- Define sync distances based on entity type
     if IsModelAVehicle(model) then
         SetEntityDistanceCullingRadius(entity, 300.0)
@@ -221,18 +244,18 @@ Citizen.CreateThread(function()
     while true do
         -- High priority tasks (input handling)
         HandleControls()
-        
+
         -- Medium priority tasks (game logic)
         if GameState == 'active' then
             UpdateGameLogic()
         end
-        
+
         -- Low priority tasks (UI updates)
         if GetGameTimer() - lastUIUpdate > 100 then
             UpdateUI()
             lastUIUpdate = GetGameTimer()
         end
-        
+
         Citizen.Wait(0)
     end
 end)
@@ -243,12 +266,14 @@ end)
 ### Regular Performance Checks
 
 1. **Server Profiling**:
+
    ```
    profiler record 500
    profiler saveJSON server_profile.json
    ```
 
 2. **Resource Monitoring**:
+
    ```
    resmon
    ```
@@ -269,5 +294,7 @@ end)
 - [OneSync Documentation](https://docs.fivem.net/docs/scripting-manual/onesync/)
 
 <Callout type="warning">
-  Always test optimizations in a development environment before applying them to your production server. Performance tuning is an iterative process that requires continuous monitoring and adjustment.
+  Always test optimizations in a development environment before applying them to
+  your production server. Performance tuning is an iterative process that
+  requires continuous monitoring and adjustment.
 </Callout>

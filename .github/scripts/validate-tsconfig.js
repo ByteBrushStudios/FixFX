@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Load both versions
-const currentPath = 'tsconfig.json';
-const basePath = 'base-branch/tsconfig.json';
+const currentPath = "tsconfig.json";
+const basePath = "base-branch/tsconfig.json";
 
 let currentConfig, baseConfig;
 
 try {
-  currentConfig = JSON.parse(fs.readFileSync(currentPath, 'utf8'));
-  baseConfig = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+  currentConfig = JSON.parse(fs.readFileSync(currentPath, "utf8"));
+  baseConfig = JSON.parse(fs.readFileSync(basePath, "utf8"));
 } catch (error) {
-  console.error('Error parsing JSON files:', error.message);
+  console.error("Error parsing JSON files:", error.message);
   process.exit(1);
 }
 
@@ -37,7 +37,9 @@ if (currentConfig.compilerOptions && baseConfig.compilerOptions) {
     const currentValue = JSON.stringify(currentConfig.compilerOptions[key]);
 
     if (baseValue !== currentValue && key in currentConfig.compilerOptions) {
-      errors.push(`❌ Modified compiler option "${key}": "${baseValue}" → "${currentValue}"`);
+      errors.push(
+        `❌ Modified compiler option "${key}": "${baseValue}" → "${currentValue}"`,
+      );
       hasErrors = true;
     }
   }
@@ -57,10 +59,17 @@ if (currentConfig.compilerOptions?.paths && baseConfig.compilerOptions?.paths) {
 if (currentConfig.compilerOptions?.paths && baseConfig.compilerOptions?.paths) {
   for (const key in baseConfig.compilerOptions.paths) {
     const baseValue = JSON.stringify(baseConfig.compilerOptions.paths[key]);
-    const currentValue = JSON.stringify(currentConfig.compilerOptions.paths[key]);
+    const currentValue = JSON.stringify(
+      currentConfig.compilerOptions.paths[key],
+    );
 
-    if (baseValue !== currentValue && key in currentConfig.compilerOptions.paths) {
-      errors.push(`❌ Modified path alias "${key}": ${baseValue} → ${currentValue}`);
+    if (
+      baseValue !== currentValue &&
+      key in currentConfig.compilerOptions.paths
+    ) {
+      errors.push(
+        `❌ Modified path alias "${key}": ${baseValue} → ${currentValue}`,
+      );
       hasErrors = true;
     }
   }
@@ -89,14 +98,18 @@ if (currentConfig.exclude && baseConfig.exclude) {
 }
 
 if (hasErrors) {
-  console.log('\n❌ tsconfig.json validation FAILED\n');
-  console.log('Critical Configuration Protection:\n');
-  errors.forEach(error => console.log(error));
-  console.log('\n⚠️  Only ADDITIONS to tsconfig.json are allowed.');
-  console.log('Removing or modifying existing configurations will break the site.\n');
+  console.log("\n❌ tsconfig.json validation FAILED\n");
+  console.log("Critical Configuration Protection:\n");
+  errors.forEach((error) => console.log(error));
+  console.log("\n⚠️  Only ADDITIONS to tsconfig.json are allowed.");
+  console.log(
+    "Removing or modifying existing configurations will break the site.\n",
+  );
   process.exit(1);
 } else {
-  console.log('✅ tsconfig.json validation PASSED');
-  console.log('Only additions detected (or no changes to existing configuration).\n');
+  console.log("✅ tsconfig.json validation PASSED");
+  console.log(
+    "Only additions detected (or no changes to existing configuration).\n",
+  );
   process.exit(0);
 }

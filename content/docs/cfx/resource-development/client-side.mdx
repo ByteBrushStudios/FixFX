@@ -3,7 +3,23 @@ title: Client-Side Development
 description: Complete guide to developing client-side scripts for FiveM resources.
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Client-side scripts run on each player's game client and handle user interface, player input, local game state, and communication with the server.
 
@@ -12,24 +28,26 @@ Client-side scripts run on each player's game client and handle user interface, 
   steps={[
     {
       title: "Create Script Structure",
-      description: "Set up the basic client.lua file with event handlers and main thread"
+      description:
+        "Set up the basic client.lua file with event handlers and main thread",
     },
     {
       title: "Implement Player Management",
-      description: "Handle player state, position, and vehicle information"
+      description: "Handle player state, position, and vehicle information",
     },
     {
       title: "Add Event Listeners",
-      description: "Register network events to receive data from server"
+      description: "Register network events to receive data from server",
     },
     {
       title: "Create UI Elements",
-      description: "Build NUI or in-game UI components for user interaction"
+      description: "Build NUI or in-game UI components for user interaction",
     },
     {
       title: "Test and Debug",
-      description: "Use debug tools to test functionality and optimize performance"
-    }
+      description:
+        "Use debug tools to test functionality and optimize performance",
+    },
   ]}
 />
 
@@ -159,12 +177,12 @@ local Keys = {
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        
+
         if IsControlJustPressed(0, Keys['E']) then
             -- E key pressed
             HandleInteraction()
         end
-        
+
         if IsControlPressed(0, Keys['F']) then
             -- F key held down
             HandleContinuousAction()
@@ -180,7 +198,7 @@ end)
 function DrawText3D(x, y, z, text)
     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
     local pX, pY, pZ = table.unpack(GetGameplayCamCoords())
-    
+
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
     SetTextProportional(1)
@@ -211,7 +229,7 @@ end
 ```lua
 -- Create marker
 function CreateMarker(type, x, y, z, r, g, b, a)
-    DrawMarker(type, x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+    DrawMarker(type, x, y, z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                1.0, 1.0, 1.0, r, g, b, a, false, true, 2, false, false, false, false)
 end
 
@@ -285,7 +303,7 @@ local nuiCallbacks = {
             job = playerData.job
         })
     end,
-    
+
     ['performAction'] = function(data, cb)
         if data.action == 'withdraw' then
             TriggerServerEvent('banking:withdraw', data.amount)
@@ -349,11 +367,11 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(1000)
-        
+
         local playerPed = PlayerPedId()
         if DoesEntityExist(playerPed) and not IsEntityDead(playerPed) then
             local coords = GetEntityCoords(playerPed)
-            
+
             -- Only process if player is in specific area
             if GetDistanceBetweenCoords(coords, bankCoords, true) < 50.0 then
                 ProcessBankingLogic()
@@ -379,14 +397,14 @@ AddEventHandler('onResourceStop', function(resourceName)
                 DeleteEntity(obj)
             end
         end
-        
+
         -- Remove blips
         for _, blip in pairs(activeBlips) do
             if DoesBlipExist(blip) then
                 RemoveBlip(blip)
             end
         end
-        
+
         -- Stop threads
         for _, thread in pairs(runningThreads) do
             if thread then
@@ -410,10 +428,10 @@ local interactionPoints = {
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        
+
         local playerCoords = GetEntityCoords(PlayerPedId())
         local nearbyPoint = nil
-        
+
         for _, point in pairs(interactionPoints) do
             local distance = GetDistanceBetweenCoords(playerCoords, point.coords, true)
             if distance < 2.0 then
@@ -421,7 +439,7 @@ Citizen.CreateThread(function()
                 break
             end
         end
-        
+
         if nearbyPoint then
             ShowHelpText(nearbyPoint.text)
             if IsControlJustPressed(0, 38) then -- E key
@@ -467,12 +485,12 @@ end)
 function PlayAnimation(dict, anim, duration, flag)
     duration = duration or -1
     flag = flag or 49
-    
+
     RequestAnimDict(dict)
     while not HasAnimDictLoaded(dict) do
         Citizen.Wait(1)
     end
-    
+
     TaskPlayAnim(PlayerPedId(), dict, anim, 8.0, 8.0, duration, flag, 0, false, false, false)
     RemoveAnimDict(dict)
 end

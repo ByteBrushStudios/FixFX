@@ -30,7 +30,7 @@ local function getUsers()
         end)
     end
     return userCache.data
-end`
+end`,
     },
     {
       title: "Event Handler with Rate Limiting",
@@ -42,8 +42,8 @@ AddEventHandler('event:name', function()
         lastCall = currentTime
         -- Process event
     end
-end)`
-    }
+end)`,
+    },
   ],
   javascript: [
     {
@@ -61,7 +61,7 @@ async function getUsers() {
         userCache.lastUpdate = currentTime;
     }
     return userCache.data;
-}`
+}`,
     },
     {
       title: "Event Handler with Rate Limiting",
@@ -72,8 +72,8 @@ onNet('event:name', () => {
         lastCall = currentTime;
         // Process event
     }
-});`
-    }
+});`,
+    },
   ],
   csharp: [
     {
@@ -93,7 +93,7 @@ onNet('event:name', () => {
         }
         return _cache;
     }
-}`
+}`,
     },
     {
       title: "Event Handler with Rate Limiting",
@@ -111,15 +111,15 @@ onNet('event:name', () => {
             // Process event
         }
     }
-}`
-    }
-  ]
+}`,
+    },
+  ],
 };
 
 const tabs = [
   { id: "lua", label: "Lua" },
   { id: "javascript", label: "JavaScript" },
-  { id: "csharp", label: "C#" }
+  { id: "csharp", label: "C#" },
 ] as const;
 
 export function EditorClient() {
@@ -153,12 +153,19 @@ export function EditorClient() {
 
         <div className="flex w-full flex-1 flex-col md:flex-row">
           <div className="min-h-[300px] max-w-[600px] flex-1 overflow-auto p-4 outline-none ring-0">
-            <CodeEditor language={activeTab} className="text-sm md:text-base lg:text-lg">
+            <CodeEditor
+              language={activeTab}
+              className="text-sm md:text-base lg:text-lg"
+            >
               <div className="space-y-4">
                 {examples[activeTab].map((example, index) => (
                   <div key={index}>
-                    <h4 className="text-fd-foreground mb-2 font-medium">{example.title}</h4>
-                    <pre className="text-fd-muted-foreground">{example.code}</pre>
+                    <h4 className="text-fd-foreground mb-2 font-medium">
+                      {example.title}
+                    </h4>
+                    <pre className="text-fd-muted-foreground">
+                      {example.code}
+                    </pre>
                   </div>
                 ))}
               </div>
@@ -176,7 +183,9 @@ export function EditorClient() {
                   </div>
                   <div className="flex flex-row">
                     <span className="mr-2 text-sm text-blue-500">○</span>
-                    <span className="text-fd-foreground flex-1 text-sm">{example.title}</span>
+                    <span className="text-fd-foreground flex-1 text-sm">
+                      {example.title}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -192,4 +201,4 @@ export function EditorClient() {
       </div>
     </motion.div>
   );
-} 
+}

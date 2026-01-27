@@ -1,9 +1,4 @@
 {
   "root": true,
-  "pages": [
-    "api",
-    "disclaimer",
-    "glossary",
-    "faq"
-  ]
+  "pages": ["api", "disclaimer", "glossary", "faq"]
 }

@@ -11,7 +11,7 @@ export async function GET() {
     console.error("Error fetching providers:", error);
     return Response.json(
       { success: false, error: "Failed to fetch providers" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

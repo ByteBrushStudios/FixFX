@@ -22,20 +22,24 @@ The `$meta.humanizer_language` key must be compatible with the library [humanize
   steps={[
     {
       title: "Download a Base Language",
-      description: "Choose a language file from the txAdmin repository that is closest to your target language and download it."
+      description:
+        "Choose a language file from the txAdmin repository that is closest to your target language and download it.",
     },
     {
       title: "Copy to txData",
-      description: "Copy or create a locale.json file in your txData folder with your custom translations."
+      description:
+        "Copy or create a locale.json file in your txData folder with your custom translations.",
     },
     {
       title: "Test Your Changes",
-      description: "Go to txAdmin settings and select 'Custom' language. Visit the settings page to see changes without restarting."
+      description:
+        "Go to txAdmin settings and select 'Custom' language. Visit the settings page to see changes without restarting.",
     },
     {
       title: "Submit Contribution",
-      description: "Once tested, consider contributing your translation to the official repository."
-    }
+      description:
+        "Once tested, consider contributing your translation to the official repository.",
+    },
   ]}
 />
 
@@ -65,7 +69,11 @@ To contribute, you will need to:
   <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
   <div>
     <p className="font-semibold text-blue-500 mb-1">Quick Testing Tip</p>
-    <p className="text-sm text-blue-500/90">To quickly test your changes, edit the `locale.json` file and then in the settings page click "Save Global Settings" again to see the changes in the game menu without needing to restart txAdmin or the server.</p>
+    <p className="text-sm text-blue-500/90">
+      To quickly test your changes, edit the `locale.json` file and then in the
+      settings page click "Save Global Settings" again to see the changes in the
+      game menu without needing to restart txAdmin or the server.
+    </p>
   </div>
 </div>
 
@@ -84,7 +92,12 @@ This will tell you about missing or extra keys.
   <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
   <div>
     <p className="font-semibold text-amber-500 mb-1">Performance Note</p>
-    <p className="text-sm text-amber-500/90">The performance of custom locale files for big servers may not be ideal due to the way we need to sync dynamic content to clients. So it is strongly encouraged that you contribute with translations in our GitHub so they get packed with the rest of txAdmin.</p>
+    <p className="text-sm text-amber-500/90">
+      The performance of custom locale files for big servers may not be ideal
+      due to the way we need to sync dynamic content to clients. So it is
+      strongly encouraged that you contribute with translations in our GitHub so
+      they get packed with the rest of txAdmin.
+    </p>
   </div>
 </div>
 
@@ -101,6 +114,7 @@ Once your translation is complete and tested:
 ## Language Support
 
 Currently supported languages include:
+
 - English (en)
 - Spanish (es)
 - French (fr)

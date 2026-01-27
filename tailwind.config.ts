@@ -37,7 +37,8 @@ const confg: Pick<Config, "presets" | "plugins" | "content" | "theme"> = {
         shine: "shine var(--duration) infinite linear",
         "accordion-up": "accordion-up 0.2s ease-out",
         gradient: "gradient 5s linear infinite",
-        "indeterminate-progress": "indeterminate-progress 1.5s infinite ease-in-out",
+        "indeterminate-progress":
+          "indeterminate-progress 1.5s infinite ease-in-out",
       },
       keyframes: {
         marquee: {
@@ -62,7 +63,7 @@ const confg: Pick<Config, "presets" | "plugins" | "content" | "theme"> = {
         },
         shimmer: {
           "0%": { transform: "translateX(-100%)" },
-          "100%": { transform: "translateX(100%)" }
+          "100%": { transform: "translateX(100%)" },
         },
         gradient: {
           to: { "background-position": "200% center" },

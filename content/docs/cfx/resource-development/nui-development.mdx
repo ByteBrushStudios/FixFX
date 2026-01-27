@@ -3,7 +3,23 @@ title: NUI Development
 description: Complete guide to developing HTML-based user interfaces for FiveM resources.
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 NUI (New UI) allows you to create rich, interactive web-based interfaces for your FiveM resources using HTML, CSS, and JavaScript. This system provides seamless integration between your web UI and the game.
 
@@ -16,7 +32,7 @@ NUI (New UI) allows you to create rich, interactive web-based interfaces for you
     "Use CSS custom properties for easy theming",
     "Keep NUI callback processing minimal and efficient",
     "Validate all user input on both client and server",
-    "Cache NUI frame data to reduce callback frequency"
+    "Cache NUI frame data to reduce callback frequency",
   ]}
   variant="check"
 />
@@ -26,6 +42,7 @@ NUI (New UI) allows you to create rich, interactive web-based interfaces for you
 ### Setting up NUI
 
 **fxmanifest.lua**
+
 ```lua
 fx_version 'cerulean'
 game 'gta5'
@@ -45,78 +62,80 @@ client_script 'client.lua'
 ### Basic HTML Structure
 
 **html/index.html**
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Resource UI</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div id="app" class="hidden">
-        <div class="container">
-            <h1>Welcome to My Resource</h1>
-            <button id="closeBtn">Close</button>
-        </div>
+      <div class="container">
+        <h1>Welcome to My Resource</h1>
+        <button id="closeBtn">Close</button>
+      </div>
     </div>
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
 ```
 
 **html/style.css**
+
 ```css
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: transparent;
-    overflow: hidden;
+  font-family: "Arial", sans-serif;
+  background: transparent;
+  overflow: hidden;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 #app {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
-    background: #2a2a2a;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    color: white;
-    text-align: center;
+  background: #2a2a2a;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
 }
 
 button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
 button:hover {
-    background: #0056b3;
+  background: #0056b3;
 }
 ```
 
@@ -125,15 +144,16 @@ button:hover {
 ### Opening and Closing NUI
 
 **client.lua**
+
 ```lua
 local isUIOpen = false
 
 function OpenUI()
     if isUIOpen then return end
-    
+
     isUIOpen = true
     SetNuiFocus(true, true)
-    
+
     SendNUIMessage({
         action = "show"
     })
@@ -141,10 +161,10 @@ end
 
 function CloseUI()
     if not isUIOpen then return end
-    
+
     isUIOpen = false
     SetNuiFocus(false, false)
-    
+
     SendNUIMessage({
         action = "hide"
     })
@@ -165,7 +185,7 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        
+
         if isUIOpen and IsControlJustPressed(0, 322) then -- ESC key
             CloseUI()
         end
@@ -176,72 +196,73 @@ end)
 ### JavaScript Communication
 
 **html/script.js**
+
 ```javascript
-const app = document.getElementById('app');
-const closeBtn = document.getElementById('closeBtn');
+const app = document.getElementById("app");
+const closeBtn = document.getElementById("closeBtn");
 
 // Listen for messages from the game
-window.addEventListener('message', function(event) {
-    const data = event.data;
-    
-    switch(data.action) {
-        case 'show':
-            showUI(data.data);
-            break;
-        case 'hide':
-            hideUI();
-            break;
-        case 'update':
-            updateUI(data.data);
-            break;
-    }
+window.addEventListener("message", function (event) {
+  const data = event.data;
+
+  switch (data.action) {
+    case "show":
+      showUI(data.data);
+      break;
+    case "hide":
+      hideUI();
+      break;
+    case "update":
+      updateUI(data.data);
+      break;
+  }
 });
 
 function showUI(data = {}) {
-    app.classList.remove('hidden');
-    document.body.style.display = 'block';
-    
-    // Update UI with provided data
-    if (data) {
-        updateUI(data);
-    }
+  app.classList.remove("hidden");
+  document.body.style.display = "block";
+
+  // Update UI with provided data
+  if (data) {
+    updateUI(data);
+  }
 }
 
 function hideUI() {
-    app.classList.add('hidden');
-    document.body.style.display = 'none';
+  app.classList.add("hidden");
+  document.body.style.display = "none";
 }
 
 function updateUI(data) {
-    // Update UI elements with new data
-    console.log('Updating UI with:', data);
+  // Update UI elements with new data
+  console.log("Updating UI with:", data);
 }
 
 // Close button event
-closeBtn.addEventListener('click', function() {
-    fetch(`https://${GetParentResourceName()}/close`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-    });
+closeBtn.addEventListener("click", function () {
+  fetch(`https://${GetParentResourceName()}/close`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
 });
 
 // Helper function to get resource name
 function GetParentResourceName() {
-    return window.location.hostname;
+  return window.location.hostname;
 }
 
 // Send data back to the game
 function sendToGame(action, data = {}) {
-    fetch(`https://${GetParentResourceName()}/${action}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
+  fetch(`https://${GetParentResourceName()}/${action}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 }
 ```
 
@@ -250,6 +271,7 @@ function sendToGame(action, data = {}) {
 ### Data Binding and Updates
 
 **client.lua**
+
 ```lua
 local playerData = {
     name = '',
@@ -262,7 +284,7 @@ function UpdatePlayerData(newData)
     for k, v in pairs(newData) do
         playerData[k] = v
     end
-    
+
     -- Send updated data to NUI
     SendNUIMessage({
         action = "updatePlayerData",
@@ -278,79 +300,86 @@ end)
 ```
 
 **html/script.js**
+
 ```javascript
 let playerData = {};
 
-window.addEventListener('message', function(event) {
-    const data = event.data;
-    
-    switch(data.action) {
-        case 'updatePlayerData':
-            playerData = data.data;
-            updatePlayerDataDisplay();
-            break;
-    }
+window.addEventListener("message", function (event) {
+  const data = event.data;
+
+  switch (data.action) {
+    case "updatePlayerData":
+      playerData = data.data;
+      updatePlayerDataDisplay();
+      break;
+  }
 });
 
 function updatePlayerDataDisplay() {
-    document.getElementById('playerName').textContent = playerData.name;
-    document.getElementById('playerMoney').textContent = `$${playerData.money.toLocaleString()}`;
-    document.getElementById('playerJob').textContent = playerData.job;
-    document.getElementById('playerLevel').textContent = playerData.level;
+  document.getElementById("playerName").textContent = playerData.name;
+  document.getElementById("playerMoney").textContent =
+    `$${playerData.money.toLocaleString()}`;
+  document.getElementById("playerJob").textContent = playerData.job;
+  document.getElementById("playerLevel").textContent = playerData.level;
 }
 ```
 
 ### Form Handling
 
 **html/index.html**
+
 ```html
 <form id="transferForm">
-    <input type="number" id="amount" placeholder="Amount" required>
-    <input type="number" id="targetId" placeholder="Target Player ID" required>
-    <input type="text" id="reason" placeholder="Reason (optional)">
-    <button type="submit">Transfer Money</button>
+  <input type="number" id="amount" placeholder="Amount" required />
+  <input type="number" id="targetId" placeholder="Target Player ID" required />
+  <input type="text" id="reason" placeholder="Reason (optional)" />
+  <button type="submit">Transfer Money</button>
 </form>
 ```
 
 **html/script.js**
+
 ```javascript
-document.getElementById('transferForm').addEventListener('submit', function(e) {
+document
+  .getElementById("transferForm")
+  .addEventListener("submit", function (e) {
     e.preventDefault();
-    
+
     const formData = {
-        amount: parseInt(document.getElementById('amount').value),
-        targetId: parseInt(document.getElementById('targetId').value),
-        reason: document.getElementById('reason').value
+      amount: parseInt(document.getElementById("amount").value),
+      targetId: parseInt(document.getElementById("targetId").value),
+      reason: document.getElementById("reason").value,
     };
-    
+
     // Validate form data
     if (formData.amount <= 0) {
-        showError('Amount must be greater than 0');
-        return;
+      showError("Amount must be greater than 0");
+      return;
     }
-    
+
     if (formData.targetId <= 0) {
-        showError('Invalid target player ID');
-        return;
+      showError("Invalid target player ID");
+      return;
     }
-    
+
     // Send to game
-    sendToGame('transferMoney', formData);
-});
+    sendToGame("transferMoney", formData);
+  });
 
 function showError(message) {
-    // Display error message to user
-    const errorDiv = document.getElementById('errorMessage');
-    errorDiv.textContent = message;
-    errorDiv.style.display = 'block';
-    
-    setTimeout(() => {
-        errorDiv.style.display = 'none';
-    }, 3000);
+  // Display error message to user
+  const errorDiv = document.getElementById("errorMessage");
+  errorDiv.textContent = message;
+  errorDiv.style.display = "block";
+
+  setTimeout(() => {
+    errorDiv.style.display = "none";
+  }, 3000);
 }
 ```
 
 **client.lua**
+
 ```lua
 RegisterNUICallback('transferMoney', function(data, cb)
     -- Validate data on client side too
@@ -358,10 +387,10 @@ RegisterNUICallback('transferMoney', function(data, cb)
         cb({success = false, error = 'Missing required fields'})
         return
     end
-    
+
     -- Send to server for processing
     TriggerServerEvent('banking:transferMoney', data)
-    
+
     cb({success = true})
 end)
 ```
@@ -369,12 +398,13 @@ end)
 ### Real-time Updates
 
 **client.lua**
+
 ```lua
 -- Update UI every second with current time
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(1000)
-        
+
         if isUIOpen then
             SendNUIMessage({
                 action = "updateTime",
@@ -401,36 +431,37 @@ end)
 ```
 
 **html/script.js**
+
 ```javascript
-window.addEventListener('message', function(event) {
-    const data = event.data;
-    
-    switch(data.action) {
-        case 'updateTime':
-            updateTimeDisplay(data.data);
-            break;
-        case 'showNotification':
-            showNotification(data.data.message, data.data.type);
-            break;
-    }
+window.addEventListener("message", function (event) {
+  const data = event.data;
+
+  switch (data.action) {
+    case "updateTime":
+      updateTimeDisplay(data.data);
+      break;
+    case "showNotification":
+      showNotification(data.data.message, data.data.type);
+      break;
+  }
 });
 
 function updateTimeDisplay(timeData) {
-    document.getElementById('currentTime').textContent = timeData.time;
-    document.getElementById('currentDate').textContent = timeData.date;
+  document.getElementById("currentTime").textContent = timeData.time;
+  document.getElementById("currentDate").textContent = timeData.date;
 }
 
 function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove after 3 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
+  const notification = document.createElement("div");
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+
+  document.body.appendChild(notification);
+
+  // Auto-remove after 3 seconds
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
 }
 ```
 
@@ -439,178 +470,186 @@ function showNotification(message, type) {
 ### Using Vue.js
 
 **html/index.html**
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vue NUI App</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div id="app" v-show="visible">
-        <div class="container">
-            <h1>{{ title }}</h1>
-            <p>Money: ${{ playerData.money }}</p>
-            <p>Job: {{ playerData.job }}</p>
-            
-            <form @submit.prevent="submitForm">
-                <input v-model="formData.amount" type="number" placeholder="Amount">
-                <button type="submit">Submit</button>
-            </form>
-            
-            <button @click="closeUI">Close</button>
-        </div>
+      <div class="container">
+        <h1>{{ title }}</h1>
+        <p>Money: ${{ playerData.money }}</p>
+        <p>Job: {{ playerData.job }}</p>
+
+        <form @submit.prevent="submitForm">
+          <input v-model="formData.amount" type="number" placeholder="Amount" />
+          <button type="submit">Submit</button>
+        </form>
+
+        <button @click="closeUI">Close</button>
+      </div>
     </div>
 
     <script>
-        const { createApp } = Vue;
+      const { createApp } = Vue;
 
-        createApp({
-            data() {
-                return {
-                    visible: false,
-                    title: 'Banking System',
-                    playerData: {
-                        money: 0,
-                        job: 'unemployed'
-                    },
-                    formData: {
-                        amount: 0
-                    }
+      createApp({
+        data() {
+          return {
+            visible: false,
+            title: "Banking System",
+            playerData: {
+              money: 0,
+              job: "unemployed",
+            },
+            formData: {
+              amount: 0,
+            },
+          };
+        },
+        methods: {
+          closeUI() {
+            this.visible = false;
+            fetch(`https://${GetParentResourceName()}/close`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({}),
+            });
+          },
+          submitForm() {
+            fetch(`https://${GetParentResourceName()}/submitForm`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(this.formData),
+            });
+          },
+          handleMessage(event) {
+            const data = event.data;
+
+            switch (data.action) {
+              case "show":
+                this.visible = true;
+                if (data.data) {
+                  this.playerData = { ...this.playerData, ...data.data };
                 }
-            },
-            methods: {
-                closeUI() {
-                    this.visible = false;
-                    fetch(`https://${GetParentResourceName()}/close`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({})
-                    });
-                },
-                submitForm() {
-                    fetch(`https://${GetParentResourceName()}/submitForm`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(this.formData)
-                    });
-                },
-                handleMessage(event) {
-                    const data = event.data;
-                    
-                    switch(data.action) {
-                        case 'show':
-                            this.visible = true;
-                            if (data.data) {
-                                this.playerData = { ...this.playerData, ...data.data };
-                            }
-                            break;
-                        case 'hide':
-                            this.visible = false;
-                            break;
-                        case 'updateData':
-                            this.playerData = { ...this.playerData, ...data.data };
-                            break;
-                    }
-                }
-            },
-            mounted() {
-                window.addEventListener('message', this.handleMessage);
-            },
-            beforeUnmount() {
-                window.removeEventListener('message', this.handleMessage);
+                break;
+              case "hide":
+                this.visible = false;
+                break;
+              case "updateData":
+                this.playerData = { ...this.playerData, ...data.data };
+                break;
             }
-        }).mount('#app');
+          },
+        },
+        mounted() {
+          window.addEventListener("message", this.handleMessage);
+        },
+        beforeUnmount() {
+          window.removeEventListener("message", this.handleMessage);
+        },
+      }).mount("#app");
 
-        function GetParentResourceName() {
-            return window.location.hostname;
-        }
+      function GetParentResourceName() {
+        return window.location.hostname;
+      }
     </script>
-</body>
+  </body>
 </html>
 ```
 
 ### Using React (with CDN)
 
 **html/index.html**
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>React NUI App</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+      const { useState, useEffect } = React;
 
-        function App() {
-            const [visible, setVisible] = useState(false);
-            const [playerData, setPlayerData] = useState({
-                money: 0,
-                job: 'unemployed'
-            });
+      function App() {
+        const [visible, setVisible] = useState(false);
+        const [playerData, setPlayerData] = useState({
+          money: 0,
+          job: "unemployed",
+        });
 
-            useEffect(() => {
-                const handleMessage = (event) => {
-                    const data = event.data;
-                    
-                    switch(data.action) {
-                        case 'show':
-                            setVisible(true);
-                            if (data.data) {
-                                setPlayerData(prev => ({ ...prev, ...data.data }));
-                            }
-                            break;
-                        case 'hide':
-                            setVisible(false);
-                            break;
-                        case 'updateData':
-                            setPlayerData(prev => ({ ...prev, ...data.data }));
-                            break;
-                    }
-                };
+        useEffect(() => {
+          const handleMessage = (event) => {
+            const data = event.data;
 
-                window.addEventListener('message', handleMessage);
-                return () => window.removeEventListener('message', handleMessage);
-            }, []);
-
-            const closeUI = () => {
+            switch (data.action) {
+              case "show":
+                setVisible(true);
+                if (data.data) {
+                  setPlayerData((prev) => ({ ...prev, ...data.data }));
+                }
+                break;
+              case "hide":
                 setVisible(false);
-                fetch(`https://${window.location.hostname}/close`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({})
-                });
-            };
+                break;
+              case "updateData":
+                setPlayerData((prev) => ({ ...prev, ...data.data }));
+                break;
+            }
+          };
 
-            if (!visible) return null;
+          window.addEventListener("message", handleMessage);
+          return () => window.removeEventListener("message", handleMessage);
+        }, []);
 
-            return (
-                <div className="app">
-                    <div className="container">
-                        <h1>Banking System</h1>
-                        <p>Money: ${playerData.money}</p>
-                        <p>Job: {playerData.job}</p>
-                        <button onClick={closeUI}>Close</button>
-                    </div>
-                </div>
-            );
-        }
+        const closeUI = () => {
+          setVisible(false);
+          fetch(`https://${window.location.hostname}/close`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({}),
+          });
+        };
 
-        ReactDOM.render(<App />, document.getElementById('root'));
+        if (!visible) return null;
+
+        return (
+          <div className="app">
+            <div className="container">
+              <h1>Banking System</h1>
+              <p>Money: ${playerData.money}</p>
+              <p>Job: {playerData.job}</p>
+              <button onClick={closeUI}>Close</button>
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.render(<App />, document.getElementById("root"));
     </script>
-</body>
+  </body>
 </html>
 ```
 
@@ -619,108 +658,115 @@ function showNotification(message, type) {
 ### Smooth Animations
 
 **html/style.css**
+
 ```css
 .app {
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.3s ease-in-out;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease-in-out;
 }
 
 .app.visible {
-    opacity: 1;
-    transform: scale(1);
+  opacity: 1;
+  transform: scale(1);
 }
 
 .container {
-    transform: translateY(-20px);
-    transition: transform 0.3s ease-out;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease-out;
 }
 
 .app.visible .container {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 /* Notification animations */
 .notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #333;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-out;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #333;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
 }
 
 .notification.show {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .notification.success {
-    background: #28a745;
+  background: #28a745;
 }
 
 .notification.error {
-    background: #dc3545;
+  background: #dc3545;
 }
 
 .notification.warning {
-    background: #ffc107;
-    color: #333;
+  background: #ffc107;
+  color: #333;
 }
 ```
 
 ### Loading States
 
 **html/script.js**
+
 ```javascript
 function showLoading() {
-    const loading = document.createElement('div');
-    loading.id = 'loading';
-    loading.innerHTML = `
+  const loading = document.createElement("div");
+  loading.id = "loading";
+  loading.innerHTML = `
         <div class="spinner"></div>
         <p>Loading...</p>
     `;
-    document.body.appendChild(loading);
+  document.body.appendChild(loading);
 }
 
 function hideLoading() {
-    const loading = document.getElementById('loading');
-    if (loading) {
-        loading.remove();
-    }
+  const loading = document.getElementById("loading");
+  if (loading) {
+    loading.remove();
+  }
 }
 ```
 
 **html/style.css**
+
 ```css
 #loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
 .spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 ```
 
@@ -731,25 +777,25 @@ function hideLoading() {
 ```javascript
 // Debounce function for search inputs
 function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
     };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 }
 
 // Usage
-const searchInput = document.getElementById('search');
+const searchInput = document.getElementById("search");
 const debouncedSearch = debounce((query) => {
-    sendToGame('search', { query });
+  sendToGame("search", { query });
 }, 300);
 
-searchInput.addEventListener('input', (e) => {
-    debouncedSearch(e.target.value);
+searchInput.addEventListener("input", (e) => {
+  debouncedSearch(e.target.value);
 });
 ```
 
@@ -758,23 +804,26 @@ searchInput.addEventListener('input', (e) => {
 ```javascript
 // Wrapper for fetch requests
 async function safePost(endpoint, data) {
-    try {
-        const response = await fetch(`https://${GetParentResourceName()}/${endpoint}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        return await response.json();
-    } catch (error) {
-        console.error('Request failed:', error);
-        showNotification('Request failed. Please try again.', 'error');
-        return null;
+  try {
+    const response = await fetch(
+      `https://${GetParentResourceName()}/${endpoint}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Request failed:", error);
+    showNotification("Request failed. Please try again.", "error");
+    return null;
+  }
 }
 ```
 
@@ -783,28 +832,28 @@ async function safePost(endpoint, data) {
 ```css
 /* Mobile-first responsive design */
 .container {
-    width: 90%;
-    max-width: 400px;
-    padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
 }
 
 @media (min-width: 768px) {
-    .container {
-        max-width: 600px;
-        padding: 30px;
-    }
+  .container {
+    max-width: 600px;
+    padding: 30px;
+  }
 }
 
 @media (min-width: 1024px) {
-    .container {
-        max-width: 800px;
-        padding: 40px;
-    }
+  .container {
+    max-width: 800px;
+    padding: 40px;
+  }
 }
 
 /* Scale UI based on game resolution */
 html {
-    font-size: calc(12px + 0.5vw);
+  font-size: calc(12px + 0.5vw);
 }
 ```
 
@@ -813,25 +862,25 @@ html {
 ```javascript
 // Sanitize user input
 function sanitizeInput(input) {
-    const div = document.createElement('div');
-    div.textContent = input;
-    return div.innerHTML;
+  const div = document.createElement("div");
+  div.textContent = input;
+  return div.innerHTML;
 }
 
 // Validate data before sending
 function validateTransferData(data) {
-    if (typeof data.amount !== 'number' || data.amount <= 0) {
-        return false;
-    }
-    
-    if (typeof data.targetId !== 'number' || data.targetId <= 0) {
-        return false;
-    }
-    
-    if (data.reason && typeof data.reason !== 'string') {
-        return false;
-    }
-    
-    return true;
+  if (typeof data.amount !== "number" || data.amount <= 0) {
+    return false;
+  }
+
+  if (typeof data.targetId !== "number" || data.targetId <= 0) {
+    return false;
+  }
+
+  if (data.reason && typeof data.reason !== "string") {
+    return false;
+  }
+
+  return true;
 }
 ```

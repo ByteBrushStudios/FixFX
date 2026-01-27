@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Hosting Providers & Partnerships System
+
 - **Directory-Based Provider Structure** - Reorganized provider files into subdirectories
   - Moved from flat `provider-name.json` to `provider-name/provider.json` structure
   - Allows schemas and documentation to coexist with provider data
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fallback mechanisms and validation strategies
 
 #### StepList Component Enhancements
+
 - **Image Support** - Steps can now include images with positioning
   - Added `image`, `imageAlt`, and `imagePosition` props
   - Images are zoomable using fumadocs ImageZoom component
@@ -47,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Styled consistently with InfoBanner component
 
 #### SEO and Modern Web Standards
+
 - **LLMs.txt** - AI crawler documentation files
   - `/llms.txt` - Summary for AI models
   - `/llms-full.txt` - Comprehensive documentation for LLMs
@@ -66,11 +69,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AI Crawler Rules** - Added rules for GPTBot, Claude-Web, ChatGPT-User, Anthropic-AI, PerplexityBot, Cohere-AI in robots.txt
 
 #### Dynamic Icons
+
 - **App Icon** - Dynamic 512x512 icon with gradient background (`app/icon.tsx`)
 - **Apple Touch Icon** - Dynamic 180x180 icon for iOS (`app/apple-icon.tsx`)
 - **Brand Page** - `/brand` page displaying icon with download buttons
 
 #### Documentation
+
 - **Discord Bot Guide** - Comprehensive txAdmin Discord bot setup documentation
   - Bot creation and permissions
   - Configuration options
@@ -78,7 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Troubleshooting section
 - **Comprehensive txAdmin Documentation Suite** - 10 new in-depth guides covering all txAdmin features
   - **API Events** (`api-events.mdx`) - Complete CFX events documentation with 17 event types, properties, Lua examples, and best practices
-  - **Environment Configuration** (`env-config.mdx`) - TXHOST_* environment variables for GSP and advanced deployments
+  - **Environment Configuration** (`env-config.mdx`) - TXHOST\_\* environment variables for GSP and advanced deployments
   - **Discord Status Embed** (`discord-status.mdx`) - Custom Discord persistent status configuration with placeholders
   - **Development Guide** (`development.mdx`) - Setup, workflows, and architecture for txAdmin development
   - **In-Game Menu** (`menu.mdx`) - Menu access, ConVars, commands, and troubleshooting guide
@@ -92,10 +97,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Links render as clickable anchors with proper styling
 
 #### GitHub Community Files
+
 - **SECURITY.md** - Vulnerability reporting process and response timeline
 - **CODE_OF_CONDUCT.md** - Community guidelines based on Contributor Covenant
 
 #### Developer Tooling
+
 - **Husky** - Git hooks for automated checks
   - Pre-commit hook running lint-staged
   - Commit-msg hook running commitlint
@@ -109,11 +116,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Custom entry points and path aliases
 
 #### Artifacts Page Enhancements
+
 - **Hosting Panel Version Strings** - Added Pterodactyl/Pelican version support
   - Accordion section in featured cards showing full version string (e.g., `24769-315823736cfbc085104ca0d32779311cd2f1a5a8`)
   - Quick copy button with Terminal icon on artifact list items
   - Compatible with Pterodactyl, Pelican, and similar hosting panel egg configurations
-  
 - **Artifact Stats from API** - Stats cards now show full totals from backend
   - Total, Recommended, Latest, Active, EOL counts reflect all filtered results
   - Previously only showed counts for current page
@@ -130,6 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Used for hosting panel version sections
 
 #### Hosting Page Improvements
+
 - **Hosting Provider Card Redesign** - Enhanced provider listing with improved UX
   - Added loading state skeletons using CSS animations for performance
   - Non-blocking state transitions for data fetching
@@ -139,6 +147,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Proper icon imports and styling consistency
 
 ### Fixed
+
 - **EOL filter parameter** - Fixed `includeEol` not being sent when set to "No"
   - Now always sends `includeEol` parameter explicitly to backend
   - Previously only sent when true, causing backend default (true) to override UI setting
@@ -175,6 +184,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated Discord invite links to official server (`discord.gg/eWhDDVCpPn`)
 
 #### Styling & CSS Enhancements
+
 - **Comprehensive CSS System** - Major expansion of `globals.css` with reusable utilities
   - **Custom Scrollbar** - Sleek, minimal scrollbar styling with `.custom-scrollbar`
   - **Gradient Text** - Utilities: `text-gradient-blue`, `text-gradient-purple`, `text-gradient-green`, `text-gradient-orange`
@@ -196,6 +206,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Z-Index Scale** - Structured z-index system from `z-behind` to `z-tooltip`
 
 #### Animations
+
 - **New Animation Utilities** - Smooth, performant CSS animations
   - `animate-fade-in` - Fade in effect
   - `animate-slide-up` / `animate-slide-down` - Slide animations
@@ -209,6 +220,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Link Underline** - `link-underline` with animated underline on hover
 
 ### Changed
+
 - Updated `txAdmin Windows Install` guide with StepList images and alerts
 - Updated to `NextJS v15.5.9` as it is the latest stable `15.x` version not requiring significant changes
 - Enhanced sitemap with blog posts and improved priority structure
@@ -217,6 +229,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `knip.json` configuration for dead code detection
 
 ### Fixed
+
 - **Next.js 15 Dynamic Params** - Fixed `params` must be awaited error in `/docs/[...slug]/page.tsx`
   - Changed `params` type from `{ slug?: string[] }` to `Promise<{ slug?: string[] }>`
   - Added `const { slug } = await params;` before accessing properties
@@ -231,6 +244,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 #### Backend Integration
+
 - **Go Backend API Integration** - Complete frontend migration to use Go backend services
   - Artifacts API endpoint integration (`/api/artifacts`)
   - Natives API endpoint integration (`/api/natives`)
@@ -241,6 +255,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Development override support for local backend
 
 #### Analytics
+
 - **Ackee Analytics Integration** - User tracking and analytics
   - Added Ackee tracker script to root layout
   - Server: `https://ackee.bytebrush.dev`
@@ -248,6 +263,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Automatic page view and interaction tracking
 
 #### Documentation
+
 - **API Documentation Updates** - Complete rewrite for Go backend
   - `content/docs/core/api/artifacts.mdx` - Artifacts API documentation
   - `content/docs/core/api/natives.mdx` - Natives API documentation with usage examples
@@ -258,11 +274,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 #### Components
+
 - **FileSource Component** - Server component that reads and displays source code files directly in documentation
   - Located at `app/components/file-source.tsx`
   - Supports syntax highlighting via DynamicCodeBlock
   - Fetches file content through secure API route
-  
 - **ImageModal Component** - Click-to-expand image viewer for better mobile experience
   - Located at `app/components/image-modal.tsx`
   - Uses React Portal to render above all content
@@ -275,12 +291,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Optional title bar display
 
 #### API Routes
+
 - **Source API** (`/api/source`) - Securely serves file contents for documentation
   - Whitelisted paths for security (`lib/artifacts/`, `packages/`)
   - Prevents path traversal attacks
   - Returns file contents as JSON
 
 #### Documentation
+
 - **txAdmin Windows Installation Guide** (`content/docs/txadmin/windows/install.mdx`)
   - Complete step-by-step installation process
   - PowerShell commands for artifact download
@@ -317,6 +335,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Troubleshooting common issues
 
 #### Animations
+
 - **Indeterminate Progress Animation** - Added loading animation for Progress component
   - Added `indeterminate-progress` keyframes to `tailwind.config.ts`
   - Smooth left-to-right loading animation
@@ -324,12 +343,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 #### Components
+
 - **Progress Component** (`packages/ui/src/components/progress.tsx`)
   - Added `indeterminate` prop support
   - Uses Tailwind animation class instead of inline CSS
   - Properly handles both determinate and indeterminate states
 
 #### Documentation Cleanup
+
 - **vMenu Documentation** - Removed fabricated information
   - Removed fake build numbers and version requirements
   - Removed incorrect convar names that don't exist
@@ -385,8 +406,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-| Version | Date | Description |
-|---------|------|-------------|
-| 1.0.0 | 2026-01-25 | Initial rewrite with documentation cleanup, new components, and txAdmin guides |
+| Version | Date       | Description                                                                    |
+| ------- | ---------- | ------------------------------------------------------------------------------ |
+| 1.0.0   | 2026-01-25 | Initial rewrite with documentation cleanup, new components, and txAdmin guides |
 
 ---

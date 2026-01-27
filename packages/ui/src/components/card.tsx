@@ -18,8 +18,9 @@ const Card = React.forwardRef<
       border === "accent" && "border border-fd-primary/20",
       border === "destructive" && "border border-fd-destructive/20",
       border === "none" && "border-0",
-      hover && "hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 hover:border-fd-border/80",
-      className
+      hover &&
+        "hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-black/20 hover:border-fd-border/80",
+      className,
     )}
     {...props}
   />
@@ -46,7 +47,7 @@ const CardTitle = React.forwardRef<
     ref={ref}
     className={cn(
       "text-xl font-semibold leading-none tracking-tight text-fd-foreground",
-      className
+      className,
     )}
     {...props}
   />
@@ -85,4 +86,11 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+};

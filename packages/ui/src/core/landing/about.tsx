@@ -13,11 +13,14 @@ export function Features() {
     >
       <div className="text-fd-foreground border-fd-border/50 relative flex h-auto max-w-[375px] flex-col overflow-hidden rounded-2xl border sm:max-w-full">
         <div className="p-6">
-          <h3 className="text-2xl font-bold mb-4">Comprehensive CitizenFX Guides</h3>
+          <h3 className="text-2xl font-bold mb-4">
+            Comprehensive CitizenFX Guides
+          </h3>
           <p className="text-fd-muted-foreground mb-8">
-            Everything you need to manage servers, troubleshoot errors, and develop resources for FiveM and RedM.
+            Everything you need to manage servers, troubleshoot errors, and
+            develop resources for FiveM and RedM.
           </p>
-          
+
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
               icon={<Server className="h-6 w-6" />}
@@ -51,7 +54,7 @@ export function Features() {
             />
           </div>
         </div>
-        
+
         <BorderBeam
           className="absolute inset-0 z-10 rounded-2xl"
           colorFrom="#2563eb"
@@ -63,18 +66,21 @@ export function Features() {
   );
 }
 
-function FeatureCard({ 
-  icon, 
-  title, 
-  description 
-}: { 
-  icon: React.ReactNode; 
-  title: string; 
+function FeatureCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
   description: string;
 }) {
   return (
     <motion.div
-      whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)" }}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
+      }}
       className="bg-fd-background border-fd-border rounded-lg border p-4 hover:shadow-md transition-shadow"
     >
       <div className="text-blue-500 mb-3">{icon}</div>

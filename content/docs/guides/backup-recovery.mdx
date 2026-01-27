@@ -4,37 +4,59 @@ description: Complete guide to backing up and recovering FiveM server data and c
 icon: "HardDrive"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 A comprehensive backup and recovery strategy is essential for any FiveM server. This guide covers everything from basic backup procedures to advanced disaster recovery planning.
 
 ## Understanding What to Backup
 
-<StepList steps={[
-  "Identify all critical data categories (server files, database, runtime data)",
-  "Establish backup frequency based on data importance",
-  "Choose appropriate backup storage location",
-  "Test restore procedures before relying on backups",
-  "Document backup procedures for team awareness",
-  "Monitor backup success and storage usage"
-]} />
+<StepList
+  steps={[
+    "Identify all critical data categories (server files, database, runtime data)",
+    "Establish backup frequency based on data importance",
+    "Choose appropriate backup storage location",
+    "Test restore procedures before relying on backups",
+    "Document backup procedures for team awareness",
+    "Monitor backup success and storage usage",
+  ]}
+/>
 
 ### Critical Data Categories
 
-<CheckList items={[
-  "Server files: Artifacts, server.cfg, and resource configurations",
-  "Database: Player data, vehicle ownership, economy information",
-  "Runtime data: Current server state, active sessions",
-  "Configuration files: Custom scripts and modifications"
-]} />
+<CheckList
+  items={[
+    "Server files: Artifacts, server.cfg, and resource configurations",
+    "Database: Player data, vehicle ownership, economy information",
+    "Runtime data: Current server state, active sessions",
+    "Configuration files: Custom scripts and modifications",
+  ]}
+/>
 
 **Server Files**
+
 - Server executable and artifacts
 - Configuration files (server.cfg)
 - Resource files and configurations
 - Custom scripts and modifications
 
 **Database**
+
 - Player data and statistics
 - Vehicle ownership records
 - Property and housing data
@@ -42,6 +64,7 @@ A comprehensive backup and recovery strategy is essential for any FiveM server. 
 - Logs and transaction history
 
 **Runtime Data**
+
 - Current server state
 - Player sessions
 - Dynamic configurations
@@ -50,18 +73,21 @@ A comprehensive backup and recovery strategy is essential for any FiveM server. 
 ### Backup Priority Levels
 
 **Priority 1 - Critical (Daily)**
+
 - Database (complete)
 - server.cfg
 - Custom resource configurations
 - Player data
 
 **Priority 2 - Important (Weekly)**
+
 - All resources
 - Server artifacts
 - Log files
 - Map files and assets
 
 **Priority 3 - Nice to Have (Monthly)**
+
 - Cache directories
 - Temporary files
 - Old log archives
@@ -110,21 +136,21 @@ if mysqldump -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASS" \
    --hex-blob \
    --default-character-set=utf8mb4 \
    "$DB_NAME" > "$BACKUP_FILE"; then
-    
+
     log "Database backup created: $BACKUP_FILE"
-    
+
     # Compress backup
     if [ "$COMPRESS" = true ]; then
         gzip "$BACKUP_FILE"
         BACKUP_FILE="$BACKUP_FILE.gz"
         log "Backup compressed: $BACKUP_FILE"
     fi
-    
+
     # Verify backup
     if [ -f "$BACKUP_FILE" ] && [ -s "$BACKUP_FILE" ]; then
         BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
         log "Backup completed successfully. Size: $BACKUP_SIZE"
-        
+
         # Send Discord notification
         if [ -n "$DISCORD_WEBHOOK" ]; then
             curl -H "Content-Type: application/json" \
@@ -198,12 +224,12 @@ try {
         "--default-character-set=utf8mb4",
         $DBName
     )
-    
+
     $Process = Start-Process -FilePath "mysqldump" -ArgumentList $Arguments -RedirectStandardOutput $BackupFile -Wait -PassThru -NoNewWindow
-    
+
     if ($Process.ExitCode -eq 0) {
         Write-Log "Database backup created: $BackupFile"
-        
+
         # Compress backup
         if ($Compress) {
             Compress-Archive -Path $BackupFile -DestinationPath "$BackupFile.zip"
@@ -211,7 +237,7 @@ try {
             $BackupFile = "$BackupFile.zip"
             Write-Log "Backup compressed: $BackupFile"
         }
-        
+
         # Verify backup
         if (Test-Path $BackupFile) {
             $BackupSize = (Get-Item $BackupFile).Length / 1MB
@@ -222,17 +248,17 @@ try {
     } else {
         throw "mysqldump failed with exit code: $($Process.ExitCode)"
     }
-    
+
     # Cleanup old backups
     $OldBackups = Get-ChildItem -Path $BackupDir -Name "fivem_db_*" | Where-Object { $_.CreationTime -lt (Get-Date).AddDays(-$RetentionDays) }
     foreach ($OldBackup in $OldBackups) {
         Remove-Item (Join-Path $BackupDir $OldBackup)
     }
-    
+
     if ($OldBackups.Count -gt 0) {
         Write-Log "Deleted $($OldBackups.Count) old backup files"
     }
-    
+
     Write-Log "Backup process completed successfully"
 
 } catch {
@@ -390,10 +416,10 @@ for pattern in "${CUSTOM_RESOURCES[@]}"; do
         if [ -d "$resource" ]; then
             RESOURCE_NAME=$(basename "$resource")
             echo "Backing up resource: $RESOURCE_NAME"
-            
+
             # Create resource backup
             tar -czf "$BACKUP_DIR/$TIMESTAMP/${RESOURCE_NAME}.tar.gz" -C "$RESOURCES_DIR" "$RESOURCE_NAME"
-            
+
             # Extract configuration for quick reference
             if [ -f "$resource/config.lua" ]; then
                 cp "$resource/config.lua" "$BACKUP_DIR/$TIMESTAMP/${RESOURCE_NAME}_config.lua"
@@ -507,7 +533,7 @@ sudo systemctl list-timers | grep fivem
 
 ```yaml
 # docker-compose.backup.yml
-version: '3.8'
+version: "3.8"
 
 services:
   fivem-backup:
@@ -720,27 +746,27 @@ systemctl stop fivem
 case "${RESTORE_TYPE:-full}" in
     "full")
         echo "Performing full server restore..."
-        
+
         # Create safety backup
         SAFETY_DIR="/tmp/server_safety_$(date +%Y%m%d_%H%M%S)"
         mv "$SERVER_DIR" "$SAFETY_DIR"
         echo "Current server backed up to: $SAFETY_DIR"
-        
+
         # Extract full backup
         mkdir -p "$SERVER_DIR"
         tar -xzf "$BACKUP_PATH/server_files.tar.gz" -C "$(dirname $SERVER_DIR)"
-        
+
         ;;
-        
+
     "config")
         echo "Restoring configuration files..."
         cp "$BACKUP_PATH/server.cfg" "$SERVER_DIR/"
-        
+
         if [ -d "$BACKUP_PATH/resources_config" ]; then
             cp -r "$BACKUP_PATH/resources_config"/* "$SERVER_DIR/resources/"
         fi
         ;;
-        
+
     "resources")
         echo "Restoring resources..."
         if [ -d "$BACKUP_PATH/resources_config" ]; then
@@ -748,7 +774,7 @@ case "${RESTORE_TYPE:-full}" in
             cp -r "$BACKUP_PATH/resources_config" "$SERVER_DIR/resources"
         fi
         ;;
-        
+
     *)
         echo "Invalid restore type: $RESTORE_TYPE"
         exit 1
@@ -781,36 +807,36 @@ RTO_NORMAL=240     # minutes - Normal operations
 # Recovery procedures by priority
 critical_recovery() {
     echo "CRITICAL RECOVERY - RTO: $RTO_CRITICAL minutes"
-    
+
     # 1. Restore database from latest backup (5 min)
     restore_database.sh /backups/database/latest.sql.gz
-    
+
     # 2. Start server with minimal configuration (2 min)
     start_minimal_server.sh
-    
+
     # 3. Verify basic functionality (5 min)
     verify_server_health.sh
-    
+
     # 4. Enable essential resources only (3 min)
     enable_essential_resources.sh
 }
 
 important_recovery() {
     echo "IMPORTANT RECOVERY - RTO: $RTO_IMPORTANT minutes"
-    
+
     # 1. Restore full server configuration (20 min)
     restore_server.sh /backups/server/latest full
-    
+
     # 2. Restore all resources (20 min)
     restore_resources.sh
-    
+
     # 3. Full system verification (20 min)
     full_system_test.sh
 }
 
 normal_recovery() {
     echo "NORMAL RECOVERY - RTO: $RTO_NORMAL minutes"
-    
+
     # 1. Restore from backup with full verification
     # 2. Apply any missing updates
     # 3. Restore custom configurations
@@ -831,14 +857,14 @@ DISCORD_WEBHOOK="https://discord.com/api/webhooks/..."
 check_backup_health() {
     local status="OK"
     local issues=()
-    
+
     # Check if backups are current (within 25 hours)
     LATEST_DB_BACKUP=$(find "$BACKUP_DIR/database" -name "*.sql*" -mtime -1 | head -1)
     if [ -z "$LATEST_DB_BACKUP" ]; then
         issues+=("Database backup is outdated (>24h)")
         status="WARNING"
     fi
-    
+
     # Check backup sizes (detect corruption)
     if [ -n "$LATEST_DB_BACKUP" ]; then
         BACKUP_SIZE=$(stat -c%s "$LATEST_DB_BACKUP")
@@ -847,19 +873,19 @@ check_backup_health() {
             status="ERROR"
         fi
     fi
-    
+
     # Check disk space
     BACKUP_DISK_USAGE=$(df "$BACKUP_DIR" | awk 'NR==2 {print $5}' | sed 's/%//')
     if [ "$BACKUP_DISK_USAGE" -gt 90 ]; then
         issues+=("Backup disk usage critical: ${BACKUP_DISK_USAGE}%")
         status="ERROR"
     fi
-    
+
     # Send alerts if issues found
     if [ ${#issues[@]} -gt 0 ]; then
         send_alert "$status" "${issues[@]}"
     fi
-    
+
     echo "Backup health check: $status"
     for issue in "${issues[@]}"; do
         echo "  - $issue"
@@ -870,12 +896,12 @@ send_alert() {
     local status="$1"
     shift
     local issues=("$@")
-    
+
     local message="🚨 Backup Alert - $status\n\n"
     for issue in "${issues[@]}"; do
         message+="• $issue\n"
     done
-    
+
     # Discord notification
     if [ -n "$DISCORD_WEBHOOK" ]; then
         curl -H "Content-Type: application/json" \
@@ -883,7 +909,7 @@ send_alert() {
              -d "{\"content\": \"$message\"}" \
              "$DISCORD_WEBHOOK"
     fi
-    
+
     # Email notification
     if [ -n "$ALERT_EMAIL" ]; then
         echo -e "$message" | mail -s "FiveM Backup Alert - $status" "$ALERT_EMAIL"

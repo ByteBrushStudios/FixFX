@@ -30,7 +30,7 @@ function CopyButton({ text, className }: { text: string; className?: string }) {
       onClick={handleCopy}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm transition-colors hover:bg-fd-muted",
-        className
+        className,
       )}
       title="Copy to clipboard"
     >
@@ -70,7 +70,9 @@ export function ProviderCard({ provider }: { provider: HostingProvider }) {
             <Server className="h-8 w-8 text-fd-primary" />
           </div>
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-fd-foreground">{provider.name}</h3>
+            <h3 className="text-2xl font-bold text-fd-foreground">
+              {provider.name}
+            </h3>
             <p className="mt-1 text-sm text-fd-muted-foreground line-clamp-2">
               {provider.description}
             </p>
@@ -86,7 +88,9 @@ export function ProviderCard({ provider }: { provider: HostingProvider }) {
               <Percent className="h-6 w-6 text-green-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-500">{provider.discount.percentage}% OFF</p>
+              <p className="text-2xl font-bold text-green-500">
+                {provider.discount.percentage}% OFF
+              </p>
               <div className="flex items-center gap-1.5 text-sm text-fd-muted-foreground">
                 <Clock className="h-3.5 w-3.5" />
                 {provider.discount.duration}
@@ -121,7 +125,9 @@ export function ProviderCard({ provider }: { provider: HostingProvider }) {
                 <p className="font-medium text-fd-foreground group-hover/link:text-fd-primary">
                   {link.label}
                 </p>
-                <p className="text-sm text-fd-muted-foreground">{link.description}</p>
+                <p className="text-sm text-fd-muted-foreground">
+                  {link.description}
+                </p>
               </div>
               <ExternalLink className="h-4 w-4 text-fd-muted-foreground transition-transform group-hover/link:translate-x-0.5 group-hover/link:text-fd-primary" />
             </Link>
@@ -137,7 +143,10 @@ export function ProviderCard({ provider }: { provider: HostingProvider }) {
         </h4>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {provider.features.map((feature) => (
-            <div key={feature} className="flex items-center gap-2 text-sm text-fd-muted-foreground">
+            <div
+              key={feature}
+              className="flex items-center gap-2 text-sm text-fd-muted-foreground"
+            >
               <Check className="h-4 w-4 shrink-0 text-green-500" />
               <span>{feature}</span>
             </div>

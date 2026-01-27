@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 
 interface ImageModalProps {
   src: string;
@@ -14,7 +14,15 @@ interface ImageModalProps {
   caption?: string;
 }
 
-export function ImageModal({ src, alt, title, width, height, className, caption }: ImageModalProps) {
+export function ImageModal({
+  src,
+  alt,
+  title,
+  width,
+  height,
+  className,
+  caption,
+}: ImageModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -24,12 +32,12 @@ export function ImageModal({ src, alt, title, width, height, className, caption 
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -38,48 +46,48 @@ export function ImageModal({ src, alt, title, width, height, className, caption 
       {/* Backdrop */}
       <div
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
           zIndex: 9998,
         }}
         onClick={() => setIsOpen(false)}
       />
-      
+
       {/* Modal Content */}
       <div
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '1rem',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "1rem",
           zIndex: 9999,
-          pointerEvents: 'none',
+          pointerEvents: "none",
         }}
       >
         {/* Close Button */}
         <button
           onClick={() => setIsOpen(false)}
           style={{
-            position: 'fixed',
-            top: '1rem',
-            right: '1rem',
+            position: "fixed",
+            top: "1rem",
+            right: "1rem",
             zIndex: 10000,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            padding: '0.5rem',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            pointerEvents: 'auto',
+            borderRadius: "50%",
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            padding: "0.5rem",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+            pointerEvents: "auto",
           }}
           type="button"
           aria-label="Close image"
@@ -90,31 +98,38 @@ export function ImageModal({ src, alt, title, width, height, className, caption 
         {/* Image Container */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            maxHeight: '90vh',
-            maxWidth: '90vw',
-            pointerEvents: 'auto',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            maxHeight: "90vh",
+            maxWidth: "90vw",
+            pointerEvents: "auto",
           }}
         >
           <img
             src={src}
             alt={alt}
             style={{
-              maxHeight: '85vh',
-              maxWidth: '90vw',
-              height: 'auto',
-              width: 'auto',
-              borderRadius: '0.5rem',
-              objectFit: 'contain',
+              maxHeight: "85vh",
+              maxWidth: "90vw",
+              height: "auto",
+              width: "auto",
+              borderRadius: "0.5rem",
+              objectFit: "contain",
             }}
             onClick={(e) => e.stopPropagation()}
           />
-          
+
           {/* Title */}
           {title && (
-            <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+            <p
+              style={{
+                marginTop: "1rem",
+                textAlign: "center",
+                fontSize: "0.875rem",
+                color: "rgba(255, 255, 255, 0.9)",
+              }}
+            >
               {title}
             </p>
           )}
@@ -128,7 +143,7 @@ export function ImageModal({ src, alt, title, width, height, className, caption 
       {/* Thumbnail */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`relative block w-full cursor-pointer overflow-hidden rounded-lg border border-fd-border bg-fd-muted/30 transition-all hover:border-fd-primary/50 hover:shadow-lg ${className || ''}`}
+        className={`relative block w-full cursor-pointer overflow-hidden rounded-lg border border-fd-border bg-fd-muted/30 transition-all hover:border-fd-primary/50 hover:shadow-lg ${className || ""}`}
         type="button"
       >
         <img
@@ -139,7 +154,7 @@ export function ImageModal({ src, alt, title, width, height, className, caption 
           className="block w-full h-auto"
         />
       </button>
-      
+
       {/* Caption */}
       {caption && (
         <figcaption className="mt-2 text-center text-sm text-fd-muted-foreground">

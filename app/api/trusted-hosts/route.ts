@@ -11,7 +11,7 @@ export async function GET() {
     console.error("Error fetching trusted hosts:", error);
     return Response.json(
       { success: false, error: "Failed to fetch trusted hosts" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

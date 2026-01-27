@@ -1,8 +1,3 @@
 {
-  "pages": [
-    "resource-monitor",
-    "profiler",
-    "network-tools",
-    "debug-tools"
-  ]
-} 
+  "pages": ["resource-monitor", "profiler", "network-tools", "debug-tools"]
+}

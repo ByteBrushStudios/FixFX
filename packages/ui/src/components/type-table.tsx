@@ -67,17 +67,22 @@ interface TypeTableRowProps {
 
 function TypeTableRow({ name, info }: TypeTableRowProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-  const hasExpandableContent = info.description || info.typeDescription || info.default !== undefined;
+  const hasExpandableContent =
+    info.description || info.typeDescription || info.default !== undefined;
   const isOptional = name.endsWith("?") || !info.required;
-  const displayName = name.endsWith("?") ? name : isOptional ? `${name}?` : name;
-  
+  const displayName = name.endsWith("?")
+    ? name
+    : isOptional
+      ? `${name}?`
+      : name;
+
   return (
     <>
       <tr
         className={cn(
           "border-b border-fd-border/50 transition-colors",
           hasExpandableContent && "cursor-pointer hover:bg-fd-muted/20",
-          isExpanded && "bg-fd-muted/10"
+          isExpanded && "bg-fd-muted/10",
         )}
         onClick={() => hasExpandableContent && setIsExpanded(!isExpanded)}
       >
@@ -87,7 +92,7 @@ function TypeTableRow({ name, info }: TypeTableRowProps) {
               "font-mono text-sm",
               info.deprecated
                 ? "text-fd-muted-foreground line-through"
-                : "text-fd-primary"
+                : "text-fd-primary",
             )}
           >
             {displayName}
@@ -123,7 +128,7 @@ function TypeTableRow({ name, info }: TypeTableRowProps) {
             <ChevronDown
               className={cn(
                 "inline-block h-4 w-4 text-fd-muted-foreground transition-transform duration-200",
-                isExpanded && "rotate-180"
+                isExpanded && "rotate-180",
               )}
             />
           )}
@@ -199,9 +204,13 @@ export function SimpleTypeTable({ data, title }: SimpleTypeTableProps) {
                 className="border-b border-fd-border/50 last:border-b-0"
               >
                 <td className="px-4 py-2.5">
-                  <span className="font-mono text-sm text-fd-primary">{key}</span>
+                  <span className="font-mono text-sm text-fd-primary">
+                    {key}
+                  </span>
                 </td>
-                <td className="px-4 py-2.5 text-fd-muted-foreground">{value}</td>
+                <td className="px-4 py-2.5 text-fd-muted-foreground">
+                  {value}
+                </td>
               </tr>
             ))}
           </tbody>

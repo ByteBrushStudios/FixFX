@@ -1,6 +1,6 @@
 "use client";
 
-import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
+import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 
 interface SourceCodeProps {
   code: string;
@@ -8,12 +8,16 @@ interface SourceCodeProps {
   title?: string | { text: string; href: string };
 }
 
-export function SourceCode({ code, lang = 'typescript', title }: SourceCodeProps) {
+export function SourceCode({
+  code,
+  lang = "typescript",
+  title,
+}: SourceCodeProps) {
   return (
     <div className="relative">
       {title && (
         <div className="bg-fd-muted/50 border-b border-fd-border px-4 py-2 text-sm font-medium text-fd-muted-foreground rounded-t-lg">
-          {typeof title === 'string' ? (
+          {typeof title === "string" ? (
             title
           ) : (
             <a
@@ -28,13 +32,13 @@ export function SourceCode({ code, lang = 'typescript', title }: SourceCodeProps
           )}
         </div>
       )}
-      <DynamicCodeBlock 
-        lang={lang} 
+      <DynamicCodeBlock
+        lang={lang}
         code={code}
         options={{
           themes: {
-            light: 'github-light',
-            dark: 'github-dark',
+            light: "github-light",
+            dark: "github-dark",
           },
         }}
       />

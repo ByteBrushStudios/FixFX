@@ -1,24 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { NativesSidebar } from '@ui/core/natives/natives-sidebar';
-import { NativesContent } from '@ui/core/natives/natives-content';
-import { NativesFilterSheet } from '@ui/core/natives/natives-filter-sheet';
-import { MobileNativesHeader } from '@ui/core/natives/mobile-natives-header';
-import { Search, X } from 'lucide-react';
-import { Button } from '@ui/components/button';
-import { MobileNavigation } from '@ui/core/common/mobile-navigation';
-import { useFetch } from '@core/useFetch';
-import { Input } from '@ui/components/input';
-import { API_URL } from '@/packages/utils/src/constants/link';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { NativesSidebar } from "@ui/core/natives/natives-sidebar";
+import { NativesContent } from "@ui/core/natives/natives-content";
+import { NativesFilterSheet } from "@ui/core/natives/natives-filter-sheet";
+import { MobileNativesHeader } from "@ui/core/natives/mobile-natives-header";
+import { Search, X } from "lucide-react";
+import { Button } from "@ui/components/button";
+import { MobileNavigation } from "@ui/core/common/mobile-navigation";
+import { useFetch } from "@core/useFetch";
+import { Input } from "@ui/components/input";
+import { API_URL } from "@/packages/utils/src/constants/link";
 
 export default function NativesPage() {
   // State with proper defaults and type enforcement
-  const [game, setGame] = useState<'gta5' | 'rdr3'>('gta5');
-  const [environment, setEnvironment] = useState<'all' | 'client' | 'server'>('all');
-  const [category, setCategory] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchInputValue, setSearchInputValue] = useState('');
+  const [game, setGame] = useState<"gta5" | "rdr3">("gta5");
+  const [environment, setEnvironment] = useState<"all" | "client" | "server">(
+    "all",
+  );
+  const [category, setCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [includeCFX, setIncludeCFX] = useState(true);
 
   // Add missing mobile state
@@ -30,14 +32,14 @@ export default function NativesPage() {
   // Fetch metadata with proper dependencies
   const { data: metaData, isPending: isMetaDataLoading } = useFetch<{
     metadata: {
-      namespaces: string[],
-      namespacesByGameAndEnv: Record<string, Record<string, string[]>>,
-      hasCfxNamespace: boolean
-    }
+      namespaces: string[];
+      namespacesByGameAndEnv: Record<string, Record<string, string[]>>;
+      hasCfxNamespace: boolean;
+    };
   }>(
     `${API_URL}/api/natives?game=${game}&limit=1&includeCfx=${includeCFX}&fullMetadata=true`,
     {},
-    [game, includeCFX]
+    [game, includeCFX],
   );
 
   // Extract categories from metadata
@@ -45,23 +47,37 @@ export default function NativesPage() {
   const categoriesByGameAndEnv = metaData?.metadata.namespacesByGameAndEnv;
 
   // Enhanced handlers with proper state updates
-  const handleGameChange = useCallback((newGame: 'gta5' | 'rdr3') => {
-    console.log(`Changing game from ${game} to ${newGame}`);
-    setGame(newGame);
-    // Reset category if not available in new game
-    if (metaData?.metadata.namespacesByGameAndEnv?.[newGame]?.[environment]?.includes(category) === false) {
-      setCategory('');
-    }
-  }, [game, environment, category, metaData]);
+  const handleGameChange = useCallback(
+    (newGame: "gta5" | "rdr3") => {
+      console.log(`Changing game from ${game} to ${newGame}`);
+      setGame(newGame);
+      // Reset category if not available in new game
+      if (
+        metaData?.metadata.namespacesByGameAndEnv?.[newGame]?.[
+          environment
+        ]?.includes(category) === false
+      ) {
+        setCategory("");
+      }
+    },
+    [game, environment, category, metaData],
+  );
 
-  const handleEnvironmentChange = useCallback((newEnv: 'all' | 'client' | 'server') => {
-    console.log(`Changing environment from ${environment} to ${newEnv}`);
-    setEnvironment(newEnv);
-    // Reset category if not available in new environment
-    if (metaData?.metadata.namespacesByGameAndEnv?.[game]?.[newEnv]?.includes(category) === false) {
-      setCategory('');
-    }
-  }, [game, environment, category, metaData]);
+  const handleEnvironmentChange = useCallback(
+    (newEnv: "all" | "client" | "server") => {
+      console.log(`Changing environment from ${environment} to ${newEnv}`);
+      setEnvironment(newEnv);
+      // Reset category if not available in new environment
+      if (
+        metaData?.metadata.namespacesByGameAndEnv?.[game]?.[newEnv]?.includes(
+          category,
+        ) === false
+      ) {
+        setCategory("");
+      }
+    },
+    [game, environment, category, metaData],
+  );
 
   const handleSearchSubmit = useCallback((query: string) => {
     setSearchQuery(query);
@@ -70,51 +86,52 @@ export default function NativesPage() {
     // Update URL with search parameters
     const url = new URL(window.location.href);
     if (query) {
-      url.searchParams.set('search', query);
+      url.searchParams.set("search", query);
     } else {
-      url.searchParams.delete('search');
+      url.searchParams.delete("search");
     }
-    window.history.replaceState({}, '', url.toString());
+    window.history.replaceState({}, "", url.toString());
   }, []);
 
   // Parse URL params on mount
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const params = new URLSearchParams(window.location.search);
-    const gameParam = params.get('game');
-    const envParam = params.get('env');
-    const categoryParam = params.get('category');
-    const searchParam = params.get('search');
-    const cfxParam = params.get('cfx');
+    const gameParam = params.get("game");
+    const envParam = params.get("env");
+    const categoryParam = params.get("category");
+    const searchParam = params.get("search");
+    const cfxParam = params.get("cfx");
 
-    if (gameParam === 'gta5' || gameParam === 'rdr3') setGame(gameParam);
-    if (envParam === 'all' || envParam === 'client' || envParam === 'server') setEnvironment(envParam);
+    if (gameParam === "gta5" || gameParam === "rdr3") setGame(gameParam);
+    if (envParam === "all" || envParam === "client" || envParam === "server")
+      setEnvironment(envParam);
     if (categoryParam) setCategory(categoryParam);
     if (searchParam) {
       setSearchQuery(searchParam);
       setSearchInputValue(searchParam);
     }
-    if (cfxParam === 'false') setIncludeCFX(false);
+    if (cfxParam === "false") setIncludeCFX(false);
   }, []);
 
   // Sync URL with state changes
   useEffect(() => {
     const url = new URL(window.location.href);
 
-    if (game !== 'gta5') url.searchParams.set('game', game);
-    else url.searchParams.delete('game');
+    if (game !== "gta5") url.searchParams.set("game", game);
+    else url.searchParams.delete("game");
 
-    if (environment !== 'all') url.searchParams.set('env', environment);
-    else url.searchParams.delete('env');
+    if (environment !== "all") url.searchParams.set("env", environment);
+    else url.searchParams.delete("env");
 
-    if (category) url.searchParams.set('category', category);
-    else url.searchParams.delete('category');
+    if (category) url.searchParams.set("category", category);
+    else url.searchParams.delete("category");
 
-    if (!includeCFX) url.searchParams.set('cfx', 'false');
-    else url.searchParams.delete('cfx');
+    if (!includeCFX) url.searchParams.set("cfx", "false");
+    else url.searchParams.delete("cfx");
 
-    window.history.replaceState({}, '', url.toString());
+    window.history.replaceState({}, "", url.toString());
   }, [game, environment, category, includeCFX]);
 
   // Clean up any pending timeouts when component unmounts
@@ -123,16 +140,16 @@ export default function NativesPage() {
       if (urlUpdateTimeoutRef.current) {
         clearTimeout(urlUpdateTimeoutRef.current);
       }
-    }
+    };
   }, []);
 
   // Function to reset all filters
   const resetFilters = () => {
-    setSearchQuery('');
-    setSearchInputValue('');
-    setCategory('');
-    setEnvironment('all');
-    setGame('gta5');
+    setSearchQuery("");
+    setSearchInputValue("");
+    setCategory("");
+    setEnvironment("all");
+    setGame("gta5");
     setIncludeCFX(true);
   };
 
@@ -196,11 +213,14 @@ export default function NativesPage() {
         {/* Mobile search input - conditionally rendered */}
         {mobileSearchOpen && (
           <div className="fixed top-0 left-0 right-0 z-[150] bg-fd-background/95 backdrop-blur-md border-b border-[#5865F2]/20 p-3 flex flex-row items-center gap-2">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              handleSearchSubmit(searchInputValue);
-              setMobileSearchOpen(false);
-            }} className="flex items-center flex-1 gap-2">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearchSubmit(searchInputValue);
+                setMobileSearchOpen(false);
+              }}
+              className="flex items-center flex-1 gap-2"
+            >
               <Input
                 value={searchInputValue}
                 onChange={(e) => setSearchInputValue(e.target.value)}
@@ -208,7 +228,12 @@ export default function NativesPage() {
                 className="w-full h-9 bg-fd-background/60"
                 autoFocus
               />
-              <Button type="submit" size="icon" variant="default" className="h-9 w-9 rounded-md">
+              <Button
+                type="submit"
+                size="icon"
+                variant="default"
+                className="h-9 w-9 rounded-md"
+              >
                 <Search className="h-4 w-4" />
               </Button>
               <Button
@@ -219,8 +244,8 @@ export default function NativesPage() {
                 onClick={() => {
                   setMobileSearchOpen(false);
                   if (searchQuery) {
-                    setSearchInputValue('');
-                    handleSearchSubmit('');
+                    setSearchInputValue("");
+                    handleSearchSubmit("");
                   }
                 }}
               >

@@ -4,56 +4,117 @@ description: Guide to configuring vMenu settings and permissions
 icon: "Wrench"
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout'
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid, FileTree } from '@ui/components/mdx-components'
+import { Callout } from "fumadocs-ui/components/callout";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+  RoleCard,
+  PermissionCodeBlock,
+  KeyboardShortcutTable,
+  ActionTable,
+  InfoBanner,
+  CategoryGrid,
+  FileTree,
+} from "@ui/components/mdx-components";
 
 ## Overview
 
 vMenu is configured primarily through **permissions** using FiveM's ACE permission system. Configuration options may change between versions.
 
 <InfoBanner type="warning" title="Version Compatibility">
-Always check the [official vMenu documentation](https://docs.vespura.com/vmenu/) for the most accurate and current configuration options.
+  Always check the [official vMenu
+  documentation](https://docs.vespura.com/vmenu/) for the most accurate and
+  current configuration options.
 </InfoBanner>
 
 ## Configuration Files
 
-<FileTree 
+<FileTree
   title="vMenu File Structure"
   items={[
-    { 
-      name: "resources", 
+    {
+      name: "resources",
       type: "folder",
       children: [
-        { 
-          name: "vMenu", 
+        {
+          name: "vMenu",
           type: "folder",
           children: [
-            { 
-              name: "config", 
+            {
+              name: "config",
               type: "folder",
               children: [
-                { name: "permissions.cfg", type: "file", description: "Permission definitions" }
-              ]
+                {
+                  name: "permissions.cfg",
+                  type: "file",
+                  description: "Permission definitions",
+                },
+              ],
             },
-            { name: "client.lua", type: "file", description: "Client-side code" },
-            { name: "server.lua", type: "file", description: "Server-side code" },
-            { name: "fxmanifest.lua", type: "file", description: "Resource manifest" }
-          ]
-        }
-      ]
+            {
+              name: "client.lua",
+              type: "file",
+              description: "Client-side code",
+            },
+            {
+              name: "server.lua",
+              type: "file",
+              description: "Server-side code",
+            },
+            {
+              name: "fxmanifest.lua",
+              type: "file",
+              description: "Resource manifest",
+            },
+          ],
+        },
+      ],
     },
-    { name: "server.cfg", type: "file", description: "Server settings and ensure statement" }
+    {
+      name: "server.cfg",
+      type: "file",
+      description: "Server settings and ensure statement",
+    },
   ]}
 />
 
 ## Basic Setup
 
-<StepList steps={[
-  { title: "Execute Permissions", description: "Add exec resources/vMenu/config/permissions.cfg to server.cfg" },
-  { title: "Ensure vMenu", description: "Add ensure vMenu to server.cfg for startup loading" },
-  { title: "Grant Admin Access", description: "Use add_ace group.admin vMenu.Everything allow" },
-  { title: "Add Yourself as Admin", description: "Use add_principal identifier.steam:YOUR_STEAM_ID group.admin" }
-]} />
+<StepList
+  steps={[
+    {
+      title: "Execute Permissions",
+      description:
+        "Add exec resources/vMenu/config/permissions.cfg to server.cfg",
+    },
+    {
+      title: "Ensure vMenu",
+      description: "Add ensure vMenu to server.cfg for startup loading",
+    },
+    {
+      title: "Grant Admin Access",
+      description: "Use add_ace group.admin vMenu.Everything allow",
+    },
+    {
+      title: "Add Yourself as Admin",
+      description:
+        "Use add_principal identifier.steam:YOUR_STEAM_ID group.admin",
+    },
+  ]}
+/>
 
 ## Permissions Configuration
 
@@ -66,26 +127,26 @@ vMenu uses FiveM's ACE permission system. Edit `permissions.cfg`:
       key: "add_ace group.admin",
       value: "vMenu.Everything allow",
       description: "Grant all permissions to admin group",
-      required: true
+      required: true,
     },
     {
       key: "add_ace group.moderator",
       value: "vMenu.OnlinePlayers.Menu allow",
       description: "Moderators can view online players",
-      required: false
+      required: false,
     },
     {
       key: "add_ace builtin.everyone",
       value: "vMenu.Everything deny",
       description: "Deny all permissions by default",
-      required: true
+      required: true,
     },
     {
       key: "add_principal identifier.steam:ID",
       value: "group.admin",
       description: "Add player to admin group",
-      required: false
-    }
+      required: false,
+    },
   ]}
 />
 
@@ -109,14 +170,30 @@ For the complete list of permissions, see the [official vMenu permissions docume
 
 vMenu uses convars for configuration. Add these to your `server.cfg` **before** the `ensure vMenu` line.
 
-<PropertyCard type="info" name="Version Notice" description="Convar names and availability may change between versions. Always verify against the official documentation." />
+<PropertyCard
+  type="info"
+  name="Version Notice"
+  description="Convar names and availability may change between versions. Always verify against the official documentation."
+/>
 
 For the complete and up-to-date list of available convars, please refer to:
 
-<QuickLinks links={[
-  { title: "vMenu Configuration", href: "https://docs.vespura.com/vmenu/configuration", icon: "book", description: "Official configuration docs" },
-  { title: "GitHub Repository", href: "https://github.com/TomGrobbe/vMenu", icon: "github", description: "Source code and releases" }
-]} />
+<QuickLinks
+  links={[
+    {
+      title: "vMenu Configuration",
+      href: "https://docs.vespura.com/vmenu/configuration",
+      icon: "book",
+      description: "Official configuration docs",
+    },
+    {
+      title: "GitHub Repository",
+      href: "https://github.com/TomGrobbe/vMenu",
+      icon: "github",
+      description: "Source code and releases",
+    },
+  ]}
+/>
 
 ## Example Permission Configurations
 
@@ -127,9 +204,11 @@ For the complete and up-to-date list of available convars, please refer to:
 # permissions.cfg for roleplay server
 
 # Admin - full access
+
 add_ace group.admin vMenu.Everything allow
 
 # Moderator - player management
+
 add_ace group.moderator vMenu.OnlinePlayers.Menu allow
 add_ace group.moderator vMenu.OnlinePlayers.Teleport allow
 add_ace group.moderator vMenu.OnlinePlayers.Kick allow
@@ -137,11 +216,13 @@ add_ace group.moderator vMenu.OnlinePlayers.Spectate allow
 add_ace group.moderator vMenu.NoClip allow
 
 # Deny spawning for non-staff
+
 add_ace builtin.everyone vMenu.VehicleSpawner.Menu deny
 add_ace builtin.everyone vMenu.WeaponSpawner.Menu deny
 add_ace builtin.everyone vMenu.NoClip deny
 add_ace builtin.everyone vMenu.OnlinePlayers.Menu deny
-```
+
+````
 </ConfigBlock>
 
 ### Freeroam Server
@@ -150,7 +231,7 @@ add_ace builtin.everyone vMenu.OnlinePlayers.Menu deny
 ```cfg
 # permissions.cfg for freeroam server
 
-# Admin - full access  
+# Admin - full access
 add_ace group.admin vMenu.Everything allow
 
 # Allow everyone basic features
@@ -162,7 +243,8 @@ add_ace builtin.everyone vMenu.WeaponOptions.Menu allow
 # Restrict admin-only features
 add_ace builtin.everyone vMenu.OnlinePlayers.Kick deny
 add_ace builtin.everyone vMenu.OnlinePlayers.Ban deny
-```
+````
+
 </ConfigBlock>
 
 ## Resource Load Order
@@ -178,13 +260,17 @@ ensure spawnmanager
 ensure sessionmanager
 
 # Execute vMenu permissions
+
 exec resources/vMenu/config/permissions.cfg
 
 # Load vMenu after core resources
+
 ensure vMenu
 
 # Load dependent resources after vMenu
+
 ensure your_other_resources
+
 ```
 </ConfigBlock>
 
@@ -247,3 +333,4 @@ ensure your_other_resources
 <Callout type="success">
   Always refer to the official vMenu documentation for the most accurate configuration information.
 </Callout>
+```

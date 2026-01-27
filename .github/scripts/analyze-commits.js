@@ -2,23 +2,23 @@
 
 /**
  * Analyze commits since the last release
- * 
+ *
  * Determines the next version based on commit messages using
  * conventional commits format (feat:, fix:, breaking:)
- * 
+ *
  * Usage:
  *   node analyze-commits.js
  *   node analyze-commits.js --json
  */
 
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 
-const REPO_OWNER = 'CodeMeAPixel';
-const REPO_NAME = 'FixFX';
+const REPO_OWNER = "CodeMeAPixel";
+const REPO_NAME = "FixFX";
 
 function exec(command) {
   try {
-    return execSync(command, { encoding: 'utf-8' }).trim();
+    return execSync(command, { encoding: "utf-8" }).trim();
   } catch (error) {
     throw new Error(`Command failed: ${command}\n${error.message}`);
   }
@@ -28,7 +28,7 @@ function getLastTag() {
   try {
     return exec('git describe --tags --abbrev=0 2>/dev/null || echo ""');
   } catch {
-    return '';
+    return "";
   }
 }
 
@@ -36,30 +36,30 @@ function getCommitsSinceTag(tag) {
   try {
     if (!tag) {
       // No tags yet, get all commits
-      return exec('git log --oneline --all');
+      return exec("git log --oneline --all");
     }
     return exec(`git log ${tag}..HEAD --oneline`);
   } catch (error) {
-    return '';
+    return "";
   }
 }
 
 function parseVersion(versionString) {
   // Remove 'v' prefix if present
-  const version = versionString.replace(/^v/, '');
-  const parts = version.split('.');
-  
+  const version = versionString.replace(/^v/, "");
+  const parts = version.split(".");
+
   return {
     major: parseInt(parts[0]) || 0,
     minor: parseInt(parts[1]) || 0,
     patch: parseInt(parts[2]) || 0,
-    prerelease: parts[3] ? parts.slice(3).join('.') : null,
+    prerelease: parts[3] ? parts.slice(3).join(".") : null,
   };
 }
 
 function parseCommits(commitLog) {
-  const commits = commitLog.split('\n').filter(Boolean);
-  
+  const commits = commitLog.split("\n").filter(Boolean);
+
   const analysis = {
     features: [],
     fixes: [],
@@ -68,8 +68,10 @@ function parseCommits(commitLog) {
   };
 
   for (const commit of commits) {
-    const match = commit.match(/^([a-f0-9]+)\s+(.+?):\s*(.+?)(?:\s*\((.+?)\))?$/);
-    
+    const match = commit.match(
+      /^([a-f0-9]+)\s+(.+?):\s*(.+?)(?:\s*\((.+?)\))?$/,
+    );
+
     if (!match) {
       analysis.other.push(commit);
       continue;
@@ -84,11 +86,11 @@ function parseCommits(commitLog) {
       full: commit,
     };
 
-    if (type === 'feat') {
+    if (type === "feat") {
       analysis.features.push(commitData);
-    } else if (type === 'fix') {
+    } else if (type === "fix") {
       analysis.fixes.push(commitData);
-    } else if (type === 'breaking' || message.includes('BREAKING CHANGE')) {
+    } else if (type === "breaking" || message.includes("BREAKING CHANGE")) {
       analysis.breaking.push(commitData);
     } else {
       analysis.other.push(commitData);
@@ -99,7 +101,7 @@ function parseCommits(commitLog) {
 }
 
 function calculateNextVersion(currentVersion, analysis) {
-  const current = parseVersion(currentVersion || '0.0.0');
+  const current = parseVersion(currentVersion || "0.0.0");
 
   // Breaking changes = major version bump
   if (analysis.breaking.length > 0) {
@@ -138,31 +140,31 @@ function formatVersion(versionObj) {
 }
 
 function generateChangelogEntry(version, analysis) {
-  const date = new Date().toISOString().split('T')[0];
+  const date = new Date().toISOString().split("T")[0];
   let entry = `## [${version}] - ${date}\n\n`;
 
   if (analysis.breaking.length > 0) {
     entry += `### Breaking Changes\n`;
     for (const commit of analysis.breaking) {
-      entry += `- ${commit.message}${commit.scope ? ` (${commit.scope})` : ''} (${commit.hash})\n`;
+      entry += `- ${commit.message}${commit.scope ? ` (${commit.scope})` : ""} (${commit.hash})\n`;
     }
-    entry += '\n';
+    entry += "\n";
   }
 
   if (analysis.features.length > 0) {
     entry += `### Added\n`;
     for (const commit of analysis.features) {
-      entry += `- ${commit.message}${commit.scope ? ` (${commit.scope})` : ''} (${commit.hash})\n`;
+      entry += `- ${commit.message}${commit.scope ? ` (${commit.scope})` : ""} (${commit.hash})\n`;
     }
-    entry += '\n';
+    entry += "\n";
   }
 
   if (analysis.fixes.length > 0) {
     entry += `### Fixed\n`;
     for (const commit of analysis.fixes) {
-      entry += `- ${commit.message}${commit.scope ? ` (${commit.scope})` : ''} (${commit.hash})\n`;
+      entry += `- ${commit.message}${commit.scope ? ` (${commit.scope})` : ""} (${commit.hash})\n`;
     }
-    entry += '\n';
+    entry += "\n";
   }
 
   if (analysis.other.length > 0) {
@@ -170,7 +172,7 @@ function generateChangelogEntry(version, analysis) {
     for (const commit of analysis.other) {
       entry += `- ${commit}\n`;
     }
-    entry += '\n';
+    entry += "\n";
   }
 
   return entry;
@@ -180,7 +182,7 @@ async function analyzeCommits() {
   try {
     // Get the last tag
     const lastTag = getLastTag();
-    const currentVersion = lastTag ? lastTag.replace(/^v/, '') : '0.0.0';
+    const currentVersion = lastTag ? lastTag.replace(/^v/, "") : "0.0.0";
 
     // Get commits since last tag
     const commitLog = getCommitsSinceTag(lastTag);
@@ -230,7 +232,7 @@ async function analyzeCommits() {
 
 async function main() {
   const args = process.argv.slice(2);
-  const useJson = args.includes('--json');
+  const useJson = args.includes("--json");
 
   const result = await analyzeCommits();
 
@@ -247,16 +249,21 @@ async function main() {
       console.log(`  - Breaking: ${result.analysis.breaking.length}`);
       console.log(`  - Other: ${result.analysis.other.length}`);
     } else {
-      console.log('No pending changes that require a release');
+      console.log("No pending changes that require a release");
     }
   }
 }
 
 if (require.main === module) {
   main().catch((error) => {
-    console.error('Fatal error:', error.message);
+    console.error("Fatal error:", error.message);
     process.exit(1);
   });
 }
 
-module.exports = { analyzeCommits, parseCommits, calculateNextVersion, generateChangelogEntry };
+module.exports = {
+  analyzeCommits,
+  parseCommits,
+  calculateNextVersion,
+  generateChangelogEntry,
+};

@@ -33,12 +33,14 @@ Enhancement suggestions are welcome! Please create an issue with:
 ### Submitting Pull Requests
 
 1. **Fork the Repository**
+
    ```bash
    git clone https://github.com/CodeMeAPixel/FixFX.git
    cd FixFX/frontend
    ```
 
 2. **Create a Feature Branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    # or for bug fixes:
@@ -51,6 +53,7 @@ Enhancement suggestions are welcome! Please create an issue with:
    - Keep commits focused and atomic
 
 4. **Test Your Changes**
+
    ```bash
    # Install dependencies
    bun install
@@ -71,6 +74,7 @@ Enhancement suggestions are welcome! Please create an issue with:
    - Add comments for complex logic
 
 6. **Commit and Push**
+
    ```bash
    git add .
    git commit -m "feat: Add your feature description"
@@ -132,6 +136,7 @@ footer (optional)
 ```
 
 Types:
+
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation changes
@@ -142,6 +147,7 @@ Types:
 - `chore`: Maintenance tasks, dependencies, etc.
 
 Examples:
+
 ```
 feat(natives): Add search highlighting to results
 fix(artifacts): Handle null metadata in pagination
@@ -182,6 +188,7 @@ The frontend integrates with the Go backend via REST API:
 - **Development**: `http://localhost:3001` (via `NEXT_PUBLIC_API_URL` env var)
 
 Implemented services:
+
 - Artifacts API (`/api/artifacts`)
 - Natives API (`/api/natives`)
 - Contributors API (`/api/contributors`)
@@ -226,6 +233,7 @@ go run cmd/server/main.go
 Backend runs on `http://localhost:3001`
 
 Set environment variable for local testing:
+
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:3001 bun dev
 ```

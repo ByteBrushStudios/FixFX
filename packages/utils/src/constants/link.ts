@@ -1,10 +1,20 @@
-import { HomeIcon, BookOpen, CodeIcon, FileCode2, MessageSquare } from 'lucide-react';
+import {
+  HomeIcon,
+  BookOpen,
+  CodeIcon,
+  FileCode2,
+  MessageSquare,
+} from "lucide-react";
 
-export const ENV_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://fixfx.wiki";
+export const ENV_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://fixfx.wiki";
 
 // Go backend API endpoint - always use production by default
 // For local development with local backend, set API_URL environment variable to http://localhost:3001
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://core.fixfx.wiki";
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "https://core.fixfx.wiki";
 export const DISCORD_LINK = "https://discord.gg/cYauqJfnNK";
 export const GITHUB_ORG = "https://github.com/CodeMeAPixel";
 export const GITHUB_LINK = "https://github.com/CodeMeAPixel/FixFX";
@@ -15,34 +25,34 @@ export const GIT_REPO = "FixFX";
 export const GIT_SHA = "master";
 
 export const NAV_LINKS = [
-    {
-        name: "Home",
-        href: "/",
-        icon: HomeIcon,
-        external: false
-    },
-    {
-        name: "Documentation",
-        href: "/docs",
-        icon: BookOpen,
-        external: false
-    },
-    {
-        name: "Natives",
-        href: "/natives",
-        icon: CodeIcon,
-        external: false
-    },
-    {
-        name: "Artifacts",
-        href: "/artifacts",
-        icon: FileCode2,
-        external: false
-    },
-    {
-        name: "Chat",
-        href: "/chat",
-        icon: MessageSquare,
-        external: false
-    }
+  {
+    name: "Home",
+    href: "/",
+    icon: HomeIcon,
+    external: false,
+  },
+  {
+    name: "Documentation",
+    href: "/docs",
+    icon: BookOpen,
+    external: false,
+  },
+  {
+    name: "Natives",
+    href: "/natives",
+    icon: CodeIcon,
+    external: false,
+  },
+  {
+    name: "Artifacts",
+    href: "/artifacts",
+    icon: FileCode2,
+    external: false,
+  },
+  {
+    name: "Chat",
+    href: "/chat",
+    icon: MessageSquare,
+    external: false,
+  },
 ];

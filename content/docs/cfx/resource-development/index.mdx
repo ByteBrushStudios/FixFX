@@ -4,7 +4,23 @@ description: A comprehensive guide to developing resources for the CitizenFX pla
 icon: "Code"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Resource development for CitizenFX (FiveM/RedM) requires understanding the platform's architecture, APIs, and best practices. This comprehensive guide covers everything from basic setup to advanced optimization techniques.
 
@@ -13,28 +29,28 @@ Resource development for CitizenFX (FiveM/RedM) requires understanding the platf
     {
       title: "Modular Architecture",
       description: "Build reusable, maintainable resource components",
-      icon: "code"
+      icon: "code",
     },
     {
       title: "Client-Server Communication",
       description: "Implement secure network events and callbacks",
-      icon: "globe"
+      icon: "globe",
     },
     {
       title: "NUI Integration",
       description: "Create rich HTML-based user interfaces",
-      icon: "file-text"
+      icon: "file-text",
     },
     {
       title: "Database Integration",
       description: "Connect to MySQL/MariaDB for persistent data storage",
-      icon: "database"
+      icon: "database",
     },
     {
       title: "Performance Optimization",
       description: "Monitor and optimize resource usage efficiently",
-      icon: "zap"
-    }
+      icon: "zap",
+    },
   ]}
 />
 
@@ -77,6 +93,7 @@ my_resource/
 Here's a minimal resource that adds a simple command:
 
 **fxmanifest.lua**
+
 ```lua
 fx_version 'cerulean'
 game 'gta5'
@@ -90,6 +107,7 @@ server_script 'server.lua'
 ```
 
 **client.lua**
+
 ```lua
 RegisterCommand('hello', function()
     TriggerEvent('chat:addMessage', {
@@ -100,6 +118,7 @@ end)
 ```
 
 **server.lua**
+
 ```lua
 RegisterCommand('broadcast', function(source, args)
     local message = table.concat(args, " ")
@@ -169,24 +188,28 @@ Ensure reliability through proper testing and debugging:
 ## Development Workflow
 
 ### 1. Planning Phase
+
 - Define resource requirements and scope
 - Plan database schema (if needed)
 - Design user interface mockups
 - Choose appropriate frameworks and dependencies
 
 ### 2. Development Phase
+
 - Set up resource structure and manifest
 - Implement core functionality
 - Create user interfaces (if needed)
 - Add proper error handling and validation
 
 ### 3. Testing Phase
+
 - Test all functionality thoroughly
 - Performance testing with multiple players
 - Security testing for exploits
 - Cross-resource compatibility testing
 
 ### 4. Deployment Phase
+
 - Optimize for production environment
 - Create comprehensive documentation
 - Set up monitoring and logging
@@ -195,24 +218,28 @@ Ensure reliability through proper testing and debugging:
 ## Best Practices Summary
 
 ### Code Organization
+
 - Use clear, descriptive file and function names
 - Separate concerns between client and server
 - Implement proper error handling
 - Add comprehensive comments and documentation
 
 ### Performance
+
 - Use appropriate wait times in loops
 - Implement caching where beneficial
 - Monitor resource usage regularly
 - Clean up resources properly
 
 ### Security
+
 - Always validate input on the server
 - Implement proper permission systems
 - Use secure communication patterns
 - Regular security audits
 
 ### Collaboration
+
 - Use version control (Git)
 - Follow consistent coding standards
 - Write clear documentation
@@ -221,17 +248,20 @@ Ensure reliability through proper testing and debugging:
 ## Community Resources
 
 ### Official Documentation
+
 - [FiveM Docs](https://docs.fivem.net/) - Official documentation
 - [Native Reference](https://docs.fivem.net/natives/) - Game function reference
 - [Community Forums](https://forum.cfx.re/) - Community support
 
 ### Development Tools
+
 - **Editors**: Visual Studio Code with Lua extensions
 - **Version Control**: Git with GitHub/GitLab
 - **Testing**: Built-in resmon and profiler tools
 - **Debugging**: F8 console and logging systems
 
 ### Learning Resources
+
 - Study open-source resources for examples
 - Join development communities and Discord servers
 - Participate in forums and knowledge sharing

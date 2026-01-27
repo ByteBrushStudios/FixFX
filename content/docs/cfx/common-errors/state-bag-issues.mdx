@@ -4,7 +4,23 @@ description: Common issues and solutions related to state bags in CitizenFX.
 icon: "AlertTriangle"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 State bags are a powerful feature in CitizenFX for sharing data between resources, but they can sometimes cause performance issues or errors. This guide covers common state bag issues and their solutions for both server owners and developers.
 
@@ -55,7 +71,12 @@ set rateLimiter_stateBagFlood_burst 175  # Flood burst limit
 />
 
 <Callout type="info">
-  The default values are usually sufficient for most use cases. Only adjust these if you have specific needs and monitor with `resmon` to ensure stability. If you are getting spammed with state bags errors but all your resources are fine and you don't see any signs of misbehavior or abuse or the spam happens for random events like player joins, player deaths etc then you likely need to update these values.
+  The default values are usually sufficient for most use cases. Only adjust
+  these if you have specific needs and monitor with `resmon` to ensure
+  stability. If you are getting spammed with state bags errors but all your
+  resources are fine and you don't see any signs of misbehavior or abuse or the
+  spam happens for random events like player joins, player deaths etc then you
+  likely need to update these values.
 </Callout>
 
 ### 2. Monitoring and Diagnostics
@@ -106,7 +127,7 @@ local function updatePlayerState(playerId, data)
     -- Batch multiple changes
     local stateBag = Entity(playerId).state
     stateBag:set('data', data, true)  -- true for replicated
-    
+
     -- Use appropriate replication flags
     stateBag:set('position', GetEntityCoords(GetPlayerPed(playerId)), true)
 end
@@ -134,14 +155,14 @@ local function optimizeStateBag(data)
         health = data.health,
         armor = data.armor
     }
-    
+
     -- Use appropriate data types
     optimized.position = vector3(
         math.floor(data.position.x * 100) / 100,
         math.floor(data.position.y * 100) / 100,
         math.floor(data.position.z * 100) / 100
     )
-    
+
     return optimized
 end
 ```
@@ -156,16 +177,16 @@ local function safeStateBagUpdate(playerId, data)
         if not stateBag then
             error('Invalid entity')
         end
-        
+
         -- Validate data size
         local json = json.encode(data)
         if #json > 16000 then
             error('State bag too large')
         end
-        
+
         stateBag:set('data', data, true)
     end)
-    
+
     if not success then
         print('State bag update failed:', error)
         -- Implement fallback or retry logic
@@ -179,12 +200,12 @@ end
 -- Add performance monitoring to your state bag updates
 local function monitoredStateBagUpdate(playerId, data)
     local startTime = GetGameTimer()
-    
+
     -- Your state bag update code here
-    
+
     local endTime = GetGameTimer()
     local duration = endTime - startTime
-    
+
     if duration > 10 then  -- 10ms threshold
         print('Warning: State bag update took', duration, 'ms')
     end
@@ -194,6 +215,7 @@ end
 ## Best Practices
 
 ### For Server Owners
+
 1. **Regular Monitoring**
    - Use `resmon` to track state bag usage
    - Monitor network performance
@@ -213,6 +235,7 @@ end
    - Maintain resource updates
 
 ### For Developers
+
 1. **Code Optimization**
    - Batch state bag updates
    - Implement rate limiting
@@ -239,9 +262,11 @@ end
 - [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
 
 <Callout type="warning">
-  Always implement proper error handling, rate limiting, and security measures when using state bags to prevent performance issues and abuse.
+  Always implement proper error handling, rate limiting, and security measures
+  when using state bags to prevent performance issues and abuse.
 </Callout>
 
 <Callout type="info">
-  For more information about state bags and server security, refer to the CitizenFX documentation and server commands reference.
+  For more information about state bags and server security, refer to the
+  CitizenFX documentation and server commands reference.
 </Callout>

@@ -34,20 +34,31 @@ export default function NotFound() {
             Page not found
           </h2>
           <p className="text-fd-muted-foreground text-base md:text-lg leading-relaxed">
-            The page you're looking for doesn't exist or has been moved. Let's get you back on track.
+            The page you're looking for doesn't exist or has been moved. Let's
+            get you back on track.
           </p>
         </div>
 
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <Button asChild variant="default" size="lg" className="w-full sm:w-auto">
+          <Button
+            asChild
+            variant="default"
+            size="lg"
+            className="w-full sm:w-auto"
+          >
             <Link href="/" className="gap-2">
               <Home className="h-4 w-4" />
               Back to Home
             </Link>
           </Button>
 
-          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="w-full sm:w-auto"
+          >
             <Link href="/docs/core" className="gap-2">
               <Search className="h-4 w-4" />
               Browse Docs

@@ -4,7 +4,23 @@ description: Comprehensive guide to understanding and resolving database connect
 icon: "Database"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Database connection problems can cause various issues in your CitizenFX server, from player data loss to server instability. This guide will help you diagnose and resolve these issues for both server owners and developers.
 
@@ -16,21 +32,21 @@ Database connection problems can cause various issues in your CitizenFX server, 
     "Error: Failed to establish database connection",
     "Connection refused on port 3306",
     "Authentication failed for database user",
-    "Server hangs during startup"
+    "Server hangs during startup",
   ]}
   causes={[
     "Incorrect database credentials (username/password)",
     "Wrong database host or port",
     "Invalid database name",
     "Missing required permissions",
-    "Invalid connection string format"
+    "Invalid connection string format",
   ]}
   solutions={[
     "Verify database credentials in server.cfg",
     "Check database host and port are correct",
     "Ensure database user has required permissions",
     "Test connection using mysql client tool",
-    "Check firewall allows database connections"
+    "Check firewall allows database connections",
   ]}
 />
 
@@ -162,7 +178,7 @@ local function getConnection()
         print('Connection pool exhausted')
         return nil
     end
-    
+
     activeConnections = activeConnections + 1
     return MySQL.rawExecute.await
 end
@@ -195,7 +211,7 @@ end
 local function batchProcess(data)
     local batchSize = 100
     local batches = {}
-    
+
     for i = 1, #data, batchSize do
         local batch = {}
         for j = i, math.min(i + batchSize - 1, #data) do
@@ -203,7 +219,7 @@ local function batchProcess(data)
         end
         table.insert(batches, batch)
     end
-    
+
     for _, batch in ipairs(batches) do
         MySQL.transaction.await(function()
             for _, item in ipairs(batch) do
@@ -222,7 +238,7 @@ local function safeQuery(query, params)
     local success, result = pcall(function()
         return MySQL.query.await(query, params)
     end)
-    
+
     if not success then
         print('Query failed:', result)
         -- Implement retry logic
@@ -253,7 +269,7 @@ local function safeTransaction(queries)
             end
         end)
     end)
-    
+
     if not success then
         print('Transaction failed:', error)
         return false
@@ -268,16 +284,16 @@ end
 -- Add performance monitoring to queries
 local function monitoredQuery(query, params)
     local startTime = GetGameTimer()
-    
+
     local result = MySQL.query.await(query, params)
-    
+
     local endTime = GetGameTimer()
     local duration = endTime - startTime
-    
+
     if duration > 100 then  -- 100ms threshold
         print('Warning: Query took', duration, 'ms')
     end
-    
+
     return result
 end
 
@@ -293,6 +309,7 @@ end
 ## Best Practices
 
 ### For Server Owners
+
 1. **Regular Monitoring**
    - Monitor database performance
    - Check connection counts
@@ -315,6 +332,7 @@ end
    - Test recovery procedures
 
 ### For Developers
+
 1. **Code Optimization**
    - Use connection pooling
    - Implement proper error handling
@@ -345,9 +363,12 @@ end
 - [MySQL Documentation](https://dev.mysql.com/doc/)
 
 <Callout type="warning">
-  Always backup your database before making any configuration changes or running maintenance operations. Regular monitoring and maintenance are essential for optimal database performance.
+  Always backup your database before making any configuration changes or running
+  maintenance operations. Regular monitoring and maintenance are essential for
+  optimal database performance.
 </Callout>
 
 <Callout type="info">
-  For more information about database management, refer to the relevant sections in the documentation and server commands reference.
-</Callout> 
+  For more information about database management, refer to the relevant sections
+  in the documentation and server commands reference.
+</Callout>

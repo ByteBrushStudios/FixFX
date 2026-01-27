@@ -4,11 +4,29 @@ description: Usage guides and information for our Artifacts API.
 icon: "PlugZap"
 ---
 
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 <Callout type="info">
-  The Artifacts API provides access to FiveM and RedM server artifacts. Built with Go and Fiber, it offers high-performance access to FiveM/RedM server builds with comprehensive filtering, pagination, and metadata.
+  The Artifacts API provides access to FiveM and RedM server artifacts. Built
+  with Go and Fiber, it offers high-performance access to FiveM/RedM server
+  builds with comprehensive filtering, pagination, and metadata.
 </Callout>
 
 ## Overview
@@ -22,6 +40,7 @@ The Artifacts API is a high-performance service providing programmatic access to
 - Access comprehensive artifact metadata
 
 Each artifact includes:
+
 - Version numbers and commit hashes
 - Platform-specific downloads (Windows/Linux)
 - Support status (recommended, latest, active, deprecated, eol)
@@ -46,16 +65,16 @@ Retrieves paginated list of artifacts with comprehensive filtering options.
 
 #### Query Parameters
 
-| Parameter | Type | Description | Default |
-|-----------|------|-------------|---------|
-| `platform` | string | Filter by platform (`windows` or `linux`) | `windows` |
-| `status` | string | Filter by support status (`recommended`, `latest`, `active`, `deprecated`, `eol`) | All statuses |
-| `search` | string | Search by version number (partial match supported) | No search |
-| `sortBy` | string | Sort field (`version` or `date`) | `version` |
-| `sortOrder` | string | Sort direction (`asc` or `desc`) | `desc` |
-| `limit` | number | Results per page (max 100) | `10` |
-| `offset` | number | Pagination offset | `0` |
-| `includeEol` | boolean | Include End-of-Life artifacts | `true` |
+| Parameter    | Type    | Description                                                                       | Default      |
+| ------------ | ------- | --------------------------------------------------------------------------------- | ------------ |
+| `platform`   | string  | Filter by platform (`windows` or `linux`)                                         | `windows`    |
+| `status`     | string  | Filter by support status (`recommended`, `latest`, `active`, `deprecated`, `eol`) | All statuses |
+| `search`     | string  | Search by version number (partial match supported)                                | No search    |
+| `sortBy`     | string  | Sort field (`version` or `date`)                                                  | `version`    |
+| `sortOrder`  | string  | Sort direction (`asc` or `desc`)                                                  | `desc`       |
+| `limit`      | number  | Results per page (max 100)                                                        | `10`         |
+| `offset`     | number  | Pagination offset                                                                 | `0`          |
+| `includeEol` | boolean | Include End-of-Life artifacts                                                     | `true`       |
 
 #### Response Format
 
@@ -123,8 +142,8 @@ Check if an artifact version exists and get availability information.
 
 #### Query Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter | Type   | Description             |
+| --------- | ------ | ----------------------- |
 | `version` | string | Version number to check |
 
 #### Response Format
@@ -156,10 +175,10 @@ Get changelog information comparing two artifact versions.
 
 #### Query Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `base` | string | Base/older version |
-| `head` | string | Head/newer version |
+| Parameter | Type   | Description        |
+| --------- | ------ | ------------------ |
+| `base`    | string | Base/older version |
+| `head`    | string | Head/newer version |
 
 #### Response Format
 
@@ -178,4 +197,3 @@ Get changelog information comparing two artifact versions.
   "message": "Use GitHub API to fetch detailed commit history"
 }
 ```
-

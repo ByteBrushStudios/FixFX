@@ -107,7 +107,9 @@ export async function Contributors() {
                     </div>
                     {contributor.contributions > 0 && (
                       <div className="absolute -bottom-1 -right-1 flex h-5 w-5 md:h-6 md:w-6 items-center justify-center rounded-full bg-blue-500 text-[10px] md:text-xs font-medium text-white shadow-lg">
-                        {contributor.contributions > 99 ? "99+" : contributor.contributions}
+                        {contributor.contributions > 99
+                          ? "99+"
+                          : contributor.contributions}
                       </div>
                     )}
                   </div>

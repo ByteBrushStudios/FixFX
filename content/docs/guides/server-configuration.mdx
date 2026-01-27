@@ -4,7 +4,23 @@ description: Complete guide to configuring and optimizing your FiveM server.
 icon: "Settings"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Proper server configuration is essential for optimal performance, security, and player experience. This comprehensive guide covers all aspects of FiveM server configuration.
 
@@ -57,17 +73,20 @@ set sv_debugqueue true
 
 ### Essential Configuration Sections
 
-<CheckList items={[
-  "Configure server identity (hostname, project name, description)",
-  "Set up network endpoints (TCP/UDP on port 30120)",
-  "Configure player limits and queue settings",
-  "Set up database connection string",
-  "Configure admin permissions and ACE rules",
-  "Enable essential resources (mapmanager, chat, etc.)",
-  "Set security-related convars"
-]} />
+<CheckList
+  items={[
+    "Configure server identity (hostname, project name, description)",
+    "Set up network endpoints (TCP/UDP on port 30120)",
+    "Configure player limits and queue settings",
+    "Set up database connection string",
+    "Configure admin permissions and ACE rules",
+    "Enable essential resources (mapmanager, chat, etc.)",
+    "Set security-related convars",
+  ]}
+/>
 
 #### Server Identity
+
 ```bash
 # Server display information
 sv_hostname "^2My Server ^7| ^3Custom RP ^7| ^1discord.gg/myserver"
@@ -81,6 +100,7 @@ sets banner_connecting "https://myserver.com/connecting.png"
 ```
 
 #### Network Configuration
+
 ```bash
 # Primary endpoints
 endpoint_add_tcp "0.0.0.0:30120"
@@ -96,6 +116,7 @@ endpoint_add_udp "[::]:30120"
 ```
 
 #### Player Limits
+
 ```bash
 # Maximum players
 sv_maxclients 64
@@ -144,7 +165,10 @@ set sv_pureLevel 1             # Resource integrity checking
 ```
 
 <Callout type="info">
-  Many server convars change between FiveM versions. Always check the [official FiveM documentation](https://docs.fivem.net/docs/server-manual/server-commands/) for the most current options.
+  Many server convars change between FiveM versions. Always check the [official
+  FiveM
+  documentation](https://docs.fivem.net/docs/server-manual/server-commands/) for
+  the most current options.
 </Callout>
 
 ### Database Configuration
@@ -327,7 +351,8 @@ set onesync on
 ```
 
 <Callout type="info">
-  OneSync configuration options may change. Always refer to the official FiveM documentation for current settings.
+  OneSync configuration options may change. Always refer to the official FiveM
+  documentation for current settings.
 </Callout>
 
 ### Voice Chat Configuration
@@ -518,7 +543,7 @@ echo "Validating FiveM server configuration..."
 check_setting() {
     local setting="$1"
     local description="$2"
-    
+
     if grep -q "^$setting" "$CONFIG_FILE"; then
         echo "✅ $description"
     else

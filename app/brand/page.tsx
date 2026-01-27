@@ -15,7 +15,10 @@ export default function BrandPage() {
       <div className="relative z-10 flex flex-col items-center gap-6 sm:gap-8 w-full max-w-2xl">
         {/* Icon */}
         <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-fd-card/30 backdrop-blur-sm border border-fd-border/50">
-          <FixFXIcon className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64" stroke="#f8fafc" />
+          <FixFXIcon
+            className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64"
+            stroke="#f8fafc"
+          />
         </div>
 
         {/* Title */}
@@ -30,52 +33,71 @@ export default function BrandPage() {
 
         {/* Subtitle */}
         <p className="text-fd-muted-foreground text-base sm:text-lg text-center max-w-md px-4">
-          Your comprehensive resource for FiveM, RedM, and the CitizenFX ecosystem.
+          Your comprehensive resource for FiveM, RedM, and the CitizenFX
+          ecosystem.
         </p>
 
         {/* Brand Guidelines */}
         <div className="w-full mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl bg-fd-card/20 backdrop-blur-sm border border-fd-border/30">
-          <h2 className="text-lg sm:text-xl font-semibold text-fd-foreground mb-4 text-center">Brand Guidelines</h2>
-          
+          <h2 className="text-lg sm:text-xl font-semibold text-fd-foreground mb-4 text-center">
+            Brand Guidelines
+          </h2>
+
           {/* Color Palette */}
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-fd-muted-foreground mb-3">Primary Colors</h3>
+            <h3 className="text-sm font-medium text-fd-muted-foreground mb-3">
+              Primary Colors
+            </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="flex flex-col items-center gap-2">
                 <div className="w-full h-12 sm:h-16 rounded-lg bg-blue-600 border border-fd-border/30" />
-                <span className="text-xs text-fd-muted-foreground">#2563EB</span>
+                <span className="text-xs text-fd-muted-foreground">
+                  #2563EB
+                </span>
               </div>
               <div className="flex flex-col items-center gap-2">
                 <div className="w-full h-12 sm:h-16 rounded-lg bg-blue-500 border border-fd-border/30" />
-                <span className="text-xs text-fd-muted-foreground">#3B82F6</span>
+                <span className="text-xs text-fd-muted-foreground">
+                  #3B82F6
+                </span>
               </div>
               <div className="flex flex-col items-center gap-2">
                 <div className="w-full h-12 sm:h-16 rounded-lg bg-cyan-500 border border-fd-border/30" />
-                <span className="text-xs text-fd-muted-foreground">#06B6D4</span>
+                <span className="text-xs text-fd-muted-foreground">
+                  #06B6D4
+                </span>
               </div>
               <div className="flex flex-col items-center gap-2">
                 <div className="w-full h-12 sm:h-16 rounded-lg bg-[#0a0a0f] border border-fd-border/50" />
-                <span className="text-xs text-fd-muted-foreground">#0A0A0F</span>
+                <span className="text-xs text-fd-muted-foreground">
+                  #0A0A0F
+                </span>
               </div>
             </div>
           </div>
 
           {/* Typography */}
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-fd-muted-foreground mb-3">Typography</h3>
+            <h3 className="text-sm font-medium text-fd-muted-foreground mb-3">
+              Typography
+            </h3>
             <div className="p-3 sm:p-4 rounded-lg bg-fd-background/50 border border-fd-border/30">
               <p className="text-sm text-fd-foreground">
-                <span className="font-semibold">Font Family:</span> Inter, system-ui, sans-serif
+                <span className="font-semibold">Font Family:</span> Inter,
+                system-ui, sans-serif
               </p>
               <p className="text-sm text-fd-foreground mt-2">
-                <span className="font-semibold">Logo Text:</span> &quot;Fix&quot; in gradient, &quot;FX&quot; in foreground
+                <span className="font-semibold">Logo Text:</span>{" "}
+                &quot;Fix&quot; in gradient, &quot;FX&quot; in foreground
               </p>
             </div>
           </div>
 
           {/* Usage Notes */}
           <div>
-            <h3 className="text-sm font-medium text-fd-muted-foreground mb-3">Usage Notes</h3>
+            <h3 className="text-sm font-medium text-fd-muted-foreground mb-3">
+              Usage Notes
+            </h3>
             <ul className="text-sm text-fd-muted-foreground space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-0.5">✓</span>
@@ -119,7 +141,14 @@ export default function BrandPage() {
 
         {/* SVG Download */}
         <p className="text-xs text-fd-muted-foreground text-center">
-          Need a different format? <a href="mailto:contact@fixfx.dev" className="text-fd-primary hover:underline">Contact us</a> for SVG or other formats.
+          Need a different format?{" "}
+          <a
+            href="mailto:contact@fixfx.dev"
+            className="text-fd-primary hover:underline"
+          >
+            Contact us
+          </a>{" "}
+          for SVG or other formats.
         </p>
       </div>
     </div>

@@ -28,7 +28,7 @@ node .github/scripts/get-version.js
 
 ```typescript
 // Async import and use
-import { getVersion } from '../.github/scripts/get-version.js';
+import { getVersion } from "../.github/scripts/get-version.js";
 
 const version = await getVersion();
 console.log(`FixFX v${version}`);
@@ -83,6 +83,7 @@ npm run version  # outputs: 1.1.0
 ## Fallback Behavior
 
 If no releases exist yet:
+
 - Script returns `0.0.0-unknown`
 - Useful during initial development
 - Once you create first release, it auto-discovers
@@ -110,12 +111,14 @@ GITHUB_TOKEN=your_token npm run version
 ## When to Use This Approach
 
 ✅ **Good for:**
+
 - Open source projects with public releases
 - Teams that release regularly
 - Reducing merge conflicts on version changes
 - Keeping version in one place (GitHub)
 
 ❌ **Not ideal for:**
+
 - Private packages without public releases
 - High-frequency build systems (performance sensitive)
 - Offline-first development (no API access)

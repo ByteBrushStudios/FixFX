@@ -4,7 +4,23 @@ description: Complete guide to managing FiveM server artifacts, updates, and dep
 icon: "Download"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Keeping your FiveM server artifacts up-to-date is crucial for security, performance, and compatibility. This guide covers everything about managing server artifacts, performing updates, and handling deployments.
 
@@ -22,13 +38,23 @@ FiveM artifacts are the compiled server binaries that power your FiveM server. T
 
 ### Artifact Channels
 
-<PropertyCard title="Recommended (Stable)" content="Thoroughly tested builds for production servers. Updated weekly as needed. Maximum stability and compatibility guaranteed." />
+<PropertyCard
+  title="Recommended (Stable)"
+  content="Thoroughly tested builds for production servers. Updated weekly as needed. Maximum stability and compatibility guaranteed."
+/>
 
-<PropertyCard title="Optional (Beta)" content="Latest features and improvements, updated 2-3 times weekly. Good for testing before production deployment." />
+<PropertyCard
+  title="Optional (Beta)"
+  content="Latest features and improvements, updated 2-3 times weekly. Good for testing before production deployment."
+/>
 
-<PropertyCard title="Latest (Canary/Experimental)" content="Bleeding-edge development builds, not recommended for production. For developers and testers evaluating new features." />
+<PropertyCard
+  title="Latest (Canary/Experimental)"
+  content="Bleeding-edge development builds, not recommended for production. For developers and testers evaluating new features."
+/>
 
 **Recommended (Stable)**
+
 - Thoroughly tested builds
 - Recommended for production servers
 - Updated weekly or as needed
@@ -36,6 +62,7 @@ FiveM artifacts are the compiled server binaries that power your FiveM server. T
 - Check https://runtime.fivem.net for current build
 
 **Optional (Beta)**
+
 - Latest features and improvements
 - Updated 2-3 times per week
 - May contain minor bugs or breaking changes
@@ -43,6 +70,7 @@ FiveM artifacts are the compiled server binaries that power your FiveM server. T
 - Usually 1-2 weeks ahead of recommended
 
 **Latest (Canary/Experimental)**
+
 - Bleeding-edge development builds
 - Daily or multiple updates per day
 - Not recommended for production
@@ -90,39 +118,44 @@ print('Build number:', buildNumber)
 
 ## Manual Update Process
 
-<StepList steps={[
-  "Visit runtime.fivem.net and identify latest recommended build",
-  "Stop server gracefully using stop command",
-  "Download appropriate artifacts (Windows or Linux)",
-  "Back up current server.exe and runtime files",
-  "Extract new artifacts to server directory",
-  "Verify all files are in place",
-  "Restart server and monitor logs for errors"
-]} />
+<StepList
+  steps={[
+    "Visit runtime.fivem.net and identify latest recommended build",
+    "Stop server gracefully using stop command",
+    "Download appropriate artifacts (Windows or Linux)",
+    "Back up current server.exe and runtime files",
+    "Extract new artifacts to server directory",
+    "Verify all files are in place",
+    "Restart server and monitor logs for errors",
+  ]}
+/>
 
 ### Windows Update Procedure
 
 1. **Download Latest Artifacts**
+
    ```
    Windows: https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/
    Linux: https://runtime.fivem.net/artifacts/fivem/build_proot_linux/master/
-   
+
    Select: Latest recommended build (look for green "Recommended" badge)
    Download: server.zip or server.7z
    ```
 
 2. **Prepare for Update**
+
    ```batch
    # Stop the server gracefully
    # In txAdmin: Server → Stop
    # Or press Ctrl+C in console
-   
+
    # Backup current artifacts
    mkdir backup\%date:~-4,4%%date:~-10,2%%date:~-7,2%
    xcopy /E /I server-files backup\%date:~-4,4%%date:~-10,2%%date:~-7,2%
    ```
 
 3. **Extract New Artifacts**
+
    ```batch
    # Extract to temporary folder first
    # Compare with existing files
@@ -130,6 +163,7 @@ print('Build number:', buildNumber)
    ```
 
 4. **Update Configuration**
+
    ```batch
    # Check for new convars or changes
    # Update server.cfg if needed
@@ -191,8 +225,8 @@ $ProcessName = "FXServer"
 try {
     # Get latest build number
     $WebResponse = Invoke-WebRequest -Uri $ArtifactURL
-    $LatestBuild = $WebResponse.Content | Select-String -Pattern 'href="(\d+-[a-f0-9]+)/"' | 
-                   ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } | 
+    $LatestBuild = $WebResponse.Content | Select-String -Pattern 'href="(\d+-[a-f0-9]+)/"' |
+                   ForEach-Object { $_.Matches } | ForEach-Object { $_.Groups[1].Value } |
                    Sort-Object | Select-Object -Last 1
 
     if (-not $LatestBuild) {
@@ -406,7 +440,7 @@ CMD ["./FXServer", "+exec", "server.cfg"]
 
 ```yaml
 # docker-compose.yml with auto-update
-version: '3.8'
+version: "3.8"
 
 services:
   fivem-server:
@@ -536,27 +570,27 @@ def send_update_notification(old_version, new_version):
     sender_email = "your-email@gmail.com"
     sender_password = "your-app-password"
     recipient_email = "admin@yourserver.com"
-    
+
     # Create message
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = recipient_email
     msg['Subject'] = f"FiveM Server Update - {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-    
+
     body = f"""
     FiveM Server Update Completed
-    
+
     Server: My FiveM Server
     Previous Version: {old_version}
     New Version: {new_version}
     Update Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
     Status: Server is online and running
-    
+
     This is an automated notification.
     """
-    
+
     msg.attach(MIMEText(body, 'plain'))
-    
+
     # Send email
     try:
         server = smtplib.SMTP(smtp_server, smtp_port)
@@ -661,7 +695,7 @@ echo "Server testing completed"
 local function checkResourceCompatibility()
     local issues = {}
     local resources = {}
-    
+
     -- Get all started resources
     for i = 0, GetNumResources() - 1 do
         local resourceName = GetResourceByFindIndex(i)
@@ -669,9 +703,9 @@ local function checkResourceCompatibility()
             table.insert(resources, resourceName)
         end
     end
-    
+
     print(string.format('Checking %d resources for compatibility...', #resources))
-    
+
     for _, resource in ipairs(resources) do
         local manifest = LoadResourceFile(resource, 'fxmanifest.lua')
         if manifest then
@@ -679,7 +713,7 @@ local function checkResourceCompatibility()
             if manifest:find('Citizen%.CreateThread') and not manifest:find('CreateThread') then
                 table.insert(issues, string.format('%s: Using deprecated Citizen.CreateThread', resource))
             end
-            
+
             -- Check fx_version
             local fxVersion = manifest:match('fx_version%s+[\'"]([^\'"]+)[\'"]')
             if fxVersion and fxVersion ~= 'cerulean' and fxVersion ~= 'bodacious' then
@@ -687,7 +721,7 @@ local function checkResourceCompatibility()
             end
         end
     end
-    
+
     if #issues > 0 then
         print('Compatibility issues found:')
         for _, issue in ipairs(issues) do
@@ -710,6 +744,7 @@ end)
 ### Common Update Issues
 
 **Download Failures**
+
 ```bash
 # Check connectivity
 curl -I https://runtime.fivem.net/
@@ -722,6 +757,7 @@ dig @8.8.8.8 runtime.fivem.net
 ```
 
 **Permission Issues**
+
 ```bash
 # Fix file permissions
 sudo chown -R fivem:fivem /opt/fivem/server
@@ -733,6 +769,7 @@ sudo restorecon -Rv /opt/fivem/server
 ```
 
 **Service Start Failures**
+
 ```bash
 # Check service status
 sudo systemctl status fivem
@@ -758,12 +795,12 @@ if pgrep -f "FXServer" > /dev/null; then
     echo "✅ Server is running"
 else
     echo "❌ Server is not running"
-    
+
     # Try to start server
     echo "Attempting to start server..."
     sudo systemctl start fivem
     sleep 10
-    
+
     if pgrep -f "FXServer" > /dev/null; then
         echo "✅ Server started successfully"
     else

@@ -82,7 +82,7 @@ export function useFetch<T, E = string>(
   // Re-fetch when URL changes or when deps change
   useEffect(() => {
     fetchData();
-    
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();

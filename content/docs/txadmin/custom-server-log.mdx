@@ -16,7 +16,12 @@ This feature allows you to add logging for custom commands like `/car` and `/tp`
   <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
   <div>
     <p className="font-semibold text-blue-500 mb-1">Event Trigger</p>
-    <p className="text-sm text-blue-500/90">Add the following event call inside your command function: `TriggerServerEvent('txaLogger:CommandExecuted', rawCommand)` where `rawCommand` is the full command with parameters. You don't NEED to pass `rawCommand`, you can edit this string or pass anything you want.</p>
+    <p className="text-sm text-blue-500/90">
+      Add the following event call inside your command function:
+      `TriggerServerEvent('txaLogger:CommandExecuted', rawCommand)` where
+      `rawCommand` is the full command with parameters. You don't NEED to pass
+      `rawCommand`, you can edit this string or pass anything you want.
+    </p>
   </div>
 </div>
 

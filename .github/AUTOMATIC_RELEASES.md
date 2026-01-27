@@ -73,7 +73,7 @@ git commit -m "docs: improve README"
 The system looks at commits since the **last GitHub release tag** and:
 
 - Counts **breaking changes** → Major version bump
-- Counts **features** → Minor version bump  
+- Counts **features** → Minor version bump
 - Counts **fixes** → Patch version bump
 - Ignores **chore/docs/test** commits
 
@@ -108,17 +108,21 @@ The changelog is automatically generated from your commit messages:
 ## [1.1.0] - 2026-01-26
 
 ### Breaking Changes
+
 - Remove deprecated authentication method
 
 ### Added
+
 - Add hosting provider directory structure
 - Add provider guidelines documentation
 
 ### Fixed
+
 - Correct schema validation reference
 ```
 
 This appears in:
+
 1. **CHANGELOG.md** - Updated automatically
 2. **GitHub Release Notes** - Added automatically
 
@@ -164,6 +168,7 @@ git commit -m "feat: add new provider support"
 ### Release created but CHANGELOG not updated
 
 The CHANGELOG update happens in the workflow. Check:
+
 1. Workflow logs in GitHub Actions
 2. That commits use conventional format
 3. That at least one `feat:`, `fix:`, or `breaking:` commit exists
@@ -184,6 +189,7 @@ Make sure the tag follows `vMAJOR.MINOR.PATCH` format.
 For the best auto-generated changelogs:
 
 ### Good commit messages
+
 ```
 feat: add provider guidelines documentation
 feat(providers): reorganize directory structure
@@ -192,6 +198,7 @@ breaking: remove deprecated API endpoints
 ```
 
 ### Bad commit messages
+
 ```
 update stuff
 fixed things
@@ -204,6 +211,7 @@ The commit message after the type/scope is included in the changelog, so keep th
 ## GitHub Actions Secrets
 
 No additional secrets needed! The workflow uses the default `GITHUB_TOKEN` which has permission to:
+
 - Read commits and tags
 - Create releases
 - Push changes back to the repository

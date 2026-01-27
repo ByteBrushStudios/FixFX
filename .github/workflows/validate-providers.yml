@@ -3,7 +3,7 @@ name: Validate Provider Files
 on:
   pull_request:
     paths:
-      - 'frontend/packages/providers/**/*.json'
+      - "packages/providers/**/*.json"
 
 jobs:
   validate:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install ajv-cli
         run: npm install -g ajv-cli ajv-formats
@@ -29,7 +29,7 @@ jobs:
         run: |
           SCHEMA_FILE="packages/providers/schema.json"
           ERRORS=0
-          
+
           # Find all provider.json files in subdirectories
           for file in packages/providers/*/provider.json; do
             # Skip if file doesn't exist (no providers)
@@ -56,13 +56,13 @@ jobs:
               ERRORS=$((ERRORS + 1))
             fi
           done
-          
+
           if [ $ERRORS -gt 0 ]; then
             echo ""
             echo "❌ $ERRORS error(s) found in provider files"
             exit 1
           fi
-          
+
           echo ""
           echo "✅ All provider files are valid!"
 
@@ -70,7 +70,7 @@ jobs:
         run: |
           ERRORS=0
           IDS_FILE=$(mktemp)
-          
+
           # Extract all IDs from provider.json files
           for file in packages/providers/*/provider.json; do
             if [ -f "$file" ]; then
@@ -80,7 +80,7 @@ jobs:
               fi
             fi
           done
-          
+
           # Check for duplicates
           if [ -f "$IDS_FILE" ]; then
             DUPLICATES=$(sort "$IDS_FILE" | uniq -d)
@@ -95,7 +95,7 @@ jobs:
             
             rm "$IDS_FILE"
           fi
-          
+
           if [ $ERRORS -gt 0 ]; then
             exit 1
           fi
@@ -103,7 +103,7 @@ jobs:
       - name: Validate URLs
         run: |
           ERRORS=0
-          
+
           # Check all provider.json files
           for file in packages/providers/*/provider.json; do
             if [ ! -f "$file" ]; then
@@ -125,17 +125,17 @@ jobs:
               fi
             done <<< "$URLS"
           done
-          
+
           if [ $ERRORS -gt 0 ]; then
             exit 1
           fi
-          
+
           echo "✅ All URLs are properly formatted"
 
       - name: Verify directory structure
         run: |
           ERRORS=0
-          
+
           # Check that each provider directory has a provider.json
           for dir in packages/providers/*/; do
             dirname=$(basename "$dir")
@@ -157,10 +157,10 @@ jobs:
               fi
             fi
           done
-          
+
           if [ $ERRORS -gt 0 ]; then
             echo ""
             echo "⚠️  $ERRORS warning(s) found (non-fatal)"
           fi
-          
+
           echo "✅ Directory structure verified"

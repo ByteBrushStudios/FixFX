@@ -1,7 +1,15 @@
 "use client";
 
 import { BorderBeam } from "@ui/components";
-import { Code, Server, Database, Globe, Bug, Users, ArrowUpRight } from "lucide-react";
+import {
+  Code,
+  Server,
+  Database,
+  Globe,
+  Bug,
+  Users,
+  ArrowUpRight,
+} from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
@@ -9,42 +17,48 @@ const features = [
   {
     icon: Server,
     title: "Server Management",
-    description: "Setup, maintenance, and optimization guides for FiveM and RedM server owners.",
+    description:
+      "Setup, maintenance, and optimization guides for FiveM and RedM server owners.",
     href: "/docs/guides/server-configuration",
     color: "blue",
   },
   {
     icon: Code,
     title: "Resource Development",
-    description: "Lua, JavaScript and C# tutorials for creating custom CitizenFX resources.",
+    description:
+      "Lua, JavaScript and C# tutorials for creating custom CitizenFX resources.",
     href: "/docs/cfx/resource-development",
     color: "purple",
   },
   {
     icon: Database,
     title: "Database Integration",
-    description: "MySQL, MongoDB and framework integration solutions for server data persistence.",
+    description:
+      "MySQL, MongoDB and framework integration solutions for server data persistence.",
     href: "/docs/guides/database-setup",
     color: "green",
   },
   {
     icon: Bug,
     title: "Error Solutions",
-    description: "Fixes for artifacts, client crashes, server errors, and networking issues.",
+    description:
+      "Fixes for artifacts, client crashes, server errors, and networking issues.",
     href: "/docs/cfx/common-errors",
     color: "red",
   },
   {
     icon: Globe,
     title: "Multiplayer Frameworks",
-    description: "ESX, QBCore, vRP, and other popular FiveM/RedM framework documentation.",
+    description:
+      "ESX, QBCore, vRP, and other popular FiveM/RedM framework documentation.",
     href: "/docs/frameworks",
     color: "cyan",
   },
   {
     icon: Users,
     title: "Player Guides",
-    description: "Installation help, mod management, and troubleshooting for players.",
+    description:
+      "Installation help, mod management, and troubleshooting for players.",
     href: "/docs/cfx/faq",
     color: "orange",
   },
@@ -86,7 +100,8 @@ export function Features() {
           FiveM & RedM Solutions
         </h2>
         <p className="text-fd-muted-foreground mt-4 max-w-2xl mx-auto text-base md:text-lg">
-          Comprehensive guides for server owners, developers, and players in the CitizenFX ecosystem.
+          Comprehensive guides for server owners, developers, and players in the
+          CitizenFX ecosystem.
         </p>
       </motion.div>
 

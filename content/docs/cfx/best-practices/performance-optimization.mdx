@@ -4,18 +4,36 @@ description: Comprehensive guide to optimizing performance in CitizenFX servers 
 icon: "Zap"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 Optimizing performance is crucial for maintaining a smooth and enjoyable experience for your players. This guide covers essential practices for optimizing your CitizenFX server and resources.
 
 ## Server Configuration
 
-<CheckList items={[
-  "Set appropriate network rate limits for your player count",
-  "Configure per-client rate limits to prevent abuse",
-  "Monitor state bag rates to avoid synchronization issues",
-  "Regularly test network settings under load"
-]} />
+<CheckList
+  items={[
+    "Set appropriate network rate limits for your player count",
+    "Configure per-client rate limits to prevent abuse",
+    "Monitor state bag rates to avoid synchronization issues",
+    "Regularly test network settings under load",
+  ]}
+/>
 
 ### 1. Network Optimization
 
@@ -47,13 +65,13 @@ local THREAD_INTERVAL = 1000  -- 1 second
 
 local function startOptimizedThread(name, callback)
     if activeThreads[name] then return end
-    
+
     activeThreads[name] = CreateThread(function()
         while true do
             local startTime = GetGameTimer()
             callback()
             local endTime = GetGameTimer()
-            
+
             -- Dynamic sleep based on execution time
             local sleepTime = math.max(0, THREAD_INTERVAL - (endTime - startTime))
             Wait(sleepTime)
@@ -72,11 +90,11 @@ local CACHE_TTL = 300000  -- 5 minutes
 local function getCachedData(key)
     local now = GetGameTimer()
     local cached = cache[key]
-    
+
     if cached and now - cached.timestamp < CACHE_TTL then
         return cached.data
     end
-    
+
     local data = fetchData(key)
     cache[key] = {
         data = data,
@@ -109,7 +127,7 @@ local function getPlayerData(playerId)
     -- Use prepared statements
     local query = 'SELECT * FROM players WHERE identifier = ?'
     local params = {playerId}
-    
+
     -- Use appropriate indexing
     local result = MySQL.query.await(query, params)
     return result[1]
@@ -119,11 +137,11 @@ end
 local function updateMultiplePlayers(updates)
     local query = 'UPDATE players SET money = ? WHERE identifier = ?'
     local params = {}
-    
+
     for _, update in ipairs(updates) do
         table.insert(params, {update.money, update.identifier})
     end
-    
+
     MySQL.transaction.await(query, params)
 end
 ```
@@ -142,14 +160,14 @@ local function getConnection()
             return conn
         end
     end
-    
+
     if #connectionPool < MAX_CONNECTIONS then
         local conn = MySQL.createConnection()
         conn.inUse = true
         table.insert(connectionPool, conn)
         return conn
     end
-    
+
     return nil
 end
 ```
@@ -167,7 +185,7 @@ local function updateEntityRender(entity)
     local playerCoords = GetEntityCoords(PlayerPedId())
     local entityCoords = GetEntityCoords(entity)
     local distance = #(playerCoords - entityCoords)
-    
+
     if distance <= RENDER_DISTANCE then
         if not entities[entity] then
             -- Enable rendering
@@ -256,9 +274,11 @@ end)
 - [FiveM Developer Documentation](https://docs.fivem.net/docs/scripting-manual/introduction/)
 
 <Callout type="warning">
-  Always test performance optimizations in a development environment before deploying to production.
+  Always test performance optimizations in a development environment before
+  deploying to production.
 </Callout>
 
 <Callout type="info">
-  For more information about specific aspects of performance optimization, refer to the relevant sections in the documentation.
-</Callout> 
+  For more information about specific aspects of performance optimization, refer
+  to the relevant sections in the documentation.
+</Callout>

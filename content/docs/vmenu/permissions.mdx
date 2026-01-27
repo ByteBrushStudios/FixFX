@@ -4,42 +4,99 @@ description: Complete guide to configuring vMenu permissions using FiveM's ACE a
 icon: "Shield"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+  RoleCard,
+  PermissionCodeBlock,
+  KeyboardShortcutTable,
+  ActionTable,
+  InfoBanner,
+  CategoryGrid,
+} from "@ui/components/mdx-components";
 
 ## Overview
 
 vMenu uses FiveM's built-in **ACE (Access Control Entry)** and **Principal** system for permissions. This powerful system allows granular control over who can access specific features.
 
 <InfoBanner type="error" title="Critical Security Warning">
-By default, vMenu may grant all permissions to everyone. You **MUST** configure permissions properly before making your server public to prevent abuse.
+  By default, vMenu may grant all permissions to everyone. You **MUST**
+  configure permissions properly before making your server public to prevent
+  abuse.
 </InfoBanner>
 
 ## Permission System Basics
 
 ### Key Concepts
 
-<DefinitionList items={[
-  { term: "ACE", description: "Access Control Entry - grants or denies a specific permission to a principal" },
-  { term: "Principal", description: "An entity that can have ACEs assigned (player, group, identifier)" },
-  { term: "Group", description: "Collection of principals with shared permissions for easier management" },
-  { term: "Identifier", description: "Unique player identifier (Steam, License, Discord, FiveM, etc.)" }
-]} />
+<DefinitionList
+  items={[
+    {
+      term: "ACE",
+      description:
+        "Access Control Entry - grants or denies a specific permission to a principal",
+    },
+    {
+      term: "Principal",
+      description:
+        "An entity that can have ACEs assigned (player, group, identifier)",
+    },
+    {
+      term: "Group",
+      description:
+        "Collection of principals with shared permissions for easier management",
+    },
+    {
+      term: "Identifier",
+      description:
+        "Unique player identifier (Steam, License, Discord, FiveM, etc.)",
+    },
+  ]}
+/>
 
 ### How It Works
 
-<StepList steps={[
-  { title: "Player Identification", description: "Players connect with identifiers (steam:, license:, discord:, etc.)" },
-  { title: "Group Assignment", description: "Identifiers can be added to groups (admin, moderator, vip)" },
-  { title: "Permission Inheritance", description: "Groups (or individual identifiers) receive ACE permissions" },
-  { title: "Access Control", description: "vMenu checks permissions when players access features" }
-]} />
+<StepList
+  steps={[
+    {
+      title: "Player Identification",
+      description:
+        "Players connect with identifiers (steam:, license:, discord:, etc.)",
+    },
+    {
+      title: "Group Assignment",
+      description: "Identifiers can be added to groups (admin, moderator, vip)",
+    },
+    {
+      title: "Permission Inheritance",
+      description: "Groups (or individual identifiers) receive ACE permissions",
+    },
+    {
+      title: "Access Control",
+      description: "vMenu checks permissions when players access features",
+    },
+  ]}
+/>
 
 ## Permission Nodes
 
 ### Complete Permission List
 
-<PermissionCodeBlock 
-  title="Administrative Permissions" 
+<PermissionCodeBlock
+  title="Administrative Permissions"
   prefix="vMenu."
   permissions={[
     { permission: "Everything", description: "Full access to all features" },
@@ -48,101 +105,259 @@ By default, vMenu may grant all permissions to everyone. You **MUST** configure 
     { permission: "God", description: "God mode/invincibility" },
     { permission: "Report", description: "Receive and manage reports" },
     { permission: "Teleport", description: "Teleport menu access" },
-    { permission: "Spectate", description: "Spectate other players" }
+    { permission: "Spectate", description: "Spectate other players" },
   ]}
 />
 
-<PermissionCodeBlock 
-  title="Player Management" 
+<PermissionCodeBlock
+  title="Player Management"
   prefix="vMenu."
   permissions={[
     { permission: "OnlinePlayers", description: "View online players menu" },
     { permission: "OnlinePlayers.All", description: "Full player management" },
-    { permission: "OnlinePlayers.Teleport", description: "Teleport to players" },
-    { permission: "OnlinePlayers.TeleportToPlayer", description: "Bring players to you" },
+    {
+      permission: "OnlinePlayers.Teleport",
+      description: "Teleport to players",
+    },
+    {
+      permission: "OnlinePlayers.TeleportToPlayer",
+      description: "Bring players to you",
+    },
     { permission: "OnlinePlayers.Summon", description: "Summon players" },
     { permission: "OnlinePlayers.Kill", description: "Kill players" },
     { permission: "OnlinePlayers.Kick", description: "Kick players" },
     { permission: "OnlinePlayers.TempBan", description: "Temporary ban" },
     { permission: "OnlinePlayers.PermBan", description: "Permanent ban" },
     { permission: "OnlinePlayers.Unban", description: "Unban players" },
-    { permission: "OnlinePlayers.Freeze", description: "Freeze/unfreeze players" },
-    { permission: "OnlinePlayers.ViewPlayerInventory", description: "View inventories" },
-    { permission: "OnlinePlayers.RemovePlayerWeapons", description: "Remove weapons" },
-    { permission: "OnlinePlayers.SeePlayerIdentifiers", description: "View player identifiers" }
+    {
+      permission: "OnlinePlayers.Freeze",
+      description: "Freeze/unfreeze players",
+    },
+    {
+      permission: "OnlinePlayers.ViewPlayerInventory",
+      description: "View inventories",
+    },
+    {
+      permission: "OnlinePlayers.RemovePlayerWeapons",
+      description: "Remove weapons",
+    },
+    {
+      permission: "OnlinePlayers.SeePlayerIdentifiers",
+      description: "View player identifiers",
+    },
   ]}
 />
 
-<PermissionCodeBlock 
-  title="Player Options (Self)" 
+<PermissionCodeBlock
+  title="Player Options (Self)"
   prefix="vMenu."
   permissions={[
     { permission: "PlayerOptions", description: "Access player options menu" },
     { permission: "PlayerOptions.All", description: "All player options" },
     { permission: "PlayerOptions.God", description: "Toggle god mode" },
-    { permission: "PlayerOptions.Invisible", description: "Toggle invisibility" },
+    {
+      permission: "PlayerOptions.Invisible",
+      description: "Toggle invisibility",
+    },
     { permission: "PlayerOptions.FastRun", description: "Enable fast running" },
-    { permission: "PlayerOptions.FastSwim", description: "Enable fast swimming" },
+    {
+      permission: "PlayerOptions.FastSwim",
+      description: "Enable fast swimming",
+    },
     { permission: "PlayerOptions.SuperJump", description: "Enable super jump" },
-    { permission: "PlayerOptions.NoRagdoll", description: "Disable ragdoll physics" },
-    { permission: "PlayerOptions.NeverWanted", description: "Disable wanted level" },
-    { permission: "PlayerOptions.SetWanted", description: "Set custom wanted level" },
-    { permission: "PlayerOptions.IgnoredByPolice", description: "Toggle police ignore" },
-    { permission: "PlayerOptions.StayInVehicle", description: "Stay in vehicle when shot" },
-    { permission: "PlayerOptions.MaxHealth", description: "Increase max health" },
-    { permission: "PlayerOptions.MaxArmor", description: "Set armor to maximum" },
-    { permission: "PlayerOptions.UnlimitedStamina", description: "Infinite stamina" }
+    {
+      permission: "PlayerOptions.NoRagdoll",
+      description: "Disable ragdoll physics",
+    },
+    {
+      permission: "PlayerOptions.NeverWanted",
+      description: "Disable wanted level",
+    },
+    {
+      permission: "PlayerOptions.SetWanted",
+      description: "Set custom wanted level",
+    },
+    {
+      permission: "PlayerOptions.IgnoredByPolice",
+      description: "Toggle police ignore",
+    },
+    {
+      permission: "PlayerOptions.StayInVehicle",
+      description: "Stay in vehicle when shot",
+    },
+    {
+      permission: "PlayerOptions.MaxHealth",
+      description: "Increase max health",
+    },
+    {
+      permission: "PlayerOptions.MaxArmor",
+      description: "Set armor to maximum",
+    },
+    {
+      permission: "PlayerOptions.UnlimitedStamina",
+      description: "Infinite stamina",
+    },
   ]}
 />
 
-<CategoryGrid 
+<CategoryGrid
   title="Vehicle Spawner Categories"
   columns={4}
   categories={[
-    { name: "Compacts", icon: "car", permission: "VehicleSpawner.Compacts", description: "Small compact cars" },
-    { name: "Sedans", icon: "car", permission: "VehicleSpawner.Sedans", description: "Sedan vehicles" },
-    { name: "SUVs", icon: "car", permission: "VehicleSpawner.SUVs", description: "SUV vehicles" },
-    { name: "Coupes", icon: "car", permission: "VehicleSpawner.Coupes", description: "Coupe vehicles" },
-    { name: "Muscle", icon: "car", permission: "VehicleSpawner.Muscle", description: "Muscle cars" },
-    { name: "Sports Classics", icon: "car", permission: "VehicleSpawner.SportsClassics", description: "Classic sports cars" },
-    { name: "Sports", icon: "car", permission: "VehicleSpawner.Sports", description: "Sports cars" },
-    { name: "Super", icon: "car", permission: "VehicleSpawner.Super", description: "Super cars" },
-    { name: "Motorcycles", icon: "car", permission: "VehicleSpawner.Motorcycles", description: "All motorcycles" },
-    { name: "Off-Road", icon: "car", permission: "VehicleSpawner.OffRoad", description: "Off-road vehicles" },
-    { name: "Helicopters", icon: "plane", permission: "VehicleSpawner.Helicopters", description: "All helicopters" },
-    { name: "Planes", icon: "plane", permission: "VehicleSpawner.Planes", description: "All planes" },
-    { name: "Boats", icon: "package", permission: "VehicleSpawner.Boats", description: "All boats" },
-    { name: "Emergency", icon: "shield", permission: "VehicleSpawner.Emergency", description: "Emergency vehicles" },
-    { name: "Military", icon: "shield", permission: "VehicleSpawner.Military", description: "Military vehicles" },
-    { name: "Commercial", icon: "package", permission: "VehicleSpawner.Commercial", description: "Commercial vehicles" }
+    {
+      name: "Compacts",
+      icon: "car",
+      permission: "VehicleSpawner.Compacts",
+      description: "Small compact cars",
+    },
+    {
+      name: "Sedans",
+      icon: "car",
+      permission: "VehicleSpawner.Sedans",
+      description: "Sedan vehicles",
+    },
+    {
+      name: "SUVs",
+      icon: "car",
+      permission: "VehicleSpawner.SUVs",
+      description: "SUV vehicles",
+    },
+    {
+      name: "Coupes",
+      icon: "car",
+      permission: "VehicleSpawner.Coupes",
+      description: "Coupe vehicles",
+    },
+    {
+      name: "Muscle",
+      icon: "car",
+      permission: "VehicleSpawner.Muscle",
+      description: "Muscle cars",
+    },
+    {
+      name: "Sports Classics",
+      icon: "car",
+      permission: "VehicleSpawner.SportsClassics",
+      description: "Classic sports cars",
+    },
+    {
+      name: "Sports",
+      icon: "car",
+      permission: "VehicleSpawner.Sports",
+      description: "Sports cars",
+    },
+    {
+      name: "Super",
+      icon: "car",
+      permission: "VehicleSpawner.Super",
+      description: "Super cars",
+    },
+    {
+      name: "Motorcycles",
+      icon: "car",
+      permission: "VehicleSpawner.Motorcycles",
+      description: "All motorcycles",
+    },
+    {
+      name: "Off-Road",
+      icon: "car",
+      permission: "VehicleSpawner.OffRoad",
+      description: "Off-road vehicles",
+    },
+    {
+      name: "Helicopters",
+      icon: "plane",
+      permission: "VehicleSpawner.Helicopters",
+      description: "All helicopters",
+    },
+    {
+      name: "Planes",
+      icon: "plane",
+      permission: "VehicleSpawner.Planes",
+      description: "All planes",
+    },
+    {
+      name: "Boats",
+      icon: "package",
+      permission: "VehicleSpawner.Boats",
+      description: "All boats",
+    },
+    {
+      name: "Emergency",
+      icon: "shield",
+      permission: "VehicleSpawner.Emergency",
+      description: "Emergency vehicles",
+    },
+    {
+      name: "Military",
+      icon: "shield",
+      permission: "VehicleSpawner.Military",
+      description: "Military vehicles",
+    },
+    {
+      name: "Commercial",
+      icon: "package",
+      permission: "VehicleSpawner.Commercial",
+      description: "Commercial vehicles",
+    },
   ]}
 />
 
-<PermissionCodeBlock 
-  title="Vehicle Options" 
+<PermissionCodeBlock
+  title="Vehicle Options"
   prefix="vMenu."
   permissions={[
-    { permission: "VehicleOptions", description: "Access vehicle options menu" },
+    {
+      permission: "VehicleOptions",
+      description: "Access vehicle options menu",
+    },
     { permission: "VehicleOptions.All", description: "All vehicle options" },
     { permission: "VehicleOptions.Fix", description: "Repair vehicle" },
     { permission: "VehicleOptions.Wash", description: "Wash vehicle" },
     { permission: "VehicleOptions.Engine", description: "Toggle engine" },
-    { permission: "VehicleOptions.ChangePlate", description: "Change license plate" },
+    {
+      permission: "VehicleOptions.ChangePlate",
+      description: "Change license plate",
+    },
     { permission: "VehicleOptions.Mod", description: "Modify vehicle" },
     { permission: "VehicleOptions.Colors", description: "Change colors" },
     { permission: "VehicleOptions.Liveries", description: "Apply liveries" },
-    { permission: "VehicleOptions.Components", description: "Toggle components" },
+    {
+      permission: "VehicleOptions.Components",
+      description: "Toggle components",
+    },
     { permission: "VehicleOptions.Doors", description: "Control doors" },
     { permission: "VehicleOptions.Windows", description: "Control windows" },
     { permission: "VehicleOptions.Freeze", description: "Freeze vehicle" },
-    { permission: "VehicleOptions.Invisible", description: "Make vehicle invisible" },
-    { permission: "VehicleOptions.SpawnInside", description: "Spawn inside vehicle" },
-    { permission: "VehicleOptions.EngineAlwaysOn", description: "Keep engine always on" },
-    { permission: "VehicleOptions.NoSirenSound", description: "Disable siren sound" },
-    { permission: "VehicleOptions.NoHelmet", description: "Disable helmet on bikes" },
-    { permission: "VehicleOptions.Torque", description: "Modify engine torque" },
+    {
+      permission: "VehicleOptions.Invisible",
+      description: "Make vehicle invisible",
+    },
+    {
+      permission: "VehicleOptions.SpawnInside",
+      description: "Spawn inside vehicle",
+    },
+    {
+      permission: "VehicleOptions.EngineAlwaysOn",
+      description: "Keep engine always on",
+    },
+    {
+      permission: "VehicleOptions.NoSirenSound",
+      description: "Disable siren sound",
+    },
+    {
+      permission: "VehicleOptions.NoHelmet",
+      description: "Disable helmet on bikes",
+    },
+    {
+      permission: "VehicleOptions.Torque",
+      description: "Modify engine torque",
+    },
     { permission: "VehicleOptions.Power", description: "Modify engine power" },
-    { permission: "VehicleOptions.FlashHighbeamsOnHonk", description: "Flash highbeams when honking" }
+    {
+      permission: "VehicleOptions.FlashHighbeamsOnHonk",
+      description: "Flash highbeams when honking",
+    },
   ]}
 />
 
@@ -479,6 +694,7 @@ status
 ```
 
 Output:
+
 ```
 id: 1, PlayerName, steam: 110000112345678, license: abc123
 ```
@@ -544,10 +760,10 @@ Use external script with ACE system:
 RegisterCommand('grantvip', function(source, args)
     local target = tonumber(args[1])
     local identifier = GetPlayerIdentifier(target, 0)
-    
+
     -- Add to VIP group
     ExecuteCommand(string.format('add_principal identifier.%s group.vip', identifier))
-    
+
     -- Schedule removal (requires database/scheduler)
     -- Implementation depends on your framework
 end, true)
@@ -576,7 +792,7 @@ Based on player stats:
 AddEventHandler('playerConnecting', function()
     local source = source
     local playtime = GetPlayerPlaytime(source) -- Your function
-    
+
     if playtime > 100 then  -- 100 hours
         local identifier = GetPlayerIdentifier(source, 0)
         ExecuteCommand('add_principal identifier.'..identifier..' group.veteran')
@@ -589,6 +805,7 @@ end)
 ### Essential Security Measures
 
 1. ✅ **Always deny dangerous permissions by default**
+
    ```cfg
    add_ace builtin.everyone vMenu.Everything deny
    add_ace builtin.everyone vMenu.NoClip deny
@@ -596,20 +813,22 @@ end)
    ```
 
 2. ✅ **Use specific permissions instead of wildcards**
+
    ```cfg
    # Bad - too permissive
    add_ace group.moderator vMenu.OnlinePlayers.All allow
-   
+
    # Good - specific permissions
    add_ace group.moderator vMenu.OnlinePlayers.Kick allow
    add_ace group.moderator vMenu.OnlinePlayers.TempBan allow
    ```
 
 3. ✅ **Use identifier-based permissions, not IP-based**
+
    ```cfg
    # Bad - IPs change
    add_principal identifier.ip:127.0.0.1 group.admin
-   
+
    # Good - stable identifiers
    add_principal identifier.steam:110000112345678 group.admin
    ```
@@ -620,30 +839,34 @@ end)
    - Check for permission conflicts
 
 5. ✅ **Log permission usage**
-   
+
    Check the [official vMenu documentation](https://docs.vespura.com/vmenu/configuration) for logging options.
 
 ### Common Security Mistakes
 
 ❌ **Granting Everything to everyone**
+
 ```cfg
 # Never do this!
 add_ace builtin.everyone vMenu.Everything allow
 ```
 
 ❌ **Using weak identifier types**
+
 ```cfg
 # IP addresses change frequently
 add_principal identifier.ip:192.168.1.1 group.admin
 ```
 
 ❌ **Not denying dangerous permissions**
+
 ```cfg
 # Forgetting to explicitly deny
 # (some features may be allowed by default)
 ```
 
 ❌ **Sharing admin accounts**
+
 ```cfg
 # Each admin should have unique identifier
 add_principal identifier.license:shared_account group.admin
@@ -656,6 +879,7 @@ add_principal identifier.license:shared_account group.admin
 **Issue**: Player has permission but can't access feature
 
 **Solutions**:
+
 1. Verify permission syntax is exact (case-sensitive)
 2. Check for deny overriding allow
 3. Restart server after permission changes
@@ -667,6 +891,7 @@ add_principal identifier.license:shared_account group.admin
 **Issue**: Player has access to features they shouldn't
 
 **Solutions**:
+
 1. Check if accidentally added to admin group
 2. Review `builtin.everyone` permissions
 3. Check for `vMenu.Everything` or wildcard permissions
@@ -677,6 +902,7 @@ add_principal identifier.license:shared_account group.admin
 **Issue**: Permissions reset after restart
 
 **Solutions**:
+
 1. Add permissions to `permissions.cfg` or `server.cfg`
 2. Don't use console commands for permanent permissions
 3. Verify files are being read on startup
@@ -727,5 +953,6 @@ After configuring permissions:
 - [Train Staff](/docs/vmenu/features) - Document your permission structure
 
 <Callout type="success">
-  **Permissions Configured!** Your server is now secure with properly configured access control.
+  **Permissions Configured!** Your server is now secure with properly configured
+  access control.
 </Callout>

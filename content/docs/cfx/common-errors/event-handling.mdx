@@ -4,7 +4,23 @@ description: Common errors related to event handling in FiveM resources.
 icon: "Radio"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 This guide covers common errors related to event handling in FiveM resources and how to resolve them.
 
@@ -15,7 +31,7 @@ This guide covers common errors related to event handling in FiveM resources and
     "Use consistent event naming conventions",
     "Handle missing or nil parameters gracefully",
     "Avoid triggering events in loops without delays",
-    "Document all custom events in your code"
+    "Document all custom events in your code",
   ]}
   variant="check"
 />
@@ -23,17 +39,20 @@ This guide covers common errors related to event handling in FiveM resources and
 ## Common Event Errors
 
 ### 1. Event Registration Errors
+
 ```lua
 -- Error: Failed to register event 'event:name'
 ```
 
 **Causes:**
+
 - Event name conflicts
 - Invalid event names
 - Missing event handlers
 - Resource loading order issues
 
 **Solutions:**
+
 ```lua
 -- Proper event registration
 RegisterNetEvent('event:name')
@@ -43,27 +62,33 @@ end)
 ```
 
 ### 2. Event Trigger Errors
+
 ```lua
 -- Error: Failed to trigger event 'event:name'
 ```
 
 **Solutions:**
+
 1. Server-side triggering:
+
 ```lua
 TriggerClientEvent('event:name', source, data)
 ```
 
 2. Client-side triggering:
+
 ```lua
 TriggerServerEvent('event:name', data)
 ```
 
 ### 3. Event Security Issues
+
 ```lua
 -- Warning: Unsecured event 'event:name'
 ```
 
 **Solutions:**
+
 1. Implement proper security checks:
 
 <CommandCard
@@ -84,6 +109,7 @@ end)
 ```
 
 2. Use proper event naming:
+
 ```lua
 -- Good: Resource-specific prefix
 RegisterNetEvent('resource:event')
@@ -95,35 +121,37 @@ RegisterNetEvent('giveMoney')
 ## Event Best Practices
 
 ### 1. Proper Event Structure
+
 ```lua
 -- Server-side event handling
 RegisterNetEvent('resource:event')
 AddEventHandler('resource:event', function(data)
     local source = source
-    
+
     -- Security checks
     if not IsPlayerAceAllowed(source, 'resource.event') then
         return
     end
-    
+
     -- Input validation
     if not data or type(data) ~= 'table' then
         return
     end
-    
+
     -- Event handling
     -- Your code here
 end)
 ```
 
 ### 2. Error Handling
+
 ```lua
 RegisterNetEvent('resource:event')
 AddEventHandler('resource:event', function(data)
     local success, error = pcall(function()
         -- Event handler code
     end)
-    
+
     if not success then
         print('Event error:', error)
     end
@@ -131,6 +159,7 @@ end)
 ```
 
 ### 3. Rate Limiting
+
 ```lua
 local lastTrigger = {}
 local cooldown = 1000 -- 1 second
@@ -139,11 +168,11 @@ RegisterNetEvent('resource:event')
 AddEventHandler('resource:event', function()
     local source = source
     local currentTime = GetGameTimer()
-    
+
     if lastTrigger[source] and currentTime - lastTrigger[source] < cooldown then
         return
     end
-    
+
     lastTrigger[source] = currentTime
     -- Event handler code
 end)
@@ -155,9 +184,11 @@ end)
 - [Security Best Practices](https://docs.fivem.net/docs/scripting-manual/working-with-events/security/)
 
 <Callout type="warning">
-  Always implement proper security checks and rate limiting for your events to prevent abuse.
+  Always implement proper security checks and rate limiting for your events to
+  prevent abuse.
 </Callout>
 
 <Callout type="info">
-  For more information about network security, check out our [Network Issues Guide](/docs/cfx/common-errors/network-issues).
-</Callout> 
+  For more information about network security, check out our [Network Issues
+  Guide](/docs/cfx/common-errors/network-issues).
+</Callout>

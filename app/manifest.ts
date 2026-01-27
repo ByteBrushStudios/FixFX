@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "FixFX - FiveM & RedM Documentation Hub",
     short_name: "FixFX",
-    description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
+    description:
+      "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
     start_url: "/",
     id: "/",
     display: "standalone",

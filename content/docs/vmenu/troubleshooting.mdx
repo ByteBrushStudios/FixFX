@@ -4,30 +4,53 @@ description: Solutions to common vMenu issues, errors, and problems
 icon: "Bug"
 ---
 
-import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+import {
+  FeatureList,
+  CheckList,
+  QuickLinks,
+  DefinitionList,
+  CommandCard,
+  CommandTable,
+  PropertyCard,
+  IconGrid,
+  Shortcut,
+  StatusBadge,
+  TroubleshootingCard,
+  PermissionTable,
+  ConfigBlock,
+  StepList,
+  ComparisonTable,
+} from "@ui/components/mdx-components";
 
 ## Overview
 
 This guide covers common issues with vMenu installation, configuration, and usage, along with their solutions.
 
-<PropertyCard type="info" name="Before Troubleshooting" description="Ensure you're using the latest version of vMenu and recommended FiveM artifacts." />
+<PropertyCard
+  type="info"
+  name="Before Troubleshooting"
+  description="Ensure you're using the latest version of vMenu and recommended FiveM artifacts."
+/>
 
 ## Quick Diagnostics
 
 ### Check vMenu Status
 
 1. **Server Console**: Look for vMenu startup messages
+
    ```
    [  vMenu] Resource starting...
    [  vMenu] vMenu successfully started!
    ```
 
 2. **Server Console Command**:
+
    ```
    status
    ```
 
 3. **Restart Resource**:
+
    ```
    restart vMenu
    ```
@@ -46,31 +69,33 @@ This guide covers common issues with vMenu installation, configuration, and usag
   symptoms={[
     "Resource fails to load on server startup",
     "Errors appear in server console",
-    "vMenu directory not recognized"
+    "vMenu directory not recognized",
   ]}
   causes={[
     "Incorrect folder structure (e.g., vMenu-master instead of vMenu)",
     "Missing critical files like fxmanifest.lua",
     "Corrupted ZIP file during download",
-    "Outdated FiveM artifacts"
+    "Outdated FiveM artifacts",
   ]}
   solutions={[
     "Verify folder is named exactly 'vMenu' (case-sensitive on Linux)",
     "Download latest release from GitHub, not source code",
     "Extract entire ZIP file to resources/ folder",
-    "Update to latest recommended FiveM artifacts from runtime.fivem.net"
+    "Update to latest recommended FiveM artifacts from runtime.fivem.net",
   ]}
 />
 
 #### 1. Incorrect Folder Structure
 
 **Error**:
+
 ```
 Could not load resource vMenu
 Failed to start resource vMenu
 ```
 
 **Solution**:
+
 ```bash
 # Correct structure:
 resources/
@@ -93,11 +118,13 @@ resources/
 #### 2. Missing Files
 
 **Error**:
+
 ```
 Failed to load resource vMenu: Missing fxmanifest.lua
 ```
 
 **Solution**:
+
 1. Download latest release from GitHub (not source code)
 2. Extract entire ZIP file
 3. Don't manually pick files to copy
@@ -105,11 +132,13 @@ Failed to load resource vMenu: Missing fxmanifest.lua
 #### 3. Corrupted Download
 
 **Error**:
+
 ```
 Error loading script vMenu/client.net.dll
 ```
 
 **Solution**:
+
 1. Delete vMenu folder
 2. Re-download from official source
 3. Verify ZIP file integrity
@@ -118,11 +147,13 @@ Error loading script vMenu/client.net.dll
 #### 4. Outdated Artifacts
 
 **Error**:
+
 ```
 Could not load resource vMenu: unsupported resource type
 ```
 
 **Solution**:
+
 1. Update to latest recommended FiveM artifacts
 2. Download from: https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/
 3. Restart server completely
@@ -182,6 +213,7 @@ chown -R fivem:fivem resources/vMenu
 #### 1. Check Keybind
 
 **Solution**:
+
 1. Press **ESC** → **Settings** → **Key Bindings**
 2. Scroll to **FiveM** section
 3. Find **vMenu** → **Open Menu**
@@ -191,11 +223,13 @@ chown -R fivem:fivem resources/vMenu
 #### 2. Conflicting Resources
 
 **Common Conflicts**:
+
 - Other admin menus (EasyAdmin, vBasic, etc.)
 - Custom chat resources using M key
 - HUD resources intercepting keypress
 
 **Solution**:
+
 ```cfg
 # In server.cfg, comment out conflicting resources
 # ensure other_admin_menu
@@ -214,6 +248,7 @@ add_ace identifier.steam:YOUR_ID vMenu.Menu allow
 ```
 
 **Solution**:
+
 ```cfg
 # Option 1: Adjust permissions in permissions.cfg
 add_ace builtin.everyone vMenu.Menu allow
@@ -226,11 +261,13 @@ add_ace group.admin vMenu.Everything allow
 #### 4. Client-Side Error
 
 **Check client console** (F8 in-game):
+
 ```
 Error: vMenu client script failed
 ```
 
 **Solution**:
+
 1. Restart FiveM completely
 2. Clear FiveM cache:
    - Close FiveM
@@ -241,12 +278,14 @@ Error: vMenu client script failed
 #### 5. Resource Not Started
 
 **Check server console**:
+
 ```
 # Should see:
 Started resource vMenu
 ```
 
 **If not**:
+
 ```
 # In server console:
 ensure vMenu
@@ -264,11 +303,13 @@ restart vMenu
 #### 1. Verify Your Identifier
 
 **In server console**:
+
 ```
 status
 ```
 
 Look for your connection:
+
 ```
 id: 1, YourName, steam: 110000112345678
 ```
@@ -276,6 +317,7 @@ id: 1, YourName, steam: 110000112345678
 #### 2. Check Permission Assignment
 
 **In server.cfg or permissions.cfg**:
+
 ```cfg
 # Verify you're in admin group
 add_principal identifier.steam:110000112345678 group.admin
@@ -287,21 +329,25 @@ add_ace group.admin vMenu.Everything allow
 #### 3. Common Permission Mistakes
 
 **❌ Wrong identifier format**:
+
 ```cfg
 add_principal steam:110000112345678 group.admin  # Missing "identifier."
 ```
 
 **✅ Correct**:
+
 ```cfg
 add_principal identifier.steam:110000112345678 group.admin
 ```
 
 **❌ Case-sensitive issues**:
+
 ```cfg
 add_ace group.admin vmenu.Everything allow  # Wrong: "vmenu" instead of "vMenu"
 ```
 
 **✅ Correct**:
+
 ```cfg
 add_ace group.admin vMenu.Everything allow
 ```
@@ -311,6 +357,7 @@ add_ace group.admin vMenu.Everything allow
 **Issue**: Specific feature denied despite having general permission
 
 **Example**:
+
 ```cfg
 add_ace group.admin vMenu.OnlinePlayers allow
 add_ace group.admin vMenu.OnlinePlayers.Kick deny  # This denies kick
@@ -327,11 +374,13 @@ add_ace group.admin vMenu.OnlinePlayers.Kick deny  # This denies kick
 **Solutions**:
 
 1. **Restart server** (not just resource):
+
    ```
    restart server
    ```
 
 2. **Verify permission syntax**:
+
    ```cfg
    # Check for typos
    add_ace group.admin vMenu.Everything allow  # Correct
@@ -339,11 +388,12 @@ add_ace group.admin vMenu.OnlinePlayers.Kick deny  # This denies kick
    ```
 
 3. **Check for overrides**:
+
    ```cfg
    # Later definitions override earlier ones
    add_ace builtin.everyone vMenu.Everything deny  # This affects everyone
    add_ace group.admin vMenu.Everything allow      # Including admins!
-   
+
    # Order matters!
    ```
 
@@ -356,12 +406,14 @@ add_ace group.admin vMenu.OnlinePlayers.Kick deny  # This denies kick
 **Solution**:
 
 **❌ Wrong** (console commands don't persist):
+
 ```
 # Typed in console:
 add_principal identifier.steam:110000112345678 group.admin
 ```
 
 **✅ Correct** (add to server.cfg):
+
 ```cfg
 # In server.cfg or permissions.cfg
 add_principal identifier.steam:110000112345678 group.admin
@@ -397,6 +449,7 @@ Refer to the [official vMenu documentation](https://docs.vespura.com/vmenu/confi
 **Cause**: Invalid or addon vehicle model names
 
 **Solution**:
+
 1. Verify vehicle model exists in game
 2. Check addon vehicle installation
 3. Use correct spawn name (not display name)
@@ -421,6 +474,7 @@ chmod -R 755 resources/vMenu
 #### 3. Database Connection (If Configured)
 
 If using external database:
+
 - Verify database credentials
 - Check database connection in console
 - Ensure vMenu has write permissions to database
@@ -442,6 +496,7 @@ add_ace group.admin vMenu.Teleport allow
 **Player teleports but falls through world**:
 
 **Solution**:
+
 1. Ensure teleporting to valid coordinates
 2. Check ground level (Z coordinate)
 3. Use waypoint teleport for tested locations
@@ -497,6 +552,7 @@ add_ace group.admin vMenu.WorldOptions.Time allow
 **Other resources controlling weather/time**:
 
 **Solution**:
+
 ```cfg
 # Disable conflicting resources:
 # ensure weather_sync
@@ -514,6 +570,7 @@ add_ace group.admin vMenu.WorldOptions.Time allow
 **vMenu doesn't include voice chat**
 
 **Solution**: Install voice resource:
+
 - TokoVOIP
 - Mumble-VOIP
 - pma-voice
@@ -538,6 +595,7 @@ Ensure voice resource is compatible with vMenu's integration API
 #### 1. Server Performance
 
 **Check server resources**:
+
 - CPU usage
 - RAM usage
 - Network latency
@@ -545,6 +603,7 @@ Ensure voice resource is compatible with vMenu's integration API
 #### 2. Client Performance
 
 **Reduce graphical settings**:
+
 1. Lower FiveM graphics settings
 2. Close background applications
 3. Update graphics drivers
@@ -574,6 +633,7 @@ Disable heavy features through permissions or convars. See [official documentati
 #### 3. Optimize Saved Data
 
 **Regularly clean old saved data**:
+
 - Remove inactive players' saved vehicles
 - Clear orphaned data
 
@@ -582,11 +642,13 @@ Disable heavy features through permissions or convars. See [official documentati
 ### "Resource Manifest Version Mismatch"
 
 **Error**:
+
 ```
 Resource vMenu: manifest version mismatch
 ```
 
 **Solution**:
+
 1. Update to latest FiveM artifacts
 2. Update vMenu to latest version
 3. Both must be compatible versions
@@ -594,11 +656,13 @@ Resource vMenu: manifest version mismatch
 ### "Failed to Verify Protected Resource"
 
 **Error**:
+
 ```
 Failed to verify protected resource vMenu
 ```
 
 **Solution**:
+
 1. Don't modify vMenu DLL files
 2. Re-download clean copy if modified
 3. Check file integrity
@@ -624,11 +688,13 @@ Failed to verify protected resource vMenu
 #### 3. Check Logs
 
 **Server console** shows:
+
 ```
 Error: Access violation in vMenu
 ```
 
 **Solution**: Report to vMenu GitHub with:
+
 - Full error message
 - Server artifacts version
 - vMenu version
@@ -645,11 +711,13 @@ Error: Access violation in vMenu
 #### 1. Check Database Connection
 
 **In server console**, look for:
+
 ```
 [vMenu] Database connected successfully
 ```
 
 If not present:
+
 - Check database credentials
 - Verify database is running
 - Test connection manually
@@ -657,6 +725,7 @@ If not present:
 #### 2. Check Table Structure
 
 **Ensure tables exist**:
+
 ```sql
 SHOW TABLES LIKE 'vmenu%';
 ```
@@ -666,6 +735,7 @@ SHOW TABLES LIKE 'vmenu%';
 #### 3. Check Write Permissions
 
 **Database user needs**:
+
 - SELECT
 - INSERT
 - UPDATE
@@ -676,6 +746,7 @@ SHOW TABLES LIKE 'vmenu%';
 **Error**: Upgrading vMenu version, database errors
 
 **Solution**:
+
 1. Backup database
 2. Check vMenu changelog for migration notes
 3. Run migration scripts manually if provided
@@ -734,10 +805,11 @@ end)
 **Solution**:
 
 **Choose one primary admin menu**:
+
 ```cfg
 # Pick ONE:
 # ensure vMenu
-# ensure EasyAdmin  
+# ensure EasyAdmin
 # ensure vBasic
 
 # Don't run multiple admin menus
@@ -752,6 +824,7 @@ end)
 #### 1. Whitelist vMenu
 
 **In anticheat config**, whitelist:
+
 - NoClip functionality
 - God mode
 - Teleportation
@@ -764,6 +837,7 @@ end)
 #### 3. Permission-Based Exclusions
 
 **Exclude admins from certain checks**:
+
 ```lua
 -- Anticheat pseudocode
 if not IsAdmin(player) then
@@ -778,6 +852,7 @@ end
 Gather this information:
 
 1. **FiveM Artifacts Version**:
+
    ```
    version
    ```
@@ -795,16 +870,17 @@ Gather this information:
 
 ### Where to Get Help
 
-| Platform | Use For | Link |
-|----------|---------|------|
-| **GitHub Issues** | Bug reports, feature requests | [GitHub](https://github.com/TomGrobbe/vMenu/issues) |
-| **Discord** | Quick questions, community support | [Discord](https://vespura.com/vmenu/discord) |
-| **CFX Forums** | Server configuration help | [Forums](https://forum.cfx.re/t/vmenu) |
-| **Documentation** | Official guides | [Docs](https://docs.vespura.com/vmenu/) |
+| Platform          | Use For                            | Link                                                |
+| ----------------- | ---------------------------------- | --------------------------------------------------- |
+| **GitHub Issues** | Bug reports, feature requests      | [GitHub](https://github.com/TomGrobbe/vMenu/issues) |
+| **Discord**       | Quick questions, community support | [Discord](https://vespura.com/vmenu/discord)        |
+| **CFX Forums**    | Server configuration help          | [Forums](https://forum.cfx.re/t/vmenu)              |
+| **Documentation** | Official guides                    | [Docs](https://docs.vespura.com/vmenu/)             |
 
 ### Creating a Bug Report
 
 **Include**:
+
 1. Clear description of problem
 2. Expected vs actual behavior
 3. Steps to reproduce
@@ -814,6 +890,7 @@ Gather this information:
 7. Other installed resources (if relevant)
 
 **Example**:
+
 ```markdown
 **Problem**: Vehicle spawner doesn't spawn helicopters
 
@@ -821,12 +898,14 @@ Gather this information:
 **Actual**: Nothing happens, no error
 
 **Steps**:
+
 1. Open vMenu (M key)
 2. Navigate to Vehicle Spawner → Helicopters
 3. Select "Buzzard"
 4. Click spawn
 
 **Environment**:
+
 - FiveM Artifacts: Latest recommended
 - vMenu Version: 4.0.0
 - Operating System: Windows Server 2019
@@ -854,6 +933,7 @@ add_ace group.admin vMenu.Everything allow
 ### Testing Before Production
 
 **Always test on development server**:
+
 1. Install/update vMenu on dev server
 2. Test all critical features
 3. Verify permissions work correctly
@@ -894,7 +974,8 @@ When something isn't working, try these in order:
 - [ ] Ask for help with full details
 
 <Callout type="success">
-  **Still Stuck?** Join the vMenu Discord community for real-time help from developers and experienced users.
+  **Still Stuck?** Join the vMenu Discord community for real-time help from
+  developers and experienced users.
 </Callout>
 
 ## Additional Resources

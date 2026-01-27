@@ -37,7 +37,8 @@ export default function DiscordPage() {
             Join the Community
           </h2>
           <p className="text-muted-foreground">
-            You should be redirected to our Discord server automatically. If not, click the button below!
+            You should be redirected to our Discord server automatically. If
+            not, click the button below!
           </p>
         </div>
 

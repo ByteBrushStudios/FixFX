@@ -1,10 +1,3 @@
 {
-  "pages": [
-    "core",
-    "cfx",
-    "txadmin",
-    "vmenu",
-    "frameworks",
-    "guides"
-  ]
+  "pages": ["core", "cfx", "txadmin", "vmenu", "frameworks", "guides"]
 }

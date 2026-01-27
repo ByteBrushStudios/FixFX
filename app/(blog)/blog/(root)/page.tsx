@@ -12,13 +12,16 @@ export default function BlogPage() {
       <div className="mb-16 text-center">
         <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 rounded-full border border-fd-border bg-fd-card/50 backdrop-blur-sm">
           <FixFXIcon className="size-5" stroke="#8b5cf6" />
-          <span className="text-sm font-medium text-fd-muted-foreground">Latest Articles</span>
+          <span className="text-sm font-medium text-fd-muted-foreground">
+            Latest Articles
+          </span>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-fd-foreground mb-4">
           FixFX Blog
         </h1>
         <p className="text-fd-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-          News, guides, and insights from the FixFX community. Learn best practices, get updates, and discover new features.
+          News, guides, and insights from the FixFX community. Learn best
+          practices, get updates, and discover new features.
         </p>
       </div>
 
@@ -40,10 +43,10 @@ export default function BlogPage() {
                 <div className="flex items-center gap-2 text-xs text-fd-muted-foreground mb-4">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>
-                    {new Date(post.data.date).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
+                    {new Date(post.data.date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
                     })}
                   </span>
                 </div>
@@ -72,7 +75,9 @@ export default function BlogPage() {
       {/* Empty state */}
       {posts.length === 0 && (
         <div className="text-center py-20 rounded-xl border border-fd-border bg-fd-card/30 backdrop-blur-sm">
-          <p className="text-fd-muted-foreground text-lg">No posts yet. Check back soon for new content!</p>
+          <p className="text-fd-muted-foreground text-lg">
+            No posts yet. Check back soon for new content!
+          </p>
         </div>
       )}
     </main>

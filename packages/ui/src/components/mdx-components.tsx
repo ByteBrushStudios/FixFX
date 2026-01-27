@@ -3,11 +3,11 @@
 import * as React from "react";
 import { cn } from "@utils/functions/cn";
 import { ImageZoom } from "fumadocs-ui/components/image-zoom";
-import { 
-  CheckCircle2, 
-  Circle, 
-  Terminal, 
-  Copy, 
+import {
+  CheckCircle2,
+  Circle,
+  Terminal,
+  Copy,
   Check,
   Info,
   Zap,
@@ -49,7 +49,7 @@ import {
   Cloud,
   Mic,
   Video,
-  Radio
+  Radio,
 } from "lucide-react";
 
 // ============================================================================
@@ -130,7 +130,11 @@ const featureIconMap: Record<string, LucideIcon> = {
   image: FileText,
 };
 
-export function FeatureList({ features, columns = 1, title }: FeatureListProps) {
+export function FeatureList({
+  features,
+  columns = 1,
+  title,
+}: FeatureListProps) {
   if (!features || !Array.isArray(features)) {
     return null;
   }
@@ -144,11 +148,11 @@ export function FeatureList({ features, columns = 1, title }: FeatureListProps) 
         className={cn(
           "grid gap-3",
           columns === 2 && "md:grid-cols-2",
-          columns === 3 && "md:grid-cols-3"
+          columns === 3 && "md:grid-cols-3",
         )}
       >
         {features.map((feature, index) => {
-          const Icon = feature.icon ? (featureIconMap[feature.icon] || Zap) : Zap;
+          const Icon = feature.icon ? featureIconMap[feature.icon] || Zap : Zap;
           return (
             <div
               key={index}
@@ -158,7 +162,9 @@ export function FeatureList({ features, columns = 1, title }: FeatureListProps) 
                 <Icon className="h-4 w-4 text-fd-primary" />
               </div>
               <div className="min-w-0">
-                <p className="font-medium text-fd-foreground">{feature.title}</p>
+                <p className="font-medium text-fd-foreground">
+                  {feature.title}
+                </p>
                 {feature.description && (
                   <p className="mt-0.5 text-sm text-fd-muted-foreground">
                     {feature.description}
@@ -187,14 +193,21 @@ interface DefinitionListProps {
   variant?: "default" | "compact" | "bordered";
 }
 
-export function DefinitionList({ items, variant = "default" }: DefinitionListProps) {
+export function DefinitionList({
+  items,
+  variant = "default",
+}: DefinitionListProps) {
   if (variant === "compact") {
     return (
       <div className="my-4 space-y-2">
         {items.map((item, index) => (
           <div key={index} className="flex flex-wrap gap-x-2">
-            <span className="font-semibold text-fd-foreground">{item.term}</span>
-            <span className="text-fd-muted-foreground">— {item.description}</span>
+            <span className="font-semibold text-fd-foreground">
+              {item.term}
+            </span>
+            <span className="text-fd-muted-foreground">
+              — {item.description}
+            </span>
           </div>
         ))}
       </div>
@@ -205,7 +218,10 @@ export function DefinitionList({ items, variant = "default" }: DefinitionListPro
     return (
       <div className="my-4 divide-y divide-fd-border rounded-lg border border-fd-border">
         {items.map((item, index) => (
-          <div key={index} className="flex flex-col gap-1 p-3 sm:flex-row sm:gap-4">
+          <div
+            key={index}
+            className="flex flex-col gap-1 p-3 sm:flex-row sm:gap-4"
+          >
             <span className="shrink-0 font-semibold text-fd-foreground sm:w-40">
               {item.term}
             </span>
@@ -221,7 +237,9 @@ export function DefinitionList({ items, variant = "default" }: DefinitionListPro
       {items.map((item, index) => (
         <div key={index}>
           <dt className="font-semibold text-fd-foreground">{item.term}</dt>
-          <dd className="mt-0.5 text-fd-muted-foreground">{item.description}</dd>
+          <dd className="mt-0.5 text-fd-muted-foreground">
+            {item.description}
+          </dd>
         </div>
       ))}
     </dl>
@@ -238,19 +256,23 @@ interface CheckListProps {
   columns?: 1 | 2 | 3;
 }
 
-export function CheckList({ items, variant = "check", columns = 1 }: CheckListProps) {
+export function CheckList({
+  items,
+  variant = "check",
+  columns = 1,
+}: CheckListProps) {
   if (!items || !Array.isArray(items)) {
     return null;
   }
 
   const Icon = variant === "check" ? CheckCircle2 : Circle;
-  
+
   return (
     <div
       className={cn(
         "my-4 grid gap-2",
         columns === 2 && "sm:grid-cols-2",
-        columns === 3 && "sm:grid-cols-3"
+        columns === 3 && "sm:grid-cols-3",
       )}
     >
       {items.map((item, index) => (
@@ -261,7 +283,9 @@ export function CheckList({ items, variant = "check", columns = 1 }: CheckListPr
             <Icon
               className={cn(
                 "mt-0.5 h-4 w-4 shrink-0",
-                variant === "check" ? "text-green-500" : "text-fd-muted-foreground"
+                variant === "check"
+                  ? "text-green-500"
+                  : "text-fd-muted-foreground",
               )}
             />
           )}
@@ -282,7 +306,11 @@ interface CommandCardProps {
   variant?: "default" | "danger" | "warning";
 }
 
-export function CommandCard({ command, description, variant = "default" }: CommandCardProps) {
+export function CommandCard({
+  command,
+  description,
+  variant = "default",
+}: CommandCardProps) {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -297,7 +325,7 @@ export function CommandCard({ command, description, variant = "default" }: Comma
         "my-2 overflow-hidden rounded-lg border",
         variant === "danger" && "border-red-500/30 bg-red-500/5",
         variant === "warning" && "border-amber-500/30 bg-amber-500/5",
-        variant === "default" && "border-fd-border bg-fd-card"
+        variant === "default" && "border-fd-border bg-fd-card",
       )}
     >
       <div className="flex items-center justify-between gap-2 px-3 py-2">
@@ -367,9 +395,14 @@ export function CommandTable({ commands, title }: CommandTableProps) {
       )}
       <div className="divide-y divide-fd-border/50">
         {commands.map((cmd, index) => (
-          <div key={index} className="group p-3 transition-colors hover:bg-fd-muted/20">
+          <div
+            key={index}
+            className="group p-3 transition-colors hover:bg-fd-muted/20"
+          >
             <div className="flex items-start justify-between gap-2">
-              <code className="font-mono text-sm text-fd-primary">{cmd.command}</code>
+              <code className="font-mono text-sm text-fd-primary">
+                {cmd.command}
+              </code>
               <button
                 onClick={() => handleCopy(cmd.command)}
                 className="shrink-0 rounded p-1 text-fd-muted-foreground opacity-0 transition-all hover:bg-fd-muted hover:text-fd-foreground group-hover:opacity-100"
@@ -381,10 +414,14 @@ export function CommandTable({ commands, title }: CommandTableProps) {
                 )}
               </button>
             </div>
-            <p className="mt-1 text-sm text-fd-muted-foreground">{cmd.description}</p>
+            <p className="mt-1 text-sm text-fd-muted-foreground">
+              {cmd.description}
+            </p>
             {cmd.example && (
               <div className="mt-2 rounded bg-fd-muted/30 px-2 py-1">
-                <code className="text-xs text-fd-muted-foreground">{cmd.example}</code>
+                <code className="text-xs text-fd-muted-foreground">
+                  {cmd.example}
+                </code>
               </div>
             )}
           </div>
@@ -405,7 +442,12 @@ interface PropertyCardProps {
   type?: "info" | "success" | "warning" | "error";
 }
 
-export function PropertyCard({ name, value, description, type = "info" }: PropertyCardProps) {
+export function PropertyCard({
+  name,
+  value,
+  description,
+  type = "info",
+}: PropertyCardProps) {
   const colors = {
     info: "border-blue-500/30 bg-blue-500/5",
     success: "border-green-500/30 bg-green-500/5",
@@ -503,7 +545,7 @@ export function IconGrid({ items, columns = 3 }: IconGridProps) {
         "my-4 grid gap-3",
         columns === 2 && "grid-cols-2",
         columns === 3 && "grid-cols-2 sm:grid-cols-3",
-        columns === 4 && "grid-cols-2 sm:grid-cols-4"
+        columns === 4 && "grid-cols-2 sm:grid-cols-4",
       )}
     >
       {items.map((item, index) => {
@@ -516,9 +558,13 @@ export function IconGrid({ items, columns = 3 }: IconGridProps) {
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-fd-primary/10">
               <Icon className="h-5 w-5 text-fd-primary" />
             </div>
-            <span className="text-sm font-medium text-fd-foreground">{item.label}</span>
+            <span className="text-sm font-medium text-fd-foreground">
+              {item.label}
+            </span>
             {item.description && (
-              <span className="text-xs text-fd-muted-foreground">{item.description}</span>
+              <span className="text-xs text-fd-muted-foreground">
+                {item.description}
+              </span>
             )}
           </div>
         );
@@ -548,11 +594,15 @@ export function Shortcut({ keys, description }: ShortcutProps) {
           <kbd className="rounded border border-fd-border bg-fd-muted px-1.5 py-0.5 font-mono text-xs text-fd-foreground shadow-sm">
             {key}
           </kbd>
-          {index < keys.length - 1 && <span className="text-fd-muted-foreground">+</span>}
+          {index < keys.length - 1 && (
+            <span className="text-fd-muted-foreground">+</span>
+          )}
         </React.Fragment>
       ))}
       {description && (
-        <span className="ml-2 text-sm text-fd-muted-foreground">{description}</span>
+        <span className="ml-2 text-sm text-fd-muted-foreground">
+          {description}
+        </span>
       )}
     </span>
   );
@@ -580,7 +630,7 @@ export function StatusBadge({ status, children }: StatusBadgeProps) {
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium",
-        styles[status]
+        styles[status],
       )}
     >
       <span
@@ -590,7 +640,7 @@ export function StatusBadge({ status, children }: StatusBadgeProps) {
           status === "offline" && "bg-red-500",
           status === "warning" && "bg-amber-500",
           status === "info" && "bg-blue-500",
-          status === "neutral" && "bg-fd-muted-foreground"
+          status === "neutral" && "bg-fd-muted-foreground",
         )}
       />
       {children}
@@ -611,13 +661,26 @@ interface TroubleshootingCardProps {
   solution?: string;
 }
 
-export function TroubleshootingCard({ title, problem, symptoms, causes, solutions, solution }: TroubleshootingCardProps) {
+export function TroubleshootingCard({
+  title,
+  problem,
+  symptoms,
+  causes,
+  solutions,
+  solution,
+}: TroubleshootingCardProps) {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   // Support both single solution string and solutions array
   // Handle both literal \n and actual newlines
-  const solutionsList = solutions || (solution ? 
-    solution.split(/\\n|\n/).map(s => s.trim()).filter(s => s) : []);
+  const solutionsList =
+    solutions ||
+    (solution
+      ? solution
+          .split(/\\n|\n/)
+          .map((s) => s.trim())
+          .filter((s) => s)
+      : []);
 
   return (
     <div className="my-4 overflow-hidden rounded-lg border border-fd-border bg-fd-card">
@@ -634,7 +697,7 @@ export function TroubleshootingCard({ title, problem, symptoms, causes, solution
         <ChevronDown
           className={cn(
             "h-5 w-5 text-fd-muted-foreground transition-transform",
-            isExpanded && "rotate-180"
+            isExpanded && "rotate-180",
           )}
         />
       </button>
@@ -657,7 +720,10 @@ export function TroubleshootingCard({ title, problem, symptoms, causes, solution
               </h4>
               <ul className="space-y-1 pl-6">
                 {symptoms.map((symptom, index) => (
-                  <li key={index} className="text-sm text-fd-muted-foreground list-disc">
+                  <li
+                    key={index}
+                    className="text-sm text-fd-muted-foreground list-disc"
+                  >
                     {symptom}
                   </li>
                 ))}
@@ -672,7 +738,10 @@ export function TroubleshootingCard({ title, problem, symptoms, causes, solution
               </h4>
               <ul className="space-y-1 pl-6">
                 {causes.map((cause, index) => (
-                  <li key={index} className="text-sm text-fd-muted-foreground list-disc">
+                  <li
+                    key={index}
+                    className="text-sm text-fd-muted-foreground list-disc"
+                  >
                     {cause}
                   </li>
                 ))}
@@ -687,7 +756,10 @@ export function TroubleshootingCard({ title, problem, symptoms, causes, solution
               </h4>
               <ul className="space-y-1 pl-6">
                 {solutionsList.map((sol, index) => (
-                  <li key={index} className="text-sm text-fd-muted-foreground list-disc">
+                  <li
+                    key={index}
+                    className="text-sm text-fd-muted-foreground list-disc"
+                  >
                     {sol}
                   </li>
                 ))}
@@ -742,19 +814,30 @@ export function PermissionTable({ permissions, title }: PermissionTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-fd-border bg-fd-muted/20">
-              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Permission</th>
-              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Description</th>
-              {permissions.some(p => p.default) && (
-                <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Default</th>
+              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                Permission
+              </th>
+              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                Description
+              </th>
+              {permissions.some((p) => p.default) && (
+                <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                  Default
+                </th>
               )}
             </tr>
           </thead>
           <tbody>
             {permissions.map((perm, index) => (
-              <tr key={index} className="group border-b border-fd-border/50 last:border-b-0 hover:bg-fd-muted/20">
+              <tr
+                key={index}
+                className="group border-b border-fd-border/50 last:border-b-0 hover:bg-fd-muted/20"
+              >
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <code className="font-mono text-xs text-fd-primary">{perm.permission}</code>
+                    <code className="font-mono text-xs text-fd-primary">
+                      {perm.permission}
+                    </code>
                     <button
                       onClick={() => handleCopy(perm.permission)}
                       className="shrink-0 rounded p-1 text-fd-muted-foreground opacity-0 transition-all hover:bg-fd-muted hover:text-fd-foreground group-hover:opacity-100"
@@ -767,16 +850,21 @@ export function PermissionTable({ permissions, title }: PermissionTableProps) {
                     </button>
                   </div>
                 </td>
-                <td className="px-4 py-2.5 text-fd-muted-foreground">{perm.description}</td>
-                {permissions.some(p => p.default) && (
+                <td className="px-4 py-2.5 text-fd-muted-foreground">
+                  {perm.description}
+                </td>
+                {permissions.some((p) => p.default) && (
                   <td className="px-4 py-2.5">
                     {perm.default && (
                       <span
                         className={cn(
                           "rounded-full px-2 py-0.5 text-xs font-medium",
-                          perm.default === "allow" && "bg-green-500/20 text-green-500",
-                          perm.default === "deny" && "bg-red-500/20 text-red-500",
-                          perm.default === "inherit" && "bg-fd-muted text-fd-muted-foreground"
+                          perm.default === "allow" &&
+                            "bg-green-500/20 text-green-500",
+                          perm.default === "deny" &&
+                            "bg-red-500/20 text-red-500",
+                          perm.default === "inherit" &&
+                            "bg-fd-muted text-fd-muted-foreground",
                         )}
                       >
                         {perm.default}
@@ -811,7 +899,12 @@ interface ConfigBlockProps {
   children?: React.ReactNode;
 }
 
-export function ConfigBlock({ options, title, language = "bash", children }: ConfigBlockProps) {
+export function ConfigBlock({
+  options,
+  title,
+  language = "bash",
+  children,
+}: ConfigBlockProps) {
   const [copied, setCopied] = React.useState(false);
 
   // If children are provided, render them directly (for code blocks)
@@ -838,7 +931,7 @@ export function ConfigBlock({ options, title, language = "bash", children }: Con
     return null;
   }
 
-  const configText = options.map(opt => `${opt.key} ${opt.value}`).join('\n');
+  const configText = options.map((opt) => `${opt.key} ${opt.value}`).join("\n");
 
   const handleCopy = () => {
     navigator.clipboard.writeText(configText);
@@ -872,13 +965,21 @@ export function ConfigBlock({ options, title, language = "bash", children }: Con
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <code className="font-mono text-sm text-fd-primary">{opt.key}</code>
-                  <code className="font-mono text-sm text-amber-400">{opt.value}</code>
+                  <code className="font-mono text-sm text-fd-primary">
+                    {opt.key}
+                  </code>
+                  <code className="font-mono text-sm text-amber-400">
+                    {opt.value}
+                  </code>
                   {opt.required && (
-                    <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-400">required</span>
+                    <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-400">
+                      required
+                    </span>
                   )}
                 </div>
-                <p className="mt-1 text-sm text-fd-muted-foreground">{opt.description}</p>
+                <p className="mt-1 text-sm text-fd-muted-foreground">
+                  {opt.description}
+                </p>
               </div>
             </div>
           </div>
@@ -915,7 +1016,7 @@ function parseMarkdownLinks(text: string): React.ReactNode {
         className="text-fd-primary hover:underline"
       >
         {match[1]}
-      </a>
+      </a>,
     );
     lastIndex = match.index + match[0].length;
   }
@@ -950,14 +1051,43 @@ interface StepListProps {
 
 // Alert styling config for StepList
 const stepAlertConfig = {
-  info: { icon: Info, bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-500" },
-  success: { icon: CheckCircle2, bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-500" },
-  warning: { icon: AlertTriangle, bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-500" },
-  error: { icon: XCircle, bg: "bg-red-500/10", border: "border-red-500/30", text: "text-red-500" },
-  tip: { icon: Lightbulb, bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-500" },
+  info: {
+    icon: Info,
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/30",
+    text: "text-blue-500",
+  },
+  success: {
+    icon: CheckCircle2,
+    bg: "bg-green-500/10",
+    border: "border-green-500/30",
+    text: "text-green-500",
+  },
+  warning: {
+    icon: AlertTriangle,
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/30",
+    text: "text-amber-500",
+  },
+  error: {
+    icon: XCircle,
+    bg: "bg-red-500/10",
+    border: "border-red-500/30",
+    text: "text-red-500",
+  },
+  tip: {
+    icon: Lightbulb,
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/30",
+    text: "text-purple-500",
+  },
 };
 
-export function StepList({ steps, title, imagePosition = "below" }: StepListProps) {
+export function StepList({
+  steps,
+  title,
+  imagePosition = "below",
+}: StepListProps) {
   if (!steps || !Array.isArray(steps)) {
     return null;
   }
@@ -969,14 +1099,21 @@ export function StepList({ steps, title, imagePosition = "below" }: StepListProp
       )}
       <div className="space-y-6">
         {steps.map((step, index) => {
-          const alertStyle = step.alert ? stepAlertConfig[step.alert.type] : null;
+          const alertStyle = step.alert
+            ? stepAlertConfig[step.alert.type]
+            : null;
           const AlertIcon = alertStyle?.icon;
-          
+
           return (
-            <div key={index} className={cn(
-              "flex gap-4",
-              imagePosition === "inline" && step.image && "flex-col sm:flex-row"
-            )}>
+            <div
+              key={index}
+              className={cn(
+                "flex gap-4",
+                imagePosition === "inline" &&
+                  step.image &&
+                  "flex-col sm:flex-row",
+              )}
+            >
               <div className="flex gap-4 flex-1">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fd-primary text-sm font-semibold text-fd-primary-foreground">
                   {index + 1}
@@ -984,49 +1121,63 @@ export function StepList({ steps, title, imagePosition = "below" }: StepListProp
                 <div className="flex-1 pt-1">
                   <p className="font-medium text-fd-foreground">{step.title}</p>
                   {step.description && (
-                    <p className="mt-1 text-sm text-fd-muted-foreground">{parseMarkdownLinks(step.description)}</p>
+                    <p className="mt-1 text-sm text-fd-muted-foreground">
+                      {parseMarkdownLinks(step.description)}
+                    </p>
                   )}
                   {step.code && (
                     <div className="mt-2 rounded-lg bg-fd-muted/50 p-2">
-                      <code className="font-mono text-sm text-fd-foreground">{step.code}</code>
+                      <code className="font-mono text-sm text-fd-foreground">
+                        {step.code}
+                      </code>
                     </div>
                   )}
                   {step.alert && alertStyle && AlertIcon && (
-                    <div className={cn(
-                      "mt-3 flex items-start gap-2 rounded-lg border p-3",
-                      alertStyle.bg,
-                      alertStyle.border
-                    )}>
+                    <div
+                      className={cn(
+                        "mt-3 flex items-start gap-2 rounded-lg border p-3",
+                        alertStyle.bg,
+                        alertStyle.border,
+                      )}
+                    >
                       <div className="flex h-5 items-center">
-                        <AlertIcon className={cn("h-4 w-4 shrink-0", alertStyle.text)} />
+                        <AlertIcon
+                          className={cn("h-4 w-4 shrink-0", alertStyle.text)}
+                        />
                       </div>
-                      <p className="text-sm leading-5 text-fd-foreground">{parseMarkdownLinks(step.alert.message)}</p>
+                      <p className="text-sm leading-5 text-fd-foreground">
+                        {parseMarkdownLinks(step.alert.message)}
+                      </p>
                     </div>
                   )}
-                  {step.image && step.image.trim() !== "" && imagePosition === "below" && (
-                    <div className="mt-3">
-                      <ImageZoom 
-                        src={step.image} 
-                        alt={step.imageAlt || step.title}
-                        width={800}
-                        height={450}
-                        className="rounded-lg border border-fd-border w-full max-w-lg"
-                      />
-                    </div>
-                  )}
+                  {step.image &&
+                    step.image.trim() !== "" &&
+                    imagePosition === "below" && (
+                      <div className="mt-3">
+                        <ImageZoom
+                          src={step.image}
+                          alt={step.imageAlt || step.title}
+                          width={800}
+                          height={450}
+                          className="rounded-lg border border-fd-border w-full max-w-lg"
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
-              {step.image && step.image.trim() !== "" && imagePosition === "inline" && (
-                <div className="sm:w-1/3 shrink-0 ml-12 sm:ml-0">
-                  <ImageZoom 
-                    src={step.image} 
-                    alt={step.imageAlt || step.title}
-                    width={400}
-                    height={300}
-                    className="rounded-lg border border-fd-border w-full"
-                  />
-                </div>
-              )}
+              {step.image &&
+                step.image.trim() !== "" &&
+                imagePosition === "inline" && (
+                  <div className="sm:w-1/3 shrink-0 ml-12 sm:ml-0">
+                    <ImageZoom
+                      src={step.image}
+                      alt={step.imageAlt || step.title}
+                      width={400}
+                      height={300}
+                      className="rounded-lg border border-fd-border w-full"
+                    />
+                  </div>
+                )}
             </div>
           );
         })}
@@ -1052,7 +1203,12 @@ interface ComparisonTableProps {
   title?: string;
 }
 
-export function ComparisonTable({ items, headerA, headerB, title }: ComparisonTableProps) {
+export function ComparisonTable({
+  items,
+  headerA,
+  headerB,
+  title,
+}: ComparisonTableProps) {
   if (!items || !Array.isArray(items)) {
     return null;
   }
@@ -1079,17 +1235,32 @@ export function ComparisonTable({ items, headerA, headerB, title }: ComparisonTa
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-fd-border bg-fd-muted/20">
-              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Feature</th>
-              <th className="px-4 py-2.5 text-center font-medium text-fd-primary">{headerA}</th>
-              <th className="px-4 py-2.5 text-center font-medium text-fd-primary">{headerB}</th>
+              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                Feature
+              </th>
+              <th className="px-4 py-2.5 text-center font-medium text-fd-primary">
+                {headerA}
+              </th>
+              <th className="px-4 py-2.5 text-center font-medium text-fd-primary">
+                {headerB}
+              </th>
             </tr>
           </thead>
           <tbody>
             {items.map((item, index) => (
-              <tr key={index} className="border-b border-fd-border/50 last:border-b-0">
-                <td className="px-4 py-2.5 font-medium text-fd-foreground">{item.feature}</td>
-                <td className="px-4 py-2.5 text-center">{renderValue(item.optionA)}</td>
-                <td className="px-4 py-2.5 text-center">{renderValue(item.optionB)}</td>
+              <tr
+                key={index}
+                className="border-b border-fd-border/50 last:border-b-0"
+              >
+                <td className="px-4 py-2.5 font-medium text-fd-foreground">
+                  {item.feature}
+                </td>
+                <td className="px-4 py-2.5 text-center">
+                  {renderValue(item.optionA)}
+                </td>
+                <td className="px-4 py-2.5 text-center">
+                  {renderValue(item.optionB)}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -1125,7 +1296,7 @@ export function QuickLinks({ links, columns = 2 }: QuickLinksProps) {
       className={cn(
         "my-4 grid gap-3",
         columns === 2 && "sm:grid-cols-2",
-        columns === 3 && "sm:grid-cols-3"
+        columns === 3 && "sm:grid-cols-3",
       )}
     >
       {links.map((link, index) => {
@@ -1168,29 +1339,77 @@ interface RoleCardProps {
   badge?: string;
 }
 
-export function RoleCard({ title, description, permissions, type = "custom", badge }: RoleCardProps) {
+export function RoleCard({
+  title,
+  description,
+  permissions,
+  type = "custom",
+  badge,
+}: RoleCardProps) {
   const typeConfig = {
-    master: { icon: Crown, color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/30" },
-    admin: { icon: ShieldCheck, color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/30" },
-    moderator: { icon: Shield, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/30" },
-    user: { icon: Users, color: "text-green-500", bg: "bg-green-500/10", border: "border-green-500/30" },
-    custom: { icon: UserCog, color: "text-purple-500", bg: "bg-purple-500/10", border: "border-purple-500/30" },
+    master: {
+      icon: Crown,
+      color: "text-amber-500",
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/30",
+    },
+    admin: {
+      icon: ShieldCheck,
+      color: "text-red-500",
+      bg: "bg-red-500/10",
+      border: "border-red-500/30",
+    },
+    moderator: {
+      icon: Shield,
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/30",
+    },
+    user: {
+      icon: Users,
+      color: "text-green-500",
+      bg: "bg-green-500/10",
+      border: "border-green-500/30",
+    },
+    custom: {
+      icon: UserCog,
+      color: "text-purple-500",
+      bg: "bg-purple-500/10",
+      border: "border-purple-500/30",
+    },
   };
 
   const config = typeConfig[type];
   const Icon = config.icon;
 
   return (
-    <div className={cn("my-3 overflow-hidden rounded-lg border", config.border, config.bg)}>
+    <div
+      className={cn(
+        "my-3 overflow-hidden rounded-lg border",
+        config.border,
+        config.bg,
+      )}
+    >
       <div className="flex items-center gap-3 border-b border-fd-border/50 px-4 py-3">
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg", config.bg)}>
+        <div
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-lg",
+            config.bg,
+          )}
+        >
           <Icon className={cn("h-5 w-5", config.color)} />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h4 className="font-semibold text-fd-foreground">{title}</h4>
             {badge && (
-              <span className={cn("rounded-full px-2 py-0.5 text-xs font-medium", config.bg, config.color)}>
+              <span
+                className={cn(
+                  "rounded-full px-2 py-0.5 text-xs font-medium",
+                  config.bg,
+                  config.color,
+                )}
+              >
                 {badge}
               </span>
             )}
@@ -1199,7 +1418,9 @@ export function RoleCard({ title, description, permissions, type = "custom", bad
         </div>
       </div>
       <div className="px-4 py-3">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-fd-muted-foreground">Permissions</p>
+        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-fd-muted-foreground">
+          Permissions
+        </p>
         <div className="flex flex-wrap gap-1.5">
           {(permissions || []).map((perm, index) => (
             <span
@@ -1228,7 +1449,11 @@ interface PermissionCodeBlockProps {
   prefix?: string;
 }
 
-export function PermissionCodeBlock({ permissions, title, prefix = "" }: PermissionCodeBlockProps) {
+export function PermissionCodeBlock({
+  permissions,
+  title,
+  prefix = "",
+}: PermissionCodeBlockProps) {
   const [copiedIndex, setCopiedIndex] = React.useState<number | null>(null);
 
   if (!permissions || !Array.isArray(permissions)) {
@@ -1242,7 +1467,7 @@ export function PermissionCodeBlock({ permissions, title, prefix = "" }: Permiss
   };
 
   const copyAll = () => {
-    const allPerms = permissions.map(p => prefix + p.permission).join('\n');
+    const allPerms = permissions.map((p) => prefix + p.permission).join("\n");
     navigator.clipboard.writeText(allPerms);
     setCopiedIndex(-1);
     setTimeout(() => setCopiedIndex(null), 2000);
@@ -1260,17 +1485,29 @@ export function PermissionCodeBlock({ permissions, title, prefix = "" }: Permiss
             onClick={copyAll}
             className="flex items-center gap-1 rounded px-2 py-1 text-xs text-fd-muted-foreground transition-colors hover:bg-fd-muted hover:text-fd-foreground"
           >
-            {copiedIndex === -1 ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+            {copiedIndex === -1 ? (
+              <Check className="h-3 w-3 text-green-500" />
+            ) : (
+              <Copy className="h-3 w-3" />
+            )}
             Copy All
           </button>
         </div>
       )}
       <div className="divide-y divide-fd-border/50">
         {permissions.map((perm, index) => (
-          <div key={index} className="group flex items-center justify-between gap-4 px-4 py-2 hover:bg-fd-muted/20">
+          <div
+            key={index}
+            className="group flex items-center justify-between gap-4 px-4 py-2 hover:bg-fd-muted/20"
+          >
             <div className="flex-1 min-w-0">
-              <code className="font-mono text-sm text-fd-primary">{prefix}{perm.permission}</code>
-              <p className="text-xs text-fd-muted-foreground mt-0.5">{perm.description}</p>
+              <code className="font-mono text-sm text-fd-primary">
+                {prefix}
+                {perm.permission}
+              </code>
+              <p className="text-xs text-fd-muted-foreground mt-0.5">
+                {perm.description}
+              </p>
             </div>
             <button
               onClick={() => handleCopy(perm.permission, index)}
@@ -1304,7 +1541,10 @@ interface KeyboardShortcutTableProps {
   title?: string;
 }
 
-export function KeyboardShortcutTable({ shortcuts, title }: KeyboardShortcutTableProps) {
+export function KeyboardShortcutTable({
+  shortcuts,
+  title,
+}: KeyboardShortcutTableProps) {
   if (!shortcuts || !Array.isArray(shortcuts)) {
     return null;
   }
@@ -1321,7 +1561,10 @@ export function KeyboardShortcutTable({ shortcuts, title }: KeyboardShortcutTabl
       )}
       <div className="divide-y divide-fd-border/50">
         {shortcuts.map((shortcut, index) => (
-          <div key={index} className="flex items-center justify-between gap-4 px-4 py-3">
+          <div
+            key={index}
+            className="flex items-center justify-between gap-4 px-4 py-3"
+          >
             <div className="flex items-center gap-1">
               {shortcut.keys.map((key, keyIndex) => (
                 <React.Fragment key={keyIndex}>
@@ -1335,9 +1578,13 @@ export function KeyboardShortcutTable({ shortcuts, title }: KeyboardShortcutTabl
               ))}
             </div>
             <div className="flex-1 text-right">
-              <span className="text-sm font-medium text-fd-foreground">{shortcut.action}</span>
+              <span className="text-sm font-medium text-fd-foreground">
+                {shortcut.action}
+              </span>
               {shortcut.description && (
-                <p className="text-xs text-fd-muted-foreground">{shortcut.description}</p>
+                <p className="text-xs text-fd-muted-foreground">
+                  {shortcut.description}
+                </p>
               )}
             </div>
           </div>
@@ -1357,24 +1604,49 @@ interface VersionBadgeProps {
   releaseDate?: string;
 }
 
-export function VersionBadge({ version, status = "stable", releaseDate }: VersionBadgeProps) {
+export function VersionBadge({
+  version,
+  status = "stable",
+  releaseDate,
+}: VersionBadgeProps) {
   const statusConfig = {
-    stable: { color: "bg-green-500/20 text-green-500 border-green-500/30", label: "Stable" },
-    beta: { color: "bg-amber-500/20 text-amber-500 border-amber-500/30", label: "Beta" },
-    alpha: { color: "bg-orange-500/20 text-orange-500 border-orange-500/30", label: "Alpha" },
-    deprecated: { color: "bg-red-500/20 text-red-500 border-red-500/30", label: "Deprecated" },
-    latest: { color: "bg-blue-500/20 text-blue-500 border-blue-500/30", label: "Latest" },
+    stable: {
+      color: "bg-green-500/20 text-green-500 border-green-500/30",
+      label: "Stable",
+    },
+    beta: {
+      color: "bg-amber-500/20 text-amber-500 border-amber-500/30",
+      label: "Beta",
+    },
+    alpha: {
+      color: "bg-orange-500/20 text-orange-500 border-orange-500/30",
+      label: "Alpha",
+    },
+    deprecated: {
+      color: "bg-red-500/20 text-red-500 border-red-500/30",
+      label: "Deprecated",
+    },
+    latest: {
+      color: "bg-blue-500/20 text-blue-500 border-blue-500/30",
+      label: "Latest",
+    },
   };
 
   const config = statusConfig[status];
 
   return (
     <span className="inline-flex items-center gap-2">
-      <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium", config.color)}>
-        <Star className="h-3 w-3" />
-        v{version}
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+          config.color,
+        )}
+      >
+        <Star className="h-3 w-3" />v{version}
       </span>
-      <span className={cn("rounded-full border px-2 py-0.5 text-xs", config.color)}>
+      <span
+        className={cn("rounded-full border px-2 py-0.5 text-xs", config.color)}
+      >
         {config.label}
       </span>
       {releaseDate && (
@@ -1405,7 +1677,11 @@ interface CategoryGridProps {
   title?: string;
 }
 
-export function CategoryGrid({ categories, columns = 3, title }: CategoryGridProps) {
+export function CategoryGrid({
+  categories,
+  columns = 3,
+  title,
+}: CategoryGridProps) {
   if (!categories || !Array.isArray(categories)) {
     return null;
   }
@@ -1423,20 +1699,23 @@ export function CategoryGrid({ categories, columns = 3, title }: CategoryGridPro
           "grid gap-3",
           columns === 2 && "sm:grid-cols-2",
           columns === 3 && "sm:grid-cols-2 lg:grid-cols-3",
-          columns === 4 && "sm:grid-cols-2 lg:grid-cols-4"
+          columns === 4 && "sm:grid-cols-2 lg:grid-cols-4",
         )}
       >
         {categories.map((category, index) => {
-          const Icon = category.icon ? iconMap[category.icon] || Package : Package;
-          const Wrapper = category.href ? 'a' : 'div';
-          
+          const Icon = category.icon
+            ? iconMap[category.icon] || Package
+            : Package;
+          const Wrapper = category.href ? "a" : "div";
+
           return (
             <Wrapper
               key={index}
               href={category.href}
               className={cn(
                 "flex flex-col gap-2 rounded-lg border border-fd-border bg-fd-card p-4 transition-colors",
-                category.href && "cursor-pointer hover:border-fd-primary/50 hover:bg-fd-muted/30"
+                category.href &&
+                  "cursor-pointer hover:border-fd-primary/50 hover:bg-fd-muted/30",
               )}
             >
               <div className="flex items-center gap-3">
@@ -1444,14 +1723,22 @@ export function CategoryGrid({ categories, columns = 3, title }: CategoryGridPro
                   <Icon className="h-4 w-4 text-fd-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-fd-foreground">{category.name}</p>
+                  <p className="font-medium text-fd-foreground">
+                    {category.name}
+                  </p>
                   {category.permission && (
-                    <code className="text-xs text-fd-muted-foreground">{category.permission}</code>
+                    <code className="text-xs text-fd-muted-foreground">
+                      {category.permission}
+                    </code>
                   )}
                 </div>
-                {category.href && <ChevronRight className="h-4 w-4 text-fd-muted-foreground" />}
+                {category.href && (
+                  <ChevronRight className="h-4 w-4 text-fd-muted-foreground" />
+                )}
               </div>
-              <p className="text-sm text-fd-muted-foreground">{category.description}</p>
+              <p className="text-sm text-fd-muted-foreground">
+                {category.description}
+              </p>
             </Wrapper>
           );
         })}
@@ -1477,7 +1764,11 @@ interface ActionTableProps {
   showDanger?: boolean;
 }
 
-export function ActionTable({ actions, title, showDanger = true }: ActionTableProps) {
+export function ActionTable({
+  actions,
+  title,
+  showDanger = true,
+}: ActionTableProps) {
   const [copiedPerm, setCopiedPerm] = React.useState<string | null>(null);
 
   const handleCopy = (permission: string) => {
@@ -1501,19 +1792,32 @@ export function ActionTable({ actions, title, showDanger = true }: ActionTablePr
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-fd-border bg-fd-muted/20">
-              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Action</th>
-              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Permission</th>
-              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">Description</th>
+              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                Action
+              </th>
+              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                Permission
+              </th>
+              <th className="px-4 py-2.5 text-left font-medium text-fd-muted-foreground">
+                Description
+              </th>
             </tr>
           </thead>
           <tbody>
             {actions.map((item, index) => (
-              <tr key={index} className="group border-b border-fd-border/50 last:border-b-0 hover:bg-fd-muted/20">
+              <tr
+                key={index}
+                className="group border-b border-fd-border/50 last:border-b-0 hover:bg-fd-muted/20"
+              >
                 <td className="px-4 py-2.5">
-                  <span className={cn(
-                    "font-medium",
-                    item.dangerous && showDanger ? "text-red-500" : "text-fd-foreground"
-                  )}>
+                  <span
+                    className={cn(
+                      "font-medium",
+                      item.dangerous && showDanger
+                        ? "text-red-500"
+                        : "text-fd-foreground",
+                    )}
+                  >
                     {item.action}
                     {item.dangerous && showDanger && (
                       <AlertTriangle className="ml-1.5 inline h-3.5 w-3.5" />
@@ -1522,7 +1826,9 @@ export function ActionTable({ actions, title, showDanger = true }: ActionTablePr
                 </td>
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2">
-                    <code className="font-mono text-xs text-fd-primary">{item.permission}</code>
+                    <code className="font-mono text-xs text-fd-primary">
+                      {item.permission}
+                    </code>
                     <button
                       onClick={() => handleCopy(item.permission)}
                       className="shrink-0 rounded p-1 text-fd-muted-foreground opacity-0 transition-all hover:bg-fd-muted hover:text-fd-foreground group-hover:opacity-100"
@@ -1535,7 +1841,9 @@ export function ActionTable({ actions, title, showDanger = true }: ActionTablePr
                     </button>
                   </div>
                 </td>
-                <td className="px-4 py-2.5 text-fd-muted-foreground">{item.description}</td>
+                <td className="px-4 py-2.5 text-fd-muted-foreground">
+                  {item.description}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -1555,13 +1863,42 @@ interface InfoBannerProps {
   children: React.ReactNode;
 }
 
-export function InfoBanner({ type = "info", title, children }: InfoBannerProps) {
+export function InfoBanner({
+  type = "info",
+  title,
+  children,
+}: InfoBannerProps) {
   const config = {
-    info: { icon: Info, bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-500" },
-    success: { icon: CheckCircle2, bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-500" },
-    warning: { icon: AlertTriangle, bg: "bg-amber-500/10", border: "border-amber-500/30", text: "text-amber-500" },
-    error: { icon: XCircle, bg: "bg-red-500/10", border: "border-red-500/30", text: "text-red-500" },
-    tip: { icon: Lightbulb, bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-500" },
+    info: {
+      icon: Info,
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/30",
+      text: "text-blue-500",
+    },
+    success: {
+      icon: CheckCircle2,
+      bg: "bg-green-500/10",
+      border: "border-green-500/30",
+      text: "text-green-500",
+    },
+    warning: {
+      icon: AlertTriangle,
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/30",
+      text: "text-amber-500",
+    },
+    error: {
+      icon: XCircle,
+      bg: "bg-red-500/10",
+      border: "border-red-500/30",
+      text: "text-red-500",
+    },
+    tip: {
+      icon: Lightbulb,
+      bg: "bg-purple-500/10",
+      border: "border-purple-500/30",
+      text: "text-purple-500",
+    },
   };
 
   const { icon: Icon, bg, border, text } = config[type];
@@ -1599,23 +1936,34 @@ interface FileTreeProps {
   title?: string;
 }
 
-function FileTreeNode({ item, depth = 0 }: { item: FileTreeItem; depth?: number }) {
+function FileTreeNode({
+  item,
+  depth = 0,
+}: {
+  item: FileTreeItem;
+  depth?: number;
+}) {
   const [isOpen, setIsOpen] = React.useState(true);
   const isFolder = item.type === "folder";
-  
+
   return (
     <div>
       <div
         className={cn(
           "flex items-center gap-2 py-1 hover:bg-fd-muted/30 rounded px-2 -mx-2",
-          isFolder && "cursor-pointer"
+          isFolder && "cursor-pointer",
         )}
         style={{ paddingLeft: `${depth * 16 + 8}px` }}
         onClick={() => isFolder && setIsOpen(!isOpen)}
       >
         {isFolder ? (
           <>
-            <ChevronRight className={cn("h-3.5 w-3.5 text-fd-muted-foreground transition-transform", isOpen && "rotate-90")} />
+            <ChevronRight
+              className={cn(
+                "h-3.5 w-3.5 text-fd-muted-foreground transition-transform",
+                isOpen && "rotate-90",
+              )}
+            />
             <Layers className="h-4 w-4 text-amber-500" />
           </>
         ) : (
@@ -1624,16 +1972,27 @@ function FileTreeNode({ item, depth = 0 }: { item: FileTreeItem; depth?: number 
             <FileText className="h-4 w-4 text-fd-muted-foreground" />
           </>
         )}
-        <span className={cn("text-sm", isFolder ? "font-medium text-fd-foreground" : "text-fd-muted-foreground")}>
+        <span
+          className={cn(
+            "text-sm",
+            isFolder
+              ? "font-medium text-fd-foreground"
+              : "text-fd-muted-foreground",
+          )}
+        >
           {item.name}
         </span>
         {item.description && (
-          <span className="text-xs text-fd-muted-foreground ml-2">— {item.description}</span>
+          <span className="text-xs text-fd-muted-foreground ml-2">
+            — {item.description}
+          </span>
         )}
       </div>
-      {isFolder && isOpen && item.children?.map((child, index) => (
-        <FileTreeNode key={index} item={child} depth={depth + 1} />
-      ))}
+      {isFolder &&
+        isOpen &&
+        item.children?.map((child, index) => (
+          <FileTreeNode key={index} item={child} depth={depth + 1} />
+        ))}
     </div>
   );
 }
