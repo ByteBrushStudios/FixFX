@@ -1,0 +1,107 @@
+---
+title: "Palettes Configuration"
+description: "Color palettes and theming options for txAdmin."
+---
+
+import { FeatureList } from "@ui/components";
+
+# Color Palettes
+
+txAdmin supports multiple color palette configurations for theming the interface. Palettes define the colors used for semantic states, backgrounds, and interactive elements.
+
+## Available Palettes
+
+### Semantic Palettes
+
+These palettes define semantic colors for different states and purposes:
+
+- **Dark Semantic** - Color scheme for dark mode semantic states
+  - Accent, Danger, Warning, Success, Info colors
+
+- **Light Semantic** - Color scheme for light mode semantic states
+  - Accent, Danger, Warning, Success, Info colors
+
+- **FiveM Semantic** - FiveM-specific semantic colors
+  - Primary, Error, Warning, Success, Info colors
+
+### Background Palettes
+
+These palettes define background, card, and surface colors:
+
+- **Dark Backgrounds** - Dark mode background colors
+  - New background, card, border, muted, secondary, and primary colors
+
+- **Light Backgrounds** - Light mode background colors
+  - New background, card, border, muted, secondary, and primary colors
+
+- **Dark v2** - Updated dark mode palette
+  - Background, card, border, muted, secondary, and primary variations
+
+- **Light v2** - Updated light mode palette
+  - Background, card, border, muted, secondary, and primary variations
+
+### FiveM Palettes
+
+- **FiveM Light** - Light theme based on FiveM branding
+- **FiveM Dark** - Dark theme based on FiveM branding
+
+## Palette Structure
+
+Each palette contains a set of color swatches with the following structure:
+
+```json
+{
+  "paletteName": "palette-name",
+  "swatches": [
+    {
+      "name": "color-name",
+      "color": "HEXCODE"
+    }
+  ]
+}
+```
+
+## Default Colors
+
+### Semantic Colors
+
+| Color | Dark Hex | Light Hex | Purpose |
+|-------|----------|-----------|---------|
+| Accent | F50551 | F50551 | Primary action color |
+| Danger | F86565 | EF4141 | Danger/destructive actions |
+| Warning | E8C957 | E6C13A | Warning messages |
+| Success | 51E47A | 39E669 | Success messages |
+| Info | 5AC8E1 | 39C6E6 | Info messages |
+
+### Background Colors (Dark Mode)
+
+| Element | Color |
+|---------|-------|
+| New Background | 171516 |
+| Card | 1F1C1E |
+| Border | 322D31 |
+| Muted | 2A2629 |
+| Secondary | 463F44 |
+| Primary Text | F9F3F8 |
+
+### Background Colors (Light Mode)
+
+| Element | Color |
+|---------|-------|
+| New Background | F9F4F8 |
+| Card | EFEAEE |
+| Border | D6D2D5 |
+| Muted | DCD8DB |
+| Secondary | B7B3B6 |
+| Primary Text | 1B161A |
+
+## Customizing Palettes
+
+To customize the color palette for your txAdmin installation:
+
+1. Navigate to **txAdmin > Settings > Interface**
+2. Select your preferred palette from the available options
+3. The interface will update in real-time with the new colors
+4. Changes are persisted in your `config.json`
+
+For advanced customization, you can directly edit the palette JSON in the configuration file or use the web interface color picker tools.

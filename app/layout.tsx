@@ -162,7 +162,7 @@ const websiteJsonLd = {
   },
   sameAs: [
     "https://github.com/CodeMeAPixel/FixFX",
-    "https://discord.gg/fixfx",
+    "https://discord.gg/cYauqJfnNK",
   ],
 };
 
@@ -176,7 +176,7 @@ const organizationJsonLd = {
   foundingDate: "2024",
   sameAs: [
     "https://github.com/CodeMeAPixel/FixFX",
-    "https://discord.gg/fixfx",
+    "https://discord.gg/cYauqJfnNK",
   ],
   contactPoint: {
     "@type": "ContactPoint",

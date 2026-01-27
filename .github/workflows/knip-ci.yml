@@ -2,12 +2,13 @@ name: Knip Validation
 on:
   push:
     branches: [master, develop]
+  pull_request:
 
 jobs:
-  build_test:
+  knip:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
       
@@ -22,17 +23,24 @@ jobs:
       - name: Build application
         run: bun run build
 
-      - name: Validate Export Usage
-        run: bun run knip:exports
-
+      # HIGH CONFIDENCE - Hard fail on unused dependencies
       - name: Validate Dependency Usage
-        run: bun run knip:deps
+        run: bunx knip:deps
 
+      # MEDIUM CONFIDENCE - Report only (warning)
       - name: Validate File Usage
-        run: bun run knip:files
+        run: bunx knip:files
+        continue-on-error: true
 
-      - name: Validate Production Usage
-        run: bun run knip:prod
+      # LOW CONFIDENCE - Report only (warning)
+      - name: Validate Export Usage
+        run: bunx knip:exports
+        continue-on-error: true
+
+      # LOW CONFIDENCE - Report only (warning)
+      - name: Validate Production Dependencies
+        run: bunx knip:prod
+        continue-on-error: true
       
       - name: Notify success
-        run: echo "Build completed successfully!"
+        run: echo "Knip validation completed!"

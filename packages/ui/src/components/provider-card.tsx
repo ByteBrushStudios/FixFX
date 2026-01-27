@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Server,
-  Zap,
   Shield,
   Copy,
   Check,
@@ -12,8 +11,9 @@ import {
   Percent,
   Clock,
   Globe,
+  Award,
 } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@utils/functions/";
 import type { HostingProvider } from "@/lib/providers";
 
 function CopyButton({ text, className }: { text: string; className?: string }) {
@@ -52,12 +52,13 @@ function CopyButton({ text, className }: { text: string; className?: string }) {
 export function ProviderCard({ provider }: { provider: HostingProvider }) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-fd-border bg-fd-card transition-all duration-300 hover:border-fd-primary/50 hover:shadow-lg hover:shadow-fd-primary/5">
-      {/* Highlight badge */}
-      {provider.highlight && (
-        <div className="absolute right-4 top-4 z-10">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-green-500/20 to-emerald-500/20 px-3 py-1 text-xs font-medium text-green-400 ring-1 ring-green-500/30">
-            <Zap className="h-3 w-3" />
-            {provider.highlight}
+      {/* CFX Trusted Badge */}
+      {provider.isTrusted && (
+        <div className="absolute right-2 top-2 z-10 sm:right-4 sm:top-4">
+          <span className="inline-flex flex-wrap items-center justify-center gap-1 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-2.5 py-1 text-xs font-medium text-blue-400 ring-1 ring-blue-500/30 sm:px-3 sm:py-1 sm:text-xs">
+            <Award className="h-3 w-3 shrink-0" />
+            <span className="hidden sm:inline">CFX Trusted</span>
+            <span className="inline sm:hidden">Trusted</span>
           </span>
         </div>
       )}

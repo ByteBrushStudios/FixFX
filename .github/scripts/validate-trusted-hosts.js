@@ -8,6 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const Ajv = require('ajv');
+const addFormats = require('ajv-formats');
 
 const TRUSTED_HOSTS_FILE = path.join(__dirname, '..', '..', 'packages', 'providers', 'trusted-hosts.json');
 const SCHEMA_FILE = path.join(__dirname, '..', '..', 'packages', 'providers', 'trusted-hosts-schema.json');
@@ -15,10 +16,14 @@ const SCHEMA_FILE = path.join(__dirname, '..', '..', 'packages', 'providers', 't
 try {
   // Load files
   const trustedHosts = JSON.parse(fs.readFileSync(TRUSTED_HOSTS_FILE, 'utf8'));
-  const schema = JSON.parse(fs.readFileSync(SCHEMA_FILE, 'utf8'));
+  let schema = JSON.parse(fs.readFileSync(SCHEMA_FILE, 'utf8'));
   
-  // Initialize AJV validator
+  // Remove $schema to avoid AJV trying to fetch it from the web
+  delete schema.$schema;
+  
+  // Initialize AJV validator with format support
   const ajv = new Ajv();
+  addFormats(ajv);
   const validate = ajv.compile(schema);
   
   // Validate against schema

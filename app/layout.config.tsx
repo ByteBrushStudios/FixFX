@@ -2,7 +2,7 @@ import type { HomeLayoutProps } from "fumadocs-ui/layouts/home";
 import { GITHUB_LINK, DISCORD_LINK } from "@/packages/utils/src";
 import { FixFXIcon } from "@ui/icons";
 import { FaDiscord } from "react-icons/fa";
-import { Gamepad, Home, PlugZap, LogsIcon, Bot, X } from "lucide-react";
+import { Gamepad, Home, PlugZap, LogsIcon, Bot, X, Server, Palette } from "lucide-react";
 
 export const baseOptions: HomeLayoutProps = {
   disableThemeSwitch: true,
@@ -20,7 +20,7 @@ export const baseOptions: HomeLayoutProps = {
       type: "icon",
       text: "Discord",
       icon: <FaDiscord className="size-6" />,
-      url: "https://discord.gg/Vv2bdC44Ge",
+      url: "https://discord.gg/cYauqJfnNK",
     },
     {
       type: "icon",
@@ -217,7 +217,39 @@ export const baseOptions: HomeLayoutProps = {
           text: "Server Artifacts",
           description: "Explore the latest server artifacts for CFX.",
           url: "/artifacts"
-        }
+        },
+        {
+          menu: {
+            banner: (
+              <div className="flex h-20 w-full items-center justify-center gap-x-1">
+                <FixFXIcon className="size-6" stroke="#22c55e" />
+                <h1 className="text-fd-foreground text-2xl font-bold">
+                  Hosting Partners
+                </h1>
+              </div>
+            )
+          },
+          icon: <Server className="size-6" stroke="#22c55e" />,
+          text: "Hosting Partners",
+          description: "Discover trusted hosting providers with exclusive discounts for FixFX users.",
+          url: "/hosting"
+        },
+        {
+          menu: {
+            banner: (
+              <div className="flex h-20 w-full items-center justify-center gap-x-1">
+                <FixFXIcon className="size-6" stroke="#ec4899" />
+                <h1 className="text-fd-foreground text-2xl font-bold">
+                  Brand Assets
+                </h1>
+              </div>
+            )
+          },
+          icon: <Palette className="size-6" stroke="#ec4899" />,
+          text: "Brand Assets",
+          description: "Download official FixFX logos, icons, and brand guidelines.",
+          url: "/brand"
+        },
       ]
     }
   ],

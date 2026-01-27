@@ -18,10 +18,10 @@ Before you begin, ensure your Windows system meets these requirements for optima
 
 <FeatureList 
   features={[
-    { title: "Processor", description: "Dual-core CPU (quad-core recommended for larger servers)", icon: "zap" },
-    { title: "RAM", description: "Minimum 4GB (8GB+ recommended)", icon: "database" },
-    { title: "Storage", description: "SSD with at least 20GB free space", icon: "folder" },
-    { title: "Network", description: "Stable internet connection with required open ports", icon: "globe" }
+    { title: "Processor", description: "Intel Core i5 3470 @ 3.2GHz / AMD X8 FX-8350 @ 4GHz or better (for 32+ players)", icon: "zap" },
+    { title: "RAM", description: "Minimum 8GB (16GB+ recommended for larger servers)", icon: "database" },
+    { title: "Storage", description: "SSD with at least 8GB free space for server files + resources", icon: "folder" },
+    { title: "Network", description: "Stable internet connection with low latency and required ports open", icon: "globe" }
   ]}
 />
 
@@ -38,11 +38,15 @@ Before you begin, ensure your Windows system meets these requirements for optima
 ### Software Requirements
 
 <CheckList items={[
-  "Windows 10, Windows 11, or Windows Server 2019+",
-  "Node.js Version 16+ (usually included with FiveM artifacts)",
-  "Modern web browser (Chrome, Firefox, Edge, Safari)",
-  ".NET Framework 4.6.2+ (usually pre-installed)"
+  "Windows 8.1, Windows 10, Windows 11, or Windows Server 2019+ (fully updated)",
+  "Visual C++ Redistributable 2019 or newer",
+  "Modern web browser (Chrome, Firefox, Edge)",
+  "7-Zip or WinRAR for extracting server artifacts"
 ]} />
+
+<InfoBanner type="warning" title="Important">
+FiveM requires a **fully updated** version of Windows. An outdated operating system may not work correctly. Windows 10 or newer is recommended for the best experience.
+</InfoBanner>
 
 ## Installation Options
 

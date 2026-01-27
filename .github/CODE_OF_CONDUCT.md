@@ -34,7 +34,7 @@ This Code of Conduct applies to all project spaces and to individuals representi
 Instances of unacceptable behavior may be reported to the project maintainers:
 
 - **Email**: [hey@codemeapixel.dev](mailto:hey@codemeapixel.dev)
-- **Discord**: [discord.gg/Vv2bdC44Ge](https://discord.gg/Vv2bdC44Ge)
+- **Discord**: [discord.gg/cYauqJfnNK](https://discord.gg/cYauqJfnNK)
 
 All reports will be reviewed and investigated promptly and fairly. Maintainers are obligated to respect the privacy and security of the reporter.
 

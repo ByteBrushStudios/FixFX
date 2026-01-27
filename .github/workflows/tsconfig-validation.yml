@@ -40,21 +40,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## ⚠️ tsconfig.json Validation Failed
-
-This pull request attempts to **remove or modify** critical tsconfig.json configurations. This is not allowed as it will break the site.
-
-### ✅ What's Allowed:
-- **Adding** new compiler options
-- **Adding** new path aliases
-- **Adding** new include/exclude patterns
-
-### ❌ What's Not Allowed:
-- Removing existing compiler options
-- Modifying existing compiler option values
-- Removing path aliases
-- Modifying path alias mappings
-- Removing include/exclude patterns
-
-Please revert your changes to the existing configuration and only add new options if needed.`
+              body: "## ⚠️ tsconfig.json Validation Failed\n\nThis pull request attempts to **remove or modify** critical tsconfig.json configurations. This is not allowed as it will break the site.\n\n### ✅ What's Allowed:\n- **Adding** new compiler options\n- **Adding** new path aliases\n- **Adding** new include/exclude patterns\n\n### ❌ What's Not Allowed:\n- Removing existing compiler options\n- Modifying existing compiler option values\n- Removing path aliases\n- Modifying path alias mappings\n- Removing include/exclude patterns\n\nPlease revert your changes to the existing configuration and only add new options if needed."
             })

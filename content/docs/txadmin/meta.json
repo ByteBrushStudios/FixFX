@@ -1,13 +1,24 @@
 {
     "root": true,
     "pages": [
-        "windows",
         "advanced",
+        "api-events",
         "backup-system",
         "configuration",
+        "custom-server-log",
+        "development",
+        "discord-bot",
+        "discord-status",
+        "env-config",
+        "logs",
+        "menu",
+        "palettes",
         "permissions",
+        "recipe",
         "server-management",
+        "translation",
         "troubleshooting",
-        "web-panel"
+        "windows",
+        "linux"
     ]
 }

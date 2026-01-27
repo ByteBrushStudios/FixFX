@@ -1,0 +1,167 @@
+---
+title: "Development"
+description: "Guide to set up txAdmin development environment."
+---
+
+import { AlertTriangle, Info } from "lucide-react";
+import { StepList, FeatureList, CommandCard } from "@ui/components";
+
+# txAdmin Development
+
+If you are interested in development of txAdmin, this guide will help set up your environment. Before starting, please make sure you are familiar with the basics of NodeJS & ecosystem.
+
+> **Note:** This guide does not cover translations, [which are very easy to do!](./translation)
+
+## Requirements
+
+- Windows (the builder doesn't work for other OSs)
+- NodeJS v22.9 or newer
+- FXServer
+
+## Project Structure
+
+- **core** - Node Backend & Modules. Transpiled by `tsc` and bundled with `esbuild`
+  - **boot** - Code used/triggered during the boot process
+  - **deployer** - Responsible for deploying new servers
+  - **lib** - Collection of stateless utils, helpers and business logic
+  - **modules** - Classes that compose the txAdmin instance, stateful with specific functionalities
+  - **routes** - All web routes containing HTTP router logic
+  - **testing** - Top-level testing utilities
+
+- **resource** - The in-game resource running under the `monitor` name. Files synchronized with deploy path during development.
+
+- **menu** - React source code for txAdmin's NUI Menu. Transpiled & built using Vite.
+
+- **web** - Legacy SSR templates & static assets. Uses EJS templating. Will be deprecated in favor of `panel`.
+
+- **panel** - New UI built with React and Vite.
+
+- **scripts** - Scripts used for development only.
+
+- **shared** - Stuff used across workspaces like functions and type definitions.
+
+## Preparing the Environment
+
+<StepList
+  steps={[
+    {
+      title: "Clone txAdmin Repository",
+      description: "Clone the txAdmin repository into a folder outside the fxserver directory.",
+      code: "git clone https://github.com/citizenfx/txAdmin"
+    },
+    {
+      title: "Install Dependencies",
+      description: "In your root folder, install dependencies and prepare commit hook.",
+      code: "npm install\nnpm run prepare"
+    },
+    {
+      title: "Create .env File",
+      description: "At the root of the project, create a `.env` file with TXDEV_FXSERVER_PATH.",
+      code: 'TXDEV_FXSERVER_PATH=\'E:/FiveM/10309/\''
+    }
+  ]}
+/>
+
+## Development Workflows
+
+### Core/Panel/Resource
+
+This workflow is controlled by `scripts/build/*`, which is responsible for:
+- Watching and copying static files (resource, docs, license, entry file, etc) to the deploy path
+- Watching and re-transpiling the core files, bundling and deploying it
+- Running FXServer in the same terminal, restarting when core is modified (like `nodemon`, but enhanced)
+
+In dev mode, core redirects the panel `index.html` to use Vite, so you first need to start it, then start the builder:
+
+```bash
+# run vite
+cd panel
+npm run dev
+
+# In a new terminal - run the builder
+cd core
+npm run dev
+```
+
+### NUI Menu
+
+```bash
+cd nui
+
+# To run Vite on game dev mode:
+npm run dev
+
+# To run Vite on browser dev mode:
+npm run browser
+```
+
+Keep in mind that for every change you will need to restart the `monitor` resource. Unless you started the server with `+setr txAdmin-debugMode true`, txAdmin will detect that as a crash and restart your server.
+
+When running in game mode, it takes between 10 and 30 seconds for Vite to finish building before you can restart the `monitor` resource in-game.
+
+### Resource Event Naming Rules
+
+- Event prefix must be `tx<cl|sv>:` indicating where it is registered
+- Events that request something (like permission) from the server start with `txsv:req`
+- Events can have verbs like `txsv:checkAdminStatus` or `txcl:setServerCtx`
+- Most events are menu-related, so scoping events to menu is not required
+
+### Testing & Building
+
+The building process is normally done in the GitHub Action workflow only, but if you must build locally:
+
+```bash
+npm run test --workspaces
+GITHUB_REF="refs/tags/v9.9.9" npm run build
+```
+
+The output will be in the `dist/` folder.
+
+> **Note:** Linting & typechecking need to be re-added into the workflow.
+
+## Notes Regarding the Settings System
+
+- `config.json` now only contains changed, non-default values
+- `DEFAULT_NULL` is only for values that cannot and should not have defaults (like `fxRunner.dataPath`, `discordBot.token`)
+- Note how `fxRunner.cfgPath` does have a default
+- All schemas must have a default, even if `null`
+- The objective of the `schema.fixer` is to fix invalid values, not apply defaults for missing values
+- The `schema.fixer` is only used during boot, not during any saves
+- Only use `SYM_FIXER_FATAL` for very important settings so txAdmin rather not boot than boot with an unexpected config
+- The objective of the schema is to guarantee correct type values (shouldn't cause TypeErrors), but does not validate dynamic things like file existence
+- Validator transformers are only to "polish" the value (removing duplicates, sorting) not to fix invalid values
+
+## Legacy UI Reference
+
+<div className="my-6 p-4 border border-amber-500/30 bg-amber-500/10 rounded-lg flex gap-3">
+  <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+  <div>
+    <p className="font-semibold text-amber-500 mb-1">Legacy Warning</p>
+    <p className="text-sm text-amber-500/90">The `/web/` UI is considered legacy and will be migrated to `/panel/`. **DO NOT** modify `css/coreui.css`. Either do a patch in `custom.css` or modify the SCSS variables.</p>
+  </div>
+</div>
+
+### Building CoreUI CSS
+
+This doc is a reference if you are trying to re-build the `css/coreui.css` from the SCSS source. The only change from CoreUI was the `aside-menu` size from 200px to 300px in `scss/_variables.scss : $aside-menu-width`.
+
+You can find other variable names in `node_modules/@coreui/coreui/scss/coreui`.
+
+```bash
+git clone https://github.com/coreui/coreui-free-bootstrap-admin-template.git coreui
+cd coreui
+npm i
+
+# If you want to make sure you used the same version of CoreUI
+git checkout 0cb1d81a8471ff4b6eb80c41b45c61a8e2ab3ef6
+
+# Edit your stuff and then compile:
+npx node-sass \
+  --output-style expanded \
+  --source-map true \
+  --source-map-contents true \
+  --precision 6 \
+  src/scss/style.scss src/css/style.css
+```
+
+Then copy the `src/css/style.css` to txAdmin's folder.

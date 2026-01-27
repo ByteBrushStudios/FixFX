@@ -1,0 +1,550 @@
+---
+title: "API Events"
+description: "Learn about txAdmin Events and how to integrate them with your resources."
+---
+
+import { FeatureList, DefinitionList, StepList, PropertyCard, CommandCard } from "@ui/components";
+import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+
+# txAdmin Events API
+
+txAdmin broadcasts **server events** that allow you to integrate functionalities with other resources. Events follow a consistent naming pattern: `txAdmin:events:<eventName>` and include a table parameter with relevant data.
+
+## Overview
+
+<FeatureList
+  features={[
+    {
+      name: "Server Events",
+      description: "Real-time notifications for server state changes like shutdowns, restarts, and announcements",
+      icon: "server"
+    },
+    {
+      name: "Player Events",
+      description: "Events triggered by player actions including bans, warns, kicks, and direct messages",
+      icon: "users"
+    },
+    {
+      name: "Whitelist Management",
+      description: "Track whitelist changes, requests, and pre-approvals as they happen",
+      icon: "shield"
+    },
+    {
+      name: "Admin Events",
+      description: "Monitor admin authentication, permission changes, and console commands",
+      icon: "userCog"
+    }
+  ]}
+  columns={2}
+/>
+
+<div className="my-6 p-4 border border-blue-500/30 bg-blue-500/10 rounded-lg flex gap-3">
+  <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+  <div>
+    <p className="font-semibold text-blue-500 mb-1">CFX Events, Not txAdmin API</p>
+    <p className="text-sm text-blue-500/90">These events are part of the <strong>CFX event system</strong> and are broadcast by txAdmin into the server's game environment. txAdmin does not currently expose a separate HTTP/REST API. To integrate with these events, you must listen for them using game event handlers in your server-side resources.</p>
+  </div>
+</div>
+
+<div className="my-6 p-4 border border-amber-500/30 bg-amber-500/10 rounded-lg flex gap-3">
+  <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+  <div>
+    <p className="font-semibold text-amber-500 mb-1">Important Notice</p>
+    <p className="text-sm text-amber-500/90">Do not fully rely on events where consistency is key since they may be executed while the server is not online. For example, while the server is stopped, one could whitelist or ban player identifiers without triggering events.</p>
+  </div>
+</div>
+
+---
+
+## Server-Related Events
+
+### txAdmin:events:announcement
+
+Broadcasted when an announcement is made using txAdmin.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:announcement"
+  description="Server announcement broadcast"
+  type="info"
+/>
+
+**Event Data:**
+- `author` *(string)* - The name of the admin or `txAdmin`
+- `message` *(string)* - The message content of the announcement
+
+**Customization:** You can hide the default notification in `txAdmin → Settings → Game → Notifications`.
+
+**Example:**
+```lua
+AddEventHandler('txAdmin:events:announcement', function(eventData)
+    print("Announcement from " .. eventData.author .. ": " .. eventData.message)
+    -- Custom announcement handling
+end)
+```
+
+---
+
+### txAdmin:events:serverShuttingDown
+
+Broadcasted when the server is about to shut down. This can be triggered by scheduled/unscheduled stops or restarts, by an admin, or by the system.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:serverShuttingDown"
+  description="Server shutdown notification"
+  type="warning"
+/>
+
+**Event Data:**
+- `delay` *(number)* - Milliseconds txAdmin will wait before killing the server process
+- `author` *(string)* - The name of the admin or `txAdmin`
+- `message` *(string)* - The shutdown message
+
+**Example:**
+```lua
+AddEventHandler('txAdmin:events:serverShuttingDown', function(eventData)
+    print("Server shutting down in " .. (eventData.delay / 1000) .. " seconds")
+    -- Perform cleanup tasks
+end)
+```
+
+---
+
+### txAdmin:events:scheduledRestart
+
+Broadcasted automatically `[30, 15, 10, 5, 4, 3, 2, 1]` minutes before a scheduled restart.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:scheduledRestart"
+  description="Scheduled restart countdown"
+  type="info"
+/>
+
+**Event Data:**
+- `secondsRemaining` *(number)* - Seconds before the scheduled restart
+- `translatedMessage` *(string)* - Translated message to show on the announcement
+
+**Customization:** Hide the default notification in `txAdmin → Settings → Game → Notifications`.
+
+**Example (ESX v1.2):**
+```lua
+ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+    if eventData.secondsRemaining == 60 then
+        CreateThread(function()
+            Wait(45000)
+            print("15 seconds before restart... saving all players!")
+            ESX.SavePlayers(function()
+                -- Save player data
+            end)
+        end)
+    end
+end)
+```
+
+---
+
+### txAdmin:events:scheduledRestartSkipped
+
+Broadcasted when an admin skips the next scheduled restart.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:scheduledRestartSkipped"
+  description="Scheduled restart cancellation"
+  type="info"
+/>
+
+**Event Data:**
+- `secondsRemaining` *(number)* - Seconds before the previously scheduled restart
+- `temporary` *(boolean)* - Whether it was a temporary or configured restart
+- `author` *(string)* - Name of the admin that skipped the restart
+
+---
+
+## Player-Related Events
+
+### txAdmin:events:playerBanned
+
+Broadcasted when a player is banned using txAdmin.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:playerBanned"
+  description="Player ban notification"
+  type="warning"
+/>
+
+**Event Data:**
+- `author` *(string)* - The name of the admin
+- `reason` *(string)* - The reason for the ban
+- `actionId` *(string)* - The ID of this action
+- `expiration` *(number|boolean)* - Unix timestamp for ban expiration, or `false` if permanent (added in v4.9)
+- `durationInput` *(string)* - Duration input (added in v5.0)
+- `durationTranslated` *(string|null)* - Translated duration or `null` (added in v5.0)
+- `targetNetId` *(number|null)* - Network ID of banned player, or `null` if identifiers-only ban (added in v5.0)
+- `targetIds` *(table)* - Identifiers that were banned (added in v5.0)
+- `targetHwids` *(table)* - Hardware identifiers that were banned (added in v6.0)
+- `targetName` *(string)* - Clean name of banned player or `identifiers` for legacy bans (added in v5.0)
+- `kickMessage` *(string)* - Message shown to player as kick reason (added in v5.0)
+
+---
+
+### txAdmin:events:playerWarned
+
+Broadcasted when a player is warned using txAdmin.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:playerWarned"
+  description="Player warning notification"
+  type="info"
+/>
+
+**Event Data:**
+- `author` *(string)* - The name of the admin
+- `reason` *(string)* - The reason for the warning
+- `actionId` *(string)* - The ID of this action
+- `targetNetId` *(number|null)* - Network ID of warned player, or `null` if offline (added in v7.3)
+- `targetIds` *(table)* - Identifiers that were warned (added in v7.3)
+- `targetName` *(string)* - Clean name of warned player (added in v7.3)
+
+**Customization:** Hide the default notification in `txAdmin → Settings → Game → Notifications`.
+
+---
+
+### txAdmin:events:playerKicked
+
+Broadcasted when a player is kicked using txAdmin. Note: Starting on v8.0, the `target` parameter might be `-1`.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:playerKicked"
+  description="Player kick notification"
+  type="warning"
+/>
+
+**Event Data:**
+- `target` *(number)* - Player ID that was kicked, or `-1` if kicking everyone
+- `author` *(string)* - The name of the admin
+- `reason` *(string)* - The reason for the kick
+- `dropMessage` *(string)* - Translated message players will see when kicked (added in v8.0)
+
+---
+
+### txAdmin:events:playerHealed
+
+Broadcasted when a heal event is triggered for a player or the whole server. This is useful for servers running ambulance jobs or resources that keep players unconscious even after health restoration.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:playerHealed"
+  description="Player healing notification"
+  type="info"
+/>
+
+**Event Data:**
+- `target` *(number)* - Player ID that was healed, or `-1` if the entire server was healed
+- `author` *(string)* - Name of the admin that triggered the heal
+
+---
+
+### txAdmin:events:playerDirectMessage
+
+Broadcasted when an admin DMs a player.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:playerDirectMessage"
+  description="Direct message notification"
+  type="info"
+/>
+
+**Event Data:**
+- `target` *(number)* - ID of the player to receive the DM
+- `author` *(string)* - The name of the admin
+- `message` *(string)* - The message content
+
+**Customization:** Hide the default notification in `txAdmin → Settings → Game → Notifications`.
+
+---
+
+## Whitelist-Related Events
+
+### txAdmin:events:whitelistPlayer
+
+Broadcasted when a player is whitelisted or has their whitelisted status revoked. This event is only fired when the player is already registered and is not related to whitelist requests.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:whitelistPlayer"
+  description="Whitelist status change"
+  type="shield"
+/>
+
+**Event Data:**
+- `action` *(string)* - `added` or `removed`
+- `license` *(string)* - The license of the player
+- `playerName` *(string)* - The player display name
+- `adminName` *(string)* - Name of the admin that performed the action
+
+---
+
+### txAdmin:events:whitelistPreApproval
+
+Broadcasted when manually adding identifiers to whitelist pre-approvals. Players with pre-approved identifiers will be automatically saved to the database upon connecting.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:whitelistPreApproval"
+  description="Whitelist pre-approval action"
+  type="shield"
+/>
+
+**Event Data:**
+- `action` *(string)* - `added` or `removed`
+- `identifier` *(string)* - The identifier that was pre-approved (e.g., `discord:xxxxxx`)
+- `playerName?` *(string)* - The player display name (except when action is `removed`)
+- `adminName` *(string)* - Name of the admin that performed the action
+
+**Note:** This event is NOT triggered when a whitelist request is approved. Use `txAdmin:events:whitelistRequest` for that.
+
+---
+
+### txAdmin:events:whitelistRequest
+
+Broadcasted whenever an event related to whitelist requests occurs.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:whitelistRequest"
+  description="Whitelist request action"
+  type="shield"
+/>
+
+**Event Data:**
+- `action` *(string)* - `requested`, `approved`, `denied`, or `deniedAll`
+- `playerName?` *(string)* - The player display name (except when action is `deniedAll`)
+- `requestId?` *(string)* - The request ID (e.g., `Rxxxx`), except when action is `deniedAll`
+- `license?` *(string)* - The license of the player/requester (except when action is `deniedAll`)
+- `adminName?` *(string)* - Name of the admin that performed the action (except when action is `requested`)
+
+---
+
+## Admin & Other Events
+
+### txAdmin:events:adminAuth
+
+Broadcasted whenever an admin is authenticated in-game or loses admin permissions. This event is particularly useful for anti-cheats to ignore txAdmin admins.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:adminAuth"
+  description="Admin authentication status"
+  type="userCog"
+/>
+
+**Event Data:**
+- `netid` *(number)* - Player ID or `-1` when revoking all admin permissions (forced reauth)
+- `isAdmin` *(boolean)* - Whether the player is an admin
+- `username?` *(string)* - The txAdmin username of the authenticated admin
+
+---
+
+### txAdmin:events:adminsUpdated
+
+Broadcasted whenever the admin list changes, including permission or identifier changes. Used by txAdmin to force admin re-authentication.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:adminsUpdated"
+  description="Admin list update"
+  type="users"
+/>
+
+**Event Data:**
+- Array of Network IDs of admins currently online
+
+---
+
+### txAdmin:events:actionRevoked
+
+Broadcasted when an admin revokes a database action (ban, warn, etc.).
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:actionRevoked"
+  description="Action revocation notification"
+  type="undo"
+/>
+
+**Event Data:**
+- `actionId` *(string)* - The ID of the revoked action
+- `actionType` *(string)* - The type of action that was revoked (ban, warn, etc.)
+- `actionReason` *(string)* - The action reason
+- `actionAuthor` *(string)* - Name of the admin that issued the action
+- `playerName` *(string|boolean)* - Name of the player that received the action, or `false` if not applicable
+- `playerIds` *(table)* - Array of identifiers the action applied to (license, discord, etc.)
+- `playerHwids` *(table)* - Array of hardware ID tokens the action applied to (added in v6.0)
+- `revokedBy` *(string)* - Name of the admin that revoked the action
+
+---
+
+### txAdmin:events:configChanged
+
+Broadcasted when txAdmin settings change in a way that could affect the server.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:configChanged"
+  description="Configuration change notification"
+  type="settings"
+/>
+
+**Event Data:** This event has no data.
+
+**Usage:** Currently used to signal the txAdmin in-game menu when the language changes. Can be used to test custom language files without server restart.
+
+---
+
+### txAdmin:events:consoleCommand
+
+Broadcasted whenever an admin sends a command through the Live Console.
+
+<PropertyCard
+  name="Event"
+  value="txAdmin:events:consoleCommand"
+  description="Console command execution"
+  type="terminal"
+/>
+
+**Event Data:**
+- `author` *(string)* - The txAdmin username of the admin who sent the command
+- `channel` *(string)* - Currently always `txAdmin`, but may be `rcon` or `game` in the future
+- `command` *(string)* - The command that was executed
+
+---
+
+## Deprecated Events
+
+The following events have been deprecated and should not be used in new resources:
+
+<DefinitionList
+  items={[
+    {
+      term: "txAdmin:events:playerWhitelisted",
+      definition: "Deprecated in v5.0.0. Use whitelist-related events instead."
+    },
+    {
+      term: "txAdmin:events:healedPlayer",
+      definition: "Deprecated in v8.0. Use `txAdmin:events:playerHealed` instead."
+    },
+    {
+      term: "txAdmin:events:skippedNextScheduledRestart",
+      definition: "Deprecated in v8.0. Use `txAdmin:events:scheduledRestartSkipped` instead."
+    }
+  ]}
+/>
+
+---
+
+## Implementation Example
+
+Here's a complete example of listening to multiple events in a resource:
+
+```lua
+-- Initialize event listeners
+local eventLog = {}
+
+-- Server announcements
+AddEventHandler('txAdmin:events:announcement', function(eventData)
+    table.insert(eventLog, {
+        type = 'announcement',
+        author = eventData.author,
+        message = eventData.message,
+        timestamp = os.time()
+    })
+    print("^2[txAdmin Announcement]^7 " .. eventData.author .. ": " .. eventData.message)
+end)
+
+-- Player actions
+AddEventHandler('txAdmin:events:playerBanned', function(eventData)
+    table.insert(eventLog, {
+        type = 'ban',
+        author = eventData.author,
+        target = eventData.targetName or 'Unknown',
+        reason = eventData.reason,
+        expiration = eventData.expiration,
+        timestamp = os.time()
+    })
+    print("^1[txAdmin Ban]^7 " .. eventData.targetName .. " banned by " .. eventData.author)
+end)
+
+AddEventHandler('txAdmin:events:playerWarned', function(eventData)
+    table.insert(eventLog, {
+        type = 'warn',
+        author = eventData.author,
+        target = eventData.targetName,
+        reason = eventData.reason,
+        timestamp = os.time()
+    })
+    print("^3[txAdmin Warning]^7 " .. eventData.targetName .. " warned by " .. eventData.author)
+end)
+
+-- Admin authentication
+AddEventHandler('txAdmin:events:adminAuth', function(eventData)
+    if eventData.isAdmin then
+        print("^5[txAdmin Auth]^7 " .. eventData.username .. " authenticated (netid: " .. eventData.netid .. ")")
+    else
+        print("^5[txAdmin Auth]^7 Admin permissions revoked for netid: " .. eventData.netid)
+    end
+end)
+
+-- Server shutdown
+AddEventHandler('txAdmin:events:serverShuttingDown', function(eventData)
+    print("^1[txAdmin]^7 Server shutting down in " .. (eventData.delay / 1000) .. " seconds")
+    print("Reason: " .. eventData.message)
+end)
+```
+
+---
+
+## Best Practices
+
+<FeatureList
+  features={[
+    {
+      name: "Handle Offline Actions",
+      description: "Some events (like bans and warns) can occur while the server is offline. Don't assume players are always online.",
+      icon: "warning"
+    },
+    {
+      name: "Use Identifiers",
+      description: "When dealing with bans and warns, use the identifier arrays instead of just network IDs for persistence across restarts.",
+      icon: "shield"
+    },
+    {
+      name: "Log Everything",
+      description: "Consider logging significant events to a database for audit trails and compliance.",
+      icon: "database"
+    },
+    {
+      name: "Handle Failures Gracefully",
+      description: "Don't block event handlers on heavy operations; use threads for async work.",
+      icon: "check"
+    }
+  ]}
+  columns={2}
+/>
+
+---
+
+## Related Documentation
+
+- [txAdmin Official Repository](https://github.com/citizenfx/txAdmin)
+- [FiveM Development Docs](https://docs.fivem.net/)
+- [Event System Guide](./natives)

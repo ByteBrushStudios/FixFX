@@ -180,7 +180,7 @@ Contributions are welcome. Please read our [Contributing Guide](.github/CONTRIBU
 ## Community
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/CodeMeAPixel/FixFX/issues)
-- **Discord**: [discord.gg/Vv2bdC44Ge](https://discord.gg/Vv2bdC44Ge)
+- **Discord**: [discord.gg/cYauqJfnNK](https://discord.gg/cYauqJfnNK)
 - **Email**: [hey@codemeapixel.dev](mailto:hey@codemeapixel.dev)
 
 ## License

@@ -115,6 +115,6 @@ Partners will receive 30-day notice of termination unless the violation is sever
 ## Questions?
 
 Have questions about becoming a provider or these guidelines? 
-- Open an issue in the FixFX repository
-- Email: partnerships@fixfx.dev
-- Check the [Comprehensive Provider README](./README.md) for detailed technical requirements
+- Open an issue in the [FixFX repository](https://github.com/CodeMeAPixel/FixFX/issues)
+- Email: hey@codemeapixel.dev
+- Check the [Comprehensive Provider README](https://github.com/CodeMeAPixel/FixFX/blob/develop/packages/providers/README.md) for detailed technical requirements

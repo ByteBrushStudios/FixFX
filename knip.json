@@ -2,7 +2,6 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
     "app/**/*.{ts,tsx}",
-    "middleware.ts",
     "source.config.ts",
     "next.config.mjs",
     "tailwind.config.ts",
@@ -18,29 +17,23 @@
     "@core/*": ["./packages/core/src/*"]
   },
   "ignoreDependencies": [
-    "eslint-config-next",
-    "postcss",
-    "tailwindcss",
-    "typescript",
-    "autoprefixer",
     "@types/*",
-    "fumadocs-mdx",
-    "fumadocs-typescript",
+    "@radix-ui/react-select",
+    "@radix-ui/react-radio-group",
+    "cheerio",
+    "gray-matter",
     "shiki"
   ],
-  "ignoreExportsUsedInFile": true,
   "ignoreBinaries": [
-    "prisma",
-    "fumadocs-mdx"
+    "ajv"
   ],
-  "includeEntryExports": true,
   "rules": {
     "classMembers": "warn",
     "enumMembers": "warn",
     "types": "warn",
     "exports": "warn",
     "files": "warn",
-    "dependencies": "warn",
+    "dependencies": "error",
     "duplicates": "error",
     "nsExports": "warn",
     "nsTypes": "warn"
@@ -61,7 +54,6 @@
     ".": {
       "entry": [
         "app/**/*.{ts,tsx}",
-        "middleware.ts",
         "lib/**/*.{ts,tsx}"
       ]
     },

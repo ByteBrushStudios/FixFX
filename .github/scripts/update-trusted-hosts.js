@@ -11,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 
 const FIVEM_HOSTING_URL = 'https://fivem.net/server-hosting';
-const TRUSTED_HOSTS_FILE = path.join(__dirname, 'trusted-hosts.json');
-const SCHEMA_FILE = path.join(__dirname, 'trusted-hosts-schema.json');
+const TRUSTED_HOSTS_FILE = path.join(__dirname, '..', '..', 'packages', 'providers', 'trusted-hosts.json');
+const SCHEMA_FILE = path.join(__dirname, '..', '..', 'packages', 'providers', 'trusted-hosts-schema.json');
 
 /**
  * Fetch the FiveM hosting page and extract provider information

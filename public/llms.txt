@@ -56,7 +56,7 @@ FixFX is a documentation hub for the CitizenFX ecosystem, providing guides and r
 ## Contact
 
 - GitHub: https://github.com/CodeMeAPixel
-- Discord: https://discord.gg/fixfx
+- Discord: https://discord.gg/cYauqJfnNK
 
 ## Optional
 

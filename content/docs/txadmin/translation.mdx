@@ -1,0 +1,122 @@
+---
+title: "Translation Support"
+description: "Contribute translations to txAdmin or create custom locales."
+---
+
+import { AlertTriangle, Info } from "lucide-react";
+import { StepList, FeatureList } from "@ui/components";
+
+# Translation Support
+
+txAdmin supports translation for over 30 languages for the in-game interface (menu/warn) and chat messages, as well as Discord warnings.
+
+## Custom Locales
+
+If your language is not available, or you want to customize the messages, you can create a `locale.json` file inside the `txData` folder based on any language file found on [our repository](https://github.com/citizenfx/txAdmin/tree/master/locale). Then go to the settings and select the "Custom" language option.
+
+The `$meta.humanizer_language` key must be compatible with the library [humanize-duration](https://www.npmjs.com/package/humanize-duration), check their page for a list of compatible languages.
+
+### Creating a Custom Locale
+
+<StepList
+  steps={[
+    {
+      title: "Download a Base Language",
+      description: "Choose a language file from the txAdmin repository that is closest to your target language and download it."
+    },
+    {
+      title: "Copy to txData",
+      description: "Copy or create a locale.json file in your txData folder with your custom translations."
+    },
+    {
+      title: "Test Your Changes",
+      description: "Go to txAdmin settings and select 'Custom' language. Visit the settings page to see changes without restarting."
+    },
+    {
+      title: "Submit Contribution",
+      description: "Once tested, consider contributing your translation to the official repository."
+    }
+  ]}
+/>
+
+## Contributing Translations
+
+We need the community help to translate, and keep the translations updated and high-quality.
+
+To contribute, you will need to:
+
+1. **Make a custom locale file** with the instructions above
+2. **Name the file** using the language code from [this page](https://www.science.co.il/language/Locale-codes.php)
+3. **Set the $meta.label** to the language name in English (e.g., `Spanish` instead of `Español`)
+4. **Add to shared/localeMap.ts** if creating a new translation, maintaining alphabetical order
+5. **Submit a Pull Request** with a few screenshots showing you tested the changes in-game
+6. **Automatic checks** will run - read the output in case of any errors
+
+### Translation Checklist
+
+- [ ] Language code is correct from locale codes list
+- [ ] `$meta.label` is in English
+- [ ] Added to `shared/localeMap.ts` in alphabetical order
+- [ ] All keys translated (none left in English)
+- [ ] Screenshots of in-game testing attached
+- [ ] Pull request description clearly states what language was translated
+
+<div className="my-6 p-4 border border-blue-500/30 bg-blue-500/10 rounded-lg flex gap-3">
+  <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+  <div>
+    <p className="font-semibold text-blue-500 mb-1">Quick Testing Tip</p>
+    <p className="text-sm text-blue-500/90">To quickly test your changes, edit the `locale.json` file and then in the settings page click "Save Global Settings" again to see the changes in the game menu without needing to restart txAdmin or the server.</p>
+  </div>
+</div>
+
+### Validate Your Translation
+
+To make sure you didn't miss anything in the locale file, you can:
+
+1. Download the txAdmin source code
+2. Execute `npm i`
+3. Move your `locale.json` to inside the `txAdmin/locale` folder
+4. Run `npm run locale:check` to validate completeness
+
+This will tell you about missing or extra keys.
+
+<div className="my-6 p-4 border border-amber-500/30 bg-amber-500/10 rounded-lg flex gap-3">
+  <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+  <div>
+    <p className="font-semibold text-amber-500 mb-1">Performance Note</p>
+    <p className="text-sm text-amber-500/90">The performance of custom locale files for big servers may not be ideal due to the way we need to sync dynamic content to clients. So it is strongly encouraged that you contribute with translations in our GitHub so they get packed with the rest of txAdmin.</p>
+  </div>
+</div>
+
+## Submitting to Community
+
+Once your translation is complete and tested:
+
+1. Fork the [txAdmin repository](https://github.com/citizenfx/txAdmin)
+2. Add your language file to the `locale` folder
+3. Update `shared/localeMap.ts` with your language
+4. Submit a Pull Request with evidence of testing
+5. Wait for review and merge
+
+## Language Support
+
+Currently supported languages include:
+- English (en)
+- Spanish (es)
+- French (fr)
+- German (de)
+- Italian (it)
+- Portuguese (pt)
+- Russian (ru)
+- Chinese (zh)
+- Japanese (ja)
+- Korean (ko)
+- And 20+ more...
+
+Check the [locale folder](https://github.com/citizenfx/txAdmin/tree/master/locale) for a complete list.
+
+## Translation Resources
+
+- **Language Codes:** [ISO 639 Language Codes](https://www.science.co.il/language/Locale-codes.php)
+- **Duration Formatting:** [humanize-duration Library](https://www.npmjs.com/package/humanize-duration)
+- **txAdmin Locale Files:** [GitHub Locale Folder](https://github.com/citizenfx/txAdmin/tree/master/locale)

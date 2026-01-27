@@ -22,8 +22,8 @@ export interface HostingProvider {
   discount: ProviderDiscount;
   links: ProviderLink[];
   features: string[];
-  highlight?: string;
   priority?: number;
+  isTrusted?: boolean;
 }
 
 /**
@@ -82,32 +82,4 @@ export async function getHostingProviders(): Promise<HostingProvider[]> {
   });
 
   return providers;
-}
-
-  for (const file of jsonFiles) {
-    try {
-      const filePath = path.join(providersDir, file);
-      const content = fs.readFileSync(filePath, "utf-8");
-      const provider = JSON.parse(content) as HostingProvider;
-      
-      // Basic validation
-      if (provider.id && provider.name && provider.description && provider.discount && provider.links) {
-        providers.push(provider);
-      } else {
-        console.warn(`Invalid provider file: ${file} - missing required fields`);
-      }
-    } catch (error) {
-      console.error(`Error loading provider file ${file}:`, error);
-    }
-  }
-
-  // Sort by priority (highest first), then by name
-  return providers.sort((a, b) => {
-    const priorityA = a.priority ?? 0;
-    const priorityB = b.priority ?? 0;
-    if (priorityB !== priorityA) {
-      return priorityB - priorityA;
-    }
-    return a.name.localeCompare(b.name);
-  });
 }

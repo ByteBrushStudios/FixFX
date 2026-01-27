@@ -5,7 +5,7 @@ All notable changes to FixFX will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - Unreleased
+## [1.1.0] - 2026-01-26
 
 ### Added
 
@@ -76,6 +76,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Configuration options
   - Command reference
   - Troubleshooting section
+- **Comprehensive txAdmin Documentation Suite** - 10 new in-depth guides covering all txAdmin features
+  - **API Events** (`api-events.mdx`) - Complete CFX events documentation with 17 event types, properties, Lua examples, and best practices
+  - **Environment Configuration** (`env-config.mdx`) - TXHOST_* environment variables for GSP and advanced deployments
+  - **Discord Status Embed** (`discord-status.mdx`) - Custom Discord persistent status configuration with placeholders
+  - **Development Guide** (`development.mdx`) - Setup, workflows, and architecture for txAdmin development
+  - **In-Game Menu** (`menu.mdx`) - Menu access, ConVars, commands, and troubleshooting guide
+  - **Recipe Files** (`recipe.mdx`) - Complete deployment recipe documentation with all task actions
+  - **Logging System** (`logs.mdx`) - Persistent logging with file rotation and configuration
+  - **Custom Server Logs** (`custom-server-log.mdx`) - Guide for logging custom commands
+  - **Color Palettes** (`palettes.mdx`) - Theming and palette configuration
+  - **Translation Support** (`translation.mdx`) - Contributing translations and custom locale setup
+- **Guidelines Modal Enhancement** - Improved markdown link parsing in partnership guidelines
+  - Added regex-based link parsing for `[text](url)` markdown syntax
+  - Links render as clickable anchors with proper styling
 
 #### GitHub Community Files
 - **SECURITY.md** - Vulnerability reporting process and response timeline
@@ -115,6 +129,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Accessible keyboard navigation
   - Used for hosting panel version sections
 
+#### Hosting Page Improvements
+- **Hosting Provider Card Redesign** - Enhanced provider listing with improved UX
+  - Added loading state skeletons using CSS animations for performance
+  - Non-blocking state transitions for data fetching
+- **Navigation Enhancement** - Improved main navigation configuration
+  - Hosting menu item with Server icon (green), banner, and description
+  - Brand menu item with Palette icon (pink), banner, and description
+  - Proper icon imports and styling consistency
+
 ### Fixed
 - **EOL filter parameter** - Fixed `includeEol` not being sent when set to "No"
   - Now always sends `includeEol` parameter explicitly to backend
@@ -134,6 +157,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Hero Button Consistency** - Fixed Troubleshoot Issues button arrow visibility
   - Arrow now always visible instead of appearing on hover
   - Matches Get Started button behavior
+
+- **Guidelines Modal Component Architecture** - Fixed server/client component boundary issues
+  - Removed context provider wrapper that caused hook usage errors in server components
+  - Implemented direct client-side state management in hosting page
+  - Fixed import paths for component libraries
+  - Removed unnecessary context provider files
+
+- **GitHub URL References** - Fixed erroneous `frontend/` directory in provider documentation links
+  - Updated GUIDELINES.md to use correct GitHub repository URLs
+  - Removed local folder structure references from remote URLs
+  - All links now point to correct paths in main FixFX repository
+
+- **txAdmin Documentation Link Format** - Fixed internal page links in all txAdmin docs
+  - Removed `.mdx` and `.md` extensions from internal page references
+  - Updated all GitHub URLs to official `citizenfx/txAdmin` repository
+  - Updated Discord invite links to official server (`discord.gg/eWhDDVCpPn`)
 
 #### Styling & CSS Enhancements
 - **Comprehensive CSS System** - Major expansion of `globals.css` with reusable utilities

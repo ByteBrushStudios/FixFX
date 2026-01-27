@@ -5,7 +5,7 @@ export const ENV_URL = process.env.NODE_ENV === "development" ? "http://localhos
 // Go backend API endpoint - always use production by default
 // For local development with local backend, set API_URL environment variable to http://localhost:3001
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://core.fixfx.wiki";
-export const DISCORD_LINK = "https://discord.gg/Vv2bdC44Ge";
+export const DISCORD_LINK = "https://discord.gg/cYauqJfnNK";
 export const GITHUB_ORG = "https://github.com/CodeMeAPixel";
 export const GITHUB_LINK = "https://github.com/CodeMeAPixel/FixFX";
 export const DOCS_URL = "https://fixfx.wiki";

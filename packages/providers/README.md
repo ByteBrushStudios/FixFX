@@ -210,7 +210,7 @@ Include this information in your PR:
 
 **Need help?**
 - 📖 Review the [JSON Schema](./schema.json) for technical specs
-- 💬 Ask on our [Discord](https://discord.gg/Vv2bdC44Ge)
+- 💬 Ask on our [Discord](https://discord.gg/cYauqJfnNK)
 - 🐛 [Open an issue](https://github.com/CodeMeAPixel/FixFX/issues) for technical problems
 
 **Partnership inquiries:**

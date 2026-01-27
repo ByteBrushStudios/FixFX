@@ -284,7 +284,7 @@ When adding new features:
 ## Questions?
 
 - Check existing [GitHub Issues](https://github.com/CodeMeAPixel/FixFX/issues)
-- Join our [Discord](https://discord.gg/Vv2bdC44Ge)
+- Join our [Discord](https://discord.gg/cYauqJfnNK)
 - Email: [hey@codemeapixel.dev](mailto:hey@codemeapixel.dev)
 
 ## License

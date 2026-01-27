@@ -1,2 +1,1 @@
-export { FileSource } from './file-source';
-export { ImageModal } from './image-modal';
+export { FileSource, ImageModal } from '@ui/components';

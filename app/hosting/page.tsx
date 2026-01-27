@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,19 +14,80 @@ import {
   Handshake,
   Cloud,
 } from "lucide-react";
-import { getHostingProviders } from "@/lib/providers";
-import { ProviderCard } from "./provider-card";
+import { ProviderCard, GuidelinesModal } from "@ui/components";
 
-export default async function HostingPage() {
-  const providers = await getHostingProviders();
-  
-  // Calculate dynamic stats
-  const maxDiscount = providers.length > 0 
-    ? Math.max(...providers.map(p => p.discount.percentage))
+interface Provider {
+  id: string;
+  name: string;
+  website: string;
+  logo?: string;
+  description: string;
+  discount: {
+    percentage: number;
+    code: string;
+  };
+  links: {
+    label: string;
+    url: string;
+  }[];
+  features?: string[];
+  isTrusted?: boolean;
+}
+
+export default function HostingPage() {
+  const [guidelinesOpen, setGuidelinesOpen] = useState(false);
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [providersWithTrust, setProvidersWithTrust] = useState<Provider[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch providers on mount
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const response = await fetch("/api/providers");
+        const data = await response.json();
+        if (data.success) {
+          const providersData = data.providers as Provider[];
+          setProviders(providersData);
+          
+          // Fetch trusted hosts
+          const trustedResponse = await fetch("/api/trusted-hosts");
+          const trustedData = await trustedResponse.json();
+          if (trustedData.success) {
+            const trustedHosts = trustedData.hosts;
+            const withTrust = providersData.map((provider) => ({
+              ...provider,
+              isTrusted: provider.website 
+                ? trustedHosts.some((host: any) => {
+                    try {
+                      const providerUrl = new URL(provider.website).hostname.toLowerCase();
+                      const hostUrl = new URL(host.url).hostname.toLowerCase();
+                      return providerUrl === hostUrl || providerUrl.includes(hostUrl);
+                    } catch {
+                      return false;
+                    }
+                  })
+                : false,
+            }));
+            setProvidersWithTrust(withTrust);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch providers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProviders();
+  }, []);
+
+  const maxDiscount = providersWithTrust.length > 0 
+    ? Math.max(...providersWithTrust.map(p => p.discount.percentage))
     : 20;
   
   // Get first provider's links for CTA (fallback to ZAP-Hosting)
-  const firstProvider = providers[0];
+  const firstProvider = providersWithTrust[0];
   const fivemLink = firstProvider?.links.find(l => l.label.toLowerCase().includes("fivem"))?.url 
     || "https://zap-hosting.com/FixFXFiveM";
   const redmLink = firstProvider?.links.find(l => l.label.toLowerCase().includes("redm"))?.url
@@ -73,7 +137,11 @@ export default async function HostingPage() {
             {/* Stats */}
             <div className="mt-10 flex flex-wrap items-center justify-center gap-8 sm:gap-12">
               <div className="text-center">
-                <p className="text-3xl font-bold text-fd-foreground">{maxDiscount}%+</p>
+                {loading ? (
+                  <div className="h-9 w-16 mx-auto rounded bg-fd-muted animate-pulse" />
+                ) : (
+                  <p className="text-3xl font-bold text-fd-foreground">{maxDiscount}%+</p>
+                )}
                 <p className="text-sm text-fd-muted-foreground">Exclusive Discounts</p>
               </div>
               <div className="hidden h-8 w-px bg-fd-border sm:block" />
@@ -83,7 +151,11 @@ export default async function HostingPage() {
               </div>
               <div className="hidden h-8 w-px bg-fd-border sm:block" />
               <div className="text-center">
-                <p className="text-3xl font-bold text-fd-foreground">{providers.length}</p>
+                {loading ? (
+                  <div className="h-9 w-8 mx-auto rounded bg-fd-muted animate-pulse" />
+                ) : (
+                  <p className="text-3xl font-bold text-fd-foreground">{providers.length}</p>
+                )}
                 <p className="text-sm text-fd-muted-foreground">Trusted Partners</p>
               </div>
             </div>
@@ -93,9 +165,28 @@ export default async function HostingPage() {
 
       {/* Partners Grid */}
       <section className="container mx-auto max-w-6xl px-4 py-16">
-        {providers.length > 0 ? (
+        {loading ? (
           <div className="space-y-8">
-            {providers.map((provider) => (
+            {[1, 2].map((i) => (
+              <div key={i} className="rounded-2xl border border-fd-border bg-fd-card p-6 sm:p-8">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                  <div className="h-16 w-16 rounded-xl bg-fd-muted animate-pulse" />
+                  <div className="flex-1 space-y-4">
+                    <div className="h-7 w-48 rounded bg-fd-muted animate-pulse" />
+                    <div className="h-4 w-full max-w-md rounded bg-fd-muted animate-pulse" />
+                    <div className="h-4 w-3/4 rounded bg-fd-muted animate-pulse" />
+                    <div className="flex gap-2 pt-2">
+                      <div className="h-8 w-24 rounded bg-fd-muted animate-pulse" />
+                      <div className="h-8 w-24 rounded bg-fd-muted animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : providersWithTrust.length > 0 ? (
+          <div className="space-y-8">
+            {providersWithTrust.map((provider) => (
               <ProviderCard key={provider.id} provider={provider} />
             ))}
           </div>
@@ -107,7 +198,7 @@ export default async function HostingPage() {
             <h3 className="text-xl font-semibold text-fd-foreground mb-2">No Partners Yet</h3>
             <p className="text-fd-muted-foreground max-w-md mx-auto">
               We&apos;re actively looking for hosting partners.{" "}
-              <Link href="https://github.com/CodeMeAPixel/FixFX/tree/develop/frontend/packages/providers" className="text-fd-primary hover:underline">
+              <Link href="https://github.com/CodeMeAPixel/FixFX/tree/develop/packages/providers" className="text-fd-primary hover:underline">
                 Learn how to become a partner
               </Link>
             </p>
@@ -243,18 +334,16 @@ export default async function HostingPage() {
 
               {/* CTA Buttons */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
-                <Link
-                  href="https://github.com/CodeMeAPixel/FixFX/tree/develop/frontend/packages/providers"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => setGuidelinesOpen(true)}
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-fd-primary px-6 py-3 font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
                 >
                   <ExternalLink className="h-4 w-4" />
                   View Partnership Guidelines
                   <ExternalLink className="h-4 w-4" />
-                </Link>
+                </button>
                 <Link
-                  href="https://discord.gg/Vv2bdC44Ge"
+                  href="https://discord.gg/cYauqJfnNK"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-lg border border-fd-border bg-fd-background px-6 py-3 font-medium text-fd-foreground transition-colors hover:bg-fd-muted"
@@ -273,6 +362,8 @@ export default async function HostingPage() {
           </div>
         </div>
       </section>
+
+      <GuidelinesModal open={guidelinesOpen} onOpenChange={setGuidelinesOpen} />
     </main>
   );
 }
