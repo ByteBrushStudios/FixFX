@@ -42,20 +42,8 @@ export function Tracer() {
           />
         </div>
 
-        {/* Mobile vertical line */}
-        <div className="md:hidden absolute left-1/2 top-[80px] bottom-[80px] w-1 -translate-x-1/2 z-0">
-          <div className="h-full w-full rounded-full bg-gradient-to-b from-red-500 via-blue-500 to-green-500 opacity-30" />
-          <motion.div
-            className="absolute top-0 left-0 w-full rounded-full bg-gradient-to-b from-red-500 via-blue-500 to-green-500"
-            initial={{ height: "0%" }}
-            whileInView={{ height: "100%" }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.5, delay: 0.3 }}
-          />
-        </div>
-
-        {/* Steps container */}
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4">
+        {/* Mobile vertical segments - replaces single absolute line for better text readability */}
+        <div className="md:hidden flex flex-col items-center gap-0 relative z-10 w-full">
           <Step
             icon={<CitizenFXLogo className="h-8 w-8 md:h-10 md:w-10" />}
             badge={<AlertTriangle className="h-4 w-4 text-white" />}
@@ -65,16 +53,26 @@ export function Tracer() {
             delay={0.2}
           />
 
-          {/* Arrow for mobile */}
-          <motion.div
-            className="md:hidden text-fd-muted-foreground"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
-            <ArrowRight className="h-5 w-5 rotate-90" />
-          </motion.div>
+          {/* Line Segment 1 */}
+          <div className="h-16 w-1 relative my-2">
+            <div className="absolute inset-0 bg-gradient-to-b from-red-500 to-blue-500 rounded-full opacity-30" />
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-b from-red-500 to-blue-500 rounded-full"
+              initial={{ height: "0%" }}
+              whileInView={{ height: "100%" }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            />
+            <motion.div
+              className="absolute left-1/2 bottom-0 -translate-x-1/2 text-blue-500"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 1.0 }}
+            >
+              <ArrowRight className="h-4 w-4 rotate-90" />
+            </motion.div>
+          </div>
 
           <Step
             icon={
@@ -101,16 +99,72 @@ export function Tracer() {
             delay={0.5}
           />
 
-          {/* Arrow for mobile */}
-          <motion.div
-            className="md:hidden text-fd-muted-foreground"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-          >
-            <ArrowRight className="h-5 w-5 rotate-90" />
-          </motion.div>
+          {/* Line Segment 2 */}
+          <div className="h-16 w-1 relative my-2">
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500 to-green-500 rounded-full opacity-30" />
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-b from-blue-500 to-green-500 rounded-full"
+              initial={{ height: "0%" }}
+              whileInView={{ height: "100%" }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+            />
+            <motion.div
+              className="absolute left-1/2 bottom-0 -translate-x-1/2 text-green-500"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 1.3 }}
+            >
+              <ArrowRight className="h-4 w-4 rotate-90" />
+            </motion.div>
+          </div>
+
+          <Step
+            icon={<span className="text-3xl md:text-4xl">🎮</span>}
+            badge={<CheckCircle className="h-4 w-4 text-white" />}
+            badgeColor="bg-green-500"
+            title="Problem Solved"
+            description="Get back to enjoying your CitizenFX experience"
+            delay={0.8}
+          />
+        </div>
+
+        {/* Desktop steps container */}
+        <div className="hidden md:flex relative z-10 flex-row items-center justify-between gap-4">
+          <Step
+            icon={<CitizenFXLogo className="h-8 w-8 md:h-10 md:w-10" />}
+            badge={<AlertTriangle className="h-4 w-4 text-white" />}
+            badgeColor="bg-red-500"
+            title="Encounter Error"
+            description="Server crashes or resource errors in your FiveM/RedM setup"
+            delay={0.2}
+          />
+
+          <Step
+            icon={
+              <FixFXIcon className="h-8 w-8 md:h-10 md:w-10" stroke="#3b82f6" />
+            }
+            badge={
+              <svg
+                className="h-4 w-4 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            }
+            badgeColor="bg-blue-500"
+            title="Find Solutions"
+            description="Browse our comprehensive guides and troubleshooting docs"
+            delay={0.5}
+          />
 
           <Step
             icon={<span className="text-3xl md:text-4xl">🎮</span>}

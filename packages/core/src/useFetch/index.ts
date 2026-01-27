@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 type UseFetchResult<T, E> = {
   data: T | null;
@@ -9,93 +9,51 @@ type UseFetchResult<T, E> = {
   refetch: () => void;
 };
 
-const description = "Fetches data from a specified API endpoint.";
-
 /**
- * Fetches data from a specified API endpoint.
+ * Fetches data from a specified API endpoint using TanStack Query.
  *
  * @template T - Type of the data returned by the API.
- * @template E - Type of the error returned by the API (default is `string`).
+ * @template E - Type of the error returned by the API (default is `Error`).
  *
  * @param {string} url - The URL of the API endpoint.
- * @param {RequestInit} [reqOpt] - Optional configuration for the fetch request (e.g., method, headers).
+ * @param {RequestInit} [reqOpt] - Optional configuration for the fetch request.
  * @param {any[]} [deps] - Optional dependency array to trigger re-fetching when values change.
  *
- * @returns {UseFetchResult<T, E>} An object containing the following properties:
- * - `data`: The data returned by the API, or `null` if no data has been received yet.
- * - `error`: The error returned by the API, or `null` if no error has occurred.
- * - `isPending`: A boolean indicating whether the fetch request is currently in progress.
- * - `isSuccess`: A boolean indicating if the fetch request was successful.
- * - `isError`: A boolean indicating if the fetch request resulted in an error.
- * - `refetch`: A function to manually trigger the fetch request again.
+ * @returns {UseFetchResult<T, E>} An object containing the fetch result and status.
  */
-export function useFetch<T, E = string>(
+export function useFetch<T, E = Error>(
   url: string,
   reqOpt?: RequestInit,
-  deps?: any[],
+  deps: any[] = [],
 ): UseFetchResult<T, E> {
-  const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<E | null>(null);
-  const [isPending, setisPending] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  /**
-   * Fetches data from the provided URL using the specified request options.
-   *
-   * This function uses `fetch` with an `AbortController` to allow for request cancellation if needed.
-   * Updates the state with the response data, error, or loading status based on the fetch result.
-   */
-  const fetchData = useCallback(async () => {
-    // Abort any existing request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    setisPending(true);
-    setIsSuccess(false);
-
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-    const signal = controller.signal;
-
-    try {
-      const res = await fetch(url, { ...reqOpt, signal });
-      const result = await res.json();
-
-      if (res.ok) {
-        setData(result);
-        setIsSuccess(true);
-        setError(null);
-      } else {
-        setError(result as E);
-      }
-    } catch (e) {
-      if (e instanceof Error && e.name !== "AbortError") {
-        setError(e as unknown as E);
-      }
-    } finally {
-      setisPending(false);
-    }
-  }, [url, reqOpt]);
-
-  // Re-fetch when URL changes or when deps change
-  useEffect(() => {
-    fetchData();
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, [url, ...(deps || [])]);
-
-  return {
+  const {
     data,
     error,
     isPending,
     isSuccess,
-    isError: !isSuccess && !isPending,
-    refetch: fetchData,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: [url, ...deps],
+    queryFn: async ({ signal }) => {
+      const res = await fetch(url, { ...reqOpt, signal });
+      
+      if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        throw result || new Error(`Failed to fetch from ${url}`);
+      }
+      
+      return res.json() as Promise<T>;
+    },
+    // Maintain behavior: refetch when url or deps change
+  });
+
+  return {
+    data: data ?? null,
+    error: (error as E) ?? null,
+    isPending,
+    isSuccess,
+    isError,
+    refetch,
   };
 }

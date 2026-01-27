@@ -69,28 +69,30 @@ export function Hero() {
 
       {/* CTA buttons */}
       <motion.div
-        className="flex flex-col gap-3 sm:flex-row sm:gap-4"
+        className="flex flex-col gap-3 sm:flex-row sm:gap-4 w-full sm:w-auto mt-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45, duration: 0.5 }}
       >
-        <Link href="/docs/core">
+        <Link href="/docs/core" className="w-full sm:w-auto">
           <Button
-            className="group relative overflow-hidden px-6 py-3 text-base font-medium"
+            className="group relative overflow-hidden w-full sm:w-auto"
             variant="default"
+            size="lg"
           >
-            <span className="relative z-10 flex items-center">
+            <span className="relative z-10 flex items-center justify-center">
               Get Started
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
           </Button>
         </Link>
-        <Link href="/docs/cfx/common-errors">
+        <Link href="/docs/cfx/common-errors" className="w-full sm:w-auto">
           <Button
-            className="group px-6 py-3 text-base font-medium"
+            className="group w-full sm:w-auto"
             variant="outline"
+            size="lg"
           >
-            <span className="relative z-10 flex items-center">
+            <span className="relative z-10 flex items-center justify-center">
               Troubleshoot Issues
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
