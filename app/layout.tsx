@@ -1,4 +1,5 @@
 import { RootProvider } from "fumadocs-ui/provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import { inter, jetbrains } from "@/lib/fonts";
@@ -272,7 +273,9 @@ export default function Layout({
         <link rel="dns-prefetch" href="https://portal.cfx.re" />
       </head>
       <body className="dark:selection:text-fd-foreground antialiased [text-rendering:optimizeLegibility] selection:bg-neutral-800 selection:text-white dark:selection:bg-neutral-800">
-        <RootProvider theme="dark">{children}</RootProvider>
+        <QueryProvider>
+          <RootProvider theme="dark">{children}</RootProvider>
+        </QueryProvider>
         <Analytics />
         <Script
           async

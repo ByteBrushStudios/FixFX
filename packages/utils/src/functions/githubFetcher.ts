@@ -1,4 +1,9 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from "axios";
+
+interface GitHubResponse<T> {
+  data: T;
+  headers: Record<string, string>;
+  status: number;
+}
 
 interface GitHubFetcherOptions {
   baseURL?: string;
@@ -7,14 +12,10 @@ interface GitHubFetcherOptions {
   authToken?: string;
 }
 
-interface GitHubResponse<T> {
-  data: T;
-  headers: Record<string, string>;
-  status: number;
-}
-
 class GitHubFetcher {
-  private client: AxiosInstance;
+  private baseURL: string;
+  private timeout: number;
+  private userAgent: string;
   private rateLimitRemaining: number = 60;
   private rateLimitReset: number = 0;
   private authToken: string | undefined;
@@ -27,38 +28,15 @@ class GitHubFetcher {
       authToken = process.env.GITHUB_TOKEN,
     } = options;
 
+    this.baseURL = baseURL;
+    this.timeout = timeout;
+    this.userAgent = userAgent;
     this.authToken = authToken;
-
-    this.client = axios.create({
-      baseURL,
-      timeout,
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": userAgent,
-        ...(this.authToken
-          ? { Authorization: `Bearer ${this.authToken}` }
-          : {}),
-      },
-    });
-
-    // Add response interceptor to track rate limits
-    this.client.interceptors.response.use(
-      (response) => {
-        this.updateRateLimits(response.headers);
-        return response;
-      },
-      (error) => {
-        if (error.response) {
-          this.updateRateLimits(error.response.headers);
-        }
-        return Promise.reject(error);
-      },
-    );
   }
 
-  private updateRateLimits(headers: any) {
-    const remaining = headers["x-ratelimit-remaining"];
-    const reset = headers["x-ratelimit-reset"];
+  private updateRateLimits(headers: Headers) {
+    const remaining = headers.get("x-ratelimit-remaining");
+    const reset = headers.get("x-ratelimit-reset");
 
     if (remaining) {
       this.rateLimitRemaining = parseInt(remaining, 10);
@@ -79,48 +57,52 @@ class GitHubFetcher {
     };
   }
 
-  /**
-   * Make a GET request to the GitHub API
-   */
-  async get<T>(
+  private async request<T>(
     endpoint: string,
-    config?: AxiosRequestConfig,
+    options: RequestInit = {},
   ): Promise<GitHubResponse<T>> {
-    try {
-      if (!this.authToken) {
-        throw new Error(
-          "GitHub token not configured. Please set GITHUB_TOKEN environment variable.",
-        );
-      }
+    if (!this.authToken) {
+      throw new Error(
+        "GitHub token not configured. Please set GITHUB_TOKEN environment variable.",
+      );
+    }
 
-      const response = await this.client.get<T>(endpoint, {
-        ...config,
+    const url = endpoint.startsWith("http")
+      ? endpoint
+      : `${this.baseURL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
         headers: {
-          ...config?.headers,
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": this.userAgent,
           Authorization: `Bearer ${this.authToken}`,
+          ...options.headers,
         },
+        signal: controller.signal,
       });
 
-      return {
-        data: response.data,
-        headers: response.headers as Record<string, string>,
-        status: response.status,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<{ message: string }>;
-        const status = axiosError.response?.status;
-        const message =
-          axiosError.response?.data?.message || axiosError.message;
+      clearTimeout(id);
+      this.updateRateLimits(response.headers);
 
-        // Handle 304 Not Modified as a special case
-        if (status === 304) {
-          return {
-            data: null as unknown as T,
-            headers: axiosError.response?.headers as Record<string, string>,
-            status: 304,
-          };
-        }
+      const status = response.status;
+      
+      // Handle 304 Not Modified
+      if (status === 304) {
+        return {
+          data: null as unknown as T,
+          headers: Object.fromEntries(response.headers.entries()),
+          status: 304,
+        };
+      }
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        const message = data.message || response.statusText;
 
         switch (status) {
           case 401:
@@ -131,7 +113,7 @@ class GitHubFetcher {
           case 404:
             throw new Error(`GitHub API Resource Not Found: ${message}`);
           case 429:
-            const resetTime = axiosError.response?.headers["x-ratelimit-reset"];
+            const resetTime = response.headers.get("x-ratelimit-reset");
             const retryAfter = resetTime
               ? new Date(parseInt(resetTime) * 1000)
               : "unknown";
@@ -142,82 +124,61 @@ class GitHubFetcher {
             throw new Error(`GitHub API Error (${status}): ${message}`);
         }
       }
+
+      const data = await response.json();
+      return {
+        data,
+        headers: Object.fromEntries(response.headers.entries()),
+        status,
+      };
+    } catch (error) {
+      clearTimeout(id);
       throw error;
     }
+  }
+
+  /**
+   * Make a GET request to the GitHub API
+   */
+  async get<T>(endpoint: string, options?: RequestInit): Promise<GitHubResponse<T>> {
+    return this.request<T>(endpoint, { ...options, method: "GET" });
   }
 
   /**
    * Make a POST request to the GitHub API
    */
-  async post<T>(
-    endpoint: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<GitHubResponse<T>> {
-    try {
-      const response = await this.client.post<T>(endpoint, data, config);
-      return {
-        data: response.data,
-        headers: response.headers as Record<string, string>,
-        status: response.status,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(
-          `GitHub API Error: ${error.message} (${error.response?.status})`,
-        );
-      }
-      throw error;
-    }
+  async post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<GitHubResponse<T>> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
   }
 
   /**
    * Make a PUT request to the GitHub API
    */
-  async put<T>(
-    endpoint: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<GitHubResponse<T>> {
-    try {
-      const response = await this.client.put<T>(endpoint, data, config);
-      return {
-        data: response.data,
-        headers: response.headers as Record<string, string>,
-        status: response.status,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(
-          `GitHub API Error: ${error.message} (${error.response?.status})`,
-        );
-      }
-      throw error;
-    }
+  async put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<GitHubResponse<T>> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
   }
 
   /**
    * Make a DELETE request to the GitHub API
    */
-  async delete<T>(
-    endpoint: string,
-    config?: AxiosRequestConfig,
-  ): Promise<GitHubResponse<T>> {
-    try {
-      const response = await this.client.delete<T>(endpoint, config);
-      return {
-        data: response.data,
-        headers: response.headers as Record<string, string>,
-        status: response.status,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(
-          `GitHub API Error: ${error.message} (${error.response?.status})`,
-        );
-      }
-      throw error;
-    }
+  async delete<T>(endpoint: string, options?: RequestInit): Promise<GitHubResponse<T>> {
+    return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }
 }
 
