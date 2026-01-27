@@ -4,6 +4,7 @@ import {
   DocsTitle,
   DocsDescription,
 } from "fumadocs-ui/page";
+import { ImageZoom } from "fumadocs-ui/components/image-zoom";
 import { source } from "@/lib/docs/source";
 import { metadataImage } from "@/lib/docs/metadata";
 import defaultMdxComponents from "fumadocs-ui/mdx";
@@ -14,17 +15,19 @@ import { Editor } from "@ui/core/docs/editor";
 export default async function Page({
   params,
 }: {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 }) {
+  const { slug } = await params;
+  
   // Redirect to overview if no slug is provided (root /docs path)
-  if (!params.slug || params.slug.length === 0) {
+  if (!slug || slug.length === 0) {
     return source.getPage(['overview']);
   }
 
-  const page = source.getPage(params.slug);
+  const page = source.getPage(slug);
   if (!page) notFound();
 
-  const MDX = page.data.body
+  const MDX = page.data.body;
 
   return (
     <DocsPage
@@ -42,6 +45,7 @@ export default async function Page({
         <MDX
           components={{
             ...defaultMdxComponents,
+            img: (props) => props.src ? <ImageZoom {...(props as any)} /> : null,
             Editor: Editor
           }}
         />

@@ -1,5 +1,5 @@
 {
-    "open": true,
+    "defaultOpen": true,
     "pages": [
         "install"
     ]

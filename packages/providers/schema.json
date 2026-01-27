@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hosting Provider",
+  "description": "Schema for FixFX hosting partner providers",
+  "type": "object",
+  "required": ["id", "name", "description", "discount", "links", "features"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the provider (kebab-case)",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the hosting provider"
+    },
+    "logo": {
+      "type": "string",
+      "description": "Path to the provider's logo in /public/partners/ (optional)"
+    },
+    "website": {
+      "type": "string",
+      "description": "Main website URL of the provider",
+      "format": "uri"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the hosting provider (max 300 characters)",
+      "maxLength": 300
+    },
+    "discount": {
+      "type": "object",
+      "description": "Discount information for FixFX users",
+      "required": ["percentage", "code", "duration"],
+      "properties": {
+        "percentage": {
+          "type": "number",
+          "description": "Discount percentage (e.g., 20 for 20%)",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "code": {
+          "type": "string",
+          "description": "Discount/promo code to use"
+        },
+        "duration": {
+          "type": "string",
+          "description": "How long the discount applies (e.g., 'First month', 'Entire ownership duration')"
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "description": "Affiliate/partner links for different services",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "url", "description"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Button/link label (e.g., 'FiveM Servers')"
+          },
+          "url": {
+            "type": "string",
+            "description": "Affiliate URL",
+            "format": "uri"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description of what this link is for"
+          }
+        }
+      }
+    },
+    "features": {
+      "type": "array",
+      "description": "List of features/benefits (max 8 items)",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string"
+      }
+    },
+    "highlight": {
+      "type": "string",
+      "description": "Optional badge text (e.g., 'Official Partner', 'Best Value')"
+    },
+    "priority": {
+      "type": "number",
+      "description": "Display order priority (higher = shown first)",
+      "default": 0
+    }
+  }
+}

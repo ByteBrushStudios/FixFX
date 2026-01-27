@@ -1,18 +1,16 @@
 ---
 title: Troubleshooting
 description: Solutions to common vMenu issues, errors, and problems
-icon: Bug
+icon: "Bug"
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout'
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
 
 ## Overview
 
 This guide covers common issues with vMenu installation, configuration, and usage, along with their solutions.
 
-<Callout type="info">
-  **Before Troubleshooting**: Ensure you're using the latest version of vMenu and recommended FiveM artifacts.
-</Callout>
+<PropertyCard type="info" name="Before Troubleshooting" description="Ensure you're using the latest version of vMenu and recommended FiveM artifacts." />
 
 ## Quick Diagnostics
 
@@ -43,9 +41,26 @@ This guide covers common issues with vMenu installation, configuration, and usag
 
 ### vMenu Won't Start
 
-**Symptoms**: Resource fails to load, errors in console
-
-**Common Causes & Solutions**:
+<TroubleshootingCard
+  title="Resource Fails to Load"
+  symptoms={[
+    "Resource fails to load on server startup",
+    "Errors appear in server console",
+    "vMenu directory not recognized"
+  ]}
+  causes={[
+    "Incorrect folder structure (e.g., vMenu-master instead of vMenu)",
+    "Missing critical files like fxmanifest.lua",
+    "Corrupted ZIP file during download",
+    "Outdated FiveM artifacts"
+  ]}
+  solutions={[
+    "Verify folder is named exactly 'vMenu' (case-sensitive on Linux)",
+    "Download latest release from GitHub, not source code",
+    "Extract entire ZIP file to resources/ folder",
+    "Update to latest recommended FiveM artifacts from runtime.fivem.net"
+  ]}
+/>
 
 #### 1. Incorrect Folder Structure
 

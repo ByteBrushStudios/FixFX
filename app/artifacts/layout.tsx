@@ -1,8 +1,18 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Artifact Explorer',
-  description: 'Explore the CitizenFX artifacts for both GTA V AND RDR2',
+  title: 'FiveM & RedM Artifact Explorer',
+  description: 'Browse and download FiveM and RedM server artifacts. Find recommended, latest, and stable builds for Windows and Linux.',
+  keywords: ['FiveM artifacts', 'RedM artifacts', 'FXServer download', 'CitizenFX artifacts', 'FiveM server files', 'RedM server files'],
+  alternates: {
+    canonical: 'https://fixfx.wiki/artifacts',
+  },
+  openGraph: {
+    title: 'FiveM & RedM Artifact Explorer | FixFX',
+    description: 'Browse and download FiveM and RedM server artifacts. Find recommended, latest, and stable builds.',
+    url: 'https://fixfx.wiki/artifacts',
+    type: 'website',
+  },
 };
 
 export default function ArtifactsLayout({

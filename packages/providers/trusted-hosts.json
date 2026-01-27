@@ -1,0 +1,54 @@
+{
+  "lastUpdated": "2026-01-27T01:48:05.934Z",
+  "source": "https://fivem.net/server-hosting",
+  "hosts": [
+    {
+      "id": "firestorm-servers",
+      "name": "Firestorm Servers",
+      "url": "https://firestormservers.com",
+      "description": "Trusted FiveM/RedM hosting provider",
+      "verified": false,
+      "lastVerified": "2026-01-27T01:48:05.933Z"
+    },
+    {
+      "id": "g-portal",
+      "name": "G-Portal",
+      "url": "https://www.g-portal.com",
+      "description": "Trusted FiveM/RedM hosting provider",
+      "verified": false,
+      "lastVerified": "2026-01-27T01:48:05.933Z"
+    },
+    {
+      "id": "gameservers",
+      "name": "GameServers",
+      "url": "https://www.gameservers.com",
+      "description": "Trusted FiveM/RedM hosting provider",
+      "verified": false,
+      "lastVerified": "2026-01-27T01:48:05.933Z"
+    },
+    {
+      "id": "gtxgaming",
+      "name": "GTXGaming",
+      "url": "https://gtxgaming.co.uk",
+      "description": "Trusted FiveM/RedM hosting provider",
+      "verified": false,
+      "lastVerified": "2026-01-27T01:48:05.933Z"
+    },
+    {
+      "id": "nitrado",
+      "name": "Nitrado",
+      "url": "https://nitrado.net",
+      "description": "Trusted FiveM/RedM hosting provider",
+      "verified": false,
+      "lastVerified": "2026-01-27T01:48:05.933Z"
+    },
+    {
+      "id": "zap-hosting",
+      "name": "ZAP-Hosting",
+      "url": "https://zap-hosting.com",
+      "description": "Trusted FiveM/RedM hosting provider",
+      "verified": false,
+      "lastVerified": "2026-01-27T01:48:05.931Z"
+    }
+  ]
+}

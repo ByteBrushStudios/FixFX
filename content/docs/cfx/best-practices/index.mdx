@@ -4,6 +4,8 @@ description: Essential best practices for developing, securing, and managing Fiv
 icon: "CheckCircle"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Following best practices is crucial for creating secure, performant, and maintainable FiveM servers and resources. This comprehensive guide covers everything from development standards to server management and security protocols.
 
 ## Overview
@@ -17,6 +19,13 @@ These best practices have been compiled from years of community experience, secu
 - **Follow industry standards** for professional development
 
 ## Core Principles
+
+<CheckList items={[
+  "Always assume that client-side code can be manipulated. Validate everything on the server.",
+  "Every millisecond counts in a multiplayer environment. Optimize loops and minimize network traffic.",
+  "Write maintainable, documented code that follows consistent patterns.",
+  "Design systems that are intuitive and responsive for better player experience."
+]} />
 
 ### Security First
 Always assume that client-side code can be manipulated. Validate everything on the server, implement proper permissions, and follow the principle of least privilege.

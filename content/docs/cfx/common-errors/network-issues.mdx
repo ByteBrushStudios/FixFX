@@ -4,6 +4,8 @@ description: Comprehensive guide to understanding and resolving network-related 
 icon: "Globe"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Network problems can cause various issues in your CitizenFX server, from player disconnections to poor performance. This guide will help you diagnose and resolve these issues for both server owners and developers.
 
 ## Common Causes
@@ -47,6 +49,11 @@ setr sv_netRateLimitPerClientBurst 200000  # Per-client burst limit
 setr sv_netRateLimitPerClientInterval 1000  # Per-client interval
 setr sv_netRateLimitPerClientTimeout 5000  # Per-client timeout
 ```
+
+<CommandCard
+  command="netgraph"
+  description="Shows real-time network performance metrics including latency and packet loss"
+/>
 
 ### 2. Port Forwarding and Firewall
 

@@ -1,0 +1,13 @@
+# Security Policy for FixFX
+
+Contact: https://github.com/CodeMeAPixel/FixFX/security/advisories/new
+Expires: 2027-01-26T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://fixfx.wiki/.well-known/security.txt
+
+# Policy
+If you discover a security vulnerability, please report it through GitHub Security Advisories.
+We take all security reports seriously and will respond promptly.
+
+# Acknowledgments
+We appreciate responsible disclosure and will acknowledge security researchers who help us improve.

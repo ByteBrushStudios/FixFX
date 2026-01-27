@@ -4,6 +4,17 @@ description: Best practices for creating and optimizing FiveM resources.
 icon: "Zap"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
+<CheckList items={[
+  "Avoid tight loops - use appropriate Wait() intervals",
+  "Cache frequently used values to reduce computation",
+  "Use local events instead of global events when possible",
+  "Properly clean up entities and resources on stop",
+  "Profile regularly with resmon to identify bottlenecks",
+  "Remove unused event handlers on resource stop"
+]} />
+
 ## Code Efficiency
 
 - Avoid tight loops (`while true do ... Wait(0) end`).

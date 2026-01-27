@@ -4,6 +4,17 @@ description: Optimize your database queries and structure for improved server pe
 icon: "Database"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
+<StepList steps={[
+  "Identify frequently accessed columns and create indexes",
+  "Optimize SELECT statements to retrieve only needed data",
+  "Use prepared statements to prevent SQL injection",
+  "Implement batch operations for multiple records",
+  "Configure connection pooling for better resource management",
+  "Run regular maintenance with OPTIMIZE TABLE and ANALYZE"
+]} />
+
 ## Use Indexes
 
 ```sql

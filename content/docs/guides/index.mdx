@@ -4,19 +4,45 @@ description: Comprehensive guides for FiveM server setup, management, security, 
 icon: "BookOpen"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This section provides comprehensive, step-by-step guides for all aspects of FiveM server management. From initial setup to advanced security and maintenance, these guides will help you build and maintain a professional FiveM server.
 
-## 🚀 Quick Start Path
+## Quick Start Path
 
 If you're new to FiveM server management, follow this recommended path:
 
-1. **[Database Setup](/docs/guides/database-setup)** - Set up your MySQL/MariaDB database
-2. **[Server Configuration](/docs/guides/server-configuration)** - Configure your FiveM server
-3. **[Resource Installation](/docs/guides/resource-installation)** - Install and manage resources
-4. **[Security & Permissions](/docs/guides/security-permissions)** - Secure your server
-5. **[Backup & Recovery](/docs/guides/backup-recovery)** - Implement backup strategies
+<StepList
+  steps={[
+    {
+      title: "Database Setup",
+      description: "Set up your MySQL/MariaDB database",
+      code: "Check the database setup guide for installation on Windows, Linux, or Docker"
+    },
+    {
+      title: "Server Configuration",
+      description: "Configure your FiveM server",
+      code: "Review comprehensive server.cfg setup and optimization options"
+    },
+    {
+      title: "Resource Installation",
+      description: "Install and manage resources",
+      code: "Follow best practices for resource installation and configuration"
+    },
+    {
+      title: "Security & Permissions",
+      description: "Secure your server",
+      code: "Implement security hardening and permission systems"
+    },
+    {
+      title: "Backup & Recovery",
+      description: "Implement backup strategies",
+      code: "Set up automated backups and disaster recovery procedures"
+    }
+  ]}
+/>
 
-## 📚 Complete Guide Library
+## Complete Guide Library
 
 ### Server Setup & Configuration
 
@@ -68,85 +94,71 @@ If you're new to FiveM server management, follow this recommended path:
   />
 </Cards>
 
-## 🎯 Guide Categories
+## What You'll Learn
 
-### **Setup & Installation**
-Perfect for new server owners setting up their first FiveM server.
+<FeatureList
+  features={[
+    {
+      title: "Database Management",
+      description: "MySQL/MariaDB installation, optimization, connection pooling, and backup strategies"
+    },
+    {
+      title: "Server Administration",
+      description: "Complete configuration, performance optimization, security hardening, and automated updates"
+    },
+    {
+      title: "Resource Management",
+      description: "Proper resource installation, dependency management, and configuration best practices"
+    },
+    {
+      title: "Security & Protection",
+      description: "Anti-cheat implementation, DDoS protection, permission systems, and security monitoring"
+    }
+  ]}
+  columns={2}
+/>
 
-- **Database Setup** - MySQL/MariaDB installation and configuration
-- **Server Configuration** - Complete server.cfg setup and optimization
-- **Server Artifacts** - Keeping your server updated with latest builds
-
-### **Resource Management**
-Learn how to effectively manage and maintain your server's resources.
-
-- **Resource Installation** - Installing and configuring resources properly
-- **Database Tools** - Managing your server's database effectively
-
-### **Security & Backup**
-Essential guides for protecting and maintaining your server.
-
-- **Security & Permissions** - Protecting against threats and managing access
-- **Backup & Recovery** - Ensuring your data is safe and recoverable
-
-## 🛠️ What You'll Learn
-
-### Database Management
-- MySQL/MariaDB installation on multiple platforms
-- Database optimization and performance tuning
-- Connection pooling and security configuration
-- Backup and recovery strategies
-
-### Server Administration
-- Complete server.cfg configuration
-- Performance optimization techniques
-- Security hardening and protection
-- Automated update procedures
-
-### Resource Development
-- Proper resource installation procedures
-- Dependency management
-- Configuration best practices
-- Troubleshooting common issues
-
-### Security & Protection
-- Anti-cheat implementation
-- DDoS protection strategies
-- Advanced permission systems
-- Security monitoring and alerting
-
-## 📋 Prerequisites
+## Prerequisites
 
 Before diving into these guides, ensure you have:
 
-- **Basic Command Line Knowledge** - Comfort with terminal/command prompt
-- **Server Access** - Root/administrator access to your server
-- **FiveM License** - Valid FiveM server license key
-- **Domain/IP** - Server hostname or IP address
+<CheckList
+  items={[
+    "Basic Command Line Knowledge - Comfort with terminal/command prompt",
+    "Server Access - Root/administrator access to your server",
+    "FiveM License - Valid FiveM server license key",
+    "Domain/IP - Server hostname or IP address"
+  ]}
+  variant="check"
+/>
 
-## 🔧 Tools & Software
+## Tools & Software
 
 Most guides will reference these commonly used tools:
 
-- **Database**: MySQL 8.0+ or MariaDB 10.6+
-- **Web Server**: Nginx or Apache (for web interfaces)
-- **Process Manager**: systemd (Linux) or Windows Services
-- **Backup Tools**: mysqldump, rsync, automated scripts
-- **Monitoring**: Custom monitoring scripts and Discord webhooks
+<CheckList
+  items={[
+    "Database: MySQL 8.0+ or MariaDB 10.6+",
+    "Web Server: Nginx or Apache (for web interfaces)",
+    "Process Manager: systemd (Linux) or Windows Services",
+    "Backup Tools: mysqldump, rsync, automated scripts",
+    "Monitoring: Custom monitoring scripts and Discord webhooks"
+  ]}
+  variant="bullet"
+/>
 
-## 💡 Tips for Success
+## Tips for Success
 
-### Start Simple
-Begin with basic configurations and gradually add complexity as you become more comfortable with the system.
-
-### Test Everything
-Always test configurations in a development environment before applying to production.
-
-### Keep Backups
-Implement backup strategies early - before you need them.
-
-### Monitor Performance
-Regular monitoring helps identify issues before they become problems.
+<CheckList
+  items={[
+    "Start Simple - Begin with basic configurations and gradually add complexity",
+    "Test Everything - Always test in development before applying to production",
+    "Keep Backups - Implement backup strategies early",
+    "Monitor Performance - Regular monitoring helps identify issues early"
+  ]}
+  variant="check"
+  columns={2}
+/>
 
 ### Stay Updated
 Keep your server artifacts, resources, and security measures up to date.

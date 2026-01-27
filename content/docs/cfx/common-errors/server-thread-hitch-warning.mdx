@@ -4,6 +4,8 @@ description: Understanding and resolving FiveM server thread performance warning
 icon: "AlertTriangle"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 The "Server Thread Hitch Warning" is one of the most common performance-related warnings in FiveM servers. This guide will help you understand what causes these warnings and how to resolve them.
 
 ## Understanding the Warning
@@ -14,7 +16,29 @@ You might see messages like these in your server console:
 WARNING: Server thread hitch detected! (XX ms)
 ```
 
-This message indicates that the server's main thread was blocked for too long, causing a hitch. Hitches can lead to lag and other performance issues for players.
+<TroubleshootingCard
+  title="Server Thread Hitch Detection"
+  symptoms={[
+    "WARNING: Server thread hitch detected",
+    "Server becomes unresponsive temporarily",
+    "Players experience lag spikes",
+    "Resource tick times spike suddenly"
+  ]}
+  causes={[
+    "Heavy synchronous operations blocking the main thread",
+    "Long-running loops without proper yielding (Wait)",
+    "Excessive database queries without pagination",
+    "Complex calculations on the main thread",
+    "Too many resources with heavy load"
+  ]}
+  solutions={[
+    "Add Citizen.Wait() or proper yields in loops",
+    "Move heavy operations to async callbacks",
+    "Optimize database queries and add pagination",
+    "Distribute calculations across multiple frames",
+    "Profile resources with resmon to identify bottlenecks"
+  ]}
+/>
 
 ## Common Causes
 

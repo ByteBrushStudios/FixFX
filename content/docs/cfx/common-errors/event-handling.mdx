@@ -4,7 +4,21 @@ description: Common errors related to event handling in FiveM resources.
 icon: "Radio"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers common errors related to event handling in FiveM resources and how to resolve them.
+
+<CheckList
+  items={[
+    "Always validate event source and permissions",
+    "Implement rate limiting for frequently-triggered events",
+    "Use consistent event naming conventions",
+    "Handle missing or nil parameters gracefully",
+    "Avoid triggering events in loops without delays",
+    "Document all custom events in your code"
+  ]}
+  variant="check"
+/>
 
 ## Common Event Errors
 
@@ -51,6 +65,13 @@ TriggerServerEvent('event:name', data)
 
 **Solutions:**
 1. Implement proper security checks:
+
+<CommandCard
+  command="IsPlayerAceAllowed(source, 'permission.name')"
+  description="Always validate player permissions before processing server events"
+  variant="warning"
+/>
+
 ```lua
 RegisterNetEvent('event:name')
 AddEventHandler('event:name', function()

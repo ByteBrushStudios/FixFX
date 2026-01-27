@@ -4,6 +4,24 @@ import { baseOptions } from "@/app/layout.config";
 import { FixFXIcon } from "@ui/icons";
 import { source } from "@/lib/docs/source";
 import type { ReactNode } from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Documentation",
+    template: "%s | FixFX Docs",
+  },
+  description: "Comprehensive documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem. Guides, tutorials, and API references.",
+  alternates: {
+    canonical: "https://fixfx.wiki/docs",
+  },
+  openGraph: {
+    title: "FixFX Documentation",
+    description: "Comprehensive documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem.",
+    url: "https://fixfx.wiki/docs",
+    type: "website",
+  },
+};
 
 const docsOptions: DocsLayoutProps = {
   ...baseOptions,

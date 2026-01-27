@@ -1,9 +1,18 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: 'Fixie - AI Assistant',
-    description: 'Your intelligent AI assistant for the CitizenFX ecosystem. Get help with FiveM, RedM, txAdmin, server configuration, Lua scripting, and more.',
-    keywords: ['FiveM', 'RedM', 'txAdmin', 'CitizenFX', 'AI Assistant', 'Lua', 'Server Development'],
+    title: 'Fixie AI - FiveM & RedM Assistant',
+    description: 'AI-powered assistant for FiveM and RedM development. Get instant help with Lua scripting, txAdmin setup, server configuration, and troubleshooting.',
+    keywords: ['FiveM AI', 'RedM AI', 'txAdmin help', 'CitizenFX assistant', 'Lua scripting help', 'FiveM support', 'server development help'],
+    alternates: {
+        canonical: 'https://fixfx.wiki/chat',
+    },
+    openGraph: {
+        title: 'Fixie AI - FiveM & RedM Assistant | FixFX',
+        description: 'AI-powered assistant for FiveM and RedM development. Get instant help with Lua scripting, txAdmin setup, and more.',
+        url: 'https://fixfx.wiki/chat',
+        type: 'website',
+    },
 };
 
 export default function AskLayout({

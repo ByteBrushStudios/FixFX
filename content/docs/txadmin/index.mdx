@@ -5,60 +5,110 @@ icon: "Shield"
 ---
 
 import { FixFXIcon, GithubIcon } from "@ui/icons";
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
 
 txAdmin is a comprehensive web-based management system that provides an intuitive interface for managing FiveM and RedM servers. It offers features ranging from server monitoring and player management to automated backups and resource deployment.
 
-## Setup Guides
-<Cards>
-  <Card
-    icon={<FixFXIcon />}
-    title="Windows"
-    href="/docs/txadmin/windows"
-  >
-    An introduction to txAdmin and your minimum system requirements on Windows!
-  </Card>
-  <Card
-    icon={<FixFXIcon />}
-    title="Linux"
-    href="/docs/txadmin/linux"
-  >
-    An introduction to txAdmin and your minimum system requirements on Linux!
-  </Card>
-</Cards>
+## Core Features
 
-## txAdmin Guides
+<FeatureList
+  features={[
+    {
+      title: "Server Monitoring",
+      description: "Real-time monitoring of server status, resources, and performance"
+    },
+    {
+      title: "Player Management",
+      description: "View, manage, and interact with connected players"
+    },
+    {
+      title: "Automated Backups",
+      description: "Schedule automatic backups of server data and configurations"
+    },
+    {
+      title: "Config Editor",
+      description: "Manage server.cfg and other configuration files safely"
+    },
+    {
+      title: "Resource Management",
+      description: "Deploy, enable, disable, and manage resources easily"
+    },
+    {
+      title: "Web Panel",
+      description: "Intuitive web interface accessible from anywhere"
+    }
+  ]}
+  columns={2}
+/>
+
+## Setup Guides
+
+<QuickLinks
+  links={[
+    {
+      title: "Windows Setup",
+      description: "Installation and configuration on Windows systems",
+      href: "/docs/txadmin/windows",
+      icon: "settings"
+    },
+    {
+      title: "Linux Setup",
+      description: "Installation and configuration on Linux systems",
+      href: "/docs/txadmin/linux",
+      icon: "terminal"
+    }
+  ]}
+  columns={2}
+/>
+
+## Management Guides
+
 <Cards>
   <Card
     icon={<FixFXIcon />}
-    title="Config Editor"
+    title="Server Configuration"
     href="/docs/txadmin/configuration"
   >
-    Learn about the Config Editor and what you do and dont want to change.
+    Learn about the Config Editor and what settings to modify safely.
   </Card>
   <Card
     icon={<FixFXIcon />}
     title="Server Management"
-    href="/docs/txadmin/windows/install"
+    href="/docs/txadmin/server-management"
   >
-    Learn how to install txAdmin and use it to deploy your new server
+    Manage server resources, players, and system operations.
   </Card>
   <Card
     icon={<FixFXIcon />}
-    title="Player Management"
-    href="/docs/txadmin/windows/install"
+    title="Backup & Recovery"
+    href="/docs/txadmin/backup-system"
   >
-    Learn how to install txAdmin and use it to deploy your new server
+    Set up automated backups and restore your server when needed.
   </Card>
   <Card
     icon={<FixFXIcon />}
-    title="Player Management"
-    href="/docs/txadmin/windows/install"
+    title="Permissions"
+    href="/docs/txadmin/permissions"
   >
-    Learn how to install txAdmin and use it to deploy your new server
+    Configure admin roles and manage user permissions.
   </Card>
 </Cards>
 
----
+## Getting Started Checklist
+
+<CheckList
+  items={[
+    "Choose your platform - Windows or Linux",
+    "Follow the installation guide for your OS",
+    "Access the web panel and create admin accounts",
+    "Configure server.cfg and basic settings",
+    "Set up automated backups",
+    "Deploy and enable essential resources",
+    "Test server connectivity and functionality"
+  ]}
+  variant="check"
+  columns={1}
+/>
 
 <Callout type="info">
 **Pro Tip:** txAdmin is included in all latest **non-vanilla** versions of FXServer Artifacts.

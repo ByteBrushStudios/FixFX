@@ -4,9 +4,13 @@ description: Comprehensive guide to optimizing your FiveM server for maximum per
 icon: "Settings"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Optimizing your FiveM server is crucial for providing a smooth experience for your players. This guide covers essential techniques to improve server performance, reduce latency, and prevent common issues.
 
 ## Hardware Considerations
+
+<PropertyCard title="Recommended Hardware Specs" content="Choose CPU with high single-thread performance over core count. Minimum 8GB RAM (16GB+ recommended). SSD storage for better I/O performance. Stable 1 Gbps connection recommended for production servers." />
 
 ### Recommended Specifications
 
@@ -16,6 +20,13 @@ Optimizing your FiveM server is crucial for providing a smooth experience for yo
 | RAM | 8GB | 16GB | 32GB+ |
 | Storage | 120GB SSD | 250GB NVMe SSD | 500GB+ NVMe SSD |
 | Network | 100 Mbps | 1 Gbps | 1+ Gbps |
+
+<CheckList items={[
+  "Prioritize single-thread CPU performance over core count",
+  "Use NVMe SSD for faster storage access",
+  "Ensure stable network connection with sufficient bandwidth",
+  "Monitor hardware utilization regularly"
+]} />
 
 <Callout type="info">
   CPU single-thread performance is more important than core count for FiveM servers. Choose a CPU with high single-thread performance for the best results.

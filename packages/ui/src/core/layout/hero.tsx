@@ -80,8 +80,10 @@ export function Hero() {
         </Link>
         <Link href="/docs/cfx/common-errors">
           <Button className="group px-6 py-3 text-base font-medium" variant="outline">
-            Troubleshoot Issues
-            <ArrowRight className="ml-2 h-4 w-4 opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-1" />
+            <span className="relative z-10 flex items-center">
+              Troubleshoot Issues
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
           </Button>
         </Link>
       </motion.div>

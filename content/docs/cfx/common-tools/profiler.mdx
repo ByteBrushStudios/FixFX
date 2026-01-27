@@ -4,7 +4,21 @@ description: Comprehensive guide to using the profiler for identifying and resol
 icon: "Activity"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 The Server profiler is an essential tool for identifying performance bottlenecks in your server. It provides detailed insights into script execution times, resource usage, and thread performance, helping you optimize your server's performance.
+
+<CheckList
+  items={[
+    "Regular profiling helps identify issues before affecting players",
+    "Use appropriate frame counts (500-1000 frames for initial analysis)",
+    "Enable profiling only when needed to minimize performance impact",
+    "Compare profiles over time to track performance trends",
+    "Focus on resources with highest execution times",
+    "Make one change at a time between profiles to isolate improvements"
+  ]}
+  variant="check"
+/>
 
 <Callout type="info">
   Regular profiling helps identify performance issues before they affect your players. Make it part of your development workflow.

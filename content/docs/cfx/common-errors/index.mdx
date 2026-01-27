@@ -7,6 +7,7 @@ icon: "AlertCircle"
 import React from 'react';
 import { Accordions, Accordion } from 'fumadocs-ui/components/accordion';
 import { Tabs } from 'fumadocs-ui/components/tabs';
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
 
 Welcome to the Common Errors documentation. This section provides comprehensive guides for understanding and resolving various types of errors that may occur in your FiveM server. Whether you're a server owner or a developer, these guides will help you maintain a stable and performant server environment.
 
@@ -16,6 +17,16 @@ Welcome to the Common Errors documentation. This section provides comprehensive 
 
 
 ## Understanding Error Types
+
+<IconGrid
+  items={[
+    { icon: "AlertCircle", title: "Server Thread Issues", description: "Thread hitches, resource loading problems, memory management issues" },
+    { icon: "Wifi", title: "Network Problems", description: "Connection timeouts, state bag sync issues, rate limiting errors" },
+    { icon: "Code", title: "Resource Errors", description: "Script failures, dependency conflicts, manifest issues" },
+    { icon: "Database", title: "Database Issues", description: "Connection problems, query timeouts, sync failures" }
+  ]}
+  title="Error Categories"
+/>
 
 FiveM errors can be broadly categorized into several types:
 

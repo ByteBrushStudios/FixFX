@@ -4,13 +4,28 @@ description: Complete guide to securing your FiveM server and managing player pe
 icon: "Shield"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Security is paramount for any FiveM server. This guide covers comprehensive security measures, permission systems, and protection against common threats.
+
+<PropertyCard type="error" name="Critical Security" description="Never share your server license key, database passwords, or administrator credentials. Always use strong, unique passwords and enable two-factor authentication where available." />
 
 ## Server Security Fundamentals
 
 ### Basic Server Hardening
 
 #### Network Security
+
+<StepList
+  steps={[
+    { title: "Set Default Firewall Policies", description: "Deny all incoming traffic by default, whitelist only necessary ports" },
+    { title: "Open FiveM Port", description: "Allow port 30120 (TCP and UDP) for FiveM server connections" },
+    { title: "Secure SSH Access", description: "Change SSH from default port 22 and disable root login" },
+    { title: "Restrict Database Access", description: "Allow MySQL/MariaDB only from 127.0.0.1 (local connections)" },
+    { title: "Enable Firewall", description: "Activate firewall rules with: sudo ufw enable" }
+  ]}
+  title="Network Hardening Steps"
+/>
 
 ```bash
 # Basic firewall configuration for FiveM server
@@ -97,6 +112,8 @@ set sv_logLevel "info"
 
 ## FiveM ACE Permission System
 
+<PropertyCard type="info" name="ACE Basics" description="ACE (Access Control Entry) is FiveM's permission system that controls who can execute what commands and access what resources. It's configured in server.cfg using a principal-based hierarchy." />
+
 ### Understanding ACE & Principals
 
 **ACE (Access Control Entry)**
@@ -110,6 +127,19 @@ set sv_logLevel "info"
 - Format: `add_principal <child_principal> <parent_principal>`
 
 ### Principal Types
+
+<PermissionTable
+  permissions={[
+    { principal: "identifier.steam:110000112345678", type: "Player", description: "Steam ID based player identifier (most specific)" },
+    { principal: "identifier.license:abc123def456", type: "Player", description: "Rockstar license based identifier" },
+    { principal: "identifier.discord:123456789012", type: "Player", description: "Discord ID based identifier" },
+    { principal: "group.admin", type: "Group", description: "Admin group - highest privilege level" },
+    { principal: "group.moderator", type: "Group", description: "Moderator group - moderation permissions" },
+    { principal: "builtin.everyone", type: "Built-in", description: "All connected players" },
+    { principal: "builtin.console", type: "Built-in", description: "Server console/RCON access" }
+  ]}
+  title="FiveM Principal Types and Examples"
+/>
 
 ```cfg
 # Player identifier principals (most specific)
@@ -130,6 +160,8 @@ builtin.console                     # Console/RCON
 ```
 
 ### Basic Permission Setup
+
+<PropertyCard type="warn" name="Permission Hierarchy" description="Always define deny rules after allow rules. Place more specific permissions before wildcards. Test permission changes in a development environment first." />
 
 ```cfg
 # ========================================

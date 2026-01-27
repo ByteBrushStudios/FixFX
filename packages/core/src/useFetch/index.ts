@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 
 type UseFetchResult<T, E> = {
   data: T | null;
@@ -19,6 +19,7 @@ const description = "Fetches data from a specified API endpoint.";
  *
  * @param {string} url - The URL of the API endpoint.
  * @param {RequestInit} [reqOpt] - Optional configuration for the fetch request (e.g., method, headers).
+ * @param {any[]} [deps] - Optional dependency array to trigger re-fetching when values change.
  *
  * @returns {UseFetchResult<T, E>} An object containing the following properties:
  * - `data`: The data returned by the API, or `null` if no data has been received yet.
@@ -31,11 +32,13 @@ const description = "Fetches data from a specified API endpoint.";
 export function useFetch<T, E = string>(
   url: string,
   reqOpt?: RequestInit,
+  deps?: any[],
 ): UseFetchResult<T, E> {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<E | null>(null);
   const [isPending, setisPending] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   /**
    * Fetches data from the provided URL using the specified request options.
@@ -44,10 +47,16 @@ export function useFetch<T, E = string>(
    * Updates the state with the response data, error, or loading status based on the fetch result.
    */
   const fetchData = useCallback(async () => {
+    // Abort any existing request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
     setisPending(true);
     setIsSuccess(false);
 
     const controller = new AbortController();
+    abortControllerRef.current = controller;
     const signal = controller.signal;
 
     try {
@@ -68,15 +77,18 @@ export function useFetch<T, E = string>(
     } finally {
       setisPending(false);
     }
-
-    return () => {
-      controller.abort();
-    };
   }, [url, reqOpt]);
 
+  // Re-fetch when URL changes or when deps change
   useEffect(() => {
     fetchData();
-  }, []);
+    
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [url, ...(deps || [])]);
 
   return {
     data,

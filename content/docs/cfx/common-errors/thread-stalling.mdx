@@ -4,6 +4,8 @@ description: Understand and resolve thread stalling issues in your FiveM server
 icon: "Clock"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Thread stalling is one of the most common performance issues in FiveM servers. It occurs when a script operation takes too long to complete, causing the game to freeze momentarily for players. This guide explains the causes and solutions.
 
 ## Understanding Thread Stalling
@@ -16,7 +18,17 @@ When you see messages like these in your server console:
 [WARNING] Server thread stalled for X milliseconds
 ```
 
-These indicate that a resource is taking too long to complete its operations, blocking the main thread.
+<CheckList
+  items={[
+    "Always include Citizen.Wait() in loops to yield control",
+    "Use async database operations instead of synchronous ones",
+    "Break heavy operations into smaller chunks across frames",
+    "Monitor resource tick times with resmon command",
+    "Avoid nested loops without intermediate yields",
+    "Use callbacks and promises for long-running tasks"
+  ]}
+  variant="check"
+/>
 
 ## Common Causes
 

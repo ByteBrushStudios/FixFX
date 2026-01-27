@@ -4,32 +4,53 @@ description: Definitions of common terms and acronyms in the CitizenFX ecosystem
 icon: "Book"
 ---
 
-This glossary defines common terms and acronyms used in the CitizenFX ecosystem.
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
 
-## A
-
-### Artifact
-A versioned build of the FXServer software used to host CitizenFX servers.
-
-## C
-
-### CitizenFX
-The platform that powers FiveM and RedM, enabling multiplayer modifications for Grand Theft Auto V and Red Dead Redemption 2.
-
-## E
-
-### ESX
-A popular framework for FiveM servers that provides roleplay features and economy systems.
-
-## F
-
-### FXServer
-The server software used to host CitizenFX servers for FiveM and RedM.
-
-## Q
-
-### QBCore
-A lightweight and modular framework for FiveM servers, designed for roleplay and economy-based gameplay.
+<DefinitionList
+  items={[
+    {
+      term: "Artifact",
+      description: "A versioned build of the FXServer software used to host CitizenFX servers. Artifacts are released regularly with updates, bug fixes, and new features."
+    },
+    {
+      term: "CitizenFX",
+      description: "The platform that powers FiveM and RedM, enabling multiplayer modifications for Grand Theft Auto V and Red Dead Redemption 2. It provides the infrastructure and tools for server hosting and resource development."
+    },
+    {
+      term: "ESX",
+      description: "ES Extended - A popular framework for FiveM servers that provides comprehensive roleplay features, economy systems, job management, and character persistence."
+    },
+    {
+      term: "FXServer",
+      description: "The server software used to host CitizenFX servers for FiveM and RedM. It handles resource loading, player management, and network communication."
+    },
+    {
+      term: "QBCore",
+      description: "A lightweight and modular framework for FiveM servers, designed for roleplay and economy-based gameplay. Known for its flexibility and performance optimization."
+    },
+    {
+      term: "Resource",
+      description: "A package of Lua scripts, configs, and assets that extends FiveM functionality. Resources are the fundamental building blocks of FiveM servers."
+    },
+    {
+      term: "vMenu",
+      description: "A popular all-in-one admin menu for FiveM servers, providing player management, vehicle spawning, and misc options with comprehensive permission controls."
+    },
+    {
+      term: "txAdmin",
+      description: "A web-based server administration panel for FiveM servers, providing server management, player monitoring, backup/restore, and configuration tools."
+    },
+    {
+      term: "ACE",
+      description: "Access Control Entry - FiveM's permission system that grants or denies specific actions to players or groups based on identifiers and principals."
+    },
+    {
+      term: "NUI",
+      description: "Named User Interface - UI elements created with HTML, CSS, and JavaScript that communicate with Lua scripts via FiveM's NUI callbacks."
+    },
+  ]}
+  variant="default"
+/>
 
 <Callout type="info">
   This glossary is continuously updated to include new terms and acronyms as the CitizenFX ecosystem evolves.

@@ -1,0 +1,30 @@
+/* TEAM */
+
+Creator: Pixelated (CodeMeAPixel)
+Site: https://github.com/CodeMeAPixel
+Location: United States
+
+/* THANKS */
+
+Contributors: All GitHub contributors
+Frameworks: Next.js, Fumadocs, Tailwind CSS
+Inspiration: The CitizenFX community
+
+/* SITE */
+
+Last update: 2026/01/26
+Language: English
+Doctype: HTML5
+Standards: HTML5, CSS3, ES6+
+Components: React, TypeScript
+Framework: Next.js 14
+UI Library: Fumadocs UI
+Styling: Tailwind CSS
+Deployment: Vercel
+Analytics: Vercel Analytics, Ackee
+
+/* PURPOSE */
+
+FixFX provides comprehensive documentation and tools for the CitizenFX ecosystem,
+including FiveM, RedM, txAdmin, and various roleplay frameworks. Our goal is to
+make server development more accessible for everyone.

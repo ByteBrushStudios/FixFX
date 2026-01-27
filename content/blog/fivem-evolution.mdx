@@ -5,79 +5,114 @@ description: "Explore the incredible journey of FiveM from a small community pro
 date: 2025-07-23
 ---
 
+import { FeatureList, CheckList, StatusBadge, TroubleshootingCard } from '@ui/components/mdx-components'
+
 # The Evolution of FiveM: From Underground Mod to Gaming Giant
 
 The story of FiveM is one of community passion, technical innovation, and the power of modding culture. What started as a small project to bring multiplayer functionality to Grand Theft Auto V has evolved into one of the most vibrant gaming ecosystems in the world.
 
 ## The Early Days: A Vision for GTA V Multiplayer
 
-When Grand Theft Auto V launched in 2013, it came with a promise of online multiplayer that would arrive later. However, the modding community wasn't content to wait. The desire to create custom multiplayer experiences in the rich world of Los Santos drove developers to create their own solutions.
-
-FiveM emerged from this need, initially developed by a small team of passionate modders who wanted to push the boundaries of what was possible with GTA V. The project aimed to create a platform where server owners could have complete control over their multiplayer experience, free from the constraints of Rockstar's official online mode.
+When Grand Theft Auto V launched in 2013, the modding community wasn't content to wait for official multiplayer. FiveM emerged from this need, initially developed by passionate modders who wanted to create custom multiplayer experiences. The vision was clear: create a platform where server owners could have complete control over their multiplayer experience.
 
 ### The Technical Challenge
 
-Creating a stable multiplayer modification for a single-player game is no small feat. The early FiveM developers had to:
+Creating a stable multiplayer modification for a single-player game required:
 
-- Reverse engineer GTA V's networking protocols
-- Create custom server architecture from scratch
-- Develop tools for resource management and scripting
-- Build a community around an unofficial modification
-
-The technical challenges were immense, but the community's passion for creating unique gaming experiences drove the project forward.
+<CheckList
+  items={[
+    "Reverse engineer GTA V's networking protocols",
+    "Create custom server architecture from scratch",
+    "Develop tools for resource management and scripting",
+    "Build a community around an unofficial modification"
+  ]}
+  variant="dash"
+/>
 
 ## The Birth of CitizenFX
 
-As FiveM grew, it became clear that the project needed a more organized structure. This led to the formation of CitizenFX Collective, the organization behind FiveM (and later RedM). CitizenFX brought several key innovations:
+As FiveM grew, the CitizenFX Collective was formed to provide structure and innovation. Key innovations included:
 
-### 1. **Scripting Framework**
-The introduction of a Lua-based scripting system made server development accessible to a broader audience. Unlike other modifications that required deep C++ knowledge, FiveM's scripting API allowed web developers and hobbyists to create complex game modes.
-
-### 2. **Resource System**
-FiveM's resource system revolutionized how content was organized and distributed. Each resource could contain:
-- Server-side logic
-- Client-side scripts
-- UI elements
-- Assets and configurations
-
-This modular approach made it easy to share and collaborate on projects.
-
-### 3. **Native Function Access**
-One of FiveM's greatest strengths was providing access to GTA V's native functions through a clean API. This meant developers could leverage all of the game's built-in functionality while adding their own custom logic.
+<FeatureList
+  features={[
+    {
+      title: "Scripting Framework",
+      description: "Lua-based API making server development accessible to a broader audience"
+    },
+    {
+      title: "Resource System",
+      description: "Modular approach allowing easy sharing and collaboration"
+    },
+    {
+      title: "Native Function Access",
+      description: "Leverage GTA V's built-in functionality with clean API"
+    },
+    {
+      title: "Command System",
+      description: "Built-in admin command system for server management"
+    },
+    {
+      title: "Permission System",
+      description: "ACE-based access control for granular permissions"
+    }
+  ]}
+  columns={2}
+/>
 
 ## The Rise of Roleplay
 
-While FiveM supported various game modes, it was the roleplay community that truly drove its explosive growth. Roleplay servers like NoPixel, Eclipse RP, and others created immersive experiences that attracted millions of viewers on platforms like Twitch.
+Roleplay servers like NoPixel and Eclipse RP created immersive experiences that attracted millions of viewers. FiveM became perfect for roleplay because of:
 
-### What Made FiveM Perfect for Roleplay
-
-1. **Custom Assets**: Server owners could add custom vehicles, clothing, and buildings
-2. **Economy Systems**: Complex financial systems with jobs, businesses, and property
-3. **Character Persistence**: Players could maintain characters across sessions
-4. **Voice Chat Integration**: Immersive voice communication systems
-5. **Admin Tools**: Sophisticated moderation and administration capabilities
-
-The roleplay boom brought mainstream attention to FiveM, with popular streamers and content creators showcasing the platform to millions of viewers.
+<CheckList
+  items={[
+    "Custom Assets - Add vehicles, clothing, and buildings",
+    "Economy Systems - Complex financial systems and jobs",
+    "Character Persistence - Maintain characters across sessions",
+    "Voice Chat Integration - Immersive communication systems",
+    "Admin Tools - Sophisticated moderation capabilities"
+  ]}
+  variant="check"
+/>
 
 ## RedM: Expanding the Wild West
 
-Building on FiveM's success, the CitizenFX team expanded their platform to support Red Dead Redemption 2 with RedM. This brought the same modding capabilities and community spirit to the Old West setting.
+Building on FiveM's success, RedM brought the same platform to Red Dead Redemption 2, introducing:
 
-RedM introduced:
-- Wild West roleplay scenarios
-- Period-appropriate modifications
-- Historical business and economy systems
-- Unique gameplay mechanics suited to the time period
+<CheckList
+  items={[
+    "Wild West roleplay scenarios",
+    "Period-appropriate modifications",
+    "Historical business and economy systems",
+    "Unique gameplay mechanics suited to the time period"
+  ]}
+  variant="bullet"
+/>
 
 ## Technical Milestones
 
-### Server Performance
-Early FiveM servers struggled with performance and stability. Over the years, significant improvements have been made:
+### Server Performance Improvements
 
-- **OneSync**: Increased player limits from 32 to 1000+ players
-- **Asset Streaming**: Efficient loading of custom content
-- **Database Optimization**: Better integration with external databases
-- **Anti-Cheat**: Robust protection against malicious actors
+<FeatureList
+  features={[
+    {
+      title: "OneSync",
+      description: "Increased player limits from 32 to 1000+ players"
+    },
+    {
+      title: "Asset Streaming",
+      description: "Efficient loading of custom content"
+    },
+    {
+      title: "Database Optimization",
+      description: "Better integration with external databases"
+    },
+    {
+      title: "Anti-Cheat",
+      description: "Robust protection against malicious actors"
+    }
+  ]}
+  columns={2}
+/>
 
 ### Development Tools
 The ecosystem around FiveM development has matured significantly:

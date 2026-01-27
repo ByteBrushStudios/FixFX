@@ -4,9 +4,33 @@ description: Common errors related to FiveM frameworks like ESX and QBCore.
 icon: "Package"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers common errors related to FiveM frameworks like ESX and QBCore, and how to resolve them.
 
 ## ESX Framework Errors
+
+<TroubleshootingCard
+  title="ESX Not Found Error"
+  symptoms={[
+    "Error: ESX object is nil",
+    "Cannot access ESX functions",
+    "Resource fails to load",
+    "ESX exports not available"
+  ]}
+  causes={[
+    "ESX resource not installed or not started",
+    "Incorrect resource loading order",
+    "Missing ESX export declaration",
+    "Version incompatibility"
+  ]}
+  solutions={[
+    "Ensure es_extended is installed and enabled",
+    "Place ESX before dependent resources in server.cfg",
+    "Use correct export syntax to get ESX object",
+    "Update to compatible ESX version"
+  ]}
+/>
 
 ### 1. ESX Not Found
 ```lua
@@ -48,6 +72,28 @@ end
 ```
 
 ## QBCore Framework Errors
+
+<TroubleshootingCard
+  title="QBCore Not Found Error"
+  symptoms={[
+    "Error: QBCore is nil",
+    "Cannot call QBCore functions",
+    "exports not available",
+    "Undefined variable QBCore"
+  ]}
+  causes={[
+    "qb-core resource not running",
+    "qb-core not listed in server resources",
+    "Incorrect player callbacks implementation",
+    "Loading order conflicts"
+  ]}
+  solutions={[
+    "Verify qb-core is in server.cfg and started",
+    "Ensure qb-core loads before dependent resources",
+    "Check QBCore exports are properly called",
+    "Review server startup logs for errors"
+  ]}
+/>
 
 ### 1. QBCore Not Found
 ```lua

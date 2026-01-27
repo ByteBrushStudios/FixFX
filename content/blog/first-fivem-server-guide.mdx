@@ -5,6 +5,8 @@ description: "A comprehensive step-by-step guide to setting up your first FiveM 
 date: 2025-06-24
 ---
 
+import { CheckList, FeatureList, StepList, QuickLinks } from '@ui/components/mdx-components'
+
 # Building Your First FiveM Server: A 2024 Complete Guide
 
 Starting your first FiveM server can feel overwhelming with all the options, configurations, and technical requirements involved. This comprehensive guide will walk you through every step of the process, from initial planning to launching your server and welcoming your first players.
@@ -13,28 +15,46 @@ Starting your first FiveM server can feel overwhelming with all the options, con
 
 ### Define Your Vision
 
-Before diving into technical setup, it's crucial to have a clear vision for your server:
+Before diving into technical setup, decide what type of server you want to create:
 
-**What type of experience do you want to create?**
-- **Roleplay Server**: Character-driven immersive experiences
-- **Racing Server**: Competitive racing with custom tracks
-- **PvP/Combat Server**: Action-focused gameplay
-- **Creative/Building Server**: Sandbox construction experiences
-- **Mini-Game Hub**: Multiple game modes and activities
+<FeatureList
+  features={[
+    {
+      title: "Roleplay Server",
+      description: "Character-driven immersive experiences"
+    },
+    {
+      title: "Racing Server",
+      description: "Competitive racing with custom tracks"
+    },
+    {
+      title: "PvP/Combat Server",
+      description: "Action-focused gameplay"
+    },
+    {
+      title: "Creative/Building Server",
+      description: "Sandbox construction experiences"
+    },
+    {
+      title: "Mini-Game Hub",
+      description: "Multiple game modes and activities"
+    }
+  ]}
+  columns={2}
+/>
 
-**Who is your target audience?**
-- Serious roleplayers looking for immersion
-- Casual gamers wanting fun experiences
-- Competitive players seeking challenges
-- Content creators needing interesting scenarios
-- Friends looking for private experiences
+### Key Planning Considerations
 
-**What makes your server unique?**
-- Custom scripts and features
-- Specific themes or settings
-- Unique gameplay mechanics
-- Community culture and values
-- Professional production quality
+<CheckList
+  items={[
+    "Define your target audience - Who is your server for?",
+    "Identify unique features - What makes your server special?",
+    "Plan resource allocation - Time and financial investment needed",
+    "Assess technical skills - Lua scripting, database management, etc.",
+    "Consider server hosting - Self-hosted vs managed hosting"
+  ]}
+  variant="check"
+/>
 
 ### Resource Planning
 
@@ -50,53 +70,38 @@ Before diving into technical setup, it's crucial to have a clear vision for your
 - Custom scripts/resources: $0-1000+ (optional)
 - Marketing and promotion: Variable
 
-**Technical Skills Needed**
-- Basic computer literacy
-- File management and FTP usage
-- Basic understanding of server administration
-- Lua scripting (for custom features)
-- Database management (for advanced features)
-
 ## Step 1: Server Hosting Options
 
 ### Option A: Self-Hosting (Advanced Users)
 
-**Pros:**
-- Complete control over hardware
-- No monthly hosting fees
-- Unlimited customization
-- Learning experience
-
-**Cons:**
-- Requires technical expertise
-- 24/7 internet and power requirements
-- Hardware maintenance costs
-- Security responsibilities
-
-**Requirements:**
-- Dedicated computer or VPS
-- Static IP address
-- Minimum 8GB RAM, 100GB storage
-- Reliable internet connection (upload speed crucial)
+<CheckList
+  items={[
+    "Pros: Complete control, no monthly fees, unlimited customization",
+    "Cons: Technical expertise required, 24/7 internet needed, security responsibility",
+    "Requires: Dedicated computer/VPS, static IP, 8GB+ RAM, fast internet"
+  ]}
+  variant="bullet"
+/>
 
 ### Option B: Game Server Hosting (Recommended)
 
-**Officially Supported FiveM Hosting Providers:**
-
-1. **ZAP-Hosting**
-   - Price: €15-50/month
-   - Pros: Easy setup, good support, FiveM-optimized, official partner
-   - Cons: Limited customization compared to VPS
-
-2. **Nodecraft**
-   - Price: $10-40/month
-   - Pros: User-friendly interface, good performance, official support
-   - Cons: Limited advanced configuration options
-
-3. **xREALM**
-   - Price: $15-45/month
-   - Pros: FiveM-specialized, reliable uptime, official partner
-   - Cons: Higher pricing for premium features
+<FeatureList
+  features={[
+    {
+      title: "ZAP-Hosting",
+      description: "€15-50/month - FiveM-optimized, official partner, easy setup"
+    },
+    {
+      title: "Nodecraft",
+      description: "$10-40/month - User-friendly interface, good performance"
+    },
+    {
+      title: "xREALM",
+      description: "$15-45/month - FiveM-specialized, reliable uptime"
+    }
+  ]}
+  columns={3}
+/>
 
 4. **GPORTAL**
    - Price: $12-35/month

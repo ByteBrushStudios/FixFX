@@ -1,0 +1,125 @@
+---
+title: "In-Game Menu"
+description: "Learn about txAdmin's in-game menu with player management tools."
+---
+
+import { AlertTriangle, Info } from "lucide-react";
+import { FeatureList, PropertyCard, CommandCard } from "@ui/components";
+
+# In-Game Menu
+
+txAdmin v4.0.0 introduced an in-game menu equipped with common admin functionality, an online player browser, and a slightly trimmed down version of the web panel.
+
+You can find a short preview video [here](https://www.youtube.com/watch?v=jWKg0VQK0sc).
+
+## Accessing the Menu
+
+You can access the menu in-game by using the command `/tx` or `/txadmin`, or alternatively you can also use a keybind by going to `Game Settings > Key Bindings > FiveM` and setting the `(txAdmin) Menu: Open Main Page` option.
+
+### Permissions
+
+Anybody who you would like to give permissions to open the menu in-game must have a txAdmin account with either their Discord or Cfx.re identifiers tied to it.
+
+**If you do not have any of these identifiers attached, you will not be able to access the menu.**
+
+You can further control the menu options accessible to admins by changing their permissions in the admin manager.
+
+## Server ConVars
+
+The txAdmin menu has various ConVars that can alter the default behavior of the menu. ConVars configured in the settings page should not be set manually.
+
+### Settings Page Options
+
+**txAdmin-menuEnabled**
+- **Description:** Whether the menu is enabled or not. Changing it requires server restart.
+- **Default:** `true`
+
+**txAdmin-menuAlignRight**
+- **Description:** Whether to align the menu to the right of the screen instead of the left.
+- **Default:** `false`
+
+**txAdmin-menuPageKey**
+- **Description:** Will change the key used for changing pages in the menu.
+- **Value:** Must be the exact browser key code. Use [keycode.info](https://keycode.info/) and check the `event.code` section.
+- **Default:** `Tab`
+
+**txAdmin-playerModePtfx**
+- **Description:** Determine whether to play particles effects and sound whenever an admin's player mode is changed (god mode, noclip, etc).
+- **Default:** `true`
+
+**txAdmin-hideAdminInPunishments**
+- **Description:** Never show to the players the admin name on Bans or Warns.
+- **Default:** `true`
+
+**txAdmin-hideAdminInMessages**
+- **Description:** Do not show the admin name on Announcements or DMs.
+- **Default:** `false`
+
+**txAdmin-hideDefaultAnnouncement**
+- **Description:** Suppresses the display of announcements, allowing you to implement your own via the event `txAdmin:events:announcement`.
+- **Default:** `false`
+
+**txAdmin-hideDefaultDirectMessage**
+- **Description:** Suppresses the display of direct messages, allowing you to implement your own via the event `txAdmin:events:playerDirectMessage`.
+- **Default:** `false`
+
+**txAdmin-hideDefaultWarning**
+- **Description:** Suppresses the display of warnings, allowing you to implement your own via the event `txAdmin:events:playerWarned`.
+- **Default:** `false`
+
+**txAdmin-hideDefaultScheduledRestartWarning**
+- **Description:** Suppresses the display of scheduled restart warnings, allowing you to implement your own via the event `txAdmin:events:scheduledRestart`.
+- **Default:** `false`
+
+### ConVar Only (Not in Settings Page)
+
+**txAdmin-debugMode**
+- **Description:** Will toggle debug printing on the server and client.
+- **Default:** `false`
+- **Usage:** `setr txAdmin-debugMode true`
+
+**txAdmin-menuPlayerIdDistance**
+- **Description:** The distance in which Player IDs become visible, if toggled on. Game engine limits tag display to ~300m.
+- **Default:** `150`
+- **Usage:** `setr txAdmin-menuPlayerIdDistance 100`
+
+**txAdmin-menuDrunkDuration**
+- **Description:** How many seconds the drunk effect (troll action) should last.
+- **Default:** `30`
+- **Usage:** `setr txAdmin-menuDrunkDuration 120`
+
+**txAdmin-menuAnnounceNotiPos**
+- **Description:** Determines the location of the txAdmin announcement notification.
+- **Valid Positions:** `top-center`, `top-left`, `top-right`, `bottom-center`, `bottom-left`, `bottom-right`
+- **Default:** `top-center`
+- **Usage:** `set txAdmin-menuAnnounceNotiPos top-right`
+
+## Commands
+
+**tx | txadmin**
+- **Description:** Will toggle the in-game menu. Optional argument to open a specific player's info.
+- **Usage:** `/tx (playerID)`, `/txadmin (playerID)`
+- **Required Permission:** Must be an admin registered in the Admin Manager
+
+**txAdmin-reauth**
+- **Description:** Will retrigger the re-authentication process.
+- **Usage:** `/txAdmin-reauth`
+- **Required Permission:** None
+
+## Troubleshooting Menu Access
+
+- **If you type `/tx` and nothing happens:** Your menu is probably disabled.
+
+- **If you see a red message and are registered on txAdmin:** You can type `/txAdmin-reauth` in the chat to retry the authentication.
+
+- **If you can't authenticate with error "Invalid Request: source":** This means the source IP of the HTTP request made by FXServer to txAdmin is not a "localhost" one, which might occur if your host has multiple IPs. To disable this protection, edit your `config.json` file and add `webServer.disableNuiSourceCheck` with value `true` then restart txAdmin.
+
+## Development
+
+You can find development instructions regarding the menu [here](./development#nui-menu).
+
+## FAQ
+
+**Q: Why don't the 'Heal' options revive a player when using ESX/QBCore/etc?**
+
+**A:** Many frameworks independently handle a "dead" state for a player, meaning the menu is unable to reset this state in a framework-agnostic form. To establish compatibility with any framework, txAdmin will emit an [`txAdmin:events:playerHealed`](./api-events) event for developers to handle.

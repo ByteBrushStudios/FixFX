@@ -6,7 +6,7 @@ import { Input } from '@ui/components/input';
 import { ScrollArea } from '@ui/components/scroll-area';
 import { cn } from '@utils/functions/cn';
 import { useEffect, useRef, useState } from 'react';
-import { Code, Loader2, AlertCircle, X, Copy, Check } from 'lucide-react';
+import { Code, Loader2, AlertCircle, X, Copy, Check, Send, Sparkles, Bot, User } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Message } from 'ai';
@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ChatInterfaceProps {
     model: string;
@@ -378,100 +379,161 @@ export function ChatInterface({ model, temperature, initialMessages, fullHeight 
     };
 
     return (
-        <Card
+        <div
             ref={chatContainerRef}
             className={cn(
-                "flex flex-col w-full backdrop-blur-sm bg-fd-background/80 border border-[#5865F2]/10 shadow-sm hover:shadow-md transition-all duration-300 relative",
-                fullHeight ? "h-full rounded-none" : "h-[calc(100vh-12rem)]",
-                "md:mt-0 mt-16", // Add top margin on mobile to account for fixed header
-                "overflow-hidden" // Prevent any overflow beyond card bounds
+                "flex flex-col w-full bg-fd-background/80 backdrop-blur-sm relative",
+                fullHeight ? "h-full" : "h-[calc(100vh-12rem)]",
+                "md:mt-0 mt-16",
+                "overflow-hidden"
             )}
         >
-            {showNotice && (
-                <div className="p-3 sm:p-4 border-b border-amber-500/20 bg-amber-500/5 relative z-30">
-                    <div className="flex items-start justify-between gap-3">
-                        <div className="flex items-start gap-3">
-                            <div className="mt-0.5 flex-shrink-0">
-                                <AlertCircle className="h-4 w-4 text-amber-500" />
-                            </div>
-                            <div className="space-y-1 flex-1">
-                                <h4 className="text-sm font-medium text-amber-500">AI responses may be inaccurate</h4>
-                                <p className="text-xs sm:text-sm text-fd-muted-foreground leading-relaxed">
-                                    This AI assistant can make mistakes or provide outdated information. Always verify important details with <a href="https://docs.fivem.net" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">official FiveM documentation</a> or <a href="/docs/core" className="text-blue-500 hover:underline">our guides</a> before implementing in production.
-                                </p>
+            <AnimatePresence>
+                {showNotice && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="border-b border-amber-500/20 bg-gradient-to-r from-amber-500/5 to-transparent relative z-30"
+                    >
+                        <div className="p-3 sm:p-4">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="flex items-start gap-3">
+                                    <div className="p-1.5 rounded-lg bg-amber-500/20 mt-0.5">
+                                        <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+                                    </div>
+                                    <div className="space-y-1 flex-1">
+                                        <h4 className="text-sm font-medium text-amber-500">AI responses may be inaccurate</h4>
+                                        <p className="text-xs text-fd-muted-foreground leading-relaxed">
+                                            Always verify with <a href="https://docs.fivem.net" target="_blank" rel="noopener noreferrer" className="text-[#5865F2] hover:underline">official docs</a> or <a href="/docs/core" className="text-[#5865F2] hover:underline">our guides</a> before production use.
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 flex-shrink-0 text-fd-muted-foreground hover:text-fd-foreground"
+                                    onClick={() => setShowNotice(false)}
+                                >
+                                    <X className="h-3.5 w-3.5" />
+                                </Button>
                             </div>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 flex-shrink-0 text-fd-muted-foreground hover:text-fd-foreground"
-                            onClick={() => setShowNotice(false)}
-                        >
-                            <X className="h-3.5 w-3.5" />
-                        </Button>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div className="flex-1 overflow-hidden flex flex-col relative">
                 <ScrollArea
                     className="flex-1 p-3 sm:p-4 overflow-y-auto"
-                    style={{ scrollbarWidth: 'thin' }} // Better scrollbar on Firefox
+                    style={{ scrollbarWidth: 'thin' }}
                 >
-                    <div className="space-y-4 mb-4 pb-2"> {/* Added more bottom padding */}
-                        {messages.map((message) => (
-                            <div
+                    <div className="space-y-4 mb-4 pb-2 max-w-3xl mx-auto">
+                        {messages.map((message, index) => (
+                            <motion.div
                                 key={message.id}
-                                className={`flex flex-col ${message.role === 'user' ? 'items-end' : 'items-start'}`}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.2, delay: index === messages.length - 1 ? 0.1 : 0 }}
+                                className={cn(
+                                    "flex gap-3",
+                                    message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+                                )}
                             >
-                                <div
-                                    className={`rounded-lg px-4 py-2 max-w-[90vw] sm:max-w-[75%] break-words overflow-hidden ${message.role === 'user'
-                                        ? 'bg-[#5865F2] text-white'
-                                        : 'bg-[#2B2D31] text-white'
-                                        }`}
-                                >
-                                    {renderMessageContent(message.content)}
+                                {/* Avatar */}
+                                <div className={cn(
+                                    "flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center",
+                                    message.role === 'user' 
+                                        ? 'bg-[#5865F2]' 
+                                        : 'bg-gradient-to-br from-[#5865F2] to-purple-600'
+                                )}>
+                                    {message.role === 'user' ? (
+                                        <User className="h-4 w-4 text-white" />
+                                    ) : (
+                                        <Sparkles className="h-4 w-4 text-white" />
+                                    )}
                                 </div>
-                                <span className="text-xs text-muted-foreground mt-1">
-                                    {formatTimestamp(message.timestamp || message.createdAt?.getTime())}
-                                </span>
-                            </div>
+                                
+                                {/* Message content */}
+                                <div className={cn(
+                                    "flex flex-col gap-1 max-w-[calc(100%-3rem)]",
+                                    message.role === 'user' ? 'items-end' : 'items-start'
+                                )}>
+                                    <div
+                                        className={cn(
+                                            "rounded-2xl px-4 py-3 break-words overflow-hidden",
+                                            message.role === 'user'
+                                                ? 'bg-[#5865F2] text-white rounded-tr-sm'
+                                                : 'bg-fd-muted/50 border border-fd-border text-fd-foreground rounded-tl-sm'
+                                        )}
+                                    >
+                                        {renderMessageContent(message.content)}
+                                    </div>
+                                    <span className="text-[10px] text-muted-foreground px-1">
+                                        {formatTimestamp(message.timestamp || message.createdAt?.getTime())}
+                                    </span>
+                                </div>
+                            </motion.div>
                         ))}
                         {isLoading && (
-                            <div className="flex justify-start">
-                                <div className="rounded-lg p-3 bg-gray-800/50 text-gray-100">
-                                    <Loader2 className="h-4 w-4 animate-spin" />
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="flex gap-3"
+                            >
+                                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-[#5865F2] to-purple-600 flex items-center justify-center">
+                                    <Sparkles className="h-4 w-4 text-white" />
                                 </div>
-                            </div>
+                                <div className="rounded-2xl rounded-tl-sm px-4 py-3 bg-fd-muted/50 border border-fd-border">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex gap-1">
+                                            <span className="w-2 h-2 bg-[#5865F2] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                            <span className="w-2 h-2 bg-[#5865F2] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                            <span className="w-2 h-2 bg-[#5865F2] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                        </div>
+                                        <span className="text-sm text-muted-foreground">Thinking...</span>
+                                    </div>
+                                </div>
+                            </motion.div>
                         )}
-                        <div ref={messagesEndRef} className="h-4" /> {/* Increased height for better scrolling */}
+                        <div ref={messagesEndRef} className="h-4" />
                     </div>
                 </ScrollArea>
             </div>
 
-            <form
-                onSubmit={handleSubmit}
-                className="flex gap-2 p-3 sm:p-4 border-t border-[#5865F2]/10 bg-fd-background/90 backdrop-blur-md sticky bottom-0 z-40"
-            >
-                <Input
-                    value={input}
-                    onChange={handleInputChange}
-                    placeholder="Ask about CFX, FiveM, RedM, or txAdmin..."
-                    className="flex-1 bg-gray-800/50 border-[#5865F2]/10 focus:border-[#5865F2]"
-                    disabled={isLoading}
-                />
-                <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="bg-[#5865F2] hover:bg-[#5865F2]/90 text-white border-none whitespace-nowrap"
+            <div className="border-t border-fd-border bg-fd-background/90 backdrop-blur-md sticky bottom-0 z-40">
+                <form
+                    onSubmit={handleSubmit}
+                    className="flex gap-2 p-3 sm:p-4 max-w-3xl mx-auto"
                 >
-                    {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                        'Send'
-                    )}
-                </Button>
-            </form>
-        </Card>
+                    <div className="flex-1 relative">
+                        <Input
+                            value={input}
+                            onChange={handleInputChange}
+                            placeholder="Ask about FiveM, RedM, or txAdmin..."
+                            className="w-full bg-fd-muted/30 border-fd-border focus:border-[#5865F2] focus:ring-1 focus:ring-[#5865F2]/20 pr-12 rounded-xl"
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <Button
+                        type="submit"
+                        disabled={isLoading || !input.trim()}
+                        size="icon"
+                        className={cn(
+                            "h-10 w-10 rounded-xl transition-all",
+                            input.trim() 
+                                ? "bg-[#5865F2] hover:bg-[#5865F2]/90 text-white shadow-lg shadow-[#5865F2]/20" 
+                                : "bg-fd-muted text-muted-foreground"
+                        )}
+                    >
+                        {isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <Send className="h-4 w-4" />
+                        )}
+                    </Button>
+                </form>
+            </div>
+        </div>
     );
 }

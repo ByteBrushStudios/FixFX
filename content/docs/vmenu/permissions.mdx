@@ -1,147 +1,150 @@
 ---
 title: Permissions System
 description: Complete guide to configuring vMenu permissions using FiveM's ACE and Principal system
-icon: Shield
+icon: "Shield"
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout'
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid } from '@ui/components/mdx-components'
 
 ## Overview
 
 vMenu uses FiveM's built-in **ACE (Access Control Entry)** and **Principal** system for permissions. This powerful system allows granular control over who can access specific features.
 
-<Callout type="warn">
-  **Critical Security**: By default, vMenu may grant all permissions to everyone. You MUST configure permissions before making your server public.
-</Callout>
+<InfoBanner type="error" title="Critical Security Warning">
+By default, vMenu may grant all permissions to everyone. You **MUST** configure permissions properly before making your server public to prevent abuse.
+</InfoBanner>
 
 ## Permission System Basics
 
 ### Key Concepts
 
-| Term | Description |
-|------|-------------|
-| **ACE** | Access Control Entry - grants or denies a specific permission |
-| **Principal** | An entity that can have ACEs (player, group, identifier) |
-| **Group** | Collection of principals with shared permissions |
-| **Identifier** | Unique player identifier (Steam, License, Discord, etc.) |
+<DefinitionList items={[
+  { term: "ACE", description: "Access Control Entry - grants or denies a specific permission to a principal" },
+  { term: "Principal", description: "An entity that can have ACEs assigned (player, group, identifier)" },
+  { term: "Group", description: "Collection of principals with shared permissions for easier management" },
+  { term: "Identifier", description: "Unique player identifier (Steam, License, Discord, FiveM, etc.)" }
+]} />
 
 ### How It Works
 
-1. **Players** have **identifiers** (steam:, license:, discord:, etc.)
-2. **Identifiers** can be added to **groups** (admin, moderator, vip)
-3. **Groups** (or individual identifiers) receive **ACE permissions**
-4. vMenu checks permissions when players access features
+<StepList steps={[
+  { title: "Player Identification", description: "Players connect with identifiers (steam:, license:, discord:, etc.)" },
+  { title: "Group Assignment", description: "Identifiers can be added to groups (admin, moderator, vip)" },
+  { title: "Permission Inheritance", description: "Groups (or individual identifiers) receive ACE permissions" },
+  { title: "Access Control", description: "vMenu checks permissions when players access features" }
+]} />
 
 ## Permission Nodes
 
 ### Complete Permission List
 
-#### Administrative Permissions
+<PermissionCodeBlock 
+  title="Administrative Permissions" 
+  prefix="vMenu."
+  permissions={[
+    { permission: "Everything", description: "Full access to all features" },
+    { permission: "Staff", description: "Access to staff-only features" },
+    { permission: "NoClip", description: "Enable noclip mode" },
+    { permission: "God", description: "God mode/invincibility" },
+    { permission: "Report", description: "Receive and manage reports" },
+    { permission: "Teleport", description: "Teleport menu access" },
+    { permission: "Spectate", description: "Spectate other players" }
+  ]}
+/>
 
-```cfg
-vMenu.Everything                    # Full access to all features
-vMenu.Staff                         # Access to staff-only features
-vMenu.NoClip                        # Enable noclip mode
-vMenu.God                           # God mode/invincibility
-vMenu.Report                        # Receive and manage reports
-vMenu.Teleport                      # Teleport menu access
-vMenu.Spectate                      # Spectate other players
-```
+<PermissionCodeBlock 
+  title="Player Management" 
+  prefix="vMenu."
+  permissions={[
+    { permission: "OnlinePlayers", description: "View online players menu" },
+    { permission: "OnlinePlayers.All", description: "Full player management" },
+    { permission: "OnlinePlayers.Teleport", description: "Teleport to players" },
+    { permission: "OnlinePlayers.TeleportToPlayer", description: "Bring players to you" },
+    { permission: "OnlinePlayers.Summon", description: "Summon players" },
+    { permission: "OnlinePlayers.Kill", description: "Kill players" },
+    { permission: "OnlinePlayers.Kick", description: "Kick players" },
+    { permission: "OnlinePlayers.TempBan", description: "Temporary ban" },
+    { permission: "OnlinePlayers.PermBan", description: "Permanent ban" },
+    { permission: "OnlinePlayers.Unban", description: "Unban players" },
+    { permission: "OnlinePlayers.Freeze", description: "Freeze/unfreeze players" },
+    { permission: "OnlinePlayers.ViewPlayerInventory", description: "View inventories" },
+    { permission: "OnlinePlayers.RemovePlayerWeapons", description: "Remove weapons" },
+    { permission: "OnlinePlayers.SeePlayerIdentifiers", description: "View player identifiers" }
+  ]}
+/>
 
-#### Player Management
+<PermissionCodeBlock 
+  title="Player Options (Self)" 
+  prefix="vMenu."
+  permissions={[
+    { permission: "PlayerOptions", description: "Access player options menu" },
+    { permission: "PlayerOptions.All", description: "All player options" },
+    { permission: "PlayerOptions.God", description: "Toggle god mode" },
+    { permission: "PlayerOptions.Invisible", description: "Toggle invisibility" },
+    { permission: "PlayerOptions.FastRun", description: "Enable fast running" },
+    { permission: "PlayerOptions.FastSwim", description: "Enable fast swimming" },
+    { permission: "PlayerOptions.SuperJump", description: "Enable super jump" },
+    { permission: "PlayerOptions.NoRagdoll", description: "Disable ragdoll physics" },
+    { permission: "PlayerOptions.NeverWanted", description: "Disable wanted level" },
+    { permission: "PlayerOptions.SetWanted", description: "Set custom wanted level" },
+    { permission: "PlayerOptions.IgnoredByPolice", description: "Toggle police ignore" },
+    { permission: "PlayerOptions.StayInVehicle", description: "Stay in vehicle when shot" },
+    { permission: "PlayerOptions.MaxHealth", description: "Increase max health" },
+    { permission: "PlayerOptions.MaxArmor", description: "Set armor to maximum" },
+    { permission: "PlayerOptions.UnlimitedStamina", description: "Infinite stamina" }
+  ]}
+/>
 
-```cfg
-vMenu.OnlinePlayers                 # View online players menu
-vMenu.OnlinePlayers.All             # Full player management
-vMenu.OnlinePlayers.Teleport        # Teleport to players
-vMenu.OnlinePlayers.TeleportToPlayer # Bring players to you
-vMenu.OnlinePlayers.Summon          # Summon players
-vMenu.OnlinePlayers.Kill            # Kill players
-vMenu.OnlinePlayers.Kick            # Kick players
-vMenu.OnlinePlayers.TempBan         # Temporary ban
-vMenu.OnlinePlayers.PermBan         # Permanent ban
-vMenu.OnlinePlayers.Unban           # Unban players
-vMenu.OnlinePlayers.Freeze          # Freeze/unfreeze players
-vMenu.OnlinePlayers.ViewPlayerInventory # View inventories
-vMenu.OnlinePlayers.RemovePlayerWeapons # Remove weapons
-vMenu.OnlinePlayers.SeePlayerIdentifiers # View player identifiers
-```
+<CategoryGrid 
+  title="Vehicle Spawner Categories"
+  columns={4}
+  categories={[
+    { name: "Compacts", icon: "car", permission: "VehicleSpawner.Compacts", description: "Small compact cars" },
+    { name: "Sedans", icon: "car", permission: "VehicleSpawner.Sedans", description: "Sedan vehicles" },
+    { name: "SUVs", icon: "car", permission: "VehicleSpawner.SUVs", description: "SUV vehicles" },
+    { name: "Coupes", icon: "car", permission: "VehicleSpawner.Coupes", description: "Coupe vehicles" },
+    { name: "Muscle", icon: "car", permission: "VehicleSpawner.Muscle", description: "Muscle cars" },
+    { name: "Sports Classics", icon: "car", permission: "VehicleSpawner.SportsClassics", description: "Classic sports cars" },
+    { name: "Sports", icon: "car", permission: "VehicleSpawner.Sports", description: "Sports cars" },
+    { name: "Super", icon: "car", permission: "VehicleSpawner.Super", description: "Super cars" },
+    { name: "Motorcycles", icon: "car", permission: "VehicleSpawner.Motorcycles", description: "All motorcycles" },
+    { name: "Off-Road", icon: "car", permission: "VehicleSpawner.OffRoad", description: "Off-road vehicles" },
+    { name: "Helicopters", icon: "plane", permission: "VehicleSpawner.Helicopters", description: "All helicopters" },
+    { name: "Planes", icon: "plane", permission: "VehicleSpawner.Planes", description: "All planes" },
+    { name: "Boats", icon: "package", permission: "VehicleSpawner.Boats", description: "All boats" },
+    { name: "Emergency", icon: "shield", permission: "VehicleSpawner.Emergency", description: "Emergency vehicles" },
+    { name: "Military", icon: "shield", permission: "VehicleSpawner.Military", description: "Military vehicles" },
+    { name: "Commercial", icon: "package", permission: "VehicleSpawner.Commercial", description: "Commercial vehicles" }
+  ]}
+/>
 
-#### Player Options (Self)
-
-```cfg
-vMenu.PlayerOptions                 # Access player options menu
-vMenu.PlayerOptions.All             # All player options
-vMenu.PlayerOptions.God             # Toggle god mode
-vMenu.PlayerOptions.Invisible       # Toggle invisibility
-vMenu.PlayerOptions.FastRun         # Enable fast running
-vMenu.PlayerOptions.FastSwim        # Enable fast swimming
-vMenu.PlayerOptions.SuperJump       # Enable super jump
-vMenu.PlayerOptions.NoRagdoll       # Disable ragdoll physics
-vMenu.PlayerOptions.NeverWanted     # Disable wanted level
-vMenu.PlayerOptions.SetWanted       # Set custom wanted level
-vMenu.PlayerOptions.IgnoredByPolice # Toggle police ignore
-vMenu.PlayerOptions.StayInVehicle   # Stay in vehicle when shot
-vMenu.PlayerOptions.MaxHealth       # Increase max health
-vMenu.PlayerOptions.MaxArmor        # Set armor to maximum
-vMenu.PlayerOptions.UnlimitedStamina # Infinite stamina
-```
-
-#### Vehicle Options
-
-```cfg
-vMenu.VehicleOptions                # Access vehicle options menu
-vMenu.VehicleOptions.All            # All vehicle options
-vMenu.VehicleOptions.Fix            # Repair vehicle
-vMenu.VehicleOptions.Wash           # Wash vehicle
-vMenu.VehicleOptions.Engine         # Toggle engine
-vMenu.VehicleOptions.ChangePlate    # Change license plate
-vMenu.VehicleOptions.Mod            # Modify vehicle
-vMenu.VehicleOptions.Colors         # Change colors
-vMenu.VehicleOptions.Liveries       # Apply liveries
-vMenu.VehicleOptions.Components     # Toggle components
-vMenu.VehicleOptions.Doors          # Control doors
-vMenu.VehicleOptions.Windows        # Control windows
-vMenu.VehicleOptions.Freeze         # Freeze vehicle
-vMenu.VehicleOptions.Invisible      # Make vehicle invisible
-vMenu.VehicleOptions.SpawnInside    # Spawn inside vehicle
-vMenu.VehicleOptions.EngineAlwaysOn # Keep engine always on
-vMenu.VehicleOptions.NoSirenSound   # Disable siren sound
-vMenu.VehicleOptions.NoHelmet       # Disable helmet on bikes
-vMenu.VehicleOptions.Torque         # Modify engine torque
-vMenu.VehicleOptions.Power          # Modify engine power
-vMenu.VehicleOptions.FlashHighbeamsOnHonk # Flash highbeams when honking
-```
-
-#### Vehicle Spawning
-
-```cfg
-vMenu.VehicleSpawner                # Access vehicle spawner
-vMenu.VehicleSpawner.All            # Spawn any vehicle
-vMenu.VehicleSpawner.Compacts       # Spawn compacts
-vMenu.VehicleSpawner.Sedans         # Spawn sedans
-vMenu.VehicleSpawner.SUVs           # Spawn SUVs
-vMenu.VehicleSpawner.Coupes         # Spawn coupes
-vMenu.VehicleSpawner.Muscle         # Spawn muscle cars
-vMenu.VehicleSpawner.SportsClassics # Spawn sports classics
-vMenu.VehicleSpawner.Sports         # Spawn sports cars
-vMenu.VehicleSpawner.Super          # Spawn super cars
-vMenu.VehicleSpawner.Motorcycles    # Spawn motorcycles
-vMenu.VehicleSpawner.OffRoad        # Spawn off-road vehicles
-vMenu.VehicleSpawner.Industrial     # Spawn industrial vehicles
-vMenu.VehicleSpawner.Utility        # Spawn utility vehicles
-vMenu.VehicleSpawner.Vans           # Spawn vans
-vMenu.VehicleSpawner.Cycles         # Spawn bicycles
-vMenu.VehicleSpawner.Boats          # Spawn boats
-vMenu.VehicleSpawner.Helicopters    # Spawn helicopters
-vMenu.VehicleSpawner.Planes         # Spawn planes
-vMenu.VehicleSpawner.Service        # Spawn service vehicles
-vMenu.VehicleSpawner.Emergency      # Spawn emergency vehicles
-vMenu.VehicleSpawner.Military       # Spawn military vehicles
-vMenu.VehicleSpawner.Commercial     # Spawn commercial vehicles
-vMenu.VehicleSpawner.Trains         # Spawn trains
-vMenu.VehicleSpawner.OpenWheel      # Spawn open wheel vehicles
-```
+<PermissionCodeBlock 
+  title="Vehicle Options" 
+  prefix="vMenu."
+  permissions={[
+    { permission: "VehicleOptions", description: "Access vehicle options menu" },
+    { permission: "VehicleOptions.All", description: "All vehicle options" },
+    { permission: "VehicleOptions.Fix", description: "Repair vehicle" },
+    { permission: "VehicleOptions.Wash", description: "Wash vehicle" },
+    { permission: "VehicleOptions.Engine", description: "Toggle engine" },
+    { permission: "VehicleOptions.ChangePlate", description: "Change license plate" },
+    { permission: "VehicleOptions.Mod", description: "Modify vehicle" },
+    { permission: "VehicleOptions.Colors", description: "Change colors" },
+    { permission: "VehicleOptions.Liveries", description: "Apply liveries" },
+    { permission: "VehicleOptions.Components", description: "Toggle components" },
+    { permission: "VehicleOptions.Doors", description: "Control doors" },
+    { permission: "VehicleOptions.Windows", description: "Control windows" },
+    { permission: "VehicleOptions.Freeze", description: "Freeze vehicle" },
+    { permission: "VehicleOptions.Invisible", description: "Make vehicle invisible" },
+    { permission: "VehicleOptions.SpawnInside", description: "Spawn inside vehicle" },
+    { permission: "VehicleOptions.EngineAlwaysOn", description: "Keep engine always on" },
+    { permission: "VehicleOptions.NoSirenSound", description: "Disable siren sound" },
+    { permission: "VehicleOptions.NoHelmet", description: "Disable helmet on bikes" },
+    { permission: "VehicleOptions.Torque", description: "Modify engine torque" },
+    { permission: "VehicleOptions.Power", description: "Modify engine power" },
+    { permission: "VehicleOptions.FlashHighbeamsOnHonk", description: "Flash highbeams when honking" }
+  ]}
+/>
 
 #### Saved Vehicles
 
