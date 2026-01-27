@@ -143,10 +143,10 @@ export default function BrandPage() {
         <p className="text-xs text-fd-muted-foreground text-center">
           Need a different format?{" "}
           <a
-            href="mailto:contact@fixfx.dev"
+            href="https://github.com/CodeMeAPixel/FixFX/issues/new/choose"
             className="text-fd-primary hover:underline"
           >
-            Contact us
+            Open a Issue
           </a>{" "}
           for SVG or other formats.
         </p>
