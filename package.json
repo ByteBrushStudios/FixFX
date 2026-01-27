@@ -82,7 +82,6 @@
     "clsx": "^2.1.1",
     "commitlint": "19.8.1",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.5",
     "husky": "^8.0.3",
     "knip": "^5.78.0",
     "postcss": "^8.4.45",
