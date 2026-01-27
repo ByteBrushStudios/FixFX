@@ -360,6 +360,10 @@ export default function HostingPage() {
                 <div className="space-y-2 text-sm text-fd-muted-foreground">
                   <p className="flex items-start gap-2">
                     <span className="text-green-500 font-bold mt-0.5">✓</span>
+                    VPS and/or Dedicated server hosting support
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-green-500 font-bold mt-0.5">✓</span>
                     FiveM and/or RedM server hosting support
                   </p>
                   <p className="flex items-start gap-2">
