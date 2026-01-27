@@ -4,7 +4,39 @@ description: Comprehensive guide to using the Resource Monitor tool for tracking
 icon: "Monitor"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 The Resource Monitor (resmon) is a built-in tool in FiveM that provides real-time monitoring of resource performance. It's essential for identifying performance bottlenecks, memory leaks, and other resource-related issues.
+
+<FeatureList
+  features={[
+    {
+      title: "CPU Usage Tracking",
+      description: "Monitor percentage of CPU time used by each resource",
+      icon: "activity"
+    },
+    {
+      title: "Memory Monitoring",
+      description: "Track memory usage per resource and identify memory leaks",
+      icon: "database"
+    },
+    {
+      title: "Script Execution Time",
+      description: "Measure how long scripts take to execute",
+      icon: "clock"
+    },
+    {
+      title: "Network Usage",
+      description: "Monitor network traffic per resource",
+      icon: "globe"
+    },
+    {
+      title: "Thread Performance",
+      description: "Track active threads and thread execution times",
+      icon: "terminal"
+    }
+  ]}
+/>
 
 ## Enabling Resource Monitor
 

@@ -1,0 +1,94 @@
+name: Update Trusted Hosting Providers
+
+on:
+  schedule:
+    # Run every Monday at 00:00 UTC to check for updates
+    - cron: '0 0 * * 1'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  update-trusted-hosts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install ajv
+
+      - name: Update trusted hosts list
+        run: node .github/scripts/update-trusted-hosts.js
+
+      - name: Validate trusted hosts list
+        run: node .github/scripts/validate-trusted-hosts.js
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet packages/providers/trusted-hosts.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore: update trusted hosting providers list
+            
+            Automatically updated from https://fivem.net/server-hosting
+          branch: chore/update-trusted-hosts
+          delete-branch: true
+          title: 'chore: update trusted hosting providers list'
+          body: |
+            ## 🤖 Automated Update
+            
+            This PR automatically updates the trusted hosting providers list from the official FiveM registry.
+            
+            **Changes:**
+            - Updated `packages/providers/trusted-hosts.json`
+            - Validated against schema
+            - Last updated: ${{ github.event.head_commit.timestamp || 'Manual trigger' }}
+            
+            The list is scraped from: https://fivem.net/server-hosting
+            
+            ### Verification Checklist
+            - [x] Schema validation passed
+            - [x] No duplicate provider IDs
+            - [x] All provider URLs are valid
+            
+            ✅ Ready to merge
+          labels: |
+            automated
+            dependencies
+          reviewers: |
+            ${{ github.repository_owner }}
+
+      - name: Log summary
+        if: always()
+        run: |
+          echo "## Trusted Hosts Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.changes.outputs.changed }}" == "true" ]; then
+            echo "✅ Updates found and PR created" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ List is up to date" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Source:** https://fivem.net/server-hosting" >> $GITHUB_STEP_SUMMARY

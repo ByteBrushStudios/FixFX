@@ -2,7 +2,7 @@ import type { HomeLayoutProps } from "fumadocs-ui/layouts/home";
 import { GITHUB_LINK, DISCORD_LINK } from "@/packages/utils/src";
 import { FixFXIcon } from "@ui/icons";
 import { FaDiscord } from "react-icons/fa";
-import { Gamepad, Home, PlugZap, LogsIcon, Bot } from "lucide-react";
+import { Gamepad, Home, PlugZap, LogsIcon, Bot, X } from "lucide-react";
 
 export const baseOptions: HomeLayoutProps = {
   disableThemeSwitch: true,
@@ -18,9 +18,15 @@ export const baseOptions: HomeLayoutProps = {
   links: [
     {
       type: "icon",
-      text: "",
+      text: "Discord",
       icon: <FaDiscord className="size-6" />,
       url: "https://discord.gg/Vv2bdC44Ge",
+    },
+    {
+      type: "icon",
+      text: "Twitter/X",
+      icon: <X className="size-6" />,
+      url: "https://twitter.com/FixFXWiki",
     },
     {
       type: "main",

@@ -4,6 +4,8 @@ description: A comprehensive guide to optimizing CitizenFX server and client per
 icon: "Gauge"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Performance is a critical aspect of any FiveM server. This section provides comprehensive guides for optimizing both server and client performance to ensure a smooth experience for all players.
 
 ## Understanding FiveM Performance
@@ -49,9 +51,13 @@ For more information on these tools, visit the [Common Tools](/docs/cfx/common-t
 
 ## Best Practices
 
-<Callout type="info">
-  Effective performance optimization is an ongoing process, not a one-time task. Regularly monitor your server and make incremental improvements.
-</Callout>
+<CheckList items={[
+  "Start with a clean base and add resources incrementally",
+  "Use built-in monitoring tools regularly to identify bottlenecks",
+  "Implement scheduled server restarts and maintenance routines",
+  "Keep only necessary resources running",
+  "Stay updated with latest server artifacts and resource versions"
+]} />
 
 ### General Performance Tips
 

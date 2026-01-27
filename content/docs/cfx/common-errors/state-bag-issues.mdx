@@ -4,6 +4,8 @@ description: Common issues and solutions related to state bags in CitizenFX.
 icon: "AlertTriangle"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 State bags are a powerful feature in CitizenFX for sharing data between resources, but they can sometimes cause performance issues or errors. This guide covers common state bag issues and their solutions for both server owners and developers.
 
 ## Common Causes
@@ -37,6 +39,20 @@ set rateLimiter_stateBag_burst 125  # Default burst limit for state bag changes
 set rateLimiter_stateBagFlood_rate 150  # Flood detection rate
 set rateLimiter_stateBagFlood_burst 175  # Flood burst limit
 ```
+
+<PropertyCard
+  name="rateLimiter_stateBag_rate"
+  value="75"
+  description="Controls how many state bag changes can be transmitted per second. Default is usually sufficient."
+  type="info"
+/>
+
+<PropertyCard
+  name="rateLimiter_stateBag_burst"
+  value="125"
+  description="Allows temporary bursts above the rate limit. Useful for initial synchronization and state updates."
+  type="info"
+/>
 
 <Callout type="info">
   The default values are usually sufficient for most use cases. Only adjust these if you have specific needs and monitor with `resmon` to ensure stability. If you are getting spammed with state bags errors but all your resources are fine and you don't see any signs of misbehavior or abuse or the spam happens for random events like player joins, player deaths etc then you likely need to update these values.

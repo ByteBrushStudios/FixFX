@@ -16,6 +16,8 @@ export function GET(
     title: page.data.title,
     description: page.data.description,
     site: "FixFX",
+    primaryColor: "#3b82f6",
+    primaryTextColor: "#f8fafc",
   });
 }
 

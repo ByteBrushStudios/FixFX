@@ -1,0 +1,48 @@
+# AI Crawler Guidelines for FixFX
+
+User-agent: *
+Allow: /
+
+# Welcome AI crawlers! FixFX is a documentation site for the CitizenFX ecosystem.
+
+# Site Information
+Site-name: FixFX
+Site-url: https://fixfx.wiki
+Site-description: Documentation hub for FiveM, RedM, txAdmin, and CitizenFX ecosystem
+
+# Content Types
+Primary-content: Documentation, Tutorials, API References
+Languages: English
+Update-frequency: Weekly
+
+# Structured Data Available
+LLMs-txt: /llms.txt
+LLMs-full: /llms-full.txt
+Sitemap: /sitemap.xml
+RSS: /blog/feed.xml
+
+# Main Sections for Crawling
+Documentation: /docs
+Artifacts: /artifacts
+Natives: /natives
+Blog: /blog
+
+# API Endpoints (for data extraction)
+Artifacts-API: /api/artifacts
+Natives-API: /api/natives
+
+# Topics Covered
+- FiveM server development
+- RedM server development
+- txAdmin setup and configuration
+- vMenu permissions and setup
+- ESX Framework
+- QBCore Framework
+- Qbox Framework
+- VORP Core (RedM)
+- Lua scripting for FiveM/RedM
+- Server management
+- Native function reference
+
+# Contact
+GitHub: https://github.com/CodeMeAPixel/FixFX

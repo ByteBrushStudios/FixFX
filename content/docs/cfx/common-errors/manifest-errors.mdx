@@ -4,6 +4,8 @@ description: Common manifest errors and their solutions in FiveM resources.
 icon: "FileWarning"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers common errors related to resource manifests (`fxmanifest.lua`) and how to resolve them.
 
 ## Common Manifest Errors
@@ -46,11 +48,34 @@ dependencies {
 ```
 
 **Required Fields:**
-- `fx_version`: Specifies the FiveM version compatibility
-- `game`: Specifies the game (e.g., 'gta5')
-- `author`: Resource author
-- `description`: Resource description
-- `version`: Resource version
+
+<PropertyCard
+  name="fx_version"
+  value="'cerulean'"
+  description="Specifies the FiveM runtime version. Use 'cerulean' for modern features and compatibility."
+  type="success"
+/>
+
+<PropertyCard
+  name="game"
+  value="'gta5'"
+  description="Target game platform. Use 'gta5' for FiveM, 'rdr3' for RedM, or 'common' for both."
+  type="success"
+/>
+
+<PropertyCard
+  name="author"
+  value="string"
+  description="Name and email of the resource developer. Use format: 'Name <email@example.com>'"
+  type="info"
+/>
+
+<PropertyCard
+  name="version"
+  value="'1.0.0'"
+  description="Semantic version of your resource. Used for tracking updates and compatibility."
+  type="info"
+/>
 
 ### 3. Invalid Script Paths
 ```lua

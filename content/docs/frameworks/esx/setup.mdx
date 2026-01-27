@@ -4,6 +4,8 @@ description: Complete guide to setting up and installing ESX framework.
 icon: "Download"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers the complete installation and initial setup of ESX framework for your FiveM server.
 
 ## Prerequisites
@@ -16,6 +18,19 @@ Before installing ESX, ensure you have:
 - **Basic Command Line Knowledge**: Comfort with terminal commands
 
 ## Installation Methods
+
+<StepList
+  steps={[
+    { title: "Create Database", description: "Set up MySQL/MariaDB with proper user permissions and character set" },
+    { title: "Create Folder Structure", description: "Create [esx] and [standalone] folders in your resources directory" },
+    { title: "Clone Core Resources", description: "Clone ESX core, framework, and essential resources from GitHub" },
+    { title: "Install Database Connector", description: "Choose and install oxmysql or ghmattimysql" },
+    { title: "Import Database", description: "Run SQL files to create necessary tables for all resources" },
+    { title: "Configure Connections", description: "Set database credentials in config.lua and server.cfg" },
+    { title: "Start Server", description: "Launch your FiveM server and verify all resources load correctly" }
+  ]}
+  title="ESX Legacy Installation Steps"
+/>
 
 ### Method 1: ESX Legacy (Recommended)
 
@@ -132,6 +147,8 @@ git clone https://github.com/esx-framework/esx-serverdumps.git
 ## Configuration
 
 ### 1. Database Connection
+
+<PropertyCard type="info" name="Database Configuration" description="The database connection in ESX is managed through the ox_lib library. Make sure your MySQL user has proper privileges and the connection string is correct." />
 
 Configure your database connection in `es_extended/config.lua`:
 

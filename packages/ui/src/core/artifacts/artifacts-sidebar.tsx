@@ -137,20 +137,36 @@ export function ArtifactsSidebar({
                                 </div>
                             </div>
 
-                            <div className="space-y-2 pt-4 bg-[#0F0B2B]/30 p-4 rounded-lg">
-                                <h4 className="text-sm font-medium text-white mb-2">Help</h4>
+                            <div className="space-y-2 pt-4 bg-gradient-to-br from-[#5865F2]/5 to-transparent p-4 rounded-xl border border-fd-border">
+                                <h4 className="text-sm font-medium text-white mb-2 flex items-center gap-2">
+                                    <InfoIcon className="h-3.5 w-3.5 text-[#5865F2]" />
+                                    Quick Reference
+                                </h4>
                                 <div className="text-xs text-muted-foreground space-y-2">
                                     <p>Artifacts are server binaries needed to run FiveM or RedM servers.</p>
-                                    <p>Different versions have different levels of support:</p>
-                                    <ul className="list-disc pl-5 space-y-1">
-                                        <li><span className="text-green-400">Recommended</span> - Fully supported, recommended for production use.</li>
-                                        <li><span className="text-blue-400">Latest</span> - Most recent build, should be used for testing/beta purposes only.</li>
-                                        <li><span className="text-yellow-400">Deprecated</span> - Support ended, but still accessible from the server browser.</li>
-                                        <li><span className="text-red-400">EOL</span> - End of life, not supported and inaccessible from the server browser.</li>
+                                    <p className="font-medium text-white/80">Support Status Guide:</p>
+                                    <ul className="space-y-1.5 pl-1">
+                                        <li className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                                            <span><span className="text-green-400">Recommended</span> - Production ready</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                            <span><span className="text-blue-400">Latest</span> - Testing/beta only</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                                            <span><span className="text-amber-400">Deprecated</span> - Support ended</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                                            <span><span className="text-red-400">EOL</span> - End of life</span>
+                                        </li>
                                     </ul>
-                                    <p>
-                                        For more information about artifact support and status see:{" "}
-                                        <Link href="https://aka.cfx.re/eol" className="text-blue-400">aka.cfx.re/eol</Link>
+                                    <p className="pt-2">
+                                        <Link href="https://aka.cfx.re/eol" className="text-[#5865F2] hover:underline">
+                                            Learn more →
+                                        </Link>
                                     </p>
                                 </div>
                             </div>

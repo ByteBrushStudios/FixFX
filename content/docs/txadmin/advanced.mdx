@@ -3,9 +3,13 @@ title: Advanced Features
 description: Explore advanced txAdmin features including custom recipes, automation, monitoring, and enterprise-grade server management.
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers advanced txAdmin features for experienced administrators who want to maximize their server management capabilities and implement enterprise-grade solutions.
 
 ## Custom Recipes System
+
+<PropertyCard type="info" name="Recipes Overview" description="Recipes are JSON templates that define how txAdmin deploys and configures servers. They automate resource installation, configuration, and database setup with conditional logic." />
 
 ### Recipe Development
 
@@ -153,6 +157,18 @@ CREATE TABLE IF NOT EXISTS server_config (
 ```
 
 ### Recipe Deployment
+
+<StepList
+  steps={[
+    { title: "Create Recipe JSON", description: "Define your recipe with variables, resources, and deployment logic" },
+    { title: "Create Template Files", description: "Prepare mustache templates for server.cfg, database.sql, and config files" },
+    { title: "Test on Development", description: "Deploy the recipe to a development server and verify all configurations" },
+    { title: "Validate Conditions", description: "Ensure all conditional logic works correctly for different variable combinations" },
+    { title: "Document Variables", description: "Create clear descriptions for all recipe variables" },
+    { title: "Version & Distribute", description: "Version your recipe and share via txAdmin recipe repository" }
+  ]}
+  title="Recipe Creation and Deployment Steps"
+/>
 
 #### Automated Deployment
 Deploy recipes programmatically:

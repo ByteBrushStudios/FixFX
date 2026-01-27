@@ -3,7 +3,23 @@ title: Debugging & Testing
 description: Complete guide to debugging, testing, and optimizing FiveM resources.
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Effective debugging and testing are crucial for developing reliable FiveM resources. This guide covers tools, techniques, and best practices for identifying and fixing issues.
+
+<CheckList
+  items={[
+    "Use print() or Citizen.Trace() for debugging output",
+    "Enable debug mode during development for verbose logging",
+    "Use resmon command to monitor resource performance",
+    "Check server.log and console for error messages",
+    "Test with single resource to isolate issues",
+    "Use profiler to identify performance bottlenecks",
+    "Implement proper error handling in all functions",
+    "Document known issues and workarounds"
+  ]}
+  variant="check"
+/>
 
 ## Debugging Tools
 

@@ -1,0 +1,63 @@
+# FixFX - FiveM & RedM Documentation Hub
+
+> Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem.
+
+## About
+
+FixFX is a documentation hub for the CitizenFX ecosystem, providing guides and resources for:
+- FiveM (GTA V multiplayer modification)
+- RedM (Red Dead Redemption 2 multiplayer modification)
+- txAdmin (Server management panel)
+- vMenu (In-game admin menu)
+- Various roleplay frameworks (ESX, QBCore, Qbox, VORP)
+
+## Main Sections
+
+- [Documentation](/docs): Complete guides for FiveM, RedM, txAdmin, and frameworks
+- [Artifacts](/artifacts): Download FiveM and RedM server files
+- [Natives](/natives): Native function reference for FiveM and RedM development
+- [Chat](/chat): AI assistant for FiveM/RedM development help
+- [Blog](/blog): News and tutorials
+
+## Documentation Topics
+
+### txAdmin
+- Installation and setup guides
+- Server management
+- Permissions system
+- Discord bot integration
+- Configuration editor
+- Troubleshooting
+
+### vMenu
+- Installation guide
+- Permissions configuration
+- Menu customization
+- Command reference
+
+### Frameworks
+- ESX Legacy setup
+- QBCore installation
+- Qbox framework
+- VORP Core for RedM
+
+### Guides
+- Server optimization
+- Resource development
+- Lua scripting basics
+- Database setup
+
+## Technical Information
+
+- Built with Next.js and Fumadocs
+- Open source at github.com/CodeMeAPixel/FixFX
+- API available for artifacts and natives data
+
+## Contact
+
+- GitHub: https://github.com/CodeMeAPixel
+- Discord: https://discord.gg/fixfx
+
+## Optional
+
+For full documentation content, see: /llms-full.txt

@@ -3,6 +3,8 @@ title: Troubleshooting
 description: Diagnose and resolve common txAdmin issues, server problems, and configuration challenges.
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This comprehensive troubleshooting guide helps you identify and resolve common issues with txAdmin, server management, and configuration problems.
 
 ## Common Issues
@@ -10,18 +12,30 @@ This comprehensive troubleshooting guide helps you identify and resolve common i
 ### Installation Problems
 
 #### txAdmin Won't Start
-**Symptoms:**
-- txAdmin fails to launch
-- Error messages during startup
-- Web interface inaccessible
 
-**Diagnosis Steps:**
-1. Check server console for error messages
-2. Verify port availability (default 40120)
-3. Confirm FXServer version compatibility
-4. Check file permissions
-
-**Solutions:**
+<TroubleshootingCard
+  title="txAdmin Fails to Launch"
+  symptoms={[
+    "txAdmin fails to launch on startup",
+    "Error messages appear during startup",
+    "Web interface is inaccessible",
+    "Port binding errors in logs"
+  ]}
+  causes={[
+    "Another process using port 40120",
+    "Insufficient file permissions (Linux/macOS)",
+    "Incompatible FXServer version",
+    "Missing Node.js dependencies",
+    "Corrupted txAdmin installation"
+  ]}
+  solutions={[
+    "Check if port 40120 is available using: netstat -tulpn | grep :40120",
+    "Fix file permissions: chmod -R 755 /opt/fivem-server/",
+    "Update to latest FXServer version",
+    "Reinstall Node.js: curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -",
+    "Change txAdmin port if needed: export TXADMIN_PORT=40121"
+  ]}
+/>
 
 **Port Conflict:**
 ```bash

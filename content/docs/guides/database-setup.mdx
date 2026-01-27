@@ -4,6 +4,8 @@ description: Complete guide to setting up and configuring databases for FiveM se
 icon: "Database"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 A properly configured database is essential for any FiveM server. This guide covers everything from initial setup to advanced optimization techniques for MySQL/MariaDB databases.
 
 ## Database Options
@@ -24,9 +26,33 @@ A properly configured database is essential for any FiveM server. This guide cov
 
 ## Installation Guide
 
+<StepList
+  steps={[
+    { title: "Download Database Software", description: "Choose and download MariaDB or MySQL from official sources" },
+    { title: "Run Installer", description: "Execute the installer with appropriate options for your OS" },
+    { title: "Configure Settings", description: "Set character set to UTF8MB4 and configure resource limits" },
+    { title: "Secure Installation", description: "Set root password and remove anonymous/test accounts" },
+    { title: "Create Databases", description: "Create databases and users for your FiveM resources" },
+    { title: "Verify Connection", description: "Test connections from your FiveM server" },
+    { title: "Enable Backups", description: "Configure automatic backups for data protection" }
+  ]}
+  title="Database Installation Steps"
+/>
+
 ### Windows Installation
 
 #### Installing MariaDB on Windows
+
+<ConfigBlock
+  title="MariaDB Configuration"
+  description="Key configuration settings for MariaDB including character set, connection limits, and performance tuning"
+  config={[
+    { key: "character-set-server", value: "utf8mb4", description: "Unicode support for international characters" },
+    { key: "collation-server", value: "utf8mb4_unicode_ci", description: "Proper collation for Unicode" },
+    { key: "max_connections", value: "500", description: "Maximum concurrent database connections" },
+    { key: "innodb_buffer_pool_size", value: "1G", description: "Cache size for frequently accessed data" }
+  ]}
+/>
 
 1. **Download MariaDB**
    ```
@@ -66,6 +92,17 @@ A properly configured database is essential for any FiveM server. This guide cov
    - Start MySQL as Windows Service
 
 ### Linux Installation (Ubuntu/Debian)
+
+<CheckList
+  items={[
+    "Update system packages",
+    "Install MariaDB server",
+    "Run security configuration",
+    "Configure character set",
+    "Enable firewall rules",
+    "Verify service running"
+  ]}
+/>
 
 #### MariaDB Installation (Recommended)
 

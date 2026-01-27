@@ -3,38 +3,47 @@ title: Permissions System
 description: Configure user roles, permissions, and access control for your txAdmin server management team.
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid } from '@ui/components/mdx-components'
+
 This guide covers txAdmin's comprehensive permission system, allowing you to create custom roles and manage access control for your administrative team.
 
 ## Understanding Permissions
 
 ### Permission Levels
+
 txAdmin uses a role-based permission system with several predefined levels:
 
-#### Master Admin
-- **Full Access:** Complete control over all server functions
-- **User Management:** Create, edit, delete admin accounts
-- **System Settings:** Modify core txAdmin configuration
-- **Server Control:** Start, stop, restart server
-- **Database Access:** Full database management capabilities
+<RoleCard
+  title="Master Admin"
+  description="Complete control over all server and txAdmin functions"
+  type="master"
+  badge="Full Access"
+  permissions={["User Management", "System Settings", "Server Control", "Database Access", "Resource Management", "Console Access"]}
+/>
 
-#### Admin
-- **Server Management:** Control server operations
-- **Player Moderation:** Full player management tools
-- **Resource Control:** Start, stop, install resources
-- **Configuration:** Modify server settings
-- **Limited User Access:** Cannot create/delete other admins
+<RoleCard
+  title="Admin"
+  description="Server management with limited user administration access"
+  type="admin"
+  badge="Elevated"
+  permissions={["Server Management", "Player Moderation", "Resource Control", "Configuration", "Ban Management"]}
+/>
 
-#### Moderator
-- **Player Management:** Kick, ban, warn players
-- **Chat Moderation:** Monitor and moderate chat
-- **Basic Server Info:** View server status
-- **Limited Actions:** Cannot restart server or install resources
+<RoleCard
+  title="Moderator"
+  description="Player management and moderation capabilities"
+  type="moderator"
+  badge="Standard"
+  permissions={["Player Management", "Chat Moderation", "Basic Server Info", "Kick/Ban", "Warn Players"]}
+/>
 
-#### View Only
-- **Read Access:** View dashboards and logs
-- **No Actions:** Cannot execute any administrative commands
-- **Monitoring:** Access to monitoring tools only
-- **Reports:** Generate and view reports
+<RoleCard
+  title="View Only"
+  description="Read-only access for monitoring purposes"
+  type="user"
+  badge="Limited"
+  permissions={["View Dashboards", "View Logs", "Monitoring Tools", "Generate Reports"]}
+/>
 
 ## Setting Up Admin Accounts
 
@@ -86,9 +95,10 @@ Choose appropriate role based on responsibilities:
 ## Custom Roles
 
 ### Creating Custom Roles
+
 For advanced permission management, create custom roles:
 
-#### Role Configuration
+<ConfigBlock title="Custom Role Configuration" language="json">
 ```json
 {
   "role_name": "custom_moderator",
@@ -117,41 +127,62 @@ For advanced permission management, create custom roles:
   }
 }
 ```
+</ConfigBlock>
 
-#### Permission Categories
+### Permission Categories
 
-**Server Permissions:**
-- `view_status` - View server status and metrics
-- `start_stop` - Start and stop server
-- `restart` - Restart server
-- `console_access` - Access live console
-- `console_commands` - Execute console commands
-- `maintenance_mode` - Enable maintenance mode
+<CategoryGrid 
+  title="Server Permissions"
+  columns={3}
+  categories={[
+    { name: "view_status", icon: "eye", description: "View server status and metrics" },
+    { name: "start_stop", icon: "play", description: "Start and stop server" },
+    { name: "restart", icon: "refresh", description: "Restart server" },
+    { name: "console_access", icon: "terminal", description: "Access live console" },
+    { name: "console_commands", icon: "command", description: "Execute console commands" },
+    { name: "maintenance_mode", icon: "wrench", description: "Enable maintenance mode" }
+  ]}
+/>
 
-**Player Permissions:**
-- `view_list` - See online players
-- `view_details` - See detailed player information
-- `kick` - Kick players from server
-- `ban_temporary` - Issue temporary bans
-- `ban_permanent` - Issue permanent bans
-- `unban` - Remove player bans
-- `warn` - Issue warnings to players
-- `whitelist_manage` - Manage server whitelist
+<CategoryGrid 
+  title="Player Permissions"
+  columns={3}
+  categories={[
+    { name: "view_list", icon: "users", description: "See online players" },
+    { name: "view_details", icon: "user", description: "See detailed player info" },
+    { name: "kick", icon: "userMinus", description: "Kick players from server" },
+    { name: "ban_temporary", icon: "clock", description: "Issue temporary bans" },
+    { name: "ban_permanent", icon: "lock", description: "Issue permanent bans" },
+    { name: "unban", icon: "unlock", description: "Remove player bans" },
+    { name: "warn", icon: "warning", description: "Issue warnings to players" },
+    { name: "whitelist_manage", icon: "checkCircle", description: "Manage server whitelist" }
+  ]}
+/>
 
-**Resource Permissions:**
-- `view_list` - View installed resources
-- `start_stop` - Start/stop resources
-- `restart` - Restart individual resources
-- `install` - Install new resources
-- `delete` - Remove resources
-- `configure` - Modify resource settings
+<CategoryGrid 
+  title="Resource Permissions"
+  columns={3}
+  categories={[
+    { name: "view_list", icon: "folder", description: "View installed resources" },
+    { name: "start_stop", icon: "play", description: "Start/stop resources" },
+    { name: "restart", icon: "refresh", description: "Restart individual resources" },
+    { name: "install", icon: "download", description: "Install new resources" },
+    { name: "delete", icon: "trash", description: "Remove resources" },
+    { name: "configure", icon: "settings", description: "Modify resource settings" }
+  ]}
+/>
 
-**Admin Permissions:**
-- `view_admins` - See other administrators
-- `create_admin` - Create new admin accounts
-- `edit_admin` - Modify existing admin accounts
-- `delete_admin` - Remove admin accounts
-- `view_logs` - Access administrative logs
+<CategoryGrid 
+  title="Admin Permissions"
+  columns={3}
+  categories={[
+    { name: "view_admins", icon: "users", description: "See other administrators" },
+    { name: "create_admin", icon: "userPlus", description: "Create new admin accounts" },
+    { name: "edit_admin", icon: "edit", description: "Modify existing admin accounts" },
+    { name: "delete_admin", icon: "userMinus", description: "Remove admin accounts" },
+    { name: "view_logs", icon: "file", description: "Access administrative logs" }
+  ]}
+/>
 
 ## Advanced Permission Management
 

@@ -1,12 +1,13 @@
 {
     "root": true,
     "pages": [
+        "backup-recovery",
+        "common-threats",
         "database-setup",
+        "database-tools",
+        "resource-installation",
         "server-artifacts",
         "server-configuration",
-        "resource-installation",
-        "backup-recovery",
-        "security-permissions",
-        "database-tools"
+        "security-permissions"
     ]
 }

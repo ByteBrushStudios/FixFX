@@ -5,6 +5,8 @@ description: txAdmin provides a comprehensive web interface for managing all asp
 
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import { Callout } from 'fumadocs-ui/components/callout';
+import { TypeTable, SimpleTypeTable } from '@ui/components/type-table';
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid } from '@ui/components/mdx-components';
 import { ImageModal } from '@/app/components/image-modal';
 
 ## Dashboard
@@ -15,21 +17,30 @@ The Dashboard is your server's command center, displaying real-time statistics a
 
 ### Key Metrics
 
-- **Server Status** - Shows if your server is ONLINE or OFFLINE
-- **Uptime** - How long your server has been running
-- **Player Count** - Current and maximum player capacity
-- **Memory Usage** - FXServer and Node.js memory consumption
-- **Performance Metrics** - Server ping/frame time performance
+<FeatureList
+  columns={2}
+  features={[
+    { title: "Server Status", description: "Shows if your server is ONLINE or OFFLINE", icon: "server" },
+    { title: "Uptime", description: "How long your server has been running", icon: "clock" },
+    { title: "Player Count", description: "Current and maximum player capacity", icon: "users" },
+    { title: "Memory Usage", description: "FXServer and Node.js memory consumption", icon: "cpu" },
+    { title: "Performance Metrics", description: "Server ping/frame time performance", icon: "activity" },
+  ]}
+/>
 
 ### Dashboard Widgets
 
-- **Player Drop Cause** - Last 6 hours of player disconnections
-- **Server Stats (Live)** - Uptime, median player count, memory usage
-- **svMain Performance** - Frame time distribution graph showing server responsiveness
+<DefinitionList
+  items={[
+    { term: "Player Drop Cause", description: "Last 6 hours of player disconnections" },
+    { term: "Server Stats (Live)", description: "Uptime, median player count, memory usage" },
+    { term: "svMain Performance", description: "Frame time distribution graph showing server responsiveness" },
+  ]}
+/>
 
-<Callout type="info">
-**Pro Tip:** Monitor the performance graph regularly. Spikes indicate resource issues or heavy load. If you see frequent red (high frame time), consider optimizing your resources.
-</Callout>
+<InfoBanner type="tip" title="Pro Tip">
+Monitor the performance graph regularly. Spikes indicate resource issues or heavy load. If you see frequent red (high frame time), consider optimizing your resources.
+</InfoBanner>
 
 ## Live Console
 
@@ -39,57 +50,105 @@ The Live Console displays real-time server output and allows you to execute comm
 
 ### Features
 
-- **Real-time Logs** - See server events as they happen (resource starts, player joins, errors)
-- **Log Filters** - Toggle specific event types:
-  - Player Joins
-  - Player Leaves
-  - Chat Messages
-  - Player Deaths
-  - Menu Actions
-  - Explosions
-  - Commands
-  - System Events
+<DefinitionList
+  variant="bordered"
+  items={[
+    { term: "Real-time Logs", description: "See server events as they happen (resource starts, player joins, errors)" },
+    { term: "Command Input", description: "Type and execute console commands directly" },
+    { term: "Clear Console", description: "Remove all displayed logs" },
+    { term: "View Navigation", description: "Older/Newer buttons to scroll through logs" },
+    { term: "Save/Download", description: "Export logs for debugging" },
+  ]}
+/>
 
-- **Command Input** - Type and execute console commands directly
-- **Clear Console** - Remove all displayed logs
-- **View Navigation** - Older/Newer buttons to scroll through logs
-- **Save/Download** - Export logs for debugging
+**Log Filters** - Toggle specific event types:
+
+<CheckList
+  columns={2}
+  items={[
+    "Player Joins",
+    "Player Leaves", 
+    "Chat Messages",
+    "Player Deaths",
+    "Menu Actions",
+    "Explosions",
+    "Commands",
+    "System Events",
+  ]}
+/>
 
 ### Common Commands
 
-```bash
-# Player management
-kick [id] [reason]           # Kick a player
-ban [identifier] [reason]    # Ban a player
-unban [identifier]           # Unban a player
+<CommandTable
+  title="Player Management"
+  commands={[
+    { command: "kick [id] [reason]", description: "Kick a player from the server" },
+    { command: "ban [identifier] [reason]", description: "Ban a player permanently" },
+    { command: "unban [identifier]", description: "Remove a player's ban" },
+  ]}
+/>
 
-# Server control
-restart                       # Restart the server
-say [message]               # Broadcast a message
-refresh                     # Refresh resources
+<CommandTable
+  title="Server Control"
+  commands={[
+    { command: "restart", description: "Restart the server" },
+    { command: "say [message]", description: "Broadcast a message to all players" },
+    { command: "refresh", description: "Refresh all resources" },
+  ]}
+/>
 
-# Admin commands
-add_principal [id] group.admin    # Make someone admin
-remove_principal [id] group.admin # Remove admin
-```
+<CommandTable
+  title="Admin Commands"
+  commands={[
+    { command: "add_principal [id] group.admin", description: "Grant admin permissions to a player" },
+    { command: "remove_principal [id] group.admin", description: "Revoke admin permissions from a player" },
+  ]}
+/>
 
-<Callout type="warn">
-**Important:** Be careful with console commands. Some can destabilize the server if used incorrectly.
-</Callout>
+<InfoBanner type="warning" title="Important">
+Be careful with console commands. Some can destabilize the server if used incorrectly.
+</InfoBanner>
 
 ## Players
 
 The Players tab shows all connected players and their statistics.
 
+<ImageModal src="/screenshots/txadmin/players-page.png" alt="Players Page" title="txAdmin Players Tab" />
+
 ### Player Information
 
-- **Total Players** - Current player count
-- **Players Last 24h** - Connection statistics
-- **New Players** - New players in last 24h and 7d periods
-- **Display Name** - Player's in-game name
-- **Play Time** - How long they've been connected
-- **First Joined** - When they first joined the server
-- **Last Connection** - Most recent connection time
+<TypeTable
+  type={{
+    totalPlayers: {
+      type: 'number',
+      description: 'Current player count on the server',
+    },
+    playersLast24h: {
+      type: 'object',
+      description: 'Connection statistics for the last 24 hours',
+    },
+    newPlayers: {
+      type: 'object',
+      description: 'New players in last 24h and 7d periods',
+    },
+    displayName: {
+      type: 'string',
+      description: "Player's in-game display name",
+    },
+    playTime: {
+      type: 'string',
+      description: 'How long they have been connected to the server',
+    },
+    firstJoined: {
+      type: 'Date',
+      description: 'When they first joined the server',
+    },
+    lastConnection: {
+      type: 'Date',
+      description: 'Most recent connection time',
+    },
+  }}
+/>
 
 ### Player Actions
 
@@ -113,6 +172,8 @@ Use player search to quickly find someone causing issues. Add notes to player pr
 ## Resources
 
 The Resources tab lets you manage which resources are active on your server.
+
+<ImageModal src="/screenshots/txadmin/resources-tab.png" alt="Resources Tab" title="txAdmin Resources Tab" />
 
 ### Resource Management
 

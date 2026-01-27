@@ -5,6 +5,7 @@ description: Learn about the txAdmin Config Editor and server configuration.
 
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Callout } from 'fumadocs-ui/components/callout';
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid, FileTree } from '@ui/components/mdx-components'
 
 # txAdmin Config Editor
 
@@ -12,9 +13,11 @@ The Config Editor is a web-based interface within txAdmin that allows you to edi
 
 ## Accessing the Config Editor
 
-1. Open txAdmin in your browser (typically `http://localhost:40120`)
-2. Navigate to **Server Management** → **CFG Editor** from the sidebar
-3. You'll see your current `server.cfg` file displayed with syntax highlighting
+<StepList steps={[
+  { title: "Open txAdmin", description: "Navigate to your browser (typically http://localhost:40120)" },
+  { title: "Navigate to CFG Editor", description: "Go to Server Management → CFG Editor from the sidebar" },
+  { title: "Edit Configuration", description: "Your current server.cfg file will be displayed with syntax highlighting" }
+]} />
 
 ## Config File Sections
 
@@ -22,81 +25,33 @@ The default configuration file is divided into three main sections:
 
 ### 1. MUST EDIT - Server Identity
 
-These settings define your server's basic information and are essential for operation:
+<InfoBanner type="info" title="Essential Settings">
+These settings define your server's basic information and are essential for operation.
+</InfoBanner>
 
-#### `sv_hostname`
-- **What it does:** Sets the public name of your server as it appears in the server browser
-- **Example:** `sv_hostname "FixFX RP built with RedM Basic Server!"`
-- **Type:** String
-- **Best Practice:** Use a descriptive name that includes the server type and version
+<PropertyCard type="info" name="sv_hostname" description="Sets the public name of your server as it appears in the server browser." />
 
-#### `sets sv_projectName`
-- **What it does:** Sets the project name displayed in the server browser
-- **Example:** `sets sv_projectName "[RedM Basic Server] FixFX RP"`
-- **Type:** String
-- **Best Practice:** Keep it concise and meaningful
+<PropertyCard type="info" name="sets sv_projectName" description="Sets the project name displayed in the server browser. Keep it concise and meaningful." />
 
-#### `sets sv_projectDesc`
-- **What it does:** Provides a longer description of your server shown in the server browser
-- **Example:** `sets sv_projectDesc "Recipe for the base resources required to run a minimal RedM server."`
-- **Type:** String
-- **Best Practice:** Describe what your server offers (economy, roleplay type, features, etc.)
+<PropertyCard type="info" name="sets sv_projectDesc" description="Provides a longer description of your server shown in the server browser. Describe what your server offers." />
 
-#### `sets tags`
-- **What it does:** Tags that help categorize your server in the server browser
-- **Example:** `sets tags "default, deployer"`
-- **Type:** Comma-separated string
-- **Common Tags:** `roleplay`, `economy`, `pvp`, `vanilla`, `whitelisted`, `deployer`, `default`
-- **Best Practice:** Use relevant tags to help players find your server
+<PropertyCard type="info" name="sets tags" description="Tags that help categorize your server. Common: roleplay, economy, pvp, vanilla, whitelisted, deployer" />
 
-#### `sets locale`
-- **What it does:** Sets the server's locale/language preference
-- **Example:** `sets locale "root-AQ"`
-- **Type:** Locale code
-- **Reference:** See [FiveM Locale Documentation](https://docs.fivem.net)
+<PropertyCard type="info" name="sets locale" description="Sets the server locale/language preference." />
 
 ### 2. CAN EDIT - Server Configuration
 
 These settings control server behavior and performance:
 
-#### `set gamename`
-- **What it does:** Specifies which game the server runs
-- **Values:** `gta5` (GTA V) or `rdr3` (Red Dead Redemption 2/RedM)
-- **Example:** `set gamename rdr3`
-- **Note:** This is typically set by the deployment recipe and shouldn't be changed
+<PropertyCard type="warning" name="set gamename" description="Specifies which game the server runs: gta5 (GTA V) or rdr3 (Red Dead Redemption 2/RedM). Typically set by the deployment recipe." />
 
-#### `sv_enforceGameBuild`
-- **What it does:** Enforces a specific game build/version for clients connecting to the server
-- **Example:** `sv_enforceGameBuild 1491 #September 2022 update`
-- **Type:** Integer (build number)
-- **Best Practice:** Use a stable, well-tested build number. Check [FiveM Runtime](https://runtime.fivem.net) for available builds
-- **Reference:** [FiveM Server Commands Documentation](https://aka.cfx.re/server-commands)
+<PropertyCard type="info" name="sv_enforceGameBuild" description="Enforces a specific game build/version. Use a stable, well-tested build number. Check runtime.fivem.net for available builds." />
 
-#### `sv_licenseKey`
-- **What it does:** Your server's license key from the CFX portal (required for server operation)
-- **Example:** `sv_licenseKey "cfxk_zMnEMr3Nt0aydNEMON0j_18KvKC"`
-- **Type:** String (license key)
-- **Important:** Keep this secret! Don't share it with anyone
-- **How to Get:** Generate one at [portal.cfx.re](https://portal.cfx.re)
+<PropertyCard type="error" name="sv_licenseKey" description="Your server license key from the CFX portal (required). Keep this secret and generate one at portal.cfx.re" />
 
-#### `sv_maxclients`
-- **What it does:** Maximum number of players that can connect to your server simultaneously
-- **Example:** `sv_maxclients 48`
-- **Type:** Integer
-- **Recommended:** 
-  - Small servers: 16-32 players
-  - Medium servers: 32-64 players
-  - Large servers: 64-128+ players
-- **Consideration:** Higher player counts require more server resources
+<PropertyCard type="info" name="sv_maxclients" description="Maximum number of players. Small: 16-32, Medium: 32-64, Large: 64-128+. Higher counts require more resources." />
 
-#### `endpoint_add_tcp` and `endpoint_add_udp`
-- **What it does:** Define the IP address and port your server listens on
-- **Example:** 
-  ```
-  endpoint_add_tcp "0.0.0.0:30120"
-  endpoint_add_udp "0.0.0.0:30120"
-  ```
-- **Type:** IP:Port
+<PropertyCard type="info" name="endpoint_add_tcp/udp" description="Define the IP address and port your server listens on. Default port is 30120." />
 - **Default Port:** 30120 (game server)
 - **Important:** Must match your firewall configuration
 - **Note:** `0.0.0.0` means listen on all available network interfaces

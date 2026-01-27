@@ -1,0 +1,30 @@
+{
+  "lastUpdated": "2026-01-26T00:00:00Z",
+  "source": "https://fivem.net/server-hosting",
+  "hosts": [
+    {
+      "id": "zap-hosting",
+      "name": "ZAP-Hosting",
+      "url": "https://zap-hosting.com",
+      "description": "Premium game server hosting with DDoS protection and 24/7 support",
+      "verified": true,
+      "lastVerified": "2026-01-26T00:00:00Z"
+    },
+    {
+      "id": "gtxgaming",
+      "name": "GTXGaming",
+      "url": "https://gtxgaming.co.uk",
+      "description": "Reliable FiveM and RedM server hosting with excellent uptime",
+      "verified": true,
+      "lastVerified": "2026-01-26T00:00:00Z"
+    },
+    {
+      "id": "nitrado",
+      "name": "Nitrado",
+      "url": "https://nitrado.net",
+      "description": "Global game server hosting provider with multi-region support",
+      "verified": true,
+      "lastVerified": "2026-01-26T00:00:00Z"
+    }
+  ]
+}

@@ -3,6 +3,21 @@ import { Features } from "@ui/core/landing/features";
 import { DocsPreview } from "@ui/core/landing/docs-preview";
 import { Hero } from "@ui/core/layout/hero";
 import { Contributors } from "@ui/core/landing/contributors";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "FixFX - FiveM & RedM Documentation Hub",
+  description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, vMenu, and the CitizenFX ecosystem. Your one-stop resource for server development.",
+  alternates: {
+    canonical: "https://fixfx.wiki",
+  },
+  openGraph: {
+    title: "FixFX - FiveM & RedM Documentation Hub",
+    description: "Comprehensive guides, tutorials, and documentation for FiveM, RedM, txAdmin, and the CitizenFX ecosystem.",
+    url: "https://fixfx.wiki",
+    type: "website",
+  },
+};
 
 export default function HomePage() {
   return (

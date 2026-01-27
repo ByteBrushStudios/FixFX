@@ -4,6 +4,8 @@ description: Complete guide to installing, managing, and configuring FiveM resou
 icon: "Package"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Proper resource installation and management is crucial for a stable and feature-rich FiveM server. This guide covers everything from basic installation to advanced dependency management.
 
 ## Understanding FiveM Resources
@@ -120,6 +122,16 @@ lua54 'yes'
 
 Before installing any resource, assess compatibility:
 
+<CheckList
+  items={[
+    "Check framework compatibility",
+    "Verify dependency requirements",
+    "Check for resource conflicts",
+    "Review database table names",
+    "Test on development server first"
+  ]}
+/>
+
 ```bash
 # Check framework compatibility
 Framework: ESX, QBCore, vRP, Standalone?
@@ -162,6 +174,19 @@ database_tables:
 ## Installation Methods
 
 ### Manual Installation
+
+<StepList
+  steps={[
+    { title: "Download Resource", description: "Download the resource from its official source (GitHub, GitLab, or official repository)" },
+    { title: "Extract Files", description: "Extract the ZIP file to your resources folder and rename if necessary to remove version numbers" },
+    { title: "Verify Structure", description: "Ensure fxmanifest.lua exists at the root of the resource directory" },
+    { title: "Configure Resource", description: "Edit config files and set appropriate options for your server" },
+    { title: "Import Database", description: "If applicable, import SQL files to your database using MySQL commands" },
+    { title: "Add to server.cfg", description: "Add 'ensure resource_name' to your server.cfg file" },
+    { title: "Test & Restart", description: "Restart your server and verify the resource loads without errors" }
+  ]}
+  title="Manual Installation Steps"
+/>
 
 #### Download and Extract
 

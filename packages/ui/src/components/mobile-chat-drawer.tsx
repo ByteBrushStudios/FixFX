@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "@utils/functions/cn"
 import { Button } from "./button"
 import { ScrollArea } from "./scroll-area"
-import { Home, MessageSquare, Settings, History, Code, Plus, Zap, Bot, X, Github } from "lucide-react"
+import { Home, MessageSquare, Settings, History, Code, Plus, Zap, Bot, X, Github, MessagesSquare, Sparkles } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
@@ -16,6 +16,7 @@ import { ModelCard } from "./model-card"
 import { NAV_LINKS, DISCORD_LINK, GITHUB_LINK } from "@utils/constants/link"
 import { FaDiscord } from "react-icons/fa"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
+import { motion } from "motion/react"
 
 interface SavedChat {
     id: string;
@@ -125,66 +126,82 @@ export function MobileChatDrawer({
 
     return (
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <SheetContent side="left" className="w-full max-w-full sm:max-w-md border-r border-[#5865F2]/20 p-0 bg-fd-background pt-16">
+            <SheetContent side="left" className="w-full max-w-full sm:max-w-md border-r border-[#5865F2]/10 p-0 bg-fd-background/95 backdrop-blur-xl pt-16">
                 <div className="flex flex-col h-full">
-                    <div className="flex items-center justify-between p-4 border-b border-[#5865F2]/20">
+                    <div className="flex items-center justify-between p-4 border-b border-[#5865F2]/10">
                         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-                            <TabsList className="bg-[#0F0B2B]/50 grid grid-cols-3 h-9">
-                                <TabsTrigger value="navigation" className="data-[state=active]:bg-[#5865F2] data-[state=active]:text-white">
+                            <TabsList className="bg-[#0F0B2B]/60 grid grid-cols-3 h-10 rounded-xl p-1">
+                                <TabsTrigger value="navigation" className="rounded-lg text-xs data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#5865F2] data-[state=active]:to-[#4752C4] data-[state=active]:text-white data-[state=active]:shadow-md">
                                     Navigation
                                 </TabsTrigger>
-                                <TabsTrigger value="chats" className="data-[state=active]:bg-[#5865F2] data-[state=active]:text-white">
+                                <TabsTrigger value="chats" className="rounded-lg text-xs data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#5865F2] data-[state=active]:to-[#4752C4] data-[state=active]:text-white data-[state=active]:shadow-md">
                                     Chats
                                 </TabsTrigger>
-                                <TabsTrigger value="settings" className="data-[state=active]:bg-[#5865F2] data-[state=active]:text-white">
+                                <TabsTrigger value="settings" className="rounded-lg text-xs data-[state=active]:bg-gradient-to-br data-[state=active]:from-[#5865F2] data-[state=active]:to-[#4752C4] data-[state=active]:text-white data-[state=active]:shadow-md">
                                     Settings
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs>
 
-                        <Button variant="ghost" size="icon" onClick={onClose} className="ml-2">
+                        <Button variant="ghost" size="icon" onClick={onClose} className="ml-2 hover:bg-[#5865F2]/10">
                             <X className="h-4 w-4" />
                         </Button>
                     </div>
 
                     <ScrollArea className="flex-1 p-4">
                         {activeTab === 'navigation' && (
-                            <div className="space-y-1">
-                                {NAV_LINKS.map((item) => {
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="space-y-1"
+                            >
+                                {NAV_LINKS.map((item, index) => {
                                     const Icon = item.icon;
                                     return (
-                                        <Button
+                                        <motion.div
                                             key={item.href}
-                                            variant="ghost"
-                                            className={cn(
-                                                "w-full justify-start",
-                                                pathname === item.href && "bg-[#5865F2]/20 text-[#5865F2]"
-                                            )}
-                                            asChild
-                                            onClick={onClose}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: index * 0.05 }}
                                         >
-                                            {item.external ? (
-                                                <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                                                    <Icon className="mr-2 h-4 w-4" />
-                                                    {item.name}
-                                                </a>
-                                            ) : (
-                                                <Link href={item.href} className="flex items-center">
-                                                    <Icon className="mr-2 h-4 w-4" />
-                                                    {item.name}
-                                                </Link>
-                                            )}
-                                        </Button>
+                                            <Button
+                                                variant="ghost"
+                                                className={cn(
+                                                    "w-full justify-start rounded-lg transition-all duration-200",
+                                                    pathname === item.href 
+                                                        ? "bg-gradient-to-r from-[#5865F2]/20 to-[#5865F2]/5 text-[#5865F2] border-l-2 border-[#5865F2]" 
+                                                        : "hover:bg-[#5865F2]/10"
+                                                )}
+                                                asChild
+                                                onClick={onClose}
+                                            >
+                                                {item.external ? (
+                                                    <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                                                        <Icon className="mr-2 h-4 w-4" />
+                                                        {item.name}
+                                                    </a>
+                                                ) : (
+                                                    <Link href={item.href} className="flex items-center">
+                                                        <Icon className="mr-2 h-4 w-4" />
+                                                        {item.name}
+                                                    </Link>
+                                                )}
+                                            </Button>
+                                        </motion.div>
                                     );
                                 })}
-                            </div>
+                            </motion.div>
                         )}
 
                         {activeTab === 'chats' && (
-                            <div className="space-y-4">
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="space-y-4"
+                            >
                                 <Button
                                     variant="outline"
-                                    className="w-full justify-center hover:bg-[#5865F2]/10"
+                                    className="w-full justify-center rounded-xl border-[#5865F2]/20 hover:bg-[#5865F2]/10 hover:border-[#5865F2]/30"
                                     onClick={handleNewChat}
                                 >
                                     <Plus className="h-4 w-4 mr-2 text-[#5865F2]" />
@@ -192,44 +209,62 @@ export function MobileChatDrawer({
                                 </Button>
 
                                 <div className="space-y-1">
-                                    <h4 className="text-sm font-medium mb-2 text-muted-foreground">Recent Conversations</h4>
+                                    <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground px-1 mb-2">Recent Conversations</h4>
                                     {recentChats.length > 0 ? (
-                                        recentChats.map(chat => {
+                                        recentChats.map((chat, index) => {
                                             const isActive = activeChat === chat.id;
                                             return (
-                                                <Button
+                                                <motion.div
                                                     key={chat.id}
-                                                    variant="ghost"
-                                                    className={cn(
-                                                        "w-full justify-start truncate",
-                                                        isActive && "bg-[#5865F2]/20 border-l-2 border-[#5865F2]"
-                                                    )}
-                                                    onClick={() => handleChatClick(chat)}
+                                                    initial={{ opacity: 0, x: -10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    transition={{ delay: index * 0.03 }}
                                                 >
-                                                    <History className={cn(
-                                                        "mr-2 h-4 w-4 shrink-0",
-                                                        isActive && "text-[#5865F2]"
-                                                    )} />
-                                                    <span className="truncate">{chat.title}</span>
-                                                </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        className={cn(
+                                                            "w-full justify-start truncate rounded-lg transition-all duration-200",
+                                                            isActive 
+                                                                ? "bg-gradient-to-r from-[#5865F2]/20 to-[#5865F2]/5 border-l-2 border-[#5865F2]" 
+                                                                : "hover:bg-[#5865F2]/10"
+                                                        )}
+                                                        onClick={() => handleChatClick(chat)}
+                                                    >
+                                                        <History className={cn(
+                                                            "mr-2 h-4 w-4 shrink-0",
+                                                            isActive && "text-[#5865F2]"
+                                                        )} />
+                                                        <span className="truncate">{chat.title}</span>
+                                                    </Button>
+                                                </motion.div>
                                             );
                                         })
                                     ) : (
-                                        <p className="text-sm text-muted-foreground text-center py-2">No recent chats</p>
+                                        <div className="text-center py-8">
+                                            <MessagesSquare className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                                            <p className="text-sm text-muted-foreground">No recent chats</p>
+                                        </div>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
                         )}
 
                         {activeTab === 'settings' && (
-                            <div className="space-y-6">
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="space-y-6"
+                            >
                                 <div className="space-y-3">
-                                    <Label htmlFor="model-mobile" className="text-sm font-medium">Model Selection</Label>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Sparkles className="h-4 w-4 text-[#5865F2]" />
+                                        <Label htmlFor="model-mobile" className="text-sm font-medium">Model Selection</Label>
+                                    </div>
                                     <p className="text-xs text-fd-muted-foreground">Choose the AI model for your chat.</p>
                                     
                                     {/* OpenAI Models */}
                                     <div className="space-y-2">
-                                        <span className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">OpenAI</span>
+                                        <span className="text-[10px] font-medium text-fd-muted-foreground uppercase tracking-widest">OpenAI</span>
                                         <ModelCard
                                             model="gpt-4o"
                                             name="GPT-4o"
@@ -277,7 +312,7 @@ export function MobileChatDrawer({
 
                                     {/* Coming Soon */}
                                     <div className="space-y-2 pt-2">
-                                        <span className="text-xs font-medium text-fd-muted-foreground uppercase tracking-wider">Coming Soon</span>
+                                        <span className="text-[10px] font-medium text-fd-muted-foreground uppercase tracking-widest">Coming Soon</span>
                                         <ModelCard
                                             model="gemini-1.5-flash"
                                             name="Gemini 1.5 Flash"
@@ -303,15 +338,15 @@ export function MobileChatDrawer({
                                     </div>
                                 </div>
 
-                                <div className="space-y-4">
+                                <div className="space-y-3 bg-gradient-to-br from-[#0F0B2B]/60 to-[#0F0B2B]/30 p-4 rounded-xl border border-[#5865F2]/10">
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="temperature" className="text-white text-sm">Temperature</Label>
-                                        <span className="text-xs font-medium text-muted-foreground px-2 py-1 rounded bg-[#1A1C2D]">
+                                        <span className="text-xs font-medium text-[#5865F2] px-2 py-1 rounded-lg bg-[#5865F2]/10">
                                             {temperature.toFixed(1)}
                                         </span>
                                     </div>
                                     <div className="pt-1">
-                                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                                        <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
                                             <span>Precise</span>
                                             <span>Creative</span>
                                         </div>
@@ -324,7 +359,7 @@ export function MobileChatDrawer({
                                             onValueChange={([value]) => onTemperatureChange(value)}
                                         />
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-2">
+                                    <p className="text-xs text-muted-foreground leading-relaxed">
                                         {temperature < 0.4
                                             ? "Lower values generate more focused, deterministic responses."
                                             : temperature > 0.7
@@ -333,26 +368,26 @@ export function MobileChatDrawer({
                                     </p>
                                 </div>
 
-                                <div className="pt-4 border-t border-[#5865F2]/20 space-y-2">
+                                <div className="pt-4 border-t border-[#5865F2]/10 space-y-2">
                                     <h4 className="text-sm font-medium text-white">Privacy Info</h4>
-                                    <div className="text-xs text-muted-foreground">
+                                    <div className="text-xs text-muted-foreground leading-relaxed">
                                         <p className="mb-1">Chat history is stored only in your browser's local storage.</p>
                                         <p>Clear browser storage to remove your chat history.</p>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         )}
                     </ScrollArea>
 
                     {/* Footer with GitHub and Discord links */}
-                    <div className="border-t border-[#5865F2]/20 p-3 flex items-center justify-center gap-3">
+                    <div className="border-t border-[#5865F2]/10 p-3 flex items-center justify-center gap-2">
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="bg-fd-background/80 hover:bg-[#5865F2]/10 hover:text-[#5865F2] flex-1"
+                                        className="bg-fd-background/80 border-[#5865F2]/10 hover:bg-[#5865F2]/10 hover:text-[#5865F2] hover:border-[#5865F2]/20 flex-1 rounded-lg transition-all duration-200"
                                         asChild
                                     >
                                         <a
@@ -362,7 +397,7 @@ export function MobileChatDrawer({
                                             className="flex items-center justify-center"
                                         >
                                             <Github className="h-4 w-4 mr-2" />
-                                            <span>GitHub</span>
+                                            <span className="text-xs">GitHub</span>
                                         </a>
                                     </Button>
                                 </TooltipTrigger>
@@ -378,7 +413,7 @@ export function MobileChatDrawer({
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="bg-fd-background/80 hover:bg-[#5865F2]/10 hover:text-[#5865F2] flex-1"
+                                        className="bg-fd-background/80 border-[#5865F2]/10 hover:bg-[#5865F2]/10 hover:text-[#5865F2] hover:border-[#5865F2]/20 flex-1 rounded-lg transition-all duration-200"
                                         asChild
                                     >
                                         <a
@@ -388,7 +423,7 @@ export function MobileChatDrawer({
                                             className="flex items-center justify-center"
                                         >
                                             <FaDiscord className="h-4 w-4 mr-2" />
-                                            <span>Discord</span>
+                                            <span className="text-xs">Discord</span>
                                         </a>
                                     </Button>
                                 </TooltipTrigger>

@@ -1,6 +1,13 @@
 {
     "root": true,
     "pages": [
-        "windows"
+        "windows",
+        "advanced",
+        "backup-system",
+        "configuration",
+        "permissions",
+        "server-management",
+        "troubleshooting",
+        "web-panel"
     ]
 }

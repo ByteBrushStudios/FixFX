@@ -3,6 +3,8 @@ title: Backup System
 description: Configure automated backups, manage backup storage, and implement disaster recovery for your FiveM/RedM server.
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers txAdmin's comprehensive backup system, helping you protect your server data and implement reliable disaster recovery procedures.
 
 ## Backup Overview
@@ -24,6 +26,12 @@ txAdmin's backup system protects critical server components:
 - **System Files:** Operating system and txAdmin installation files
 
 ### Backup Types
+
+<PropertyCard title="Full Backups" content="Complete server backup including all data. Frequency: Weekly or monthly. Enables complete server restoration." />
+
+<PropertyCard title="Incremental Backups" content="Only changed files since last backup. Frequency: Daily or hourly. Requires full backup + incrementals for restore. Minimal storage usage." />
+
+<PropertyCard title="Resource-Only Backups" content="Backup only resources folder. Medium size backups. Best for development servers and pre-update snapshots." />
 
 #### Full Backups
 Complete server backup including all data:
@@ -47,6 +55,15 @@ Backup only the resources folder:
 - **Use Case:** Development servers, resource testing
 
 ## Configuring Automated Backups
+
+<StepList steps={[
+  "Navigate to Settings → Backup in txAdmin panel",
+  "Enable Automatic Backups toggle",
+  "Set backup frequency (daily, weekly, or custom cron)",
+  "Choose backup time during low-activity period",
+  "Configure retention policies to manage storage",
+  "Select backup storage location (local or cloud)"
+]} />
 
 ### Basic Backup Setup
 

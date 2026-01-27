@@ -3,7 +3,40 @@ title: Server-Side Development
 description: Complete guide to developing server-side scripts for FiveM resources.
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Server-side scripts handle game logic, player management, database operations, and security validation. They run on the server and communicate with clients through events.
+
+<StepList
+  title="Server Script Development Steps"
+  steps={[
+    {
+      title: "Initialize Resource",
+      description: "Handle resource startup events and load configuration",
+      code: "AddEventHandler('onResourceStart', function(resourceName)\n  if resourceName == GetCurrentResourceName() then\n    print('Resource started')\n  end\nend)"
+    },
+    {
+      title: "Manage Players",
+      description: "Handle player connections, disconnections, and data",
+      code: "AddEventHandler('playerConnecting', function(name, setKickReason, deferrals)\n  deferrals.defer()\n  -- Validate player\nend)"
+    },
+    {
+      title: "Register Server Callbacks",
+      description: "Create callbacks for client requests",
+      code: "ESX.RegisterServerCallback('myresource:getData', function(source, cb)\n  cb({data = 'example'})\nend)"
+    },
+    {
+      title: "Handle Network Events",
+      description: "Listen for and respond to client events",
+      code: "RegisterNetEvent('myresource:action')\nAddEventHandler('myresource:action', function()\n  -- Process action\nend)"
+    },
+    {
+      title: "Cleanup on Stop",
+      description: "Clean up resources when resource stops",
+      code: "AddEventHandler('onResourceStop', function(resourceName)\n  if resourceName == GetCurrentResourceName() then\n    print('Cleanup')\n  end\nend)"
+    }
+  ]}
+/>
 
 ## Server Script Basics
 

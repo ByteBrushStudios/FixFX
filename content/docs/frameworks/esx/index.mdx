@@ -4,6 +4,8 @@ description: The ESX framework for FiveM servers.
 icon: "Package"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 ESX (ES Extended) is one of the most popular frameworks for FiveM servers, providing a comprehensive system for roleplay servers. **ESX Legacy** is the modern, actively maintained version with significant improvements.
 
 ## Overview
@@ -12,45 +14,58 @@ ESX Legacy is a completely refactored framework offering enhanced performance, s
 
 ### ESX Legacy Features
 
-- **Modern Codebase** - Lua 5.4 support with optimized performance
-- **ox_lib Integration** - Modern UI components and utilities
-- **oxmysql Database** - Improved database performance and async queries  
-- **Player Management** - Enhanced multi-character support with identity system
-- **Economy System** - Cash, bank, and black money with transaction logging
-- **Job Framework** - Dynamic jobs with grade hierarchy and society banking
-- **Inventory Management** - Weight-based system with item metadata support
-- **Vehicle System** - Ownership, garages, keys, and modification persistence
-- **Property Systems** - Real estate, apartments, and storage management
-- **Society System** - Organization banking and employee management
-- **Status Effects** - Hunger, thirst, and status effect system
+<FeatureList
+  features={[
+    {
+      title: "Modern Codebase",
+      description: "Lua 5.4 support with optimized performance"
+    },
+    {
+      title: "ox_lib Integration",
+      description: "Modern UI components and utilities"
+    },
+    {
+      title: "oxmysql Database",
+      description: "Improved database performance and async queries"
+    },
+    {
+      title: "Player Management",
+      description: "Enhanced multi-character support with identity system"
+    },
+    {
+      title: "Economy System",
+      description: "Cash, bank, and black money with transaction logging"
+    },
+    {
+      title: "Job Framework",
+      description: "Dynamic jobs with grade hierarchy and society banking"
+    },
+    {
+      title: "Inventory Management",
+      description: "Weight-based system with item metadata support"
+    },
+    {
+      title: "Vehicle System",
+      description: "Ownership, garages, keys, and modification persistence"
+    }
+  ]}
+  columns={2}
+/>
 
 ## Key Features
 
-<Cards>
-  <Card icon="Users" title="Player Management">
-    Comprehensive character system with persistent data, multi-character support, and identity management.
-  </Card>
-  
-  <Card icon="Briefcase" title="Job System">
-    Dynamic job assignment with grades, salaries, and society banking for organizations.
-  </Card>
-  
-  <Card icon="DollarSign" title="Economy">
-    Multi-currency economy with cash, bank, and black money systems plus transaction logging.
-  </Card>
-  
-  <Card icon="Package" title="Inventory">
-    Weight-based inventory system with item categories and vehicle/property storage.
-  </Card>
-  
-  <Card icon="Car" title="Vehicles">
-    Complete vehicle ownership system with garages, modifications, and impound functionality.
-  </Card>
-  
-  <Card icon="Building" title="Properties">
-    Property ownership with customizable interiors and storage systems.
-  </Card>
-</Cards>
+<CheckList
+  items={[
+    "Player Management - Comprehensive character system with persistent data",
+    "Job System - Dynamic job assignment with grades, salaries, and society banking",
+    "Economy - Multi-currency economy with cash, bank, and black money systems",
+    "Inventory - Weight-based inventory system with item categories",
+    "Vehicles - Complete vehicle ownership system with garages and modifications",
+    "Properties - Property ownership with customizable interiors and storage",
+    "Status Effects - Hunger, thirst, and status effect system"
+  ]}
+  variant="check"
+/>
 
 ## Getting Started
 

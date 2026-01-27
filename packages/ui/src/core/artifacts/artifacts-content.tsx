@@ -14,9 +14,11 @@ import { Progress } from "@/packages/ui/src/components/progress";
 import { Input } from "@/packages/ui/src/components/input";
 import { Separator } from "@/packages/ui/src/components/separator";
 import { Sheet, SheetContent, SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/packages/ui/src/components/sheet";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/packages/ui/src/components/accordion";
 import { cn } from "@/packages/utils/src/functions/cn";
 import { API_URL } from "@/packages/utils/src/constants/link";
 import { formatDistanceToNow } from "date-fns";
+import { motion } from "motion/react";
 import {
     Search,
     Server,
@@ -26,14 +28,22 @@ import {
     AlertCircle,
     Copy,
     Download,
-    ExternalLink,
+    Check,
+    Calendar,
+    HardDrive,
+    Hash,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Sparkles,
+    Zap,
+    Terminal,
+    ChevronDown
 } from "lucide-react";
 
 // Types
 interface Artifact {
     version: string;
+    fullVersion: string;  // Full version string for Pterodactyl like v1.0.0.12345
     platform: 'windows' | 'linux';
     hash: string;
     url: string;
@@ -51,6 +61,14 @@ interface ArtifactsResponse {
         hasMore: boolean;
         platforms: string[];
         supportStatuses: string[];
+        stats: {
+            total: number;
+            recommended: number;
+            latest: number;
+            active: number;
+            deprecated: number;
+            eol: number;
+        };
         query: {
             platform?: string;
             version?: string;
@@ -90,6 +108,8 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
 
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const [copiedVersion, setCopiedVersion] = useState<string | null>(null);
+    const [copiedPtero, setCopiedPtero] = useState<string | null>(null);
 
     const fetchArtifacts = useCallback(async (page = 1) => {
         try {
@@ -102,7 +122,7 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
             params.set('platform', platform);
             if (search) params.set('search', search);
             if (supportStatusFilter) params.set('status', supportStatusFilter);
-            if (includeEolState) params.set('includeEol', 'true');
+            params.set('includeEol', includeEolState.toString());
             params.set('sortBy', sortingOptions.sortBy);
             params.set('sortOrder', sortingOptions.sortOrder);
             params.set('limit', limit.toString());
@@ -121,6 +141,7 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
             const normalizedData = {
                 data: data.data.map((artifact: any) => ({
                     version: artifact.Version,
+                    fullVersion: artifact.FullVersion || `${artifact.Version}-${artifact.Hash}`,
                     hash: artifact.Hash,
                     platform: artifact.Platform.toLowerCase(),
                     url: artifact.URL,
@@ -246,6 +267,26 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
 
     const handleCopyVersion = (version: string) => {
         navigator.clipboard.writeText(version);
+        setCopiedVersion(version);
+        setTimeout(() => setCopiedVersion(null), 2000);
+    };
+
+    const handleCopyPteroVersion = (fullVersion: string) => {
+        navigator.clipboard.writeText(fullVersion);
+        setCopiedPtero(fullVersion);
+        setTimeout(() => setCopiedPtero(null), 2000);
+    };
+
+    // Status icon component
+    const StatusIcon = ({ status }: { status: string }) => {
+        switch (status) {
+            case 'recommended':
+                return <Sparkles className="h-4 w-4" />;
+            case 'latest':
+                return <Zap className="h-4 w-4" />;
+            default:
+                return null;
+        }
     };
 
     return (
@@ -634,7 +675,7 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                         </Alert>
                                     ) : artifacts && artifacts.data && artifacts.data.length > 0 ? (
                                         <div className="space-y-6">
-                                            {/* Recommended & Latest Artifacts */}
+                                            {/* Recommended & Latest Artifacts - Featured Cards */}
                                             <div className="grid gap-4 md:grid-cols-2">
                                                 {/* Recommended Artifact */}
                                                 {(() => {
@@ -642,76 +683,118 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                         artifact => artifact.platform === platformKey && artifact.supportStatus === 'recommended'
                                                     );
                                                     return recommendedArtifact ? (
-                                                        <Card className={cn(
-                                                            "border border-green-500/30",
-                                                            getStatusBgColor('recommended')
-                                                        )}>
-                                                            <CardHeader className="pb-2">
-                                                                <div className="flex items-start justify-between">
-                                                                    <div>
-                                                                        <CardTitle className="flex items-center gap-1.5">
-                                                                            <span className="text-green-500">Recommended Artifact</span>
-                                                                            <Badge
-                                                                                className={getStatusColor('recommended')}
-                                                                            >
-                                                                                Recommended
-                                                                            </Badge>
-                                                                        </CardTitle>
-                                                                        <CardDescription>Best choice for production use</CardDescription>
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 20 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ duration: 0.3 }}
+                                                        >
+                                                            <Card className="group relative overflow-hidden border-green-500/30 bg-gradient-to-br from-green-500/5 via-transparent to-transparent hover:border-green-500/50 transition-all duration-300">
+                                                                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                                                                <CardHeader className="pb-3">
+                                                                    <div className="flex items-start justify-between">
+                                                                        <div className="space-y-1">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <div className="p-1.5 rounded-lg bg-green-500/20">
+                                                                                    <Sparkles className="h-4 w-4 text-green-500" />
+                                                                                </div>
+                                                                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30">
+                                                                                    Recommended
+                                                                                </Badge>
+                                                                            </div>
+                                                                            <CardDescription className="text-muted-foreground">Best choice for production servers</CardDescription>
+                                                                        </div>
+                                                                        <TooltipProvider>
+                                                                            <Tooltip>
+                                                                                <TooltipTrigger asChild>
+                                                                                    <Button
+                                                                                        variant="ghost"
+                                                                                        size="icon"
+                                                                                        className="h-8 w-8 text-muted-foreground hover:text-green-500"
+                                                                                        onClick={() => handleCopyVersion(recommendedArtifact.version)}
+                                                                                    >
+                                                                                        {copiedVersion === recommendedArtifact.version ? (
+                                                                                            <Check className="h-4 w-4 text-green-500" />
+                                                                                        ) : (
+                                                                                            <Copy className="h-4 w-4" />
+                                                                                        )}
+                                                                                    </Button>
+                                                                                </TooltipTrigger>
+                                                                                <TooltipContent>Copy version number</TooltipContent>
+                                                                            </Tooltip>
+                                                                        </TooltipProvider>
                                                                     </div>
+                                                                </CardHeader>
+                                                                <CardContent className="space-y-4">
+                                                                    <div>
+                                                                        <h3 className="text-3xl font-bold tracking-tight text-green-500">
+                                                                            {recommendedArtifact.version}
+                                                                        </h3>
+                                                                    </div>
+                                                                    <div className="grid grid-cols-2 gap-3">
+                                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                                            <Calendar className="h-3.5 w-3.5" />
+                                                                            <span>{formatDate(recommendedArtifact.date)}</span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                                            <HardDrive className="h-3.5 w-3.5" />
+                                                                            <span>{(recommendedArtifact.size / 1024 / 1024).toFixed(1)} MB</span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground col-span-2">
+                                                                            <Hash className="h-3.5 w-3.5" />
+                                                                            <span className="font-mono text-xs">{recommendedArtifact.hash.substring(0, 12)}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    {/* Hosting Panel Version Info */}
+                                                                    <Accordion type="single" collapsible className="w-full">
+                                                                        <AccordionItem value="hosting" className="border-green-500/20">
+                                                                            <AccordionTrigger className="text-sm py-2 hover:no-underline">
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <Terminal className="h-3.5 w-3.5 text-green-500" />
+                                                                                    <span>Hosting Panel Versions</span>
+                                                                                </div>
+                                                                            </AccordionTrigger>
+                                                                            <AccordionContent>
+                                                                                <div className="space-y-3 pt-2">
+                                                                                    <div className="bg-green-500/5 border border-green-500/20 rounded-lg p-3">
+                                                                                        <div className="flex items-center justify-between mb-2">
+                                                                                            <span className="text-xs font-medium text-green-400">Pterodactyl / Pelican</span>
+                                                                                            <Button
+                                                                                                variant="ghost"
+                                                                                                size="sm"
+                                                                                                className="h-6 px-2 text-xs"
+                                                                                                onClick={() => handleCopyPteroVersion(recommendedArtifact.fullVersion)}
+                                                                                            >
+                                                                                                {copiedPtero === recommendedArtifact.fullVersion ? (
+                                                                                                    <><Check className="h-3 w-3 mr-1 text-green-500" /> Copied!</>
+                                                                                                ) : (
+                                                                                                    <><Copy className="h-3 w-3 mr-1" /> Copy</>
+                                                                                                )}
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                        <code className="text-sm font-mono text-green-300 bg-black/20 px-2 py-1 rounded block">
+                                                                                            {recommendedArtifact.fullVersion}
+                                                                                        </code>
+                                                                                    </div>
+                                                                                    <p className="text-xs text-muted-foreground">
+                                                                                        Use this version string in your Pterodactyl, Pelican, or similar hosting panel's egg configuration.
+                                                                                    </p>
+                                                                                </div>
+                                                                            </AccordionContent>
+                                                                        </AccordionItem>
+                                                                    </Accordion>
+                                                                </CardContent>
+                                                                <CardFooter>
                                                                     <Button
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        onClick={() => handleCopyVersion(recommendedArtifact.version)}
+                                                                        className="w-full bg-green-600 hover:bg-green-700 text-white transition-all group-hover:shadow-lg group-hover:shadow-green-500/20"
+                                                                        onClick={() => handleDownload(recommendedArtifact.url)}
                                                                     >
-                                                                        <Copy className="h-4 w-4" />
+                                                                        <Download className="h-4 w-4 mr-2" />
+                                                                        Download {recommendedArtifact.platform === 'windows' ? 'ZIP' : 'TAR.XZ'}
                                                                     </Button>
-                                                                </div>
-                                                            </CardHeader>
-                                                            <CardContent>
-                                                                <h3 className="text-2xl font-bold mb-2">
-                                                                    Version {recommendedArtifact.version}
-                                                                </h3>
-                                                                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                                                                    <span>Released {formatDate(recommendedArtifact.date)}</span>
-                                                                </div>
-                                                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                                                    <div>
-                                                                        <span className="text-muted-foreground">Size: </span>
-                                                                        <span className="font-mono">{(recommendedArtifact.size / 1024 / 1024).toFixed(1)}MB</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span className="text-muted-foreground">Commit: </span>
-                                                                        <span className="font-mono text-xs">{recommendedArtifact.hash.substring(0, 8)}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </CardContent>
-                                                            <CardFooter className="flex justify-end gap-2">
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="sm"
-                                                                    asChild
-                                                                >
-                                                                    <a
-                                                                        href={recommendedArtifact.url}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="flex items-center"
-                                                                    >
-                                                                        <ExternalLink className="h-4 w-4 mr-1" />
-                                                                        View Artifact
-                                                                    </a>
-                                                                </Button>
-                                                                <Button
-                                                                    size="sm"
-                                                                    className="bg-green-600 hover:bg-green-700"
-                                                                    onClick={() => handleDownload(recommendedArtifact.url)}
-                                                                >
-                                                                    <Download className="h-4 w-4 mr-1" />
-                                                                    Download
-                                                                </Button>
-                                                            </CardFooter>
-                                                        </Card>
+                                                                </CardFooter>
+                                                            </Card>
+                                                        </motion.div>
                                                     ) : null;
                                                 })()}
 
@@ -721,247 +804,382 @@ export function ArtifactsContent({ platform, searchQuery = "", sortBy = "version
                                                         artifact => artifact.platform === platformKey && artifact.supportStatus === 'latest'
                                                     );
                                                     return latestArtifact ? (
-                                                        <Card className={cn(
-                                                            "border border-blue-500/30",
-                                                            getStatusBgColor('latest')
-                                                        )}>
-                                                            <CardHeader className="pb-2">
-                                                                <div className="flex items-start justify-between">
-                                                                    <div>
-                                                                        <CardTitle className="flex items-center gap-1.5">
-                                                                            <span className="text-blue-500">Latest Artifact</span>
-                                                                            <Badge
-                                                                                className={getStatusColor('latest')}
-                                                                            >
-                                                                                Latest
-                                                                            </Badge>
-                                                                        </CardTitle>
-                                                                        <CardDescription>Newest build for testing</CardDescription>
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 20 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ duration: 0.3, delay: 0.1 }}
+                                                        >
+                                                            <Card className="group relative overflow-hidden border-blue-500/30 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent hover:border-blue-500/50 transition-all duration-300">
+                                                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                                                                <CardHeader className="pb-3">
+                                                                    <div className="flex items-start justify-between">
+                                                                        <div className="space-y-1">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <div className="p-1.5 rounded-lg bg-blue-500/20">
+                                                                                    <Zap className="h-4 w-4 text-blue-500" />
+                                                                                </div>
+                                                                                <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 hover:bg-blue-500/30">
+                                                                                    Latest
+                                                                                </Badge>
+                                                                            </div>
+                                                                            <CardDescription className="text-muted-foreground">Newest build for testing</CardDescription>
+                                                                        </div>
+                                                                        <TooltipProvider>
+                                                                            <Tooltip>
+                                                                                <TooltipTrigger asChild>
+                                                                                    <Button
+                                                                                        variant="ghost"
+                                                                                        size="icon"
+                                                                                        className="h-8 w-8 text-muted-foreground hover:text-blue-500"
+                                                                                        onClick={() => handleCopyVersion(latestArtifact.version)}
+                                                                                    >
+                                                                                        {copiedVersion === latestArtifact.version ? (
+                                                                                            <Check className="h-4 w-4 text-blue-500" />
+                                                                                        ) : (
+                                                                                            <Copy className="h-4 w-4" />
+                                                                                        )}
+                                                                                    </Button>
+                                                                                </TooltipTrigger>
+                                                                                <TooltipContent>Copy version number</TooltipContent>
+                                                                            </Tooltip>
+                                                                        </TooltipProvider>
                                                                     </div>
+                                                                </CardHeader>
+                                                                <CardContent className="space-y-4">
+                                                                    <div>
+                                                                        <h3 className="text-3xl font-bold tracking-tight text-blue-500">
+                                                                            {latestArtifact.version}
+                                                                        </h3>
+                                                                    </div>
+                                                                    <div className="grid grid-cols-2 gap-3">
+                                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                                            <Calendar className="h-3.5 w-3.5" />
+                                                                            <span>{formatDate(latestArtifact.date)}</span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                                            <HardDrive className="h-3.5 w-3.5" />
+                                                                            <span>{(latestArtifact.size / 1024 / 1024).toFixed(1)} MB</span>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground col-span-2">
+                                                                            <Hash className="h-3.5 w-3.5" />
+                                                                            <span className="font-mono text-xs">{latestArtifact.hash.substring(0, 12)}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    {/* Hosting Panel Version Info */}
+                                                                    <Accordion type="single" collapsible className="w-full">
+                                                                        <AccordionItem value="hosting" className="border-blue-500/20">
+                                                                            <AccordionTrigger className="text-sm py-2 hover:no-underline">
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <Terminal className="h-3.5 w-3.5 text-blue-500" />
+                                                                                    <span>Hosting Panel Versions</span>
+                                                                                </div>
+                                                                            </AccordionTrigger>
+                                                                            <AccordionContent>
+                                                                                <div className="space-y-3 pt-2">
+                                                                                    <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-3">
+                                                                                        <div className="flex items-center justify-between mb-2">
+                                                                                            <span className="text-xs font-medium text-blue-400">Pterodactyl / Pelican</span>
+                                                                                            <Button
+                                                                                                variant="ghost"
+                                                                                                size="sm"
+                                                                                                className="h-6 px-2 text-xs"
+                                                                                                onClick={() => handleCopyPteroVersion(latestArtifact.fullVersion)}
+                                                                                            >
+                                                                                                {copiedPtero === latestArtifact.fullVersion ? (
+                                                                                                    <><Check className="h-3 w-3 mr-1 text-blue-500" /> Copied!</>
+                                                                                                ) : (
+                                                                                                    <><Copy className="h-3 w-3 mr-1" /> Copy</>
+                                                                                                )}
+                                                                                            </Button>
+                                                                                        </div>
+                                                                                        <code className="text-sm font-mono text-blue-300 bg-black/20 px-2 py-1 rounded block">
+                                                                                            {latestArtifact.fullVersion}
+                                                                                        </code>
+                                                                                    </div>
+                                                                                    <p className="text-xs text-muted-foreground">
+                                                                                        Use this version string in your Pterodactyl, Pelican, or similar hosting panel's egg configuration.
+                                                                                    </p>
+                                                                                </div>
+                                                                            </AccordionContent>
+                                                                        </AccordionItem>
+                                                                    </Accordion>
+                                                                </CardContent>
+                                                                <CardFooter>
                                                                     <Button
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        onClick={() => handleCopyVersion(latestArtifact.version)}
+                                                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-all group-hover:shadow-lg group-hover:shadow-blue-500/20"
+                                                                        onClick={() => handleDownload(latestArtifact.url)}
                                                                     >
-                                                                        <Copy className="h-4 w-4" />
+                                                                        <Download className="h-4 w-4 mr-2" />
+                                                                        Download {latestArtifact.platform === 'windows' ? 'ZIP' : 'TAR.XZ'}
                                                                     </Button>
-                                                                </div>
-                                                            </CardHeader>
-                                                            <CardContent>
-                                                                <h3 className="text-2xl font-bold mb-2">
-                                                                    Version {latestArtifact.version}
-                                                                </h3>
-                                                                <div className="flex items-center text-sm text-muted-foreground mb-2">
-                                                                    <span>Released {formatDate(latestArtifact.date)}</span>
-                                                                </div>
-                                                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                                                    <div>
-                                                                        <span className="text-muted-foreground">Size: </span>
-                                                                        <span className="font-mono">{(latestArtifact.size / 1024 / 1024).toFixed(1)}MB</span>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span className="text-muted-foreground">Commit: </span>
-                                                                        <span className="font-mono text-xs">{latestArtifact.hash.substring(0, 8)}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </CardContent>
-                                                            <CardFooter className="flex justify-end gap-2">
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="sm"
-                                                                    asChild
-                                                                >
-                                                                    <a
-                                                                        href={latestArtifact.url}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="flex items-center"
-                                                                    >
-                                                                        <ExternalLink className="h-4 w-4 mr-1" />
-                                                                        View Artifact
-                                                                    </a>
-                                                                </Button>
-                                                                <Button
-                                                                    size="sm"
-                                                                    className="bg-blue-600 hover:bg-blue-700"
-                                                                    onClick={() => handleDownload(latestArtifact.url)}
-                                                                >
-                                                                    <Download className="h-4 w-4 mr-1" />
-                                                                    Download
-                                                                </Button>
-                                                            </CardFooter>
-                                                        </Card>
+                                                                </CardFooter>
+                                                            </Card>
+                                                        </motion.div>
                                                     ) : null;
                                                 })()}
                                             </div>
 
                                             {/* Stats and Filters */}
-                                            <div className="bg-fd-background/30 rounded-lg border border-[#5865F2]/20 p-4">
-                                                <h3 className="text-lg font-medium mb-2">Available Artifacts</h3>
-                                                <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-3">
-                                                    <div className="p-3 rounded-md bg-fd-background/50 border border-[#5865F2]/20 text-center">
-                                                        <p className="text-xs text-muted-foreground">Total</p>
-                                                        <p className="text-xl font-bold">{artifacts.data.filter(artifact => artifact.platform === platformKey).length}</p>
+                                            <motion.div 
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: 0.3, delay: 0.2 }}
+                                                className="rounded-2xl border border-fd-border bg-fd-background/50 backdrop-blur-sm p-5"
+                                            >
+                                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                                                    <h3 className="text-lg font-semibold">All Artifacts</h3>
+                                                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                                                        {(search || supportStatusFilter || includeEolState) && (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={clearAllFilters}
+                                                                className="h-7 text-xs text-muted-foreground hover:text-[#5865F2]"
+                                                            >
+                                                                <X className="h-3 w-3 mr-1" />
+                                                                Clear Filters
+                                                            </Button>
+                                                        )}
                                                     </div>
-                                                    <div className="p-3 rounded-md bg-fd-background/50 border border-green-500/20 text-center">
-                                                        <p className="text-xs text-muted-foreground">Recommended</p>
-                                                        <p className="text-xl font-bold text-green-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'recommended').length}</p>
+                                                </div>
+                                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                                                    <div className="p-3 rounded-xl bg-fd-muted/30 border border-fd-border text-center transition-all hover:bg-fd-muted/50">
+                                                        <p className="text-xs text-muted-foreground mb-1">Total</p>
+                                                        <p className="text-2xl font-bold">{artifacts.metadata.stats?.total ?? artifacts.metadata.total}</p>
                                                     </div>
-                                                    <div className="p-3 rounded-md bg-fd-background/50 border border-blue-500/20 text-center">
-                                                        <p className="text-xs text-muted-foreground">Latest</p>
-                                                        <p className="text-xl font-bold text-blue-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'latest').length}</p>
+                                                    <div className="p-3 rounded-xl bg-green-500/5 border border-green-500/20 text-center transition-all hover:bg-green-500/10">
+                                                        <p className="text-xs text-green-400 mb-1">Recommended</p>
+                                                        <p className="text-2xl font-bold text-green-500">{artifacts.metadata.stats?.recommended ?? 0}</p>
                                                     </div>
-                                                    <div className="p-3 rounded-md bg-fd-background/50 border border-cyan-500/20 text-center">
-                                                        <p className="text-xs text-muted-foreground">Active</p>
-                                                        <p className="text-xl font-bold text-cyan-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'active').length}</p>
+                                                    <div className="p-3 rounded-xl bg-blue-500/5 border border-blue-500/20 text-center transition-all hover:bg-blue-500/10">
+                                                        <p className="text-xs text-blue-400 mb-1">Latest</p>
+                                                        <p className="text-2xl font-bold text-blue-500">{artifacts.metadata.stats?.latest ?? 0}</p>
                                                     </div>
-                                                    <div className="p-3 rounded-md bg-fd-background/50 border border-red-500/20 text-center col-span-2 md:col-span-1">
-                                                        <p className="text-xs text-muted-foreground">EOL</p>
-                                                        <p className="text-xl font-bold text-red-500">{artifacts.data.filter(artifact => artifact.platform === platformKey && artifact.supportStatus === 'eol').length}</p>
+                                                    <div className="p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/20 text-center transition-all hover:bg-cyan-500/10">
+                                                        <p className="text-xs text-cyan-400 mb-1">Active</p>
+                                                        <p className="text-2xl font-bold text-cyan-500">{artifacts.metadata.stats?.active ?? 0}</p>
+                                                    </div>
+                                                    <div className="p-3 rounded-xl bg-red-500/5 border border-red-500/20 text-center col-span-2 sm:col-span-1 transition-all hover:bg-red-500/10">
+                                                        <p className="text-xs text-red-400 mb-1">EOL</p>
+                                                        <p className="text-2xl font-bold text-red-500">{artifacts.metadata.stats?.eol ?? 0}</p>
                                                     </div>
                                                 </div>
 
                                                 {/* Active filters display */}
-                                                <div className="flex flex-wrap items-center gap-2 text-sm">
-                                                    <span className="text-muted-foreground">Filters:</span>
-                                                    {search && (
-                                                        <Badge variant="outline" className="flex items-center gap-1 bg-fd-background/50">
-                                                            Search: {search}
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-4 w-4 ml-1 p-0"
-                                                                onClick={() => setSearch("")}
-                                                            >
-                                                                <X className="h-3 w-3" />
-                                                            </Button>
-                                                        </Badge>
-                                                    )}
-                                                    {supportStatusFilter && (
-                                                        <Badge variant="outline" className="flex items-center gap-1 bg-fd-background/50">
-                                                            Status: {supportStatusFilter}
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-4 w-4 ml-1 p-0"
-                                                                onClick={() => setSupportStatusFilter(undefined)}
-                                                            >
-                                                                <X className="h-3 w-3" />
-                                                            </Button>
-                                                        </Badge>
-                                                    )}
-                                                    {includeEolState && (
-                                                        <Badge variant="outline" className="flex items-center gap-1 bg-fd-background/50">
-                                                            Including EOL
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="h-4 w-4 ml-1 p-0"
-                                                                onClick={() => setIncludeEolState(false)}
-                                                            >
-                                                                <X className="h-3 w-3" />
-                                                            </Button>
-                                                        </Badge>
-                                                    )}
-                                                    <Badge variant="outline" className="flex items-center gap-1 bg-fd-background/50">
-                                                        Sort: {sortingOptions.sortBy === "version" ? "Version" : "Date"} ({sortingOptions.sortOrder === "desc" ? "Newest" : "Oldest"})
-                                                    </Badge>
-
-                                                    {/* Add clear all filters badge if any filters are active */}
-                                                    {(search || supportStatusFilter || includeEolState ||
-                                                        sortingOptions.sortBy !== "version" || sortingOptions.sortOrder !== "desc") && (
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="flex items-center gap-1 bg-[#5865F2]/10 border-[#5865F2]/20 text-[#5865F2] cursor-pointer"
-                                                                onClick={clearAllFilters}
-                                                            >
-                                                                Clear All Filters
-                                                                <X className="h-3 w-3 ml-1" />
+                                                {(search || supportStatusFilter || includeEolState) && (
+                                                    <div className="flex flex-wrap items-center gap-2 text-sm mt-4 pt-4 border-t border-fd-border">
+                                                        <span className="text-muted-foreground text-xs">Active filters:</span>
+                                                        {search && (
+                                                            <Badge variant="secondary" className="flex items-center gap-1 bg-fd-muted/50 text-xs">
+                                                                Search: {search}
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-3 w-3 ml-1 p-0 hover:bg-transparent"
+                                                                    onClick={() => setSearch("")}
+                                                                >
+                                                                    <X className="h-2.5 w-2.5" />
+                                                                </Button>
                                                             </Badge>
                                                         )}
-                                                </div>
-                                            </div>
+                                                        {supportStatusFilter && (
+                                                            <Badge variant="secondary" className="flex items-center gap-1 bg-fd-muted/50 text-xs">
+                                                                Status: {supportStatusFilter}
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-3 w-3 ml-1 p-0 hover:bg-transparent"
+                                                                    onClick={() => setSupportStatusFilter(undefined)}
+                                                                >
+                                                                    <X className="h-2.5 w-2.5" />
+                                                                </Button>
+                                                            </Badge>
+                                                        )}
+                                                        {includeEolState && (
+                                                            <Badge variant="secondary" className="flex items-center gap-1 bg-fd-muted/50 text-xs">
+                                                                Including EOL
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="h-3 w-3 ml-1 p-0 hover:bg-transparent"
+                                                                    onClick={() => setIncludeEolState(false)}
+                                                                >
+                                                                    <X className="h-2.5 w-2.5" />
+                                                                </Button>
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </motion.div>
 
                                             {/* Artifact List */}
-                                            <div className="space-y-4">
+                                            <div className="space-y-3">
                                                 {artifacts.data.filter(artifact => artifact.platform === platformKey).length > 0 ? (
                                                     artifacts.data
                                                         .filter(artifact => artifact.platform === platformKey)
-                                                        .map((artifact) => (
-                                                            <Card
+                                                        .map((artifact, index) => (
+                                                            <motion.div
                                                                 key={`${artifact.platform}-${artifact.version}`}
-                                                                className={cn(
-                                                                    "border border-[#5865F2]/20 transition-all hover:border-[#5865F2]/50",
-                                                                    getStatusBgColor(artifact.supportStatus)
-                                                                )}
+                                                                initial={{ opacity: 0, y: 10 }}
+                                                                animate={{ opacity: 1, y: 0 }}
+                                                                transition={{ duration: 0.2, delay: index * 0.03 }}
                                                             >
-                                                                <CardHeader className="pb-2">
-                                                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
-                                                                        <div className="flex items-start md:items-center gap-2 flex-wrap">
-                                                                            <h3 className="text-lg font-bold">Version {artifact.version}</h3>
-                                                                            <div className="flex flex-wrap gap-1.5">
-                                                                                <Badge
-                                                                                    className={getStatusColor(artifact.supportStatus)}
-                                                                                >
-                                                                                    {artifact.supportStatus}
-                                                                                </Badge>
+                                                                <div
+                                                                    className={cn(
+                                                                        "group relative rounded-xl border bg-fd-background/50 backdrop-blur-sm p-4 transition-all duration-300 hover:shadow-md",
+                                                                        artifact.supportStatus === 'recommended' && "border-green-500/20 hover:border-green-500/40",
+                                                                        artifact.supportStatus === 'latest' && "border-blue-500/20 hover:border-blue-500/40",
+                                                                        artifact.supportStatus === 'active' && "border-cyan-500/20 hover:border-cyan-500/40",
+                                                                        artifact.supportStatus === 'deprecated' && "border-amber-500/20 hover:border-amber-500/40",
+                                                                        artifact.supportStatus === 'eol' && "border-red-500/20 hover:border-red-500/40",
+                                                                        !['recommended', 'latest', 'active', 'deprecated', 'eol'].includes(artifact.supportStatus) && "border-fd-border hover:border-[#5865F2]/40"
+                                                                    )}
+                                                                >
+                                                                    {/* Subtle gradient overlay */}
+                                                                    <div className={cn(
+                                                                        "absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none",
+                                                                        artifact.supportStatus === 'recommended' && "bg-gradient-to-r from-green-500/5 to-transparent",
+                                                                        artifact.supportStatus === 'latest' && "bg-gradient-to-r from-blue-500/5 to-transparent",
+                                                                        artifact.supportStatus === 'active' && "bg-gradient-to-r from-cyan-500/5 to-transparent",
+                                                                        artifact.supportStatus === 'deprecated' && "bg-gradient-to-r from-amber-500/5 to-transparent",
+                                                                        artifact.supportStatus === 'eol' && "bg-gradient-to-r from-red-500/5 to-transparent"
+                                                                    )} />
+                                                                    
+                                                                    {/* EOL/Deprecated Warning */}
+                                                                    {(artifact.supportStatus === 'eol' || artifact.supportStatus === 'deprecated') && (
+                                                                        <div className={cn(
+                                                                            "relative mb-3 p-2 rounded-lg text-xs flex items-start gap-2",
+                                                                            artifact.supportStatus === 'eol' && "bg-red-500/10 border border-red-500/20 text-red-400",
+                                                                            artifact.supportStatus === 'deprecated' && "bg-amber-500/10 border border-amber-500/20 text-amber-400"
+                                                                        )}>
+                                                                            <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                                                                            <div>
+                                                                                <span className="font-medium">
+                                                                                    {artifact.supportStatus === 'eol' ? 'End of Life' : 'Deprecated'}
+                                                                                </span>
+                                                                                <span className="text-muted-foreground ml-1">
+                                                                                    - Downloads disabled.
+                                                                                    <a 
+                                                                                        href="https://aka.cfx.re/eol" 
+                                                                                        target="_blank" 
+                                                                                        rel="noopener noreferrer"
+                                                                                        className={cn(
+                                                                                            "ml-1 underline hover:no-underline",
+                                                                                            artifact.supportStatus === 'eol' ? "text-red-400" : "text-amber-400"
+                                                                                        )}
+                                                                                    >
+                                                                                        Learn more
+                                                                                    </a>
+                                                                                </span>
                                                                             </div>
                                                                         </div>
-                                                                        <div className="flex items-center">
-                                                                            <span className="text-sm text-muted-foreground">
-                                                                                Released {formatDate(artifact.date)}
-                                                                            </span>
-                                                                            <Button
-                                                                                variant="ghost"
-                                                                                size="icon"
-                                                                                onClick={() => handleCopyVersion(artifact.version)}
-                                                                            >
-                                                                                <Copy className="h-4 w-4" />
-                                                                            </Button>
+                                                                    )}
+                                                                    
+                                                                    <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                                                        {/* Left side - Version info */}
+                                                                        <div className="flex items-center gap-3">
+                                                                            <div className="flex flex-col">
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <h4 className="text-lg font-semibold">{artifact.version}</h4>
+                                                                                    <Badge className={cn(
+                                                                                        "text-xs font-medium",
+                                                                                        getStatusColor(artifact.supportStatus)
+                                                                                    )}>
+                                                                                        {artifact.supportStatus}
+                                                                                    </Badge>
+                                                                                </div>
+                                                                                <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
+                                                                                    <span className="flex items-center gap-1">
+                                                                                        <Calendar className="h-3 w-3" />
+                                                                                        {formatDate(artifact.date)}
+                                                                                    </span>
+                                                                                    <span className="flex items-center gap-1">
+                                                                                        <HardDrive className="h-3 w-3" />
+                                                                                        {(artifact.size / 1024 / 1024).toFixed(1)} MB
+                                                                                    </span>
+                                                                                    <span className="hidden sm:flex items-center gap-1 font-mono">
+                                                                                        <Hash className="h-3 w-3" />
+                                                                                        {artifact.hash.substring(0, 8)}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Right side - Actions */}
+                                                                        <div className="flex items-center gap-2">
+                                                                            <TooltipProvider>
+                                                                                <Tooltip>
+                                                                                    <TooltipTrigger asChild>
+                                                                                        <Button
+                                                                                            variant="ghost"
+                                                                                            size="icon"
+                                                                                            className="h-8 w-8 text-muted-foreground hover:text-[#5865F2]"
+                                                                                            onClick={() => handleCopyVersion(artifact.version)}
+                                                                                        >
+                                                                                            {copiedVersion === artifact.version ? (
+                                                                                                <Check className="h-4 w-4 text-green-500" />
+                                                                                            ) : (
+                                                                                                <Copy className="h-4 w-4" />
+                                                                                            )}
+                                                                                        </Button>
+                                                                                    </TooltipTrigger>
+                                                                                    <TooltipContent>Copy version</TooltipContent>
+                                                                                </Tooltip>
+                                                                            </TooltipProvider>
+                                                                            <TooltipProvider>
+                                                                                <Tooltip>
+                                                                                    <TooltipTrigger asChild>
+                                                                                        <Button
+                                                                                            variant="ghost"
+                                                                                            size="icon"
+                                                                                            className="h-8 w-8 text-muted-foreground hover:text-purple-500"
+                                                                                            onClick={() => handleCopyPteroVersion(artifact.fullVersion)}
+                                                                                        >
+                                                                                            {copiedPtero === artifact.fullVersion ? (
+                                                                                                <Check className="h-4 w-4 text-green-500" />
+                                                                                            ) : (
+                                                                                                <Terminal className="h-4 w-4" />
+                                                                                            )}
+                                                                                        </Button>
+                                                                                    </TooltipTrigger>
+                                                                                    <TooltipContent>Copy Pterodactyl version ({artifact.fullVersion})</TooltipContent>
+                                                                                </Tooltip>
+                                                                            </TooltipProvider>
+                                                                            <TooltipProvider>
+                                                                                <Tooltip>
+                                                                                    <TooltipTrigger asChild>
+                                                                                        <span>
+                                                                                            <Button
+                                                                                                size="sm"
+                                                                                                disabled={artifact.supportStatus === 'deprecated' || artifact.supportStatus === 'eol'}
+                                                                                                className={cn(
+                                                                                                    "transition-all",
+                                                                                                    artifact.supportStatus === 'recommended' && "bg-green-600 hover:bg-green-700",
+                                                                                                    artifact.supportStatus === 'latest' && "bg-blue-600 hover:bg-blue-700",
+                                                                                                    artifact.supportStatus === 'active' && "bg-cyan-600 hover:bg-cyan-700",
+                                                                                                    artifact.supportStatus === 'deprecated' && "bg-amber-600/50 cursor-not-allowed",
+                                                                                                    artifact.supportStatus === 'eol' && "bg-red-600/50 cursor-not-allowed",
+                                                                                                    !['recommended', 'latest', 'active', 'deprecated', 'eol'].includes(artifact.supportStatus) && "bg-[#5865F2] hover:bg-[#5865F2]/90"
+                                                                                                )}
+                                                                                                onClick={() => handleDownload(artifact.url)}
+                                                                                            >
+                                                                                                <Download className="h-4 w-4 mr-1.5" />
+                                                                                                Download
+                                                                                            </Button>
+                                                                                        </span>
+                                                                                    </TooltipTrigger>
+                                                                                    {(artifact.supportStatus === 'deprecated' || artifact.supportStatus === 'eol') && (
+                                                                                        <TooltipContent>
+                                                                                            {artifact.supportStatus === 'eol' ? 'End of life' : 'Deprecated'} - Downloads disabled
+                                                                                        </TooltipContent>
+                                                                                    )}
+                                                                                </Tooltip>
+                                                                            </TooltipProvider>
                                                                         </div>
                                                                     </div>
-                                                                </CardHeader>
-                                                                <CardContent>
-                                                                    <div className="grid grid-cols-2 gap-4 text-sm mb-2">
-                                                                        <div>
-                                                                            <span className="text-muted-foreground">Size: </span>
-                                                                            <span className="font-mono">{(artifact.size / 1024 / 1024).toFixed(1)}MB</span>
-                                                                        </div>
-                                                                        <div>
-                                                                            <span className="text-muted-foreground">Commit: </span>
-                                                                            <span className="font-mono text-xs">{artifact.hash.substring(0, 8)}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </CardContent>
-                                                                <CardFooter className="pt-0 flex flex-col md:flex-row md:items-center justify-between gap-3">
-                                                                    <div className="flex items-center gap-2 w-full md:w-auto">
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            size="sm"
-                                                                            onClick={() => handleDownload(artifact.url)}
-                                                                            className="flex items-center"
-                                                                        >
-                                                                            <Download className="h-4 w-4 mr-2" />
-                                                                            Download {artifact.platform === 'windows' ? 'ZIP' : 'TAR.XZ'}
-                                                                        </Button>
-                                                                        <Button
-                                                                            variant="outline"
-                                                                            size="sm"
-                                                                            asChild
-                                                                        >
-                                                                            <a
-                                                                                href={artifact.url}
-                                                                                target="_blank"
-                                                                                rel="noopener noreferrer"
-                                                                                className="flex items-center"
-                                                                            >
-                                                                                <ExternalLink className="h-4 w-4 mr-1" />
-                                                                                View Artifact
-                                                                            </a>
-                                                                        </Button>
-                                                                    </div>
-                                                                </CardFooter>
-                                                            </Card>
+                                                                </div>
+                                                            </motion.div>
                                                         ))
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center py-12">

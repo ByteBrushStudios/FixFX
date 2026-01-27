@@ -4,118 +4,128 @@ description: Comprehensive server administration and player menu system for Five
 icon: "Menu"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 vMenu is a powerful, feature-rich menu system for FiveM servers that provides comprehensive server administration tools and customizable player options. Developed by Vespura, it's one of the most popular and reliable menu systems in the FiveM community.
 
 ## Overview
 
 vMenu offers an extensive set of features for both server administrators and players, with granular permission control and extensive customization options.
 
-### Key Features
+## Key Features
 
-**Player Management:**
-- **Teleportation** - Waypoint, coordinates, saved locations
-- **Vehicle Control** - Spawn, customize, and manage vehicles
-- **Weapon Management** - Weapon loadouts and customization
-- **Player Options** - God mode, invisibility, fast run/swim
-- **Appearance Editor** - Complete character customization
-
-**Server Administration:**
-- **Player Moderation** - Kick, ban, warn, spectate players
-- **Server Management** - Weather control, time synchronization
-- **Vehicle Management** - Spawn and manage server vehicles
-- **Permission System** - Granular control over features
-- **Voice Chat Control** - Proximity and radio channel management
-
-**Advanced Features:**
-- **Recording Mode** - Hide UI elements for content creation
-- **Saved Locations** - Personal and server-wide teleport points
-- **Vehicle Persistence** - Save and respawn custom vehicles
-- **Ban Management** - Comprehensive ban system with appeals
-- **Multi-Language Support** - Translations for global communities
+<FeatureList
+  features={[
+    {
+      title: "Player Management",
+      description: "Teleportation, vehicle control, weapon management, and player options"
+    },
+    {
+      title: "Server Administration",
+      description: "Player moderation, server management, vehicle management, and permission control"
+    },
+    {
+      title: "Player Customization",
+      description: "Complete character customization, appearance editor, and saved characters"
+    },
+    {
+      title: "Advanced Features",
+      description: "Recording mode, saved locations, vehicle persistence, and ban management"
+    },
+    {
+      title: "Battle-Tested Reliability",
+      description: "Used by thousands of servers worldwide with minimal performance impact"
+    },
+    {
+      title: "Granular Permissions",
+      description: "Control every feature individually with permission-based access control"
+    }
+  ]}
+  columns={2}
+/>
 
 ## Why Choose vMenu?
 
-### Reliability & Performance
-- **Battle-Tested** - Used by thousands of servers worldwide
-- **Optimized Code** - Minimal performance impact
-- **Regular Updates** - Active development and bug fixes
-- **Stable Releases** - Thorough testing before releases
-
-### Flexibility & Customization
-- **Permission-Based** - Control every feature individually
-- **Highly Configurable** - Extensive configuration options
-- **Server-Specific** - Customize per your server's needs
-- **API Support** - Integrate with other resources
-
-### Community & Support
-- **Comprehensive Documentation** - Detailed guides and references
-- **Active Community** - Discord support and forums
-- **Open Source** - Transparent development on GitHub
-- **Regular Updates** - Continuous improvement and features
-
-## Common Use Cases
-
-### Roleplay Servers
-- **Staff Tools** - Moderation and administration features
-- **Character Customization** - Detailed appearance options
-- **Vehicle Management** - Spawn roleplay-appropriate vehicles
-- **Saved Locations** - Police stations, hospitals, businesses
-
-### Freeroam Servers
-- **Vehicle Spawning** - Quick access to all vehicles
-- **Customization** - Extensive vehicle and character options
-- **Teleportation** - Fast travel around the map
-- **Player Options** - Enhanced gameplay features
-
-### Development Servers
-- **Testing Tools** - Quick spawning and teleportation
-- **Performance Monitoring** - Track resource usage
-- **Debug Features** - Noclip, god mode, coordinates
-- **Vehicle Testing** - Spawn and test custom vehicles
-
-### Community Servers
-- **Social Features** - Player interactions and events
-- **Event Management** - Weather and time control for events
-- **Recording Mode** - Create content without UI clutter
-- **Saved Locations** - Popular community spots
+<CheckList
+  items={[
+    "Reliability & Performance - Used by thousands of servers, optimized code, minimal impact",
+    "Flexibility & Customization - Permission-based, highly configurable, API support",
+    "Community & Support - Comprehensive documentation, active community, open source",
+    "Regular Updates - Active development, security fixes, new features"
+  ]}
+  variant="check"
+/>
 
 ## Getting Started
 
 Ready to install vMenu on your server? Follow our comprehensive guides:
 
-1. **[Installation & Setup](/docs/vmenu/setup)** - Download and install vMenu
-2. **[Configuration](/docs/vmenu/configuration)** - Configure vMenu for your server
-3. **[Permissions System](/docs/vmenu/permissions)** - Set up user permissions
-4. **[Features Guide](/docs/vmenu/features)** - Explore all vMenu features
-5. **[Troubleshooting](/docs/vmenu/troubleshooting)** - Common issues and solutions
+<QuickLinks
+  links={[
+    {
+      title: "Installation & Setup",
+      description: "Download and install vMenu on your server",
+      href: "/docs/vmenu/setup",
+      icon: "download"
+    },
+    {
+      title: "Configuration",
+      description: "Configure vMenu for your server's needs",
+      href: "/docs/vmenu/configuration",
+      icon: "settings"
+    },
+    {
+      title: "Permissions System",
+      description: "Set up user permissions and access control",
+      href: "/docs/vmenu/permissions",
+      icon: "shield"
+    },
+    {
+      title: "Features Guide",
+      description: "Explore all available vMenu features",
+      href: "/docs/vmenu/features",
+      icon: "zap"
+    },
+    {
+      title: "Troubleshooting",
+      description: "Common issues and solutions",
+      href: "/docs/vmenu/troubleshooting",
+      icon: "wrench"
+    }
+  ]}
+  columns={2}
+/>
 
 ## System Requirements
 
 ### Server Requirements
-- **FiveM Server** - Latest recommended artifacts
-- **Operating System** - Windows or Linux
-- **Framework** - Standalone (no framework required)
-- **Dependencies** - None required
+
+<CheckList
+  items={[
+    "FiveM Server - Latest recommended artifacts",
+    "Operating System - Windows or Linux",
+    "Framework - Standalone (no framework required)",
+    "Dependencies - None required"
+  ]}
+  variant="bullet"
+/>
 
 ### Recommended Setup
+
 - **Player Limit** - Works with any player count
 - **OneSync** - Optional but recommended for large servers
-- **Resource Memory** - Typical usage
-- **Performance Impact** - Minimal
+- **Resource Memory** - Minimal typical usage
+- **Performance Impact** - Negligible
 
 ## Version Information
 
 ### Current Version
+
 Check the [official GitHub releases](https://github.com/TomGrobbe/vMenu/releases) for the latest version.
 
 - **Minimum FiveM Version** - Check latest recommended artifacts
 - **Support Status** - Actively maintained
-
-### Update Policy
-- **Stable Releases** - Thoroughly tested updates
-- **Beta Releases** - Early access to new features
-- **Security Updates** - Prompt fixes for vulnerabilities
-- **Feature Updates** - Regular improvements and additions
+- **Update Policy** - Stable releases, beta access, security updates, feature improvements
 
 ## Support & Resources
 

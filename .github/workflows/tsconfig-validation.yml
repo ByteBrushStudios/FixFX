@@ -1,0 +1,60 @@
+name: Validate tsconfig.json Changes
+
+on:
+  pull_request:
+    paths:
+      - 'tsconfig.json'
+
+jobs:
+  validate-tsconfig:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          path: base-branch
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate tsconfig.json changes
+        run: node .github/scripts/validate-tsconfig.js
+
+      - name: Comment on PR if validation fails
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ⚠️ tsconfig.json Validation Failed
+
+This pull request attempts to **remove or modify** critical tsconfig.json configurations. This is not allowed as it will break the site.
+
+### ✅ What's Allowed:
+- **Adding** new compiler options
+- **Adding** new path aliases
+- **Adding** new include/exclude patterns
+
+### ❌ What's Not Allowed:
+- Removing existing compiler options
+- Modifying existing compiler option values
+- Removing path aliases
+- Modifying path alias mappings
+- Removing include/exclude patterns
+
+Please revert your changes to the existing configuration and only add new options if needed.`
+            })

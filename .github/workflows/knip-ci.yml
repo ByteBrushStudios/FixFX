@@ -1,0 +1,38 @@
+name: Knip Validation
+on:
+  push:
+    branches: [master, develop]
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      
+      - name: Install dependencies
+        run: bun install
+      
+      - name: Build application
+        run: bun run build
+
+      - name: Validate Export Usage
+        run: bun run knip:exports
+
+      - name: Validate Dependency Usage
+        run: bun run knip:deps
+
+      - name: Validate File Usage
+        run: bun run knip:files
+
+      - name: Validate Production Usage
+        run: bun run knip:prod
+      
+      - name: Notify success
+        run: echo "Build completed successfully!"

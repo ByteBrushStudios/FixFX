@@ -5,47 +5,75 @@ description: "Discover how txAdmin has revolutionized FiveM server management wi
 date: 2025-07-10
 ---
 
+import { FeatureList, CheckList, ComparisonTable } from '@ui/components/mdx-components'
+
 # txAdmin: The Ultimate FiveM Server Management Tool
 
-Managing a FiveM server used to be a complex task requiring extensive command-line knowledge and constant manual intervention. Enter txAdmin, a game-changing web-based interface that has revolutionized how server owners manage their FiveM communities. Let's explore how this powerful tool has transformed server administration and why it's become indispensable for server owners worldwide.
+Managing a FiveM server used to be complex task requiring extensive command-line knowledge. Enter txAdmin, a game-changing web-based interface that has revolutionized how server owners manage their FiveM communities. Let's explore how this powerful tool has transformed server administration.
 
 ## What is txAdmin?
 
-txAdmin is a comprehensive web-based management panel for FiveM servers, developed by the CitizenFX team. It provides a user-friendly interface for all aspects of server management, from basic configuration to advanced player administration and resource management.
+txAdmin is a comprehensive web-based management panel for FiveM servers, developed by the CitizenFX team. It provides a user-friendly interface for all aspects of server management.
 
 ### Core Philosophy
 
-txAdmin was built around several key principles:
-
-1. **Simplicity**: Complex server management made accessible
-2. **Reliability**: Robust systems that work when you need them
-3. **Community**: Tools that enhance community building
-4. **Automation**: Reducing manual tasks through intelligent automation
-5. **Transparency**: Clear insights into server performance and player behavior
+<CheckList
+  items={[
+    "Simplicity - Complex server management made accessible",
+    "Reliability - Robust systems that work when you need them",
+    "Community - Tools that enhance community building",
+    "Automation - Reducing manual tasks through intelligent automation",
+    "Transparency - Clear insights into server performance and behavior"
+  ]}
+  variant="check"
+/>
 
 ## The Evolution of FiveM Server Management
 
-### Before txAdmin: The Dark Ages
+### Before vs After txAdmin
 
-Managing a FiveM server traditionally involved:
-
-- **Command Line Interface**: All management through text commands
-- **Manual Log Review**: Searching through text files for issues
-- **Limited Player Oversight**: Basic commands for player management
-- **Resource Complexity**: Manual resource installation and configuration
-- **Downtime Issues**: Servers going down without notification
-- **Security Concerns**: Limited tools for preventing cheating and griefing
-
-### The txAdmin Revolution
-
-txAdmin transformed this landscape by introducing:
-
-- **Web-Based Interface**: Manage your server from any device with a browser
-- **Real-Time Monitoring**: Live server statistics and player information
-- **Advanced Player Management**: Comprehensive player history and moderation tools
-- **Resource Management**: Easy installation, configuration, and updates
-- **Automated Backups**: Scheduled backups with easy restoration
-- **Security Features**: Built-in anti-cheat and protection systems
+<ComparisonTable
+  title="Server Management Evolution"
+  headerA="Before txAdmin"
+  headerB="With txAdmin"
+  items={[
+    {
+      feature: "Management Interface",
+      optionA: "Command Line Interface",
+      optionB: "Web-Based Dashboard"
+    },
+    {
+      feature: "Log Review",
+      optionA: "Manual file searching",
+      optionB: "Real-time monitoring"
+    },
+    {
+      feature: "Player Management",
+      optionA: "Basic commands only",
+      optionB: "Comprehensive tools"
+    },
+    {
+      feature: "Resource Management",
+      optionA: "Manual installation",
+      optionB: "Easy one-click management"
+    },
+    {
+      feature: "Backups",
+      optionA: "Manual process",
+      optionB: "Automated scheduling"
+    },
+    {
+      feature: "Security",
+      optionA: "Limited tools",
+      optionB: "Built-in protections"
+    },
+    {
+      feature: "Access",
+      optionA: "Server access required",
+      optionB: "Any device with browser"
+    }
+  ]}
+/>
 
 ## Key Features That Changed Everything
 
@@ -53,31 +81,47 @@ txAdmin transformed this landscape by introducing:
 
 The txAdmin dashboard provides a comprehensive overview of your server's health:
 
-**Server Statistics**
-- Real-time player count and performance metrics
-- Resource usage monitoring (CPU, RAM, network)
-- Historical data for trend analysis
-- Uptime tracking and availability reports
-
-**Quick Actions**
-- Server start/stop/restart with one click
-- Resource management without command line
-- Player kicks, bans, and warnings
-- Server announcements and messages
-
-**Visual Indicators**
-- Color-coded status indicators
-- Performance graphs and charts
-- Alert systems for critical issues
-- Mobile-responsive design for on-the-go management
+<FeatureList
+  features={[
+    {
+      title: "Real-time Monitoring",
+      description: "Server statistics, player count, and performance metrics"
+    },
+    {
+      title: "Quick Actions",
+      description: "Server control, resource management, player administration"
+    },
+    {
+      title: "Visual Indicators",
+      description: "Color-coded status, performance graphs, alert systems"
+    },
+    {
+      title: "Mobile Support",
+      description: "Responsive design for on-the-go management"
+    }
+  ]}
+  columns={2}
+/>
 
 ### 2. Advanced Player Management
 
 One of txAdmin's strongest features is its sophisticated player management system:
 
-**Player Profiles**
-```javascript
-// Example of player data tracking
+<CheckList
+  items={[
+    "Player Profiles - Detailed player history and statistics",
+    "Session Tracking - Monitor play time and activity patterns",
+    "Moderation Tools - Kicks, bans, warnings with reasons",
+    "Session Recordings - Optional session recording for review",
+    "Identifiers - Display and track player identifiers",
+    "Notes System - Admin notes for reference"
+  ]}
+  variant="check"
+  columns={2}
+/>
+
+**Player Profile Example**
+```json
 {
   "playerId": "12345",
   "name": "PlayerName",

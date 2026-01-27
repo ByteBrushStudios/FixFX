@@ -35,7 +35,7 @@ export default function NativesPage() {
       hasCfxNamespace: boolean
     }
   }>(
-    `${API_URL}/api/natives?game=${game}&limit=1&cfx=${includeCFX}&full=true`,
+    `${API_URL}/api/natives?game=${game}&limit=1&includeCfx=${includeCFX}&fullMetadata=true`,
     {},
     [game, includeCFX]
   );

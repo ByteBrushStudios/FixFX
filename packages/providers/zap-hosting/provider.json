@@ -1,0 +1,41 @@
+{
+  "$schema": "../schema.json",
+  "id": "zap-hosting",
+  "name": "ZAP-Hosting",
+  "website": "https://zap-hosting.com",
+  "description": "ZAP-Hosting is one of the leading game server hosting providers, offering high-performance servers with instant setup, powerful hardware, and excellent customer support. Perfect for FiveM and RedM communities of all sizes.",
+  "discount": {
+    "percentage": 20,
+    "code": "FixFX-a-8909",
+    "duration": "Entire ownership duration"
+  },
+  "links": [
+    {
+      "label": "FiveM Servers",
+      "url": "https://zap-hosting.com/FixFXFiveM",
+      "description": "High-performance FiveM game servers"
+    },
+    {
+      "label": "RedM Servers",
+      "url": "https://zap-hosting.com/FixFXRedM",
+      "description": "Dedicated RedM game servers"
+    },
+    {
+      "label": "VPS Servers",
+      "url": "https://zap-hosting.com/a/8d785f5b626ef6617320d4bca50a4e344c464437?voucher=FixFX-a-8909",
+      "description": "Powerful VPS solutions for custom hosting needs"
+    }
+  ],
+  "features": [
+    "Instant server setup",
+    "DDoS protection included",
+    "24/7 customer support",
+    "Full FTP & database access",
+    "Automatic backups",
+    "Web interface management",
+    "Multiple server locations",
+    "SSD storage"
+  ],
+  "highlight": "Official Partner",
+  "priority": 100
+}

@@ -1,0 +1,186 @@
+# FixFX - Complete Documentation for LLMs
+
+> This file contains comprehensive information about FixFX for AI/LLM consumption.
+
+## Site Overview
+
+FixFX (https://fixfx.wiki) is a documentation hub for the CitizenFX ecosystem, which includes:
+
+1. **FiveM**: A modification framework for GTA V that allows multiplayer servers
+2. **RedM**: A modification framework for Red Dead Redemption 2 multiplayer
+3. **txAdmin**: Web-based server management panel for FiveM/RedM
+4. **vMenu**: In-game admin/trainer menu for FiveM servers
+
+## Core Concepts
+
+### CitizenFX
+CitizenFX (CFX) is the organization behind FiveM and RedM. They provide:
+- Server and client frameworks
+- Native function APIs
+- Resource system for modular server development
+- Licensing system for server operators
+
+### Server Artifacts
+Artifacts are the compiled server binaries needed to run FiveM/RedM servers. Key points:
+- Available for Windows and Linux
+- Version numbered (e.g., 24769)
+- Categories: Recommended, Latest, Active, Deprecated, EOL
+- Downloaded from runtime.fivem.net or our artifact explorer
+
+### Natives
+Native functions are the core API for FiveM/RedM development:
+- Client-side natives (run on player's game)
+- Server-side natives (run on server)
+- Categorized by namespace (PLAYER, VEHICLE, PED, etc.)
+- Can be called from Lua, JavaScript, or C#
+
+## txAdmin Documentation
+
+### Installation (Windows)
+1. Download FXServer artifacts from runtime.fivem.net or fixfx.wiki/artifacts
+2. Extract to a folder (e.g., C:\FiveM-Server)
+3. Run FXServer.exe - txAdmin initializes automatically
+4. Access web panel at localhost:40120
+5. Complete setup wizard: PIN entry, CFX login, master account, server name
+6. Choose deployment: Popular Recipes, Existing Data, or Custom
+7. Select template: FiveM Basic, ESX, QBCore, Qbox, RedM Basic, VORP
+8. Enter CFX license key from portal.cfx.re
+9. Configure server settings and start
+
+### txAdmin Features
+- Web-based server control (start/stop/restart)
+- Live console with command execution
+- Player management (kick, ban, warn)
+- Resource management
+- Scheduled restarts
+- Discord bot integration
+- Permission system with roles
+- Server performance monitoring
+- Backup and restore
+
+### txAdmin Discord Bot
+- Displays server status in Discord
+- Announces restarts and events
+- Custom embed configuration
+- Requires: Bot token, Server ID, Channel ID
+- Status states: Online (green), Partial (yellow), Offline (red)
+
+### txAdmin Permissions
+- Role-based access control
+- Built-in roles: Master, Admin, Moderator
+- Custom roles supported
+- Permissions: player.kick, player.ban, console.view, server.restart, etc.
+
+## vMenu Documentation
+
+### What is vMenu
+vMenu is an admin/trainer menu for FiveM with:
+- Player options (health, armor, godmode)
+- Vehicle spawning and customization
+- Weapon management
+- Teleportation
+- World/weather control
+- Permission-based access
+
+### vMenu Permissions
+Uses FiveM's ACE permission system:
+- Format: add_ace identifier.fivem:XXXXX vMenu.Permission allow
+- Categories: Online Players, Player Options, Vehicle Options, etc.
+- Can be configured in server.cfg or permissions.cfg
+
+## Frameworks
+
+### ESX Legacy
+- Most popular FiveM roleplay framework
+- Economy system with jobs, shops, housing
+- Large resource ecosystem
+- MySQL database backend
+
+### QBCore
+- Modern FiveM framework
+- Similar features to ESX
+- Active development community
+- Good documentation
+
+### Qbox
+- Fork/evolution of QBCore
+- Better performance
+- Backwards compatible with QBCore resources
+- Modern codebase
+
+### VORP Core
+- Leading RedM roleplay framework
+- Western-themed economy (stables, hunting)
+- Jobs and housing system
+- Active development
+
+## Development Resources
+
+### Lua Scripting for FiveM/RedM
+- Client scripts run on player's game
+- Server scripts run on the server
+- Shared scripts accessible by both
+- Events for client-server communication
+- Citizen.CreateThread for loops
+- RegisterNetEvent for network events
+
+### Resource Structure
+```
+my-resource/
+├── fxmanifest.lua    # Resource manifest
+├── client.lua        # Client-side code
+├── server.lua        # Server-side code
+├── shared.lua        # Shared code
+├── config.lua        # Configuration
+└── html/             # NUI (UI) files
+```
+
+### fxmanifest.lua Example
+```lua
+fx_version 'cerulean'
+game 'gta5'
+
+author 'YourName'
+description 'My Resource'
+version '1.0.0'
+
+client_scripts { 'client.lua' }
+server_scripts { 'server.lua' }
+shared_scripts { 'shared.lua', 'config.lua' }
+```
+
+## API Endpoints
+
+FixFX provides APIs for:
+- Artifacts: /api/artifacts (list server builds)
+- Natives: /api/natives (native function data)
+
+## Common Issues and Solutions
+
+### Server Won't Start
+- Check Windows Defender exclusions
+- Verify .NET Framework installed
+- Run as Administrator
+- Check server.cfg syntax
+
+### Players Can't Connect
+- Port forward 30120 (TCP/UDP)
+- Check Windows Firewall
+- Verify server.cfg endpoint settings
+- Ensure valid license key
+
+### txAdmin Access Issues
+- Default port is 40120
+- Check if port is blocked
+- Try localhost:40120
+- Verify txAdmin service running
+
+## Links
+
+- Main Site: https://fixfx.wiki
+- Documentation: https://fixfx.wiki/docs
+- Artifacts: https://fixfx.wiki/artifacts
+- Natives: https://fixfx.wiki/natives
+- GitHub: https://github.com/CodeMeAPixel/FixFX
+- CFX Forums: https://forum.cfx.re
+- CFX Portal: https://portal.cfx.re

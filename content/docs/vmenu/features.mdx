@@ -1,225 +1,258 @@
 ---
 title: Features Overview
 description: Complete guide to all vMenu features, categories, and functionality
-icon: Grid
+icon: "Grid"
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout'
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable, RoleCard, PermissionCodeBlock, KeyboardShortcutTable, ActionTable, InfoBanner, CategoryGrid } from '@ui/components/mdx-components'
 
 ## Overview
 
 vMenu provides a comprehensive set of features for server administration, player management, and customization. This guide covers all available features organized by menu category.
 
-<Callout type="info">
-  Features shown depend on your permissions. Admins see all options, while regular players see limited features based on configuration.
-</Callout>
+<InfoBanner type="info" title="Permission-Based Features">
+Features shown depend on your permissions. Admins see all options, while regular players see limited features based on configuration.
+</InfoBanner>
 
 ## Main Menu Categories
 
-| Category | Description | Permission Required |
-|----------|-------------|---------------------|
-| **Online Players** | Manage connected players | `vMenu.OnlinePlayers` |
-| **Player Options** | Self modification options | `vMenu.PlayerOptions` |
-| **Vehicle Spawner** | Spawn any vehicle | `vMenu.VehicleSpawner` |
-| **Vehicle Options** | Modify current vehicle | `vMenu.VehicleOptions` |
-| **Saved Vehicles** | Spawn saved vehicles | `vMenu.SavedVehicles` |
-| **Personal Vehicle** | Personal vehicle management | `vMenu.PersonalVehicle` |
-| **Weapon Options** | Weapon management | `vMenu.WeaponOptions` |
-| **Weapon Loadouts** | Save/load weapon sets | `vMenu.WeaponLoadouts` |
-| **Player Appearance** | Character customization | `vMenu.PlayerAppearance` |
-| **Saved Characters** | Saved appearance presets | `vMenu.SavedCharacters` |
-| **Teleport Locations** | Teleport to locations | `vMenu.Teleport` |
-| **World Options** | Change time/weather | `vMenu.WorldOptions` |
-| **Voice Chat** | Voice chat settings | `vMenu.VoiceChat` |
-| **Misc Settings** | General settings | `vMenu.MiscSettings` |
-| **Recording** | Rockstar Editor controls | `vMenu.Recording` |
+<CategoryGrid 
+  title="Menu Categories"
+  columns={3}
+  categories={[
+    { name: "Online Players", icon: "users", description: "Manage connected players", permission: "vMenu.OnlinePlayers" },
+    { name: "Player Options", icon: "user", description: "Self modification options", permission: "vMenu.PlayerOptions" },
+    { name: "Vehicle Spawner", icon: "car", description: "Spawn any vehicle", permission: "vMenu.VehicleSpawner" },
+    { name: "Vehicle Options", icon: "settings", description: "Modify current vehicle", permission: "vMenu.VehicleOptions" },
+    { name: "Saved Vehicles", icon: "folder", description: "Spawn saved vehicles", permission: "vMenu.SavedVehicles" },
+    { name: "Personal Vehicle", icon: "car", description: "Personal vehicle management", permission: "vMenu.PersonalVehicle" },
+    { name: "Weapon Options", icon: "crosshair", description: "Weapon management", permission: "vMenu.WeaponOptions" },
+    { name: "Weapon Loadouts", icon: "package", description: "Save/load weapon sets", permission: "vMenu.WeaponLoadouts" },
+    { name: "Player Appearance", icon: "user", description: "Character customization", permission: "vMenu.PlayerAppearance" },
+    { name: "Saved Characters", icon: "users", description: "Saved appearance presets", permission: "vMenu.SavedCharacters" },
+    { name: "Teleport Locations", icon: "mapPin", description: "Teleport to locations", permission: "vMenu.Teleport" },
+    { name: "World Options", icon: "globe", description: "Change time/weather", permission: "vMenu.WorldOptions" },
+    { name: "Voice Chat", icon: "mic", description: "Voice chat settings", permission: "vMenu.VoiceChat" },
+    { name: "Misc Settings", icon: "settings", description: "General settings", permission: "vMenu.MiscSettings" },
+    { name: "Recording", icon: "video", description: "Rockstar Editor controls", permission: "vMenu.Recording" }
+  ]}
+/>
 
 ## Online Players
 
-**Permission**: `vMenu.OnlinePlayers`
+<StatusBadge status="info" text="Permission: vMenu.OnlinePlayers" />
 
 Manage connected players on your server.
 
 ### Player List Features
 
-- **View All Players**: See complete list of connected players
-- **Player Count**: Display current player count
-- **Server Info**: View server details
+<FeatureList 
+  title="Player List Capabilities"
+  features={[
+    { title: "View All Players", description: "See complete list of connected players", icon: "users" },
+    { title: "Player Count", description: "Display current player count", icon: "hash" },
+    { title: "Server Info", description: "View server details", icon: "server" }
+  ]}
+/>
 
 ### Player Actions
 
-**Permission**: `vMenu.OnlinePlayers.All` or specific sub-permissions
-
-| Action | Permission | Description |
-|--------|------------|-------------|
-| **Teleport To** | `.TeleportToPlayer` | Teleport to player's location |
-| **Summon** | `.Summon` | Bring player to you |
-| **Kill** | `.Kill` | Kill the player |
-| **Kick** | `.Kick` | Kick from server |
-| **Temp Ban** | `.TempBan` | Temporary ban (hours/days) |
-| **Perm Ban** | `.PermBan` | Permanent ban |
-| **Spectate** | `vMenu.Spectate` | View player's screen |
-| **Freeze** | `.Freeze` | Freeze player movement |
-| **Unfreeze** | `.Freeze` | Unfreeze player |
-| **Remove Weapons** | `.RemovePlayerWeapons` | Strip all weapons |
-| **View Identifiers** | `.SeePlayerIdentifiers` | Show steam, license, discord IDs |
+<ActionTable 
+  title="Available Player Actions"
+  actions={[
+    { action: "Teleport To", permission: ".TeleportToPlayer", description: "Teleport to player's location" },
+    { action: "Summon", permission: ".Summon", description: "Bring player to you" },
+    { action: "Kill", permission: ".Kill", description: "Kill the player", dangerous: true },
+    { action: "Kick", permission: ".Kick", description: "Kick from server", dangerous: true },
+    { action: "Temp Ban", permission: ".TempBan", description: "Temporary ban (hours/days)", dangerous: true },
+    { action: "Perm Ban", permission: ".PermBan", description: "Permanent ban", dangerous: true },
+    { action: "Spectate", permission: "vMenu.Spectate", description: "View player's screen" },
+    { action: "Freeze", permission: ".Freeze", description: "Freeze player movement" },
+    { action: "Remove Weapons", permission: ".RemovePlayerWeapons", description: "Strip all weapons" },
+    { action: "View Identifiers", permission: ".SeePlayerIdentifiers", description: "Show steam, license, discord IDs" }
+  ]}
+/>
 
 ### Player Information Display
 
-- Current health and armor
-- Current vehicle (if in vehicle)
-- Current weapon
-- Distance from you
-- Player identifiers
+<CheckList items={[
+  "Current health and armor",
+  "Current vehicle (if in vehicle)",
+  "Current weapon",
+  "Distance from you",
+  "Player identifiers"
+]} />
 
-<Callout type="warn">
-  **Moderation Warning**: Always follow your server's moderation guidelines when using player management features.
-</Callout>
+<InfoBanner type="warning" title="Moderation Warning">
+Always follow your server's moderation guidelines when using player management features.
+</InfoBanner>
 
 ## Player Options
 
-**Permission**: `vMenu.PlayerOptions`
+<StatusBadge status="info" text="Permission: vMenu.PlayerOptions" />
 
 Modify your own character's abilities and status.
 
 ### God Mode Options
 
-| Feature | Permission | Description |
-|---------|------------|-------------|
-| **God Mode** | `.God` | Invincibility (no damage) |
-| **Invisible** | `.Invisible` | Become invisible to players |
-| **Never Wanted** | `.NeverWanted` | Disable wanted level |
-| **Ignored By Police** | `.IgnoredByPolice` | Police won't chase you |
-| **Set Wanted Level** | `.SetWanted` | Manual wanted level (1-5 stars) |
+<ActionTable 
+  title="Protection Features"
+  showDanger={false}
+  actions={[
+    { action: "God Mode", permission: ".God", description: "Invincibility (no damage)" },
+    { action: "Invisible", permission: ".Invisible", description: "Become invisible to players" },
+    { action: "Never Wanted", permission: ".NeverWanted", description: "Disable wanted level" },
+    { action: "Ignored By Police", permission: ".IgnoredByPolice", description: "Police won't chase you" },
+    { action: "Set Wanted Level", permission: ".SetWanted", description: "Manual wanted level (1-5 stars)" }
+  ]}
+/>
 
 ### Movement Options
 
-| Feature | Permission | Description |
-|---------|------------|-------------|
-| **Fast Run** | `.FastRun` | 2x running speed |
-| **Fast Swim** | `.FastSwim` | 2x swimming speed |
-| **Super Jump** | `.SuperJump` | Jump extra high |
-| **Unlimited Stamina** | `.UnlimitedStamina` | Never get tired |
-| **No Ragdoll** | `.NoRagdoll` | No falling animations |
+<ActionTable 
+  title="Movement Enhancements"
+  showDanger={false}
+  actions={[
+    { action: "Fast Run", permission: ".FastRun", description: "2x running speed" },
+    { action: "Fast Swim", permission: ".FastSwim", description: "2x swimming speed" },
+    { action: "Super Jump", permission: ".SuperJump", description: "Jump extra high" },
+    { action: "Unlimited Stamina", permission: ".UnlimitedStamina", description: "Never get tired" },
+    { action: "No Ragdoll", permission: ".NoRagdoll", description: "No falling animations" }
+  ]}
+/>
 
 ### Health & Armor
 
-| Feature | Permission | Description |
-|---------|------------|-------------|
-| **Restore Health** | `.MaxHealth` | Heal to full |
-| **Restore Armor** | `.MaxArmor` | Full armor |
-| **Stay In Vehicle** | `.StayInVehicle` | Don't fall off when shot |
+<ActionTable 
+  title="Health Management"
+  showDanger={false}
+  actions={[
+    { action: "Restore Health", permission: ".MaxHealth", description: "Heal to full" },
+    { action: "Restore Armor", permission: ".MaxArmor", description: "Full armor" },
+    { action: "Stay In Vehicle", permission: ".StayInVehicle", description: "Don't fall off when shot" }
+  ]}
+/>
 
 ### Model Options
 
-- **Change Player Model**: Switch to any ped model
-- **Reset Model**: Return to default character
-- **Random Model**: Randomize appearance
+<FeatureList features={[
+  { title: "Change Player Model", description: "Switch to any ped model", icon: "user" },
+  { title: "Reset Model", description: "Return to default character", icon: "refresh" },
+  { title: "Random Model", description: "Randomize appearance", icon: "shuffle" }
+]} />
 
-<Callout type="info">
-  Changes to player options are typically temporary and reset on respawn or reconnect, unless configured otherwise.
-</Callout>
+<PropertyCard type="info" name="Temporary Changes" description="Changes to player options are typically temporary and reset on respawn or reconnect, unless configured otherwise." />
 
 ## Vehicle Spawner
 
-**Permission**: `vMenu.VehicleSpawner`
+<StatusBadge status="info" text="Permission: vMenu.VehicleSpawner" />
 
 Spawn vehicles by category.
 
 ### Vehicle Categories
 
-| Category | Permission | Vehicle Count |
-|----------|------------|---------------|
-| **Compacts** | `.Compacts` | 14+ vehicles |
-| **Sedans** | `.Sedans` | 30+ vehicles |
-| **SUVs** | `.SUVs` | 25+ vehicles |
-| **Coupes** | `.Coupes` | 11+ vehicles |
-| **Muscle** | `.Muscle` | 25+ vehicles |
-| **Sports Classics** | `.SportsClassics` | 27+ vehicles |
-| **Sports** | `.Sports` | 30+ vehicles |
-| **Super** | `.Super` | 20+ vehicles |
-| **Motorcycles** | `.Motorcycles` | 25+ vehicles |
-| **Off-Road** | `.OffRoad` | 20+ vehicles |
-| **Industrial** | `.Industrial` | 10+ vehicles |
-| **Utility** | `.Utility` | 15+ vehicles |
-| **Vans** | `.Vans` | 10+ vehicles |
-| **Cycles** | `.Cycles` | 8+ bicycles |
-| **Boats** | `.Boats` | 15+ boats |
-| **Helicopters** | `.Helicopters` | 20+ helicopters |
-| **Planes** | `.Planes` | 20+ aircraft |
-| **Service** | `.Service` | 10+ vehicles |
-| **Emergency** | `.Emergency` | 20+ vehicles |
-| **Military** | `.Military` | 15+ vehicles |
-| **Commercial** | `.Commercial` | 8+ vehicles |
-| **Trains** | `.Trains` | 5+ trains |
-| **Open Wheel** | `.OpenWheel` | 2+ F1 cars |
+<CategoryGrid 
+  columns={4}
+  categories={[
+    { name: "Compacts", icon: "car", description: "14+ vehicles", permission: ".Compacts" },
+    { name: "Sedans", icon: "car", description: "30+ vehicles", permission: ".Sedans" },
+    { name: "SUVs", icon: "car", description: "25+ vehicles", permission: ".SUVs" },
+    { name: "Coupes", icon: "car", description: "11+ vehicles", permission: ".Coupes" },
+    { name: "Muscle", icon: "car", description: "25+ vehicles", permission: ".Muscle" },
+    { name: "Sports Classics", icon: "car", description: "27+ vehicles", permission: ".SportsClassics" },
+    { name: "Sports", icon: "car", description: "30+ vehicles", permission: ".Sports" },
+    { name: "Super", icon: "car", description: "20+ vehicles", permission: ".Super" },
+    { name: "Motorcycles", icon: "car", description: "25+ vehicles", permission: ".Motorcycles" },
+    { name: "Off-Road", icon: "car", description: "20+ vehicles", permission: ".OffRoad" },
+    { name: "Industrial", icon: "package", description: "10+ vehicles", permission: ".Industrial" },
+    { name: "Utility", icon: "wrench", description: "15+ vehicles", permission: ".Utility" },
+    { name: "Vans", icon: "package", description: "10+ vehicles", permission: ".Vans" },
+    { name: "Cycles", icon: "car", description: "8+ bicycles", permission: ".Cycles" },
+    { name: "Boats", icon: "package", description: "15+ boats", permission: ".Boats" },
+    { name: "Helicopters", icon: "plane", description: "20+ helicopters", permission: ".Helicopters" },
+    { name: "Planes", icon: "plane", description: "20+ aircraft", permission: ".Planes" },
+    { name: "Service", icon: "wrench", description: "10+ vehicles", permission: ".Service" },
+    { name: "Emergency", icon: "shield", description: "20+ vehicles", permission: ".Emergency" },
+    { name: "Military", icon: "shield", description: "15+ vehicles", permission: ".Military" },
+    { name: "Commercial", icon: "package", description: "8+ vehicles", permission: ".Commercial" },
+    { name: "Trains", icon: "package", description: "5+ trains", permission: ".Trains" },
+    { name: "Open Wheel", icon: "car", description: "2+ F1 cars", permission: ".OpenWheel" }
+  ]}
+/>
 
 ### Spawn Options
 
-- **Spawn Inside**: Automatically enter spawned vehicle
-- **Replace Current**: Delete current vehicle when spawning new one
-- **Spawn Upgraded**: Spawn with max upgrades
-- **Custom Plate**: Set custom license plate on spawn
+<FeatureList features={[
+  { title: "Spawn Inside", description: "Automatically enter spawned vehicle", icon: "user" },
+  { title: "Replace Current", description: "Delete current vehicle when spawning new one", icon: "refresh" },
+  { title: "Spawn Upgraded", description: "Spawn with max upgrades", icon: "arrowUp" },
+  { title: "Custom Plate", description: "Set custom license plate on spawn", icon: "edit" }
+]} />
 
 ### Popular Vehicles
 
-**Super Cars**:
-- Adder, Entity XF/XXR, T20, Osiris, Zentorno, Turismo R, Infernus, Vacca, Cheetah
-
-**Sports Cars**:
-- Elegy RH8 (free), Kuruma, Jester, Massacro, Carbonizzare, Coquette
-
-**Emergency**:
-- Police Cruiser, Police Bike, Sheriff SUV, Fire Truck, Ambulance
-
-**Aircraft**:
-- Buzzard, Hydra, Savage, Valkyrie, Luxor, Shamal, Frogger
+<ComparisonTable 
+  headers={["Category", "Popular Vehicles"]}
+  rows={[
+    ["Super Cars", "Adder, Entity XF/XXR, T20, Osiris, Zentorno, Turismo R, Infernus, Vacca, Cheetah"],
+    ["Sports Cars", "Elegy RH8 (free), Kuruma, Jester, Massacro, Carbonizzare, Coquette"],
+    ["Emergency", "Police Cruiser, Police Bike, Sheriff SUV, Fire Truck, Ambulance"],
+    ["Aircraft", "Buzzard, Hydra, Savage, Valkyrie, Luxor, Shamal, Frogger"]
+  ]}
+/>
 
 ## Vehicle Options
 
-**Permission**: `vMenu.VehicleOptions`
+<StatusBadge status="info" text="Permission: vMenu.VehicleOptions" />
 
 Modify your current vehicle.
 
 ### Quick Actions
 
-| Action | Permission | Description |
-|--------|------------|-------------|
-| **Repair** | `.Fix` | Instantly repair vehicle |
-| **Wash** | `.Wash` | Clean the vehicle |
-| **Toggle Engine** | `.Engine` | Start/stop engine |
-| **Flip Vehicle** | `.All` | Flip vehicle upright |
+<ActionTable 
+  title="Vehicle Quick Actions"
+  showDanger={false}
+  actions={[
+    { action: "Repair", permission: ".Fix", description: "Instantly repair vehicle" },
+    { action: "Wash", permission: ".Wash", description: "Clean the vehicle" },
+    { action: "Toggle Engine", permission: ".Engine", description: "Start/stop engine" },
+    { action: "Flip Vehicle", permission: ".All", description: "Flip vehicle upright" }
+  ]}
+/>
 
 ### Visual Modifications
 
-**Permission**: `vMenu.VehicleOptions.Mod`
+<StatusBadge status="info" text="Permission: vMenu.VehicleOptions.Mod" />
 
-- **Primary Color**: Change paint color
-- **Secondary Color**: Change secondary paint
-- **Pearlescent**: Add pearlescent finish
-- **Wheel Color**: Change wheel color
-- **Trim Color**: Interior trim color
-- **Dashboard Color**: Dashboard color
-- **Liveries**: Apply liveries/wraps
-- **Neon Lights**: Enable/customize underglow
-- **Tinted Windows**: Window tint level
+<FeatureList features={[
+  { title: "Primary Color", description: "Change paint color", icon: "palette" },
+  { title: "Secondary Color", description: "Change secondary paint", icon: "palette" },
+  { title: "Pearlescent", description: "Add pearlescent finish", icon: "star" },
+  { title: "Wheel Color", description: "Change wheel color", icon: "palette" },
+  { title: "Trim Color", description: "Interior trim color", icon: "palette" },
+  { title: "Dashboard Color", description: "Dashboard color", icon: "palette" },
+  { title: "Liveries", description: "Apply liveries/wraps", icon: "image" },
+  { title: "Neon Lights", description: "Enable/customize underglow", icon: "zap" },
+  { title: "Tinted Windows", description: "Window tint level", icon: "eye" }
+]} />
 
 ### Performance Modifications
 
-- **Engine**: Upgrade level 0-4
-- **Brakes**: Upgrade level 0-3
-- **Transmission**: Upgrade level 0-3
-- **Suspension**: Lower or stock
-- **Armor**: Protection level 0-5
-- **Turbo**: Enable turbo charger
+<FeatureList features={[
+  { title: "Engine", description: "Upgrade level 0-4", icon: "settings" },
+  { title: "Brakes", description: "Upgrade level 0-3", icon: "settings" },
+  { title: "Transmission", description: "Upgrade level 0-3", icon: "settings" },
+  { title: "Suspension", description: "Lower or stock", icon: "settings" },
+  { title: "Armor", description: "Protection level 0-5", icon: "shield" },
+  { title: "Turbo", description: "Enable turbo charger", icon: "zap" }
+]} />
 
-**Permissions for modification**:
-- `.Torque`: Modify engine torque multiplier
-- `.Power`: Modify engine power multiplier
+<PropertyCard type="info" name="Performance Permissions" description=".Torque: Modify engine torque multiplier | .Power: Modify engine power multiplier" />
 
 ### Vehicle Components
 
-**Permission**: `vMenu.VehicleOptions.Components`
+<StatusBadge status="info" text="Permission: vMenu.VehicleOptions.Components" />
 
 - **Spoilers**: Add/change spoiler
 - **Front Bumper**: Custom front bumper

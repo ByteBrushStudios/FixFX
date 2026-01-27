@@ -1,0 +1,79 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "app/**/*.{ts,tsx}",
+    "middleware.ts",
+    "source.config.ts",
+    "next.config.mjs",
+    "tailwind.config.ts",
+    "postcss.config.js"
+  ],
+  "project": [
+    "**/*.{ts,tsx,js,mjs}"
+  ],
+  "paths": {
+    "@/*": ["./"],
+    "@ui/*": ["./packages/ui/src/*"],
+    "@utils/*": ["./packages/utils/src/*"],
+    "@core/*": ["./packages/core/src/*"]
+  },
+  "ignoreDependencies": [
+    "eslint-config-next",
+    "postcss",
+    "tailwindcss",
+    "typescript",
+    "autoprefixer",
+    "@types/*",
+    "fumadocs-mdx",
+    "fumadocs-typescript",
+    "shiki"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "ignoreBinaries": [
+    "prisma",
+    "fumadocs-mdx"
+  ],
+  "includeEntryExports": true,
+  "rules": {
+    "classMembers": "warn",
+    "enumMembers": "warn",
+    "types": "warn",
+    "exports": "warn",
+    "files": "warn",
+    "dependencies": "warn",
+    "duplicates": "error",
+    "nsExports": "warn",
+    "nsTypes": "warn"
+  },
+  "ignore": [
+    "**/*.test.{ts,tsx}",
+    "**/*.spec.{ts,tsx}",
+    "**/__tests__/**",
+    "**/node_modules/**",
+    ".next/**",
+    ".source/**",
+    "coverage/**",
+    "content/**",
+    "public/**",
+    "types/**/*.d.ts"
+  ],
+  "workspaces": {
+    ".": {
+      "entry": [
+        "app/**/*.{ts,tsx}",
+        "middleware.ts",
+        "lib/**/*.{ts,tsx}"
+      ]
+    },
+    "packages/ui": {
+      "entry": ["src/index.ts", "src/**/*.{ts,tsx}"],
+      "ignore": ["src/**/*.stories.tsx"]
+    },
+    "packages/utils": {
+      "entry": ["src/index.ts", "src/**/*.{ts,tsx}"]
+    },
+    "packages/core": {
+      "entry": ["src/index.ts", "src/**/*.{ts,tsx}"]
+    }
+  }
+}

@@ -4,11 +4,29 @@ description: Complete guide to backing up and recovering FiveM server data and c
 icon: "HardDrive"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 A comprehensive backup and recovery strategy is essential for any FiveM server. This guide covers everything from basic backup procedures to advanced disaster recovery planning.
 
 ## Understanding What to Backup
 
+<StepList steps={[
+  "Identify all critical data categories (server files, database, runtime data)",
+  "Establish backup frequency based on data importance",
+  "Choose appropriate backup storage location",
+  "Test restore procedures before relying on backups",
+  "Document backup procedures for team awareness",
+  "Monitor backup success and storage usage"
+]} />
+
 ### Critical Data Categories
+
+<CheckList items={[
+  "Server files: Artifacts, server.cfg, and resource configurations",
+  "Database: Player data, vehicle ownership, economy information",
+  "Runtime data: Current server state, active sessions",
+  "Configuration files: Custom scripts and modifications"
+]} />
 
 **Server Files**
 - Server executable and artifacts

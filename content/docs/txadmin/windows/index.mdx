@@ -4,29 +4,53 @@ description: Complete guide to installing and setting up txAdmin on Windows.
 ---
 
 import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { FeatureList, CheckList, QuickLinks, DefinitionList, PropertyCard, InfoBanner, CategoryGrid } from '@ui/components/mdx-components';
 
 This section covers everything you need to know about installing and configuring txAdmin on Windows systems. Whether you're starting a new server or migrating an existing one, we'll walk you through each step.
 
 ## System Requirements
 
-Before you begin, ensure your Windows system meets these requirements:
+<InfoBanner type="info" title="Prerequisites Check">
+Before you begin, ensure your Windows system meets these requirements for optimal txAdmin performance.
+</InfoBanner>
 
-### Hardware
-- **Processor:** Dual-core CPU (quad-core recommended for larger servers)
-- **RAM:** Minimum 4GB (8GB+ recommended)
-- **Storage:** SSD with at least 20GB free space
-- **Network:** Stable internet connection with open ports:
-  - **30120** (TCP and UDP) - Game server port
-  - **40120** (TCP) - txAdmin web interface
+### Hardware Requirements
 
-### Software
-- **Operating System:** Windows 10, Windows 11, or Windows Server 2019+
-- **Node.js:** Version 16+ (usually included with FiveM artifacts)
-- **Web Browser:** Modern browser (Chrome, Firefox, Edge, Safari) for accessing the txAdmin panel
-- **.NET Framework:** 4.6.2+ (usually pre-installed)
+<FeatureList 
+  features={[
+    { title: "Processor", description: "Dual-core CPU (quad-core recommended for larger servers)", icon: "zap" },
+    { title: "RAM", description: "Minimum 4GB (8GB+ recommended)", icon: "database" },
+    { title: "Storage", description: "SSD with at least 20GB free space", icon: "folder" },
+    { title: "Network", description: "Stable internet connection with required open ports", icon: "globe" }
+  ]}
+/>
+
+### Network Ports
+
+<DefinitionList 
+  variant="bordered"
+  items={[
+    { term: "30120 (TCP/UDP)", description: "Game server port - must be accessible to players" },
+    { term: "40120 (TCP)", description: "txAdmin web interface - for administrative access" }
+  ]}
+/>
+
+### Software Requirements
+
+<CheckList items={[
+  "Windows 10, Windows 11, or Windows Server 2019+",
+  "Node.js Version 16+ (usually included with FiveM artifacts)",
+  "Modern web browser (Chrome, Firefox, Edge, Safari)",
+  ".NET Framework 4.6.2+ (usually pre-installed)"
+]} />
 
 ## Installation Options
 
-We provide detailed guides for different installation scenarios:
-
-- **[Fresh Installation](/docs/txadmin/windows/install)** - Setting up txAdmin from scratch on a new Windows machine
+<QuickLinks links={[
+  {
+    title: "Fresh Installation",
+    href: "/docs/txadmin/windows/install",
+    icon: "download",
+    description: "Setting up txAdmin from scratch on a new Windows machine"
+  }
+]} />

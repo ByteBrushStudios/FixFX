@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';import { API_URL } from "@/packages/
 
 interface FileSourceProps {
   filePath: string;
-  title?: string;
+  title?: string | { text: string; href: string };
 }
 
 const languageMap: Record<string, string> = {
@@ -24,6 +24,20 @@ const languageMap: Record<string, string> = {
   '.bash': 'bash',
   '.sql': 'sql',
   '.lua': 'lua',
+  '.go': 'go',
+  '.mod': 'go',
+  '.sum': 'text',
+  '.py': 'python',
+  '.rb': 'ruby',
+  '.java': 'java',
+  '.cs': 'csharp',
+  '.cpp': 'cpp',
+  '.c': 'c',
+  '.h': 'c',
+  '.hpp': 'cpp',
+  '.xml': 'xml',
+  '.toml': 'toml',
+  '.env': 'bash',
 };
 
 function getLanguage(filePath: string): string {

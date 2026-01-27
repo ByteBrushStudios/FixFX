@@ -4,33 +4,83 @@ description: Learn what CitizenFX is and how it powers FiveM and RedM.
 icon: "Home"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 CitizenFX, is the platform behind FiveM and RedM. It enables custom multiplayer servers for **Grand Theft Auto V** and **Red Dead Redemption 2**, providing a robust framework for server owners, developers, and players to create unique multiplayer experiences.
 
 ## What is CitizenFX?
 
 CitizenFX is a platform that allows developers to create custom multiplayer servers for Rockstar Games' titles. It provides tools, APIs, and a thriving community to support server customization and resource development.
 
-### Key Features
+## Key Features
 
-- **Custom Multiplayer Servers**: Host your own servers for GTA V and RDR2.
-- **Extensive Modding Support**: Add custom scripts, vehicles, maps, and more.
-- **Framework Integration**: Compatible with popular frameworks like ESX, QBCore, and vRP.
-- **Community-Driven**: A vibrant community of developers and players contributing to the ecosystem.
+<FeatureList
+  features={[
+    {
+      title: "Custom Multiplayer Servers",
+      description: "Host your own servers for GTA V and RDR2"
+    },
+    {
+      title: "Extensive Modding Support",
+      description: "Add custom scripts, vehicles, maps, and more"
+    },
+    {
+      title: "Framework Integration",
+      description: "Compatible with ESX, QBCore, vRP, and more"
+    },
+    {
+      title: "Community-Driven",
+      description: "Vibrant community of developers and players"
+    },
+    {
+      title: "Flexible & Scalable",
+      description: "Customize every aspect with optimized performance"
+    },
+    {
+      title: "Comprehensive Support",
+      description: "Official documentation, forums, and tools"
+    }
+  ]}
+  columns={2}
+/>
 
 ## Why Use CitizenFX?
 
 CitizenFX empowers server owners and developers to create unique experiences that go beyond the limitations of the base games. Whether you're building a roleplay server, a racing community, or a combat-focused environment, CitizenFX provides the tools you need.
 
-### Benefits
+## Benefits
 
-- **Flexibility**: Customize every aspect of your server, from gameplay mechanics to visual assets.
-- **Scalability**: Host servers that can handle large player counts with optimized performance.
-- **Support**: Access official documentation, community forums, and third-party tools.
+<CheckList
+  items={[
+    "Flexibility - Customize every aspect of your server",
+    "Scalability - Host servers handling large player counts",
+    "Support - Access documentation, forums, and tools",
+    "Community - Connect with developers and players worldwide"
+  ]}
+  variant="check"
+/>
 
 ## Getting Started
 
 Ready to dive in? Here's how to get started with CitizenFX:
 
-1. **Set Up a Server**: Follow our [Getting Started Guide](/docs/cfx/getting-started) to set up your FiveM or RedM server.
-2. **Explore Frameworks**: Learn about popular frameworks like [ESX](/docs/frameworks/esx) and [QBCore](/docs/frameworks/qbcore).
-3. **Join the Community**: Connect with other developers and players on the [CitizenFX Collective Forums](https://forum.cfx.re).
+<QuickLinks
+  links={[
+    {
+      title: "Set Up a Server",
+      description: "Follow our guide to set up your FiveM or RedM server",
+      href: "/docs/guides"
+    },
+    {
+      title: "Explore Frameworks",
+      description: "Learn about ESX, QBCore, and other frameworks",
+      href: "/docs/frameworks"
+    },
+    {
+      title: "Join the Community",
+      description: "Connect with developers and players on forums",
+      href: "https://forum.cfx.re"
+    }
+  ]}
+  columns={3}
+/>

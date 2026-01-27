@@ -4,6 +4,8 @@ description: An overview of popular frameworks used in FiveM development.
 icon: "LayersUnion"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 # Frameworks Overview
 
 FiveM supports various frameworks that provide structure, tools, and resources for server development. This section covers the most popular frameworks and how to use them effectively.
@@ -12,11 +14,11 @@ FiveM supports various frameworks that provide structure, tools, and resources f
 
 <Cards>
   <Card title="ESX" href="/docs/frameworks/esx">
-    The most widely used framework for FiveM, providing a complete roleplay foundation.
+    The most widely used framework for FiveM, providing a complete roleplay foundation with modern updates.
   </Card>
   
   <Card title="QBCore" href="/docs/frameworks/qbcore">
-    A modern, modular framework with extensive features for roleplay servers.
+    A modern, modular framework with extensive features and flexibility for roleplay servers.
   </Card>
 </Cards>
 
@@ -24,31 +26,59 @@ FiveM supports various frameworks that provide structure, tools, and resources f
 
 When selecting a framework for your FiveM server, consider:
 
-1. **Community Support**: Larger communities typically mean more resources and faster support
-2. **Documentation**: Well-documented frameworks are easier to learn and extend
-3. **Performance**: Some frameworks are more optimized than others
-4. **Features**: Different frameworks excel in different areas
-5. **Development Activity**: Active development means bugs are fixed and features are added
+<FeatureList
+  features={[
+    {
+      title: "Community Support",
+      description: "Larger communities typically mean more resources and faster support"
+    },
+    {
+      title: "Documentation",
+      description: "Well-documented frameworks are easier to learn and extend"
+    },
+    {
+      title: "Performance",
+      description: "Some frameworks are more optimized than others"
+    },
+    {
+      title: "Features",
+      description: "Different frameworks excel in different areas"
+    },
+    {
+      title: "Development Activity",
+      description: "Active development means bugs are fixed and features are added"
+    }
+  ]}
+  columns={2}
+/>
 
 ## Framework Components
 
 Most FiveM frameworks include:
 
-- **Core Systems**: Player management, inventory, jobs, etc.
-- **Database Integration**: For persistent data storage
-- **UI Components**: For user interaction
-- **Resource Management**: For handling server resources
-- **API**: For extending functionality
+<CheckList
+  items={[
+    "Core Systems - Player management, inventory, jobs, etc.",
+    "Database Integration - For persistent data storage",
+    "UI Components - For user interaction",
+    "Resource Management - For handling server resources",
+    "API - For extending functionality"
+  ]}
+  variant="check"
+/>
 
-## Framework Integration
+## Framework Integration Best Practices
 
-Regardless of which framework you choose, follow these best practices:
-
-1. **Follow Documentation**: Use official guides when available
-2. **Respect Dependencies**: Understand how resources depend on each other
-3. **Maintain Compatibility**: Test thoroughly when upgrading
-4. **Contribute**: Report bugs and contribute improvements
-5. **Share Knowledge**: Document your solutions for others
+<CheckList
+  items={[
+    "Follow Documentation - Use official guides when available",
+    "Respect Dependencies - Understand resource dependencies",
+    "Maintain Compatibility - Test thoroughly when upgrading",
+    "Contribute - Report bugs and contribute improvements",
+    "Share Knowledge - Document your solutions for others"
+  ]}
+  variant="check"
+/>
 
 <Callout type="info">
   This section provides guides for the most popular frameworks, but many of the concepts are transferable between frameworks.

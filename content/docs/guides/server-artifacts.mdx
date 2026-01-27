@@ -4,6 +4,8 @@ description: Complete guide to managing FiveM server artifacts, updates, and dep
 icon: "Download"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Keeping your FiveM server artifacts up-to-date is crucial for security, performance, and compatibility. This guide covers everything about managing server artifacts, performing updates, and handling deployments.
 
 ## Understanding FiveM Artifacts
@@ -19,6 +21,12 @@ FiveM artifacts are the compiled server binaries that power your FiveM server. T
 - **Networking stack** - Player communication systems
 
 ### Artifact Channels
+
+<PropertyCard title="Recommended (Stable)" content="Thoroughly tested builds for production servers. Updated weekly as needed. Maximum stability and compatibility guaranteed." />
+
+<PropertyCard title="Optional (Beta)" content="Latest features and improvements, updated 2-3 times weekly. Good for testing before production deployment." />
+
+<PropertyCard title="Latest (Canary/Experimental)" content="Bleeding-edge development builds, not recommended for production. For developers and testers evaluating new features." />
 
 **Recommended (Stable)**
 - Thoroughly tested builds
@@ -81,6 +89,16 @@ print('Build number:', buildNumber)
 ```
 
 ## Manual Update Process
+
+<StepList steps={[
+  "Visit runtime.fivem.net and identify latest recommended build",
+  "Stop server gracefully using stop command",
+  "Download appropriate artifacts (Windows or Linux)",
+  "Back up current server.exe and runtime files",
+  "Extract new artifacts to server directory",
+  "Verify all files are in place",
+  "Restart server and monitor logs for errors"
+]} />
 
 ### Windows Update Procedure
 

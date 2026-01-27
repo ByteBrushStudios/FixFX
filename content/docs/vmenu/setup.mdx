@@ -1,18 +1,16 @@
 ---
 title: Setup & Installation
 description: Complete guide for installing and setting up vMenu on your FiveM server
-icon: Settings
+icon: "Settings"
 ---
 
-import { Callout } from 'fumadocs-ui/components/callout'
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
 
 ## Overview
 
 This guide will walk you through the complete process of installing and configuring vMenu on your FiveM server. vMenu is straightforward to install, but proper configuration is essential for security and optimal performance.
 
-<Callout type="warn">
-  **Security Warning**: Always configure permissions before making your server public. Default settings may grant excessive permissions to all players.
-</Callout>
+<PropertyCard type="warning" name="Security Warning" description="Always configure permissions before making your server public. Default settings may grant excessive permissions to all players." />
 
 ## Prerequisites
 
@@ -32,11 +30,20 @@ Before installing vMenu, ensure you have:
 | Framework | None required (standalone) |
 | Database | Not required |
 
-<Callout type="info">
-  vMenu works as a standalone resource and doesn't require ESX, QBCore, or any other framework. It uses FiveM's native ACE permission system.
-</Callout>
+<PropertyCard type="info" name="vMenu Compatibility" description="vMenu works as a standalone resource and doesn't require ESX, QBCore, or any other framework. It uses FiveM's native ACE permission system." />
 
 ## Installation Methods
+
+<StepList
+  steps={[
+    { title: "Download vMenu", description: "Visit the official GitHub releases page at https://github.com/TomGrobbe/vMenu/releases/latest" },
+    { title: "Extract Files", description: "Download and extract the latest vMenu.zip file to your resources/ folder" },
+    { title: "Verify Structure", description: "Ensure folder is named 'vMenu' (case-sensitive on Linux) with fxmanifest.lua at root level" },
+    { title: "Add to server.cfg", description: "Add 'ensure vMenu' to your server configuration file" },
+    { title: "Configure Permissions", description: "Edit resources/vMenu/config/permissions.cfg with appropriate access levels" }
+  ]}
+  title="Installation Quick Steps"
+/>
 
 ### Method 1: Direct Download (Recommended)
 
@@ -124,29 +131,18 @@ ensure your_other_resources
 
 vMenu uses a `permissions.cfg` file located in `resources/vMenu/config/permissions.cfg`.
 
-**Basic permission structure:**
+<ConfigBlock
+  title="Basic Permission Structure"
+  options={[
+    { key: "add_ace group.admin", value: "vMenu.Everything allow", description: "Grant all permissions to admin group", required: true },
+    { key: "add_ace group.moderator", value: "vMenu.OnlinePlayers allow", description: "Allow moderators to manage players", required: false },
+    { key: "add_ace group.moderator", value: "vMenu.Report allow", description: "Allow moderators to receive reports", required: false },
+    { key: "add_ace group.vip", value: "vMenu.PersonalVehicle allow", description: "Grant VIP personal vehicle access", required: false },
+    { key: "add_ace builtin.everyone", value: "vMenu.NoClip deny", description: "Deny NoClip to all players by default", required: true }
+  ]}
+/>
 
-```cfg
-# Admin permissions
-add_ace group.admin vMenu.Everything allow
-
-# Moderator permissions  
-add_ace group.moderator vMenu.OnlinePlayers allow
-add_ace group.moderator vMenu.PlayerOptions allow
-add_ace group.moderator vMenu.Report allow
-
-# VIP permissions
-add_ace group.vip vMenu.PersonalVehicle allow
-add_ace group.vip vMenu.WeaponOptions allow
-
-# Default player permissions
-add_ace builtin.everyone vMenu.NoClip deny
-add_ace builtin.everyone vMenu.Staff deny
-```
-
-<Callout type="warn">
-  **Critical**: By default, vMenu may grant all permissions to everyone. Always configure permissions before going live!
-</Callout>
+<PropertyCard type="error" name="Critical Security Notice" description="By default, vMenu may grant all permissions to everyone. Always configure permissions before going live! Refer to our Permissions Guide for detailed configuration options." />
 
 See our [Permissions Guide](/docs/vmenu/permissions) for detailed permission configuration.
 

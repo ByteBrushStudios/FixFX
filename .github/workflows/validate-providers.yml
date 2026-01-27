@@ -1,0 +1,166 @@
+name: Validate Provider Files
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/packages/providers/**/*.json'
+
+jobs:
+  validate:
+    name: Validate Provider JSON
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli ajv-formats
+
+      - name: Validate provider files
+        run: |
+          SCHEMA_FILE="packages/providers/schema.json"
+          ERRORS=0
+          
+          # Find all provider.json files in subdirectories
+          for file in packages/providers/*/provider.json; do
+            # Skip if file doesn't exist (no providers)
+            if [ ! -f "$file" ]; then
+              continue
+            fi
+            
+            echo "Validating: $file"
+            
+            # Validate against schema
+            if ! ajv validate -s "$SCHEMA_FILE" -d "$file" --spec=draft7 -c ajv-formats; then
+              echo "❌ Validation failed for $file"
+              ERRORS=$((ERRORS + 1))
+            else
+              echo "✅ Valid: $file"
+            fi
+            
+            # Additional checks
+            ID=$(jq -r '.id' "$file")
+            FILENAME=$(basename "$file" .json)
+            
+            if [ "$ID" != "$FILENAME" ]; then
+              echo "❌ Error: id '$ID' does not match filename '$FILENAME'"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo ""
+            echo "❌ $ERRORS error(s) found in provider files"
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅ All provider files are valid!"
+
+      - name: Check for duplicate IDs
+        run: |
+          ERRORS=0
+          IDS_FILE=$(mktemp)
+          
+          # Extract all IDs from provider.json files
+          for file in packages/providers/*/provider.json; do
+            if [ -f "$file" ]; then
+              ID=$(jq -r '.id' "$file" 2>/dev/null)
+              if [ -n "$ID" ] && [ "$ID" != "null" ]; then
+                echo "$ID" >> "$IDS_FILE"
+              fi
+            fi
+          done
+          
+          # Check for duplicates
+          if [ -f "$IDS_FILE" ]; then
+            DUPLICATES=$(sort "$IDS_FILE" | uniq -d)
+            
+            if [ -n "$DUPLICATES" ]; then
+              echo "❌ Duplicate provider IDs found:"
+              echo "$DUPLICATES"
+              ERRORS=1
+            else
+              echo "✅ No duplicate provider IDs found"
+            fi
+            
+            rm "$IDS_FILE"
+          fi
+          
+          if [ $ERRORS -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Validate URLs
+        run: |
+          ERRORS=0
+          
+          # Check all provider.json files
+          for file in packages/providers/*/provider.json; do
+            if [ ! -f "$file" ]; then
+              continue
+            fi
+            
+            # Check all URLs in the file
+            URLS=$(jq -r '.. | strings | select(test("^https?://"))' "$file" 2>/dev/null)
+            
+            while IFS= read -r url; do
+              if [ -z "$url" ]; then
+                continue
+              fi
+              
+              # Basic URL format check
+              if ! echo "$url" | grep -qE '^https?://[a-zA-Z0-9]'; then
+                echo "❌ Invalid URL format in $file: $url"
+                ERRORS=$((ERRORS + 1))
+              fi
+            done <<< "$URLS"
+          done
+          
+          if [ $ERRORS -gt 0 ]; then
+            exit 1
+          fi
+          
+          echo "✅ All URLs are properly formatted"
+
+      - name: Verify directory structure
+        run: |
+          ERRORS=0
+          
+          # Check that each provider directory has a provider.json
+          for dir in packages/providers/*/; do
+            dirname=$(basename "$dir")
+            
+            # Skip schema files and system directories
+            if [[ "$dirname" == "."* ]] || [ "$dirname" = "schema.json" ] || [ "$dirname" = "trusted-hosts.json" ] || [ "$dirname" = "trusted-hosts-schema.json" ]; then
+              continue
+            fi
+            
+            if [ ! -f "$dir/provider.json" ]; then
+              echo "⚠️  Warning: Provider directory '$dirname' missing provider.json"
+              ERRORS=$((ERRORS + 1))
+            else
+              # Verify directory name matches provider ID
+              ID=$(jq -r '.id' "$dir/provider.json" 2>/dev/null)
+              if [ "$ID" != "$dirname" ]; then
+                echo "⚠️  Warning: Directory name '$dirname' doesn't match provider ID '$ID'"
+                echo "   Consider renaming directory to match the provider ID"
+              fi
+            fi
+          done
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo ""
+            echo "⚠️  $ERRORS warning(s) found (non-fatal)"
+          fi
+          
+          echo "✅ Directory structure verified"

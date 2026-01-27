@@ -4,6 +4,8 @@ description: Complete guide to configuring and optimizing your FiveM server.
 icon: "Settings"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Proper server configuration is essential for optimal performance, security, and player experience. This comprehensive guide covers all aspects of FiveM server configuration.
 
 ## Basic Server Configuration
@@ -54,6 +56,16 @@ set sv_debugqueue true
 ```
 
 ### Essential Configuration Sections
+
+<CheckList items={[
+  "Configure server identity (hostname, project name, description)",
+  "Set up network endpoints (TCP/UDP on port 30120)",
+  "Configure player limits and queue settings",
+  "Set up database connection string",
+  "Configure admin permissions and ACE rules",
+  "Enable essential resources (mapmanager, chat, etc.)",
+  "Set security-related convars"
+]} />
 
 #### Server Identity
 ```bash

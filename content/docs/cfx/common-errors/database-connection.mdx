@@ -4,9 +4,35 @@ description: Comprehensive guide to understanding and resolving database connect
 icon: "Database"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Database connection problems can cause various issues in your CitizenFX server, from player data loss to server instability. This guide will help you diagnose and resolve these issues for both server owners and developers.
 
 ## Common Causes
+
+<TroubleshootingCard
+  title="Connection Configuration Error"
+  symptoms={[
+    "Error: Failed to establish database connection",
+    "Connection refused on port 3306",
+    "Authentication failed for database user",
+    "Server hangs during startup"
+  ]}
+  causes={[
+    "Incorrect database credentials (username/password)",
+    "Wrong database host or port",
+    "Invalid database name",
+    "Missing required permissions",
+    "Invalid connection string format"
+  ]}
+  solutions={[
+    "Verify database credentials in server.cfg",
+    "Check database host and port are correct",
+    "Ensure database user has required permissions",
+    "Test connection using mysql client tool",
+    "Check firewall allows database connections"
+  ]}
+/>
 
 1. **Configuration Issues**
    - Incorrect database credentials
@@ -45,6 +71,20 @@ set mysql_connection_timeout 10000  # Connection timeout in milliseconds
 set mysql_pool_size 10  # Connection pool size
 set mysql_idle_timeout 60000  # Idle timeout in milliseconds
 ```
+
+<PropertyCard
+  name="mysql_pool_size"
+  value="10"
+  description="Controls how many concurrent database connections can be maintained. Higher values allow more simultaneous queries but use more resources."
+  type="info"
+/>
+
+<PropertyCard
+  name="mysql_connection_timeout"
+  value="10000"
+  description="Timeout in milliseconds for establishing new database connections. Increase if connections are timing out."
+  type="warning"
+/>
 
 ### 2. Database Server Configuration
 

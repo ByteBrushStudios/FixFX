@@ -4,6 +4,8 @@ description: Complete guide to setting up and installing QBCore framework.
 icon: "Download"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 This guide covers the complete installation and initial setup of QBCore framework for your FiveM server.
 
 ## Prerequisites
@@ -16,6 +18,19 @@ Before installing QBCore, ensure you have:
 - **Basic Command Line Knowledge**: Comfort with terminal commands
 
 ## Installation Methods
+
+<StepList
+  steps={[
+    { title: "Create Database", description: "Set up MySQL/MariaDB with proper user permissions and UTF8MB4 charset" },
+    { title: "Create Folder Structure", description: "Create [qb], [standalone], and [voice] directories in resources" },
+    { title: "Clone Core Framework", description: "Clone qb-core and all essential QBCore resources from GitHub" },
+    { title: "Install Database Connector", description: "Clone oxmysql to your [standalone] folder" },
+    { title: "Import Database", description: "Run qb-core/server/database.sql and other resource SQL files" },
+    { title: "Configure Settings", description: "Update qb-core/shared/config.lua with your server settings" },
+    { title: "Start Server", description: "Ensure all resources in server.cfg and verify proper loading" }
+  ]}
+  title="QBCore Installation Steps"
+/>
 
 ### Method 1: Fresh Installation (Recommended)
 
@@ -118,6 +133,12 @@ git clone https://github.com/qbcore-framework/qb-txAdminRecipe.git
 ## Configuration
 
 ### 1. Database Connection
+
+<ConfigBlock
+  title="QBCore Configuration"
+  description="Essential settings for QBCore framework functionality including player limits, spawn points, and money systems"
+  language="lua"
+/>
 
 Configure your database connection in `qb-core/shared/config.lua`:
 

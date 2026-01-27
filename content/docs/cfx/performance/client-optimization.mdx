@@ -4,11 +4,21 @@ description: Techniques to improve client-side performance for FiveM players.
 icon: "Monitor"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 ## Graphics Settings
 
 - Lower texture, shadow, and reflection quality in the FiveM graphics menu.
 - Disable unnecessary post-processing effects.
 - Set population density sliders to minimum for best FPS.
+
+<CheckList items={[
+  "Reduce texture, shadow, and reflection quality in settings",
+  "Disable post-processing effects that impact FPS",
+  "Minimize population density for better performance",
+  "Remove unused client-side scripts",
+  "Use resmon to identify resource-heavy scripts"
+]} />
 
 ## Resource Usage
 

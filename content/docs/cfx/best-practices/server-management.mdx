@@ -4,6 +4,8 @@ description: Comprehensive guide to managing and maintaining CitizenFX servers e
 icon: "Server"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Proper server management is crucial for maintaining a stable and enjoyable gaming experience. This guide covers essential practices for managing your CitizenFX server.
 
 <Callout type="warning">
@@ -15,6 +17,14 @@ Proper server management is crucial for maintaining a stable and enjoyable gamin
 </Callout> 
 
 ## Server Setup
+
+<StepList steps={[
+  "Verify hardware meets minimum requirements for player count",
+  "Install server artifacts and dependencies",
+  "Configure server.cfg with essential settings",
+  "Set up database connection and initialize tables",
+  "Test resource loading and server startup"
+]} />
 
 ### 1. Hardware Requirements
 

@@ -10,9 +10,11 @@ interface ImageModalProps {
   title?: string;
   width?: number;
   height?: number;
+  className?: string;
+  caption?: string;
 }
 
-export function ImageModal({ src, alt, title, width, height }: ImageModalProps) {
+export function ImageModal({ src, alt, title, width, height, className, caption }: ImageModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -122,11 +124,11 @@ export function ImageModal({ src, alt, title, width, height }: ImageModalProps) 
   );
 
   return (
-    <>
+    <figure className="my-4">
       {/* Thumbnail */}
       <button
         onClick={() => setIsOpen(true)}
-        className="relative inline-block cursor-pointer overflow-hidden rounded-lg border border-fd-border transition-transform hover:scale-[1.02]"
+        className={`relative block w-full cursor-pointer overflow-hidden rounded-lg border border-fd-border bg-fd-muted/30 transition-all hover:border-fd-primary/50 hover:shadow-lg ${className || ''}`}
         type="button"
       >
         <img
@@ -134,12 +136,19 @@ export function ImageModal({ src, alt, title, width, height }: ImageModalProps) 
           alt={alt}
           width={width}
           height={height}
-          className="block max-w-full"
+          className="block w-full h-auto"
         />
       </button>
+      
+      {/* Caption */}
+      {caption && (
+        <figcaption className="mt-2 text-center text-sm text-fd-muted-foreground">
+          {caption}
+        </figcaption>
+      )}
 
       {/* Portal to body */}
       {mounted && isOpen && createPortal(modal, document.body)}
-    </>
+    </figure>
   );
 }

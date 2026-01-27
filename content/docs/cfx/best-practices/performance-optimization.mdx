@@ -4,9 +4,18 @@ description: Comprehensive guide to optimizing performance in CitizenFX servers 
 icon: "Zap"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Optimizing performance is crucial for maintaining a smooth and enjoyable experience for your players. This guide covers essential practices for optimizing your CitizenFX server and resources.
 
 ## Server Configuration
+
+<CheckList items={[
+  "Set appropriate network rate limits for your player count",
+  "Configure per-client rate limits to prevent abuse",
+  "Monitor state bag rates to avoid synchronization issues",
+  "Regularly test network settings under load"
+]} />
 
 ### 1. Network Optimization
 

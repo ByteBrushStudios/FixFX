@@ -4,9 +4,23 @@ description: Comprehensive guide to understanding and resolving resource loading
 icon: "Package"
 ---
 
+import { FeatureList, CheckList, QuickLinks, DefinitionList, CommandCard, CommandTable, PropertyCard, IconGrid, Shortcut, StatusBadge, TroubleshootingCard, PermissionTable, ConfigBlock, StepList, ComparisonTable } from '@ui/components/mdx-components'
+
 Resource loading problems can prevent your server from starting properly or cause resources to fail during runtime. This guide will help you diagnose and resolve these issues for both server owners and developers.
 
 ## Common Causes
+
+<CheckList
+  items={[
+    "Ensure fxmanifest.lua exists in resource root directory",
+    "Verify all script paths are correct and relative to resource folder",
+    "Declare all dependencies in manifest file",
+    "Use current manifest format (fx_version 'cerulean')",
+    "Check for typos in resource names and file paths",
+    "Validate Lua syntax with a linter before deploying"
+  ]}
+  variant="check"
+/>
 
 1. **Manifest Issues**
    - Missing or incorrect fxmanifest.lua

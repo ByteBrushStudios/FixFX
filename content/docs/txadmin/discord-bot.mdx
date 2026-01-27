@@ -1,0 +1,391 @@
+---
+title: Discord Bot
+description: Set up and configure the txAdmin Discord Bot integration for server status and announcements.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { FeatureList, CheckList, QuickLinks, DefinitionList, PropertyCard, InfoBanner, CategoryGrid, ConfigBlock, TroubleshootingCard, StepList, CommandCard } from '@ui/components/mdx-components';
+
+The txAdmin Discord Bot integration allows you to connect your server to Discord for status updates, announcements, and player notifications. This guide walks you through the complete setup process.
+
+<InfoBanner type="info" title="What You'll Set Up">
+By the end of this guide, your Discord server will display real-time server status, restart announcements, and customizable embed messages.
+</InfoBanner>
+
+<FeatureList
+  title="Discord Bot Features"
+  columns={2}
+  features={[
+    { title: "Server Status Embed", description: "Live status showing online/offline state", icon: "server" },
+    { title: "Restart Announcements", description: "Automatic notifications for server events", icon: "radio" },
+    { title: "Custom Buttons", description: "Connect links and external URLs", icon: "external" },
+    { title: "Status Colors", description: "Visual indicators for server health", icon: "palette" }
+  ]}
+/>
+
+## Prerequisites
+
+Before setting up the Discord bot, you'll need:
+
+<CheckList
+  variant="check"
+  items={[
+    "A Discord account with permission to add bots to your server",
+    "Administrator or 'Manage Server' permissions in your Discord server",
+    "Your txAdmin panel accessible and running"
+  ]}
+/>
+
+## Step 1: Create a Discord Bot Application
+
+<StepList
+  title="Discord Developer Portal Setup"
+  steps={[
+    {
+      title: "Open Discord Developer Portal",
+      description: "Visit [discord.com/developers/applications](https://discord.com/developers/applications) and log in with your Discord account"
+    },
+    {
+      title: "Create New Application",
+      description: "Click 'New Application' in the top right, give it a name (e.g., your server name), and click Create"
+    },
+    {
+      title: "Navigate to Bot Section",
+      description: "In the left sidebar, click 'Bot' to access bot settings"
+    },
+    {
+      title: "Enable Server Members Intent",
+      description: "Scroll down to 'Privileged Gateway Intents' and enable **Server Members Intent** - this is required for the bot to function",
+      alert: {
+        type: "warning",
+        message: "The bot requires the Server Members intent to work properly. Make sure this is enabled!"
+      }
+    },
+    {
+      title: "Copy Bot Token",
+      description: "Click 'Reset Token' (or 'View Token' if available), then copy the token. Keep this secret!"
+    }
+  ]}
+/>
+
+<InfoBanner type="error" title="Token Security">
+Never share your bot token publicly. If compromised, immediately reset it in the Discord Developer Portal. Treat it like a password.
+</InfoBanner>
+
+## Step 2: Add Bot to Your Discord Server
+
+<StepList
+  title="Bot Authorization"
+  steps={[
+    {
+      title: "Go to OAuth2 Section",
+      description: "In the Developer Portal, navigate to 'OAuth2' → 'URL Generator' in the left sidebar"
+    },
+    {
+      title: "Select Scopes",
+      description: "Check the 'bot' scope under SCOPES"
+    },
+    {
+      title: "Select Permissions",
+      description: "Under BOT PERMISSIONS, select: Send Messages, Embed Links, and any other permissions you need"
+    },
+    {
+      title: "Copy and Visit URL",
+      description: "Copy the generated URL at the bottom and paste it in your browser"
+    },
+    {
+      title: "Authorize the Bot",
+      description: "Select your Discord server from the dropdown and click 'Authorize'"
+    }
+  ]}
+/>
+
+## Step 3: Configure txAdmin Discord Settings
+
+Navigate to **Settings** → **Discord Bot** in your txAdmin panel.
+
+![Discord Bot Settings](/screenshots/txadmin/discord-bot/settings.png)
+
+### Required Settings
+
+<PropertyCard 
+  type="info" 
+  name="Discord Bot" 
+  value="Enabled" 
+  description="Toggle to enable Discord integration. Must be enabled for all other settings to work." 
+/>
+
+<PropertyCard 
+  type="error" 
+  name="Token" 
+  value="REQUIRED" 
+  description="Your bot token from the Discord Developer Portal. Do not reuse tokens from other bots." 
+/>
+
+<PropertyCard 
+  type="error" 
+  name="Guild/Server ID" 
+  value="REQUIRED" 
+  description="The ID of your Discord server (also known as Discord Guild)." 
+/>
+
+### Getting Your Server ID
+
+<StepList
+  steps={[
+    {
+      title: "Enable Developer Mode",
+      description: "In Discord, go to User Settings → App Settings → Advanced → Enable 'Developer Mode'"
+    },
+    {
+      title: "Copy Server ID",
+      description: "Right-click on your server icon in the server list and select 'Copy Server ID'"
+    },
+    {
+      title: "Paste in txAdmin",
+      description: "Paste the ID into the Guild/Server ID field in txAdmin"
+    }
+  ]}
+/>
+
+### Optional Settings
+
+<PropertyCard 
+  type="info" 
+  name="Warnings Channel ID" 
+  value="Optional" 
+  description="The ID of the channel to send announcements (e.g., server restarts). Leave blank to disable." 
+/>
+
+<InfoBanner type="tip" title="Getting Channel IDs">
+With Developer Mode enabled, right-click any channel and select "Copy Channel ID" to get its ID.
+</InfoBanner>
+
+## Step 4: Customize Status Embed
+
+The Status Embed JSON controls what information is displayed in your server status message.
+
+<Tabs items={["Default Embed", "Custom Example"]}>
+  <Tab value="Default Embed">
+```json
+{
+  "title": "{{serverName}}",
+  "url": "{{serverBrowserUrl}}",
+  "description": "You can configure this embed in 'txAdmin > Settings > Discord Bot', and edit everything from it (except footer).",
+  "fields": [
+    {
+      "name": "> STATUS",
+      "value": "```\n{{statusString}}\n```",
+      "inline": true
+    },
+    {
+      "name": "> PLAYERS",
+      "value": "```\n{{playerCount}}/{{maxClients}}\n```",
+      "inline": true
+    },
+    {
+      "name": "> NEXT RESTART",
+      "value": "```\n{{nextScheduledRestart}}\n```",
+      "inline": true
+    }
+  ]
+}
+```
+  </Tab>
+  <Tab value="Custom Example">
+```json
+{
+  "title": "🎮 {{serverName}}",
+  "url": "{{serverBrowserUrl}}",
+  "description": "Welcome to our server! Join us for an amazing experience.",
+  "fields": [
+    {
+      "name": "📊 Status",
+      "value": "{{statusString}}",
+      "inline": true
+    },
+    {
+      "name": "👥 Players",
+      "value": "{{playerCount}}/{{maxClients}}",
+      "inline": true
+    }
+  ]
+}
+```
+  </Tab>
+</Tabs>
+
+### Available Variables
+
+<DefinitionList
+  variant="bordered"
+  items={[
+    { term: "{{serverName}}", description: "Your server's hostname" },
+    { term: "{{serverBrowserUrl}}", description: "Direct connect URL for your server" },
+    { term: "{{statusString}}", description: "Current status text (Online/Partial/Offline)" },
+    { term: "{{playerCount}}", description: "Current number of players online" },
+    { term: "{{maxClients}}", description: "Maximum player slots" },
+    { term: "{{nextScheduledRestart}}", description: "Time until next scheduled restart" },
+    { term: "{{serverJoinUrl}}", description: "FiveM/RedM direct connect URL" }
+  ]}
+/>
+
+## Step 5: Configure Status Colors
+
+The Status Config JSON controls the appearance for each server state.
+
+```json
+{
+  "onlineString": "🟢 Online",
+  "onlineColor": "#0BA70B",
+  "partialString": "🟡 Partial",
+  "partialColor": "#FFF100",
+  "offlineString": "🔴 Offline",
+  "offlineColor": "#A70B28",
+  "buttons": [
+    {
+      "emoji": "1062338355909640233",
+      "label": "Connect",
+      "url": "{{serverJoinUrl}}"
+    },
+    {
+      "emoji": "1062339910654246964",
+      "label": "txAdmin Discord",
+      "url": "https://discord.gg/txAdmin"
+    }
+  ]
+}
+```
+
+### Status States
+
+<CategoryGrid
+  title="Server Status Indicators"
+  categories={[
+    {
+      name: "Online",
+      description: "Server is running and accepting players",
+      icon: "check"
+    },
+    {
+      name: "Partial",
+      description: "Server is starting up or has warnings",
+      icon: "warning"
+    },
+    {
+      name: "Offline",
+      description: "Server is not running or unreachable",
+      icon: "error"
+    }
+  ]}
+  columns={3}
+/>
+
+### Custom Buttons
+
+You can add up to 5 buttons to your status embed. Each button needs:
+
+<DefinitionList
+  items={[
+    { term: "emoji", description: "Discord emoji ID (for custom) or Unicode emoji" },
+    { term: "label", description: "Button text (max 80 characters)" },
+    { term: "url", description: "Link URL - can use {{serverJoinUrl}} variable" }
+  ]}
+/>
+
+<InfoBanner type="tip" title="Custom Emoji IDs">
+To get a custom emoji ID, type `\:emoji_name:` in Discord chat. The message will show the emoji's ID.
+</InfoBanner>
+
+## Step 6: Set Up Status Channel
+
+<StepList
+  steps={[
+    {
+      title: "Create a Channel",
+      description: "Create a dedicated channel for your server status (e.g., #server-status)"
+    },
+    {
+      title: "Run Status Command",
+      description: "Use the `/status add` command in the channel where you want the status embed",
+      alert: {
+        type: "info",
+        message: "The bot must have 'Send Messages' permission in the target channel."
+      }
+    },
+    {
+      title: "Verify Embed",
+      description: "The status embed should appear and update automatically based on your server state"
+    }
+  ]}
+/>
+
+## Troubleshooting
+
+<TroubleshootingCard
+  title="Bot Not Responding"
+  problem="The bot appears offline or doesn't respond to commands"
+  solution="1. Verify the bot token is correct\n2. Check that Server Members Intent is enabled\n3. Ensure the bot has proper permissions in Discord\n4. Restart txAdmin after making changes"
+/>
+
+<TroubleshootingCard
+  title="Status Not Updating"
+  problem="The status embed shows stale information"
+  solution="1. Check txAdmin logs for Discord API errors\n2. Verify Guild/Server ID is correct\n3. Ensure the bot hasn't been rate limited\n4. Try removing and re-adding the status embed"
+/>
+
+<TroubleshootingCard
+  title="Invalid Token Error"
+  problem="txAdmin shows 'Invalid token' or authentication errors"
+  solution="1. Reset your bot token in Discord Developer Portal\n2. Copy the new token carefully (no extra spaces)\n3. Paste it into txAdmin settings\n4. Save and restart txAdmin"
+/>
+
+<TroubleshootingCard
+  title="Missing Permissions"
+  problem="Bot can't send messages or create embeds"
+  solution="1. Check bot role is above the channel's permission overrides\n2. Verify Send Messages and Embed Links permissions\n3. Try re-inviting the bot with correct permissions\n4. Check channel-specific permission overrides"
+/>
+
+## Best Practices
+
+<FeatureList
+  columns={2}
+  features={[
+    { title: "Dedicated Status Channel", description: "Use a read-only channel for cleaner status display", icon: "eye" },
+    { title: "Regular Token Rotation", description: "Reset your bot token periodically for security", icon: "lock" },
+    { title: "Meaningful Announcements", description: "Configure warnings channel for important updates only", icon: "radio" },
+    { title: "Test Before Production", description: "Test embed changes in a private channel first", icon: "bug" }
+  ]}
+/>
+
+## Next Steps
+
+<QuickLinks links={[
+  {
+    title: "Permissions System",
+    href: "/docs/txadmin/permissions",
+    icon: "shield",
+    description: "Configure user roles and access control"
+  },
+  {
+    title: "Server Management",
+    href: "/docs/txadmin/server-management",
+    icon: "server",
+    description: "Learn to manage your server through txAdmin"
+  },
+  {
+    title: "Config Editor",
+    href: "/docs/txadmin/configuration",
+    icon: "settings",
+    description: "Edit server configuration files"
+  },
+  {
+    title: "Troubleshooting",
+    href: "/docs/txadmin/troubleshooting",
+    icon: "wrench",
+    description: "Solve common problems and issues"
+  }
+]} />

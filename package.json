@@ -2,17 +2,32 @@
   "name": "@fixfx/website",
   "description": "A comprehensive documentation platform for FiveM development, providing detailed guides, tutorials, and best practices for the FiveM community.",
   "author": "CodeMeAPixel <https://cmap.lol>",
-  "version": "1.0.0",
+
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "postinstall": "fumadocs-mdx"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "version": "node .github/scripts/get-version.js",
+    "version:json": "node .github/scripts/get-version.js --json",
+    "analyze:commits": "node .github/scripts/analyze-commits.js",
+    "analyze:commits:json": "node .github/scripts/analyze-commits.js --json",
+    "knip": "npx knip",
+    "knip:exports": "npx knip --exports",
+    "knip:deps": "npx knip --dependencies",
+    "knip:files": "npx knip --files",
+    "knip:prod": "npx knip --production",
+    "knip:fix": "npx knip --fix",
+    "postinstall": "fumadocs-mdx",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.34",
     "@ai-sdk/google": "^0.0.30",
     "@ai-sdk/openai": "^0.0.38",
+    "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-select": "^2.1.4",
     "@radix-ui/react-scroll-area": "^1.2.3",
     "@radix-ui/react-dropdown-menu": "^2.1.4",
@@ -39,7 +54,7 @@
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.469.0",
     "motion": "^11.16.2",
-    "next": "^14.2.28",
+    "next": "15.5.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
@@ -55,6 +70,8 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
     "@fumadocs/cli": "^0.0.4",
     "@types/mdx": "^2.0.13",
     "@types/node": "22.5.4",
@@ -63,11 +80,28 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "autoprefixer": "^10.4.20",
     "clsx": "^2.1.1",
+    "commitlint": "19.8.1",
+    "husky": "^8.0.3",
+    "knip": "^5.78.0",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.4.45",
+    "prettier": "^3.7.4",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "tailwind-merge": "^2.6.0",
     "typescript": "^5.5.4",
     "ua-parser-js": "^2.0.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "next lint .",
+      "prettier -w ."
+    ],
+    "*.{css,scss}": [
+      "prettier -w ."
+    ],
+    "*.{json,md}": [
+      "prettier --w ."
+    ]
   }
 }
