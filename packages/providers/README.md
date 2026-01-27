@@ -57,6 +57,7 @@ Want to partner with FixFX and offer exclusive discounts to our community? We'd 
 Your hosting service should meet these criteria:
 
 - ✅ **Game Support:** Must host FiveM and/or RedM servers
+- ✅ **Cloud Support:** Optionally for hosts who do not offer dedicated game servers we will still accept hosts who offer VPS or Dedicated Servers
 - ✅ **Reliability:** 99.6%+ uptime with responsive 24/7 support
 - ✅ **Community First:** Competitive pricing and genuine care for community needs
 - ✅ **Exclusive Offer:** Provide a meaningful discount code or special offer for FixFX users
